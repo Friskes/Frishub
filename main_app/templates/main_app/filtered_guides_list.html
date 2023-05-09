@@ -1,0 +1,41 @@
+{% load i18n %}
+
+<style>
+  .ranking-filter-class[_ngcontent-xpp-c94] {
+    cursor: pointer;
+    width: 42px;
+    transition: all .3s ease;
+    border: 1px solid rgb(255, 255, 255, 0);
+  }
+  .ranking-filter-class-active[_ngcontent-xpp-c94] {
+    cursor: pointer;
+    width: 42px;
+    transition: all .3s ease;
+    border: 1px solid rgb(255, 255, 255, 1);
+    filter: brightness(1.3);
+  }
+  .ranking-filter-class[_ngcontent-xpp-c94]:hover {
+    border-color: rgb(255, 255, 255, 1);
+    filter: brightness(1.3);
+  }
+</style>
+
+<div _ngcontent-xpp-c94="" class="filter-card text-center no-border">
+  <h2 _ngcontent-xpp-c94="" style="font-size: 16px; color: #c3c3c3;">{% trans 'Категории' %}</h2>
+
+  {% for category in categorys %}
+
+    {% if category.pk == category_selected %}
+      <a href="{% url 'guides' %}" style="text-decoration: none !important;">
+        <img _ngcontent-xpp-c94="" class="ng-star-inserted ranking-filter-class-active"
+          src="{{ category.image_name.url }}">
+      </a>
+    {% else %}
+      <a href="{{ category.get_absolute_url }}" style="text-decoration: none !important;">
+        <img _ngcontent-xpp-c94="" class="ng-star-inserted ranking-filter-class"
+          src="{{ category.image_name.url }}">
+      </a>
+    {% endif %}
+
+  {% endfor %}
+</div>

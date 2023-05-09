@@ -1,0 +1,148 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<style>
+  textarea[_ngcontent-xcm-c72] {
+    resize: none
+  }
+  .container[_ngcontent-xcm-c72] {
+    max-width: 600px;
+    margin: auto
+  }
+  fieldset[_ngcontent-xcm-c72] {
+    border: medium none !important;
+    margin: 0 0 10px;
+    min-width: 100%;
+    padding: 0;
+    width: 100%
+  }
+  .conditions[_ngcontent-xcm-c72] p[_ngcontent-xcm-c72] {
+    color: #cacaca
+  }
+  label[_ngcontent-xcm-c72] {
+    font-size: 13px;
+    vertical-align: top;
+    padding-top: 1px
+  }
+  .button-disabled[_ngcontent-xcm-c72] {
+    cursor: not-allowed;
+    opacity: .5
+  }
+  .button-disabled[_ngcontent-xcm-c72]::-moz-selection {
+    background-color: transparent
+  }
+  .button-disabled[_ngcontent-xcm-c72]::selection {
+    background-color: transparent
+  }
+  .button-disabled[_ngcontent-xcm-c72]:hover {
+    background-color: #801616;
+    border-color: #a13030;
+  }
+  .checkbox[_ngcontent-xcm-c72] {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px
+  }
+</style>
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'account' %}">
+      {{ user }}
+      <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-account-delete _nghost-xcm-c72="" class="ng-star-inserted">
+  <div _ngcontent-xcm-c72="" class="container mt-md-5">
+    <div _ngcontent-xcm-c72="" class="row">
+      <div _ngcontent-xcm-c72="" class="col-12 p-0 fill">
+        <div _ngcontent-xcm-c72="" class="card ml-0 mr-0 fill">
+          <h3 _ngcontent-xcm-c72="" style="color: #b73737;">{% trans 'Безвозвратное удаление учётной записи' %}</h3>
+          <div _ngcontent-xcm-c72="" class="card-body">
+
+            <div _ngcontent-xcm-c72="" class="conditions">
+              <p _ngcontent-xcm-c72="" class="mb-1" style="font-size: 14.5px;">{% trans 'Все ваши личные данные будут удалены.' %}</p>
+              <p _ngcontent-xcm-c72="" class="mb-0" style="font-size: 14.5px;">{% trans 'Удаление не может быть отменено.' %}</p>
+            </div>
+
+            <p _ngcontent-xcm-c72="">
+              <br _ngcontent-xcm-c72="">
+              <input _ngcontent-xcm-c72="" type="checkbox" id="confirm" class="checkbox">
+              <label _ngcontent-xcm-c72="" for="confirm">{% trans 'Я подтверждаю, что хочу удалить свою учётную запись.' %}</label>
+              <br _ngcontent-xcm-c72="">
+            </p>
+
+            <script>
+              var agree_delete = document.getElementById('confirm');
+
+              agree_delete.addEventListener('input', element_changed_value);
+
+              function element_changed_value() {
+                let btn_state = document.querySelector('.btn-remove');
+                if (agree_delete.checked !== false) {
+                  btn_state.classList.remove('button-disabled');
+                  btn_state.classList.add('button');
+                  btn_state.disabled = false;
+                }
+                else {
+                  btn_state.classList.remove('button');
+                  btn_state.classList.add('button-disabled');
+                  btn_state.disabled = true;
+                }
+              }
+            </script>
+
+            <form method="POST">
+              {% csrf_token %}
+              <button _ngcontent-xcm-c72="" type="submit" name="DELETE_ACCOUNT" value="DELETE_ACCOUNT"
+                class="btn-remove w-100% button-disabled" disabled>
+                {% trans 'Удалить учётную запись' %}
+              </button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-account-delete>
+{% endblock %}

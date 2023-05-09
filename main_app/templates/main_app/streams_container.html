@@ -1,0 +1,49 @@
+{% load i18n %}
+{% for stream in twitch_streams %}
+<div _ngcontent-xpp-c94=""
+  class="col-xl-4 col-md-6 col-sm-12 px-0 chan-container mb-2 ng-star-inserted streamer-{{ stream.user_login }}">
+  <p _ngcontent-xpp-c94="" class="chan-name">{{ stream.user_login }}</p>
+  <a _ngcontent-xpp-c94="" target="_BLANK" class="twitch-link" href="https://www.twitch.tv/{{ stream.user_login }}">
+    <div _ngcontent-xpp-c94="" class="border-twitch mx-2 my-0 position-relative">
+      <div _ngcontent-xpp-c94="" class="m-0 chan-desc">{{ stream.title }}</div>
+      <div _ngcontent-xpp-c94="" class="play-container">{% trans 'Перейти на Twitch' %}</div>
+      <img _ngcontent-xpp-c94="" class="w-100" src="{{ stream.thumbnail_url }}">
+    </div>
+    <div _ngcontent-xpp-c94="" class="mx-2 container-viewer-flag">
+      <div _ngcontent-xpp-c94="" class="row m-0 chan-info">
+        <div _ngcontent-xpp-c94="" class="col-6 text-left p-0 container-counter">
+          <div _ngcontent-xpp-c94="" class="p-1">
+            <span _ngcontent-xpp-c94="" class="material-icons">people</span> {{ stream.viewer_count }}
+          </div>
+        </div>
+        <div _ngcontent-xpp-c94="" class="col-6 text-right p-0 container-flag ng-star-inserted">
+          <img _ngcontent-xpp-c94="" class="m-1 lang-img" src="{{ stream.language }}">
+        </div>
+      </div>
+    </div>
+  </a>
+  {% if stream.game_classes %}
+    <div _ngcontent-xpp-c94="" class="mx-2 pt-2 experience-title ng-star-inserted">
+      {% trans 'Игровой опыт' %}</div>
+  {% endif %}
+  <div _ngcontent-xpp-c94="" class="mx-2 pt-0 ng-star-inserted">
+    {% for game_class, value in stream.game_classes.items %}
+      <div _ngcontent-xpp-c94="" class="px-1 m-1 d-inline-block cadre-class-exp ng-star-inserted"
+        style="background-color: rgba({{ value.class_color }}, 0.5); border: 1px solid rgb({{ value.class_color }});">
+        <a _ngcontent-xpp-c94="" class="info">
+          <div _ngcontent-xpp-c94="">
+            <img _ngcontent-xpp-c94="" class="img-class-exp"
+              src="/static/main_app/images/class_icons/{{ game_class }}.png"
+              style="border: 2px solid rgb({{ value.class_color }});">
+            <div _ngcontent-xpp-c94="" class="highcote-exp">{{ value.experience }}</div>
+          </div>
+          <span _ngcontent-xpp-c94="" class="info-text"
+            style="color: rgb({{ value.class_color }}); margin-top: 10px; margin-left: -{{ value.verbose_name|length|add:43 }}px;">
+            {{ value.verbose_name }}
+          </span>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}

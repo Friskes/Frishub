@@ -1,0 +1,21 @@
+db.sqlite3
+
+venv
+
+.git
+.vscode
+
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+
+__pycache__/
+*/__pycache__/
+
+.pytest_cache
+
+media/*
+# git не может добавить полностью пустой каталог поэтому добавляем файл пустышку в директорию media
+!*media/.gitkeep
+
+settings.ini

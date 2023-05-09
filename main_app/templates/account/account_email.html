@@ -1,0 +1,123 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<style>
+  textarea[_ngcontent-xcm-c63]:focus,
+  textarea[_ngcontent-xcm-c63],
+  input[_ngcontent-xcm-c63]:focus,
+  input[_ngcontent-xcm-c63] {
+    background-color: #181618;
+    border: 1px solid #454545;
+    font-family: Poppins;
+    color: #dadada;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    outline: none
+  }
+  input[_ngcontent-xcm-c63]::-moz-placeholder {
+    color: #4b4b4b
+  }
+  input[_ngcontent-xcm-c63]::placeholder {
+    color: #4b4b4b
+  }
+  textarea[_ngcontent-xcm-c63] {
+    resize: none
+  }
+  .container[_ngcontent-xcm-c63] {
+    max-width: 600px;
+    margin: auto
+  }
+  fieldset[_ngcontent-xcm-c63] {
+    border: medium none !important;
+    margin: 0 0 10px;
+    min-width: 100%;
+    padding: 0;
+    width: 100%
+  }
+</style>
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'account' %}">
+      {{ user }}
+      <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-account-edition-mail _nghost-xcm-c63="" class="ng-star-inserted">
+  <div _ngcontent-xcm-c63="" class="container mt-md-5">
+    <div _ngcontent-xcm-c63="" class="row">
+      <div _ngcontent-xcm-c63="" class="col-12 p-0 fill">
+        <div _ngcontent-xcm-c63="" class="card ml-0 mr-0 fill">
+          <h3 _ngcontent-xcm-c63="">{% trans 'Изменить адрес электронной почты' %}</h3>
+          <div _ngcontent-xcm-c63="" class="card-body">
+
+            <fieldset _ngcontent-xcm-c63="">
+              <div _ngcontent-xcm-c63="" class="form-label" style="padding-bottom: 5px;">
+                {% trans 'Текущий адрес электронной почты' %}
+              </div>
+              <input _ngcontent-xcm-c63="" type="text" value="{{ user.email }}" readonly=""
+                style="font-family: sans-serif; font-size: 16px; opacity: 0.6;">
+            </fieldset>
+
+            <form method="POST">
+              {% csrf_token %}
+              <fieldset _ngcontent-xcm-c63="">
+                <div _ngcontent-xcm-c63="" class="form-label ng-star-inserted">&nbsp;</div>
+                  {{ form.new_email }}
+              </fieldset>
+
+              <fieldset _ngcontent-xcm-c63="">
+                <br _ngcontent-xcm-c63="">
+                <button _ngcontent-xcm-c63="" class="btn-custom w-100%">{% trans 'Сохранить' %}</button>
+              </fieldset>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-account-edition-mail>
+{% endblock %}

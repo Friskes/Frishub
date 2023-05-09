@@ -1,0 +1,260 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<style>
+  input[_ngcontent-xpp-c82],
+  input[_ngcontent-xpp-c82]:focus,
+  textarea[_ngcontent-xpp-c82],
+  textarea[_ngcontent-xpp-c82]:focus {
+    background-color: #181618;
+    border: 1px solid #454545;
+    font-family: Poppins;
+    color: #dadada;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    outline: none
+  }
+  input[_ngcontent-xpp-c82]::-moz-placeholder {
+    color: #4b4b4b
+  }
+  input[_ngcontent-xpp-c82]::placeholder {
+    color: #4b4b4b
+  }
+  textarea[_ngcontent-xpp-c82] {
+    resize: none
+  }
+  .container[_ngcontent-xpp-c82] {
+    max-width: 600px;
+    margin: auto
+  }
+  fieldset[_ngcontent-xpp-c82] {
+    border: none !important;
+    margin: 0 0 10px;
+    min-width: 100%;
+    padding: 0;
+    width: 100%
+  }
+  fieldset.text-danger[_ngcontent-xpp-c82] {
+    margin-top: 20px;
+    padding-bottom: 30px
+  }
+  a[_ngcontent-xpp-c82] {
+    text-align: right;
+    font-size: 12px;
+    max-width: 300px;
+    padding: 3px;
+    margin: auto;
+    color: #a0a0a0
+  }
+  a[_ngcontent-xpp-c82]:hover {
+    color: #fff
+  }
+  .stay-connected[_ngcontent-xpp-c82] {
+    position: absolute;
+    font-size: 12px;
+    margin-top: -23px;
+    margin-left: 0px;
+    color: #a0a0a0
+  }
+  /* Если мы на десктопе */
+  @media screen and (min-width: 801px) {
+    .stay-connected2[_ngcontent-xpp-c82] {
+      position: absolute;
+      font-size: 12px;
+      margin-left: 50px;
+      color: #a0a0a0
+    }
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    .stay-connected2[_ngcontent-xpp-c82] {
+      position: absolute;
+      font-size: 12px;
+      margin-left: 20px;
+      color: #a0a0a0
+    }
+  }
+  .maxWidth300[_ngcontent-xpp-c82] {
+    max-width: 300px;
+    margin: auto
+  }
+  .maxWidth123[_ngcontent-xpp-c82] {
+    max-width: 123px;
+    margin: auto
+  }
+  .checkBox[_ngcontent-xpp-c82] {
+    left: 14px;
+    width: 62px;
+    height: 20px;
+    background: #676af7;
+    position: relative;
+    display: inline-block;
+    border-radius: 50px
+  }
+  .checkBox[_ngcontent-xpp-c82]:after { 
+    content: "{% trans 'НЕТ' %}";
+    color: #000;
+    top: -2px;
+    right: 5.5px
+  }
+  .checkBox[_ngcontent-xpp-c82]:after,
+  .checkBox[_ngcontent-xpp-c82]:before {
+    position: absolute;
+    z-index: 0;
+    font: 12px/26px Arial, sans-serif;
+    font-weight: 700
+  }
+  .checkBox[_ngcontent-xpp-c82]:before {
+    content: "{% trans 'ДА' %}";
+    color: #fff;
+    top: -3px;
+    left: 8px
+  }
+  .checkBox[_ngcontent-xpp-c82] label[_ngcontent-xpp-c82] {
+    display: block;
+    width: 26px;
+    height: 15.5px;
+    cursor: pointer;
+    position: absolute;
+    top: 2.4px;
+    left: 3.5px;
+    z-index: 1;
+    background: #fcfff4;
+    border-radius: 50px;
+    transition: all .3s ease;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3)
+  }
+  .checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82] {
+    visibility: hidden
+  }
+  .checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82]:checked+label[_ngcontent-xpp-c82] {
+    left: 32.5px
+  }
+  .text-connect[_ngcontent-xpp-c81] {
+    font-size: 13px;
+    color: grey;
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+    border-radius: 4px;
+    border-bottom: 3px solid #1fb8ff;
+    background-color: #000c;
+    box-shadow: 0 0 30px 10px #ffffff12;
+  }
+  .text-connect[_ngcontent-xpp-c81] li[_ngcontent-xpp-c81] {
+    margin-bottom: 20px;
+  }
+  .text-connect[_ngcontent-xpp-c81] h6[_ngcontent-xpp-c81] {
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+</style>
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'register' %}">{% trans 'Регистрация' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'login' %}">{% trans 'Войти' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-login _nghost-xpp-c82="" class="ng-star-inserted">
+
+  <div _ngcontent-xpp-c82="" class="container mt-md-5">
+    <div _ngcontent-xpp-c82="" class="row">
+      <div _ngcontent-xpp-c82="" class="col-12 p-0 fill">
+        <div _ngcontent-xpp-c82="" class="card ml-0 mr-0 fill">
+          <h3 _ngcontent-xpp-c82="">{% trans 'Вход в аккаунт' %}</h3>
+          <div _ngcontent-xpp-c82="" class="card-body">
+
+            <form action="{% url 'login' %}" method="POST">
+              {% csrf_token %}
+
+              <fieldset _ngcontent-xpp-c82="">
+                <div _ngcontent-xpp-c82="" class="form-label ng-star-inserted">&nbsp;</div>
+                {{ form.username }}
+              </fieldset>
+
+              <fieldset _ngcontent-xpp-c82="">
+                <div _ngcontent-xpp-c82="" class="form-label ng-star-inserted">&nbsp;</div>
+                {{ form.password }}
+                <p _ngcontent-xpp-c82="">
+                  <a _ngcontent-xpp-c82="" class="stay-connected2" href="{% url 'password_reset1' %}">{% trans 'Забыли пароль?' %}</a>
+                </p>
+              </fieldset>
+
+              <div _ngcontent-xpp-c82="" class="maxWidth300 text-left">
+                <span _ngcontent-xpp-c82="" class="stay-connected">{% trans 'Запомнить меня' %}</span>
+                <div _ngcontent-xpp-c82="" class="checkBox">
+                  {{ form.remember_me }}
+                  <label _ngcontent-xpp-c82="" for="stay-connected"></label>
+                </div>
+              </div>
+
+              <br _ngcontent-xpp-c82="">
+
+              <fieldset _ngcontent-xpp-c82="">
+                <button _ngcontent-xpp-c82="" type="submit" class="maxWidth123 w-100 btn-custom">{% trans 'Войти' %}</button>
+              </fieldset>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-avantages-account _ngcontent-xpp-c82="" _nghost-xpp-c81="">
+    <div _ngcontent-xpp-c81="" class="mt-5 py-4 text-connect">
+      <br _ngcontent-xpp-c81="">
+      <h4 _ngcontent-xpp-c81="">{% trans 'Преимущества авторизованных пользователей' %}</h4>
+      <br _ngcontent-xpp-c81="">
+      <ul _ngcontent-xpp-c81="" style="position: relative; right: 10px; margin-bottom: 25px; margin-top: 10px;">
+        <li _ngcontent-xpp-c81="">{% trans 'Возможность оставлять положительные или отрицательные оценки, а так же комментарии на странице «Гайды».' %}</li>
+        <li _ngcontent-xpp-c81="">{% trans 'Нажав на кнопку «Связь со мной» в личном кабинете, вы сможете получить мои контакты для связи.' %}</li>
+        <li _ngcontent-xpp-c81="">{% trans 'Вы можете задать настройки для вашей учётной записи в личном кабинете, сменить пароль, адрес электронной почты и удалить учётную запись в любое время, нажав на одноимённую кнопку.' %}</li>
+      </ul>
+    </div>
+  </app-avantages-account>
+
+</app-login>
+{% endblock %}

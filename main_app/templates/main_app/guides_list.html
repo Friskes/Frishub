@@ -1,0 +1,262 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load main_app_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  {% if user.is_authenticated %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'account' %}">
+        {{ user }}
+        <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+      </a>
+    </li>
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+    </li>
+  {% else %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'register' %}">{% trans 'Регистрация' %}</a>
+    </li>
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'login' %}">{% trans 'Войти' %}</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+
+{% block body %}
+<style>
+  .pdng-l-r {
+    padding-right: 2rem !important;
+    padding-left: 2rem !important;
+  }
+  .guide-title-div {
+    word-wrap: break-word;
+  }
+  .guide-title-h2 {
+    text-align: left;
+    vertical-align: top;
+    display: inline-block;
+    width: 70%;
+    margin-right: 100%;
+    margin-top: 5px;
+    text-decoration: none !important;
+  }
+  .guide-title-time-div {
+    text-align: right;
+    display: inline-block;
+    width: 30%;
+    margin-left: -100%;
+  }
+  .guide-div {
+    display: inline-flex;
+  }
+  .guide-main_image-p {
+    width: 15%;
+    margin-right: 15px;
+  }
+  .guide-content-p {
+    /* min-width: 64%; */
+    max-width: 64%;
+  }
+  .guide-all-icons-div {
+    text-align: right;
+    margin-top: auto;
+    /* margin-left: auto; */
+    margin-left: 750px;
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    .guide-all-icons-div {
+      margin-left: auto;
+    }
+    .pdng-l-r {
+      padding-right: 0rem !important;
+      padding-left: 0rem !important;
+    }
+    .guide-title-h2 {
+      width: 100%;
+      margin-right: 0%;
+    }
+    .guide-title-time-div {
+      width: 100%;
+      margin-left: 0%;
+      margin-top: 10px;
+    }
+    .guide-div {
+      display: block;
+    }
+    .guide-main_image-p {
+      width: 100%;
+      margin-right: 0px;
+      margin-top: 20px;
+    }
+    .guide-content-p {
+      max-width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+
+<!-- https://fonts.google.com/icons -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<style>
+  .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 48;
+  }
+</style>
+
+<style>
+  .img-delete-btn1 {
+    margin: auto;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    right: 0px;
+    bottom: -7.5px;
+    user-select: none; /* отключение выделения при дабл клике по элементу */
+  }
+</style>
+
+<style>
+  .img-delete-btn1 label {
+    position: relative;
+    left: 6.5px;
+    bottom: 6.5px;
+  }
+</style>
+
+<div _ngcontent-gox-c51="" class="bg-check page-size py-3 pdng-l-r">
+  <div style="margin: 0px 15px 0px 15px;">
+    <br>
+
+    {% filtering_guides '-name' category_selected %}
+
+    <br>
+    <hr>
+    {% if not guides %}
+      <div style="text-align: center;">
+        {% trans 'Гайды для данной категории не найдены.' %}
+      </div>
+      <hr>
+    {% endif %}
+
+    {% for guide in guides %}
+
+      <div class="guide-title-div">
+        <a class="guide-title-h2" href="{{ guide.get_absolute_url }}">
+          <h2 style="text-align: left; vertical-align: top;">{{ guide.title }}</h2>
+        </a>
+
+        <div class="guide-title-time-div">
+          {{ guide.time_create }}
+          <br>
+          {% if guide.time_update %}
+            ({% trans 'Изменено' %}: {{ guide.time_update|translate_datetime:LANGUAGE_CODE }})
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="guide-div">
+        {% if guide.main_image %}
+          <p class="guide-main_image-p">
+            <a href="{{ guide.get_absolute_url }}">
+              <img src="{{ guide.main_image.url }}" style="max-width: 100%;">
+            </a>
+          </p>
+        {% endif %}
+
+        <!-- <p class="guide-content-p">{{ guide.content|safe|truncatewords:45 }}</p> -->
+
+        <div class="guide-all-icons-div">
+
+          <label class="img-delete-btn1">
+            <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_up</span>
+          </label>
+          <label style="left: 0px;">{{ guide.votes.likes.count }}</label>
+
+          <label class="img-delete-btn1" style="margin-left: 10px;">
+            <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_down</span>
+          </label>
+          <label style="left: 0px;">{{ guide.votes.dislikes.count }}</label>
+
+          <label class="img-delete-btn1" style="margin-left: 10px;">
+            <span class="material-symbols-outlined" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">chat</span>
+          </label>
+          <label style="left: 0px;">{{ guide.comments.all.count }}</label>
+        </div>
+        
+      </div>
+
+      <hr>
+    {% endfor %}
+
+    <br>
+    {% if page_obj.has_other_pages %}
+      <nav>
+        <ul>
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+          {% else %}
+            &lt;
+          {% endif %}
+          &nbsp;&nbsp;
+          {% for guide in paginator.page_range %}
+            {% if page_obj.number == guide %}
+              {{ guide }}
+              &nbsp;&nbsp;
+            {% elif guide >= page_obj.number|add:-2 and guide <= page_obj.number|add:2 %}
+              <a href="?page={{ guide }}">{{ guide }}</a>
+              &nbsp;&nbsp;
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+          {% else %}
+            &gt;
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,667 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<style>
+  .card-body[_ngcontent-xcm-c57] {
+    max-width: 400px
+  }
+  .material-icons[_ngcontent-xcm-c57] {
+    font-size: 26px;
+    vertical-align: middle;
+    margin-right: 8px
+  }
+  textarea[_ngcontent-xcm-c71] {
+    resize: none
+  }
+  .container[_ngcontent-xcm-c71] {
+    max-width: 600px;
+    margin: auto
+  }
+  fieldset[_ngcontent-xcm-c71] {
+    border: medium none !important;
+    margin: 0 0 10px;
+    min-width: 100%;
+    padding: 0;
+    width: 100%
+  }
+  input[_ngcontent-gox-c51] {
+    background: #5f5f5f40;
+    color: #7f7f7f;
+    outline: 0;
+    padding: 8px 10px;
+    border: none;
+    width: 100%
+  }
+  input[_ngcontent-gox-c51],
+  td[_ngcontent-gox-c51],
+  th[_ngcontent-gox-c51] {
+    text-align: center
+  }
+  td[_ngcontent-gox-c51],
+  th[_ngcontent-gox-c51] {
+    width: 49%;
+    font-size: 16px;
+    border: 2px solid #050504 !important;
+    font-weight: 500;
+    font-family: Poppins, Open Sans, Questrial, Russo One, cursive;
+    border-top: none;
+    height: 40px
+  }
+  th[_ngcontent-gox-c51] {
+    padding: 5px 8px;
+    background-color: #316077
+  }
+  td[_ngcontent-gox-c51] {
+    background-color: #222;
+    color: #a0a0a0
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    .account-settings-table[_ngcontent-gox-c51] {
+      margin-left: -41px;
+      width: 134.4%;
+    }
+  }
+  .image-upload > input, button[_ngcontent-hfk-c11] {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+  label[_ngcontent-hfk-c11] {
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    left: 34px;
+  }
+  .file-input-image {
+    padding-bottom: 0px;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 25%;
+    cursor: cell;
+    transition: all 0.3s ease;
+  }
+  label[_ngcontent-hfk-c11]:hover img[_ngcontent-xcm-c57] {
+    border-color: #28e219;
+    opacity: 0.6;
+  }
+  .img-delete-btn {
+    margin: auto;
+    position: relative;
+    right: 16.5px;
+    bottom: 16.5px;
+    color: white;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .img-delete-btn:hover {
+    color: red;
+    opacity: 1;
+  }
+  .img-upload-icon {
+    margin: auto;
+    position: relative;
+    right: 8.5px;
+    bottom: -20px;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  /* тильда символ ~ позволяет взаимодействовать со следующим элементом (не внутри label а после него) */
+  label[_ngcontent-hfk-c11]:hover ~ .img-upload-icon {
+    color: #28e219;
+    opacity: 1;
+  }
+  option {
+    font-weight: 600;
+  }
+  .select-birth-date, .select-gender, .chosen-select {
+    font-weight: 600;
+    color: rgb(185, 185, 185);
+    background-color: rgb(45, 45, 45);
+    border-color: #676af7;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    outline: none;
+  }
+  .select-birth-date {
+    margin: 4px;
+  }
+  .select-birth-date:hover, .select-gender:hover, .chosen-select:hover {
+    border-color: white;
+    box-shadow: 0 0 30px 1px #ffffff12;
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    .select-birth-date {
+      inline-size: 62%;
+    }
+    .chosen-select {
+      inline-size: 75%;
+    }
+  }
+  .button-disabled[_ngcontent-xcm-c71] {
+    cursor: not-allowed;
+    opacity: .5
+  }
+  .button-disabled[_ngcontent-xcm-c71]::-moz-selection {
+    background-color: transparent
+  }
+  .button-disabled[_ngcontent-xcm-c71]::selection {
+    background-color: transparent
+  }
+  .button-disabled[_ngcontent-xcm-c71]:hover {
+    background-color: #676af7;
+    border-color: #676af7;
+  }
+  /* переопределённая иконка красный крестик */
+  a.search-choice-close {
+    background: url("{% static 'main_app/images/close.png' %}") 100% no-repeat !important;
+    background-size: 12px !important;
+  }
+  input.chosen-search-input {
+    width: 100% !important;
+  }
+  /* поле для ввода текста/открытия списка */
+  ul.chosen-choices {
+    background: rgb(45, 45, 45) !important;
+    border-color: #676af7 !important;
+    transition: all 0.3s ease !important;
+  }
+  ul.chosen-choices:hover {
+    border-color:rgb(255, 255, 255) !important;
+    /* box-shadow: 0 0 30px 1px #ffffff12; */
+  }
+  /* кнопка выбранного элемента */
+  li.search-choice {
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-align: left;
+    width: 100%;
+    background-size: 19.5px !important;
+
+    /* border-color: #676af7 !important; */
+    border-color: rgba(0, 0, 0, 1) !important;
+  }
+  li.search-choice:hover {
+    color: rgb(255, 255, 255) !important;
+    border-color:rgb(255, 255, 255) !important;
+  }
+  /* бордер вокруг выпадающего меню */
+  div.chosen-drop {
+    background-color: rgb(45, 45, 45) !important;
+    /* border-color: #676af7 !important; */
+    border-color: #656571 !important;
+  }
+  /* поле результат не найден */
+  li.no-results {
+    color: rgb(185, 185, 185) !important;
+    background-color: rgb(45, 45, 45) !important;
+  }
+  /* выпадающий список элементов */
+  ul.chosen-results {
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-align: left;
+    box-shadow: 0 0 30px 1px #ffffff12;
+    color: rgb(185, 185, 185) !important;
+    background-color: rgb(45, 45, 45);
+  }
+</style>
+
+{% if user.get_avatar == '/static/main_app/images/default_avatar.png' %}
+<style>
+  .img-delete-btn {
+    /* скрываем кнопку удалить при дефолтном аватаре */
+    visibility: hidden;
+  }
+</style>
+{% endif %}
+
+<!-- <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" integrity="sha512-yVvxUQV0QESBt1SyZbNJMAwyKvFTLMyXSyBHDO4BG5t7k/Lw34tyqlSDlKIrIENIzCl+RVUNjmCPG+V/GMesRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+  /* переопределённый цвет вводимого текста в поисковике */
+  .chosen-container-active .chosen-choices li.search-field input[type=text] {
+    color: rgb(185, 185, 185) !important;
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 16px;
+  }
+</style>
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'account' %}">
+      {{ user }}
+      <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-account-edition-settings _nghost-xcm-c71="" class="ng-star-inserted">
+  <div _ngcontent-xcm-c71="" class="container mt-md-5">
+    <div _ngcontent-xcm-c71="" class="row">
+      <div _ngcontent-xcm-c71="" class="col-12 p-0 fill">
+        <div _ngcontent-xcm-c71="" class="card ml-0 mr-0 fill">
+          <h3 _ngcontent-xcm-c71="">{% trans 'Настройки учётной записи' %}</h3>
+          <div _ngcontent-xcm-c71="" class="card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <!-- Кнопка скрола содержимого дива влево вправо если ширина выходит за рамки допустимого -->
+              <!-- <div _ngcontent-xcm-c71="" class="table-responsive"> -->
+
+                <table _ngcontent-gox-c51="" class="account-settings-table">
+                  <!-- <tr _ngcontent-gox-c51="">
+                    <th _ngcontent-gox-c51="">Название области слева</th>
+                    <th _ngcontent-gox-c51="">Название области справа</th>
+                  </tr> -->
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{% trans 'Имя пользователя' %}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ user.username }}
+                    </td>
+                  </tr>
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{% trans 'Адрес электронной почты' %}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ user.email }}
+                    </td>
+                  </tr>
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{% trans 'Дата создания учётной записи' %}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ user.date_joined }}
+                    </td>
+                  </tr>
+                </table>
+
+                <br><br>
+
+                <table _ngcontent-gox-c51="" class="account-settings-table">
+
+                  <!-- <tr _ngcontent-gox-c51="">
+                    <th _ngcontent-gox-c51="">Название области слева</th>
+                    <th _ngcontent-gox-c51="">Название области справа</th>
+                  </tr> -->
+
+                  <!-- С помощью максимальной ширины можно менять макс заполняемость области -->
+                  <!-- <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="" style="max-width: 200px;">Название области слева</td>
+                    <td _ngcontent-gox-c51="" class="text-right">Название области справа</td>
+                  </tr> -->
+
+                  <div id="cropper-image-box" style="margin: 0 5% 0 5%;"></div>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.avatar.label }}:</td>
+
+                    <td _ngcontent-gox-c51="">
+
+                      <div class="image-upload">
+                        <label _ngcontent-hfk-c11="" for="{{ form.avatar.auto_id }}">
+                          <img _ngcontent-xcm-c57="" class="file-input-image" src="{{ user.get_avatar }}">
+                        </label>
+
+                        <label class="img-upload-icon">
+                          <i _ngcontent-xcm-c57="" class="material-icons"
+                            style="font-size: 18px; margin: auto;">upload</i>
+                        </label>
+
+                        <input type="{{ form.avatar.field.widget.input_type }}" name="{{ form.avatar.name }}"
+                          accept="image/*" id="{{ form.avatar.auto_id }}">
+
+                        <label class="img-delete-btn" for="id_delete_avatar_btn">
+                          <i _ngcontent-xcm-c57="" class="material-icons"
+                            style="font-size: 18px; margin: auto;">delete_forever</i>
+                        </label>
+
+                        <button _ngcontent-hfk-c11="" name="DELETE_AVATAR"
+                          value="" id="id_delete_avatar_btn">
+                        </button>
+                      </div>
+
+                    </td>
+                  </tr>
+
+                  <script>
+                    function formatBytes(bytes, decimals=1) {
+                      if (bytes === 0) {
+                        return '0';
+                      } else {
+                        var k = 1024;
+                        var dm = decimals < 0 ? 0 : decimals;
+                        var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+                        var i = Math.floor(Math.log(bytes) / Math.log(k));
+                        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+                      };
+                    };
+                    const cropper_image_box = document.getElementById('cropper-image-box');
+                    const input_avatar = document.getElementById('{{ form.avatar.auto_id }}');
+                    input_avatar.addEventListener('change', ()=> {
+                      var avatar_url = URL.createObjectURL(input_avatar.files[0]);
+                      cropper_image_box.innerHTML = `<div id="avatar-text"></div><img src="${avatar_url}" id="avatar-img" style="max-width: 100%;">`;
+                      var avatar_text = document.getElementById('avatar-text');
+                      var $image = $('#avatar-img');
+                      var changeTimer = false;
+                      $image.cropper({
+                        aspectRatio: 9 / 9,
+                        crop: function(event) {
+                          var width = String(event.detail.width).split('.')[0];
+                          var height = String(event.detail.height).split('.')[0];
+                          avatar_text.innerHTML = `${width}x${height}&nbsp;&nbsp;${formatBytes($('#{{ form.avatar.auto_id }}')[0].files[0].size)}`;
+                          if (changeTimer !== false) {
+                            clearTimeout(changeTimer);
+                          };
+                          changeTimer = setTimeout(function() {
+                            replace_input_file(width, height);
+                            changeTimer = false;
+                          }, 300);
+                        },
+                      });
+                      var cropper = $image.data('cropper');
+                      function replace_input_file(width, height) {
+                        cropper.getCroppedCanvas().toBlob((blob)=> {
+                          if (blob) {
+                            var file_name = $('#{{ form.avatar.auto_id }}')[0].files[0]['name'];
+                            var dt = new DataTransfer();
+                            dt.items.add(new File([blob], file_name, {type: blob['type']}));
+                            var file_list = dt.files;
+                            $('#{{ form.avatar.auto_id }}')[0].files = file_list;
+                            avatar_text.innerHTML = `${width}x${height}&nbsp;&nbsp;${formatBytes($('#{{ form.avatar.auto_id }}')[0].files[0].size)}`;
+                          };
+                        });
+                      };
+                    });
+                  </script>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.first_name.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.first_name }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.last_name.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.last_name }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.birth_date.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.birth_date }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.gender.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.gender }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.game_class.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.game_class }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.discord_username.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.discord_username }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.battlenet_username.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.battlenet_username }}
+                    </td>
+                  </tr>
+
+                  <tr _ngcontent-gox-c51="">
+                    <td _ngcontent-gox-c51="">{{ form.twitch_link.label }}:</td>
+                    <td _ngcontent-gox-c51="">
+                      {{ form.twitch_link }}
+                    </td>
+                  </tr>
+
+                </table>
+
+              <!-- </div> -->
+
+              <fieldset _ngcontent-xcm-c71="">
+                <br _ngcontent-xcm-c71="">
+                <br _ngcontent-xcm-c71="">
+                <button _ngcontent-xcm-c71="" type="submit" class="btn-custom w-100% button-disabled" disabled>{% trans 'Сохранить' %}</button>
+              </fieldset>
+            </form>
+
+            <script>
+              $('.img-delete-btn').hover(
+                function() { $('#id_delete_avatar_btn').val("DELETE_AVATAR"); },
+                function() { $('#id_delete_avatar_btn').val(""); },
+              );
+            </script>
+
+            <!-- Лимит на выбор пунктов меню в select multiple на смартфонах c оповещением -->
+            <script type="text/javascript">
+              $(document).ready(function() {
+                var last_valid_selection = $('#{{ form.game_class.auto_id }}').val();
+                $('#{{ form.game_class.auto_id }}').change(function(event) {
+                  if ($(this).val().length > 3) {
+                    alert("{% trans 'Вы можете выбрать максимум 3 игровых класса.' %}");
+                    $(this).val(last_valid_selection);
+                  } else {
+                    last_valid_selection = $(this).val();
+                  };
+                });
+              });
+            </script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" integrity="sha512-rMGGF4wg1R73ehtnxXBt5mbUfN9JUJwbk21KMlnLZDJh7BkPmeovBuddZCENJddHYYMkCh9hPFnPmS9sspki8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+            <script>
+              $(".chosen-select").chosen({
+                // https://harvesthq.github.io/chosen/
+                // макс количество элементов доступных для выбора
+                max_selected_options: 3,
+                // текст при отсутствии выбранных элементов
+                placeholder_text_multiple: " ",
+                // текст при отсутствии элемента с указанным названием
+                no_results_text: "{% trans 'Не найдено:' %}",
+                // переместить кнопку и текст вправо
+                // rtl: true,
+                // ширина виджета
+                width: "74%",
+                // поиск по всем символам в названиях элементов (по дефолту только по первому)
+                // search_contains: true,
+                // для удаления элемента необходимо повторное нажатие кнопки удалить
+                // single_backstroke_delete: false,
+                // скрывать выбранные элементы в списке
+                display_selected_options: false,
+                // не скрывать список после выбора элемента
+                hide_results_on_select: false,
+              });
+            </script>
+
+            <script>
+              var dp_hide;
+              var select_array;
+              $('.chosen-container').on('click', function(e) {
+                if ($('.no-results').text()) { return };
+                if (select_array != 3) {
+                  if (dp_hide) {
+                    dp_hide = false;
+                    $('.chosen-select').trigger('chosen:close');
+                    return;
+                  };
+                  dp_hide = true;
+                };
+              });
+              if (dp_hide) {
+                $('.chosen-select').on('chosen:showing_dropdown', function(e, p) { dp_hide = true; });
+              };
+              $('.chosen-select').on('chosen:hiding_dropdown', function(e, p) { dp_hide = false; });
+              $('.chosen-select').on('change', function(e, p) {
+                var array = $('.chosen-select').serializeArray();
+                select_array = array['length'];
+                if (select_array == 3) {
+                  $('.chosen-select').trigger('chosen:close');
+                };
+              });
+            </script>
+
+            <script>
+              const CLASS_COLORS = {
+                '0': '198, 155, 109', '1': '244, 140, 186',
+                '2': '170, 211, 114', '3': '255, 244, 104',
+                '4': '255, 255, 255', '5': '196, 30, 58',
+                '6': '0, 112, 221', '7': '63, 199, 235',
+                '8': '135, 136, 238', '9': '255, 124, 10',
+              };
+              const enable_class_colors = true;
+              const disable_input_search = true;
+              function text_color_changer(element) {
+                if (enable_class_colors) { var text_color = '0, 0, 0'; } else { var text_color = '185, 185, 185'; };
+                $(element).css("color", `rgb(${text_color})`);
+                $(element).hover(
+                  function() { $(element).css("color", "rgb(255, 255, 255)"); }, // mouseenter
+                  function() { $(element).css("color", `rgb(${text_color})`); }, // mouseleave
+                );
+              };
+              function set_class_attr(element, array_index, width) {
+                $(element).css("background", `url(/static/main_app/images/class_icons/class_${array_index}.png) ${width} no-repeat`);
+                $(element).css("background-size", "25.5px");
+                if (enable_class_colors) {
+                  $(element).css("background-color", `rgba(${CLASS_COLORS[array_index]}, 0.6)`);
+                };
+              };
+              function class_attr_changer() {
+                $('.active-result').each(function(index, element) {
+                  let array_index = element.getAttribute('data-option-array-index');
+                  set_class_attr(element, array_index, '100%');
+                  text_color_changer(element);
+                });
+              };
+              $('.chosen-search-input').on('keyup', function(event) {
+                class_attr_changer();
+              });
+              $('.chosen-select').on('change chosen:showing_dropdown', function(event, params) {
+
+                if (disable_input_search) {
+                  $('.chosen-choices').css("min-height", "29px");
+                  $('.search-field').css("display", "none");
+                }
+
+                class_attr_changer();
+                $('.search-choice').each(function(index, element) {
+                  let array_index = element.querySelector('.search-choice-close').getAttribute('data-option-array-index');
+                  set_class_attr(element, array_index, '88.5%');
+                  text_color_changer(element);
+
+                  if (params && params['selected'] && !element.querySelector('span').style['opacity']) {
+
+                    $(element).css("transition", "all 1s ease");
+
+                    $(element.querySelector('span')).css("opacity", "0");
+                    // https://mkr-novo2.ru/problems/jquery-plavnoe-izmenenie-prozrachnosti-kak-sdelat-plavnuyu-prozrachnost-veb-elementa-s-pomoshchyu-jqu.html
+                    $(element.querySelector('span')).fadeTo(1000, 1);
+                  };
+                });
+              });
+              $('.search-choice').each(function(index, element) {
+                let array_index = element.querySelector('.search-choice-close').getAttribute('data-option-array-index');
+                set_class_attr(element, array_index, '88.5%');
+                text_color_changer(element);
+
+                $(element.querySelector('span')).css("opacity", "1");
+
+                if (disable_input_search) {
+                  $('.chosen-choices').css("min-height", "29px");
+                  $('.search-field').css("display", "none");
+                }
+
+                $(element).hover(
+                  function() {
+                    $(element).css("transition", "all 1s ease");
+                    if (!enable_class_colors) { $(element).css("background-color", "rgb(35, 35, 35)"); };
+                  },
+                  function() {
+                    if (!enable_class_colors) { $(element).css("background-color", "rgb(45, 45, 45)"); };
+                  },
+                );
+              });
+            </script>
+
+            <script>
+              document.addEventListener('input', input_value_changed);
+              $('.chosen-select').on('change', function(event, params) { input_value_changed() });
+
+              function input_value_changed() {
+                var btn_state = document.querySelector('.btn-custom');
+                btn_state.classList.remove('button-disabled');
+                btn_state.classList.add('button');
+                btn_state.disabled = false;
+              }
+            </script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-account-edition-settings>
+{% endblock %}

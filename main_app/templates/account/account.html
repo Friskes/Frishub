@@ -1,0 +1,178 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<style>
+  .card-body[_ngcontent-xcm-c57] {
+    max-width: 350px;
+  }
+  .account-page {
+    max-width: 600px;
+  }
+  .btn-custom[_ngcontent-xcm-c57],
+  .btn-remove[_ngcontent-xcm-c57] {
+    height: 45px;
+    padding: 0 10px;
+    font-size: 12px;
+    line-height: 43px
+  }
+  .material-icons[_ngcontent-xcm-c57] {
+    font-size: 26px;
+    vertical-align: middle;
+    margin-right: 8px
+  }
+  #da-btn-bar2[_ngcontent-gox-c60] {
+    position: absolute;
+    display: none;
+    min-width: 310px;
+    height: auto;
+    right: 144px;
+    bottom: 117px;
+    border: 2px solid #1fb8ff;
+    border-radius: 4px 4px 4px 4px;
+    background-color: rgba(0, 0, 0, 1);
+    z-index: 20000;
+    font-size: 12px;
+    line-height: 19px;
+    text-align: center;
+    box-shadow: 0 0 30px 10px #ffffff12
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    #da-btn-bar2[_ngcontent-gox-c60] {
+      right: 4px;
+    }
+  }
+  .btn-accept-cookie3[_ngcontent-gox-c60] {
+    cursor: Pointer;
+    height: 24px;
+    width: auto;
+    margin-left: 30px;
+    margin-right: 14px;
+  }
+</style>
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'account' %}">
+      {{ user }}
+      <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-account _nghost-xcm-c57="" class="ng-star-inserted">
+  <div _ngcontent-xcm-c57="" class="container mt-md-3 account-page">
+    <div _ngcontent-xcm-c57="" class="row">
+      <div _ngcontent-xcm-c57="" class="col-12 p-0 fill">
+        <div _ngcontent-xcm-c57="" class="card ml-0 mr-0 fill">
+          <h3 _ngcontent-xcm-c57="">{% trans 'Добро пожаловать' %} {{ user.username }}</h3>
+          <div _ngcontent-xcm-c57="" class="card-body mx-auto mt-3">
+            <div _ngcontent-xcm-c57="" class="row">
+
+              <div _ngcontent-xcm-c57="" class="col-12 mb-3">
+                <a _ngcontent-xcm-c57="" href="{% url 'account_settings' %}">
+                  <button _ngcontent-xcm-c57="" class="btn-custom w-100">
+                    <i _ngcontent-xcm-c57="" class="material-icons">settings
+                    </i>{% trans 'Настройки учётной записи' %}
+                  </button>
+                </a>
+              </div>
+
+              <div _ngcontent-xcm-c57="" class="col-12 mb-3">
+                <a _ngcontent-xcm-c57="" href="{% url 'account_password' %}">
+                  <button _ngcontent-xcm-c57="" class="btn-custom w-100">
+                    <i _ngcontent-xcm-c57="" class="material-icons">lock
+                    </i>{% trans 'Изменить пароль' %}
+                  </button>
+                </a>
+              </div>
+
+              <div _ngcontent-xcm-c57="" class="col-12 mb-3">
+                <a _ngcontent-xcm-c57="" href="{% url 'account_email' %}">
+                  <button _ngcontent-xcm-c57="" class="btn-custom w-100">
+                    <i _ngcontent-xcm-c57="" class="material-icons">alternate_email
+                    </i>{% trans 'Изменить электронную почту' %}
+                  </button>
+                </a>
+              </div>
+
+              <div _ngcontent-gox-c60="" id="da-btn-bar2" class="p-3">
+                <span _ngcontent-gox-c60="" id="cn-notice-text">
+                  Email: {{ server_email }}
+                  <br>
+                  Discord: Friskes#1759
+                </span>
+                <div _ngcontent-gox-c60="" class="d-block d-md-block mt-2">
+                  <a _ngcontent-xpp-c128="" href="{% url 'contact_me' %}"
+                    style="font-size: 14px; font-weight: 600;">
+                    {% trans 'Связь со мной' %}
+                  </a>
+                  <button _ngcontent-gox-c60="" class="btn-custom btn-accept-cookie3"
+                    onclick="document.getElementById('da-btn-bar2').style.display = 'none';">
+                    {% trans 'Закрыть' %}
+                  </button>
+                </div>
+              </div>
+
+              <div _ngcontent-xcm-c57="" class="col-12 mb-3">
+                <button _ngcontent-xcm-c57="" class="btn-custom w-100"
+                  onclick="document.getElementById('da-btn-bar2').style.display = 'block';">
+                  <i _ngcontent-xcm-c57="" class="material-icons">comment
+                  </i>{% trans 'Связь со мной' %}
+                </button>
+              </div>
+
+              <div _ngcontent-xcm-c57="" class="col-12 mb-3 ng-star-inserted">
+                <a _ngcontent-xcm-c57="" href="{% url 'account_delete' %}">
+                  <button _ngcontent-xcm-c57="" class="btn-remove w-100">
+                    <i _ngcontent-xcm-c57="" class="material-icons">delete_forever
+                    </i>{% trans 'Удалить учётную запись' %}
+                  </button>
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-account>
+{% endblock %}

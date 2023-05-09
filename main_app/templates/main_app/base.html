@@ -1,0 +1,901 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="Description" content="frishub, это инструмент помогающий пвп сообществу в Wrath of the Lich King. Гайды, Игровой чат, Стримы, Калькулятор очков арены.">
+    <meta name="Keywords" content="wow, World of Warcraft, WoW, PvP, Wrath of the Lich King, wotlk, Classic, Player versus Player, rival, gladiator, duelist, rank, ranking, arena, 2v2, 3v3, 5v5, battle.net, Blizzard, high, experience, exp, max, rating, achievements">
+    <meta name="Identifier-URL" content="https://frishub.ru">
+    <meta name="Copyright" content="https://frishub.ru">
+    <meta name="Robots" content="all">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <base href="{% url 'home' %}"> -->
+
+    <title>FRISHUB</title>
+
+    <link rel="icon" type="image/x-icon" href="{% static 'main_app/images/logo.png' %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js" integrity="sha512-Meww2sXqNHxI1+5Dyh/9KAtvI9RZSA4c1K2k5iL02oiPO/RH3Q30L3M1albtqMg50u4gRTYdV4EXOQqXEI336A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+
+    <!-- https://github.com/fengyuanchen/jquery-cropper -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCZy3sGP40hn+DQkqeluGRCax7qztK2ImL64SA+C7kVWdLI6wvdlStawhyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cropper/1.0.1/jquery-cropper.min.js" integrity="sha512-V8cSoC5qfk40d43a+VhrTEPf8G9dfWlEJgvLSiq2T2BmgGRmZzB8dGe7XAABQrWj3sEfrR5xjYICTY4eJr76QQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+      const whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true, iconSize: 'small' };
+    </script>
+
+    <script src="https://wow.zamimg.com/widgets/power.js"></script>
+
+    <link type="text/css" href="https://wow.zamimg.com/css/universal.css?19" rel="stylesheet">
+
+    <style type="text/css">
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4taVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4kaVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4saVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+1F00-1FFF;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4jaVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+0370-03FF;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4iaVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4vaVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4uaVQUwaEQbjB_mQ.woff) format('woff');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-stretch: 100%;
+        src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVQUwaEQbjA.woff) format('woff');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+    </style>
+
+    <style type="text/css">
+      @font-face {
+        font-family: 'Material Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://fonts.gstatic.com/s/materialicons/v129/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+      }
+      .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        vertical-align: middle;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+
+    <style>
+      .toast-bottom-right {
+        right: 12px;
+        bottom: 12px;
+        animation: toast_message_opacity {{ toast_message_time }}s forwards ease-in-out; /* динамическое время */
+      }
+    </style>
+
+    <style>
+      .tool-container[_ngcontent-gox-c6] {
+        border-radius: 0 4px 4px 0;
+        background-color: #000;
+        max-width: 300px;
+        z-index: 20000;
+        height: auto;
+        font-size: 12px;
+        line-height: 19px;
+        text-align: center;
+        transition: all .3s ease;
+        /* margin-bottom: 100px; */
+        display: inline-block;
+        box-shadow: 0 0 30px 10px #ffffff12;
+      }
+      /* Если мы на десктопе */
+      @media screen and (min-width: 801px) {
+        .toolbar-container[_ngcontent-gox-c6] {
+          position: fixed;
+          left: 0;
+          bottom: 133px;
+          z-index: 2000;
+        }
+      }
+      /* Если мы на мобильном */
+      @media screen and (max-width: 800px) {
+        .tool-container[_ngcontent-gox-c6] {
+          margin-top: 50px;
+        }
+        .toolbar-container[_ngcontent-gox-c6] {
+          z-index: 2000;
+        }
+      }
+      .margin-top-l[_ngcontent-gox-c6] {
+        margin-top: 145px; /* расстояние от шапки до первого чёрного прямоугольника */
+      }
+      .margin-bottom-l[_ngcontent-gox-c6] {
+        margin-top: 145px; /* расстояние от футера до последнего чёрного прямоугольника */
+      }
+    </style>
+
+    <style>
+      .bg-navbar[_ngcontent-gox-c59] {
+        background-color: #000
+      }
+      .navbar-dark[_ngcontent-gox-c59] .navbar-nav[_ngcontent-gox-c59] .nav-link[_ngcontent-gox-c59]:focus {
+        color: #fff;
+      }
+      @media only screen and (max-width:1200px) {
+        .nav-link[_ngcontent-gox-c59] {
+          padding: 3px 2px;
+          border-bottom: 2px solid #000;
+          background-color: #201d21
+        }
+      }
+      .collapsing[_ngcontent-gox-c59] .navbar-nav[_ngcontent-gox-c59],
+      .show[_ngcontent-gox-c59] .navbar-nav[_ngcontent-gox-c59] {
+        margin: 10px auto
+      }
+      .nav-item[_ngcontent-gox-c59] a[_ngcontent-gox-c59] {
+        transition: all .3s ease;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 3px 15px;
+        cursor: Pointer
+      }
+      .badge.badge-dark {
+        font-size: 12px;
+        padding-bottom: 2.5px;
+      }
+      @media screen and (max-width: 800px) {
+        .badge.badge-dark {
+          padding-bottom: 1.5px;
+        }
+      }
+      .nav-item[_ngcontent-gox-c59] a.active[_ngcontent-gox-c59] {
+        color: #0cf !important;
+      }
+      .nav-item[_ngcontent-gox-c59] a[_ngcontent-gox-c59]:hover {
+        color: #1fb8ff;
+      }
+      .img-avatar[_ngcontent-xpp-c84] {
+        border-radius: 25%;
+        width: 21px;
+        height: 21px;
+        border: 2px solid #fff;
+        transition: all .3s ease;
+      }
+      a[_ngcontent-gox-c59]:hover img[_ngcontent-xpp-c84] {
+        border: 2px solid #1fb8ff;
+      }
+      a[_ngcontent-gox-c59].active img[_ngcontent-xpp-c84] {
+        border: 2px solid #0cf;
+      }
+      .navbar-nav[_ngcontent-gox-c59] {
+        margin: auto;
+        text-align: center;
+      }
+      .navbar-brand[_ngcontent-gox-c59] {
+        width: calc(100% - 75px)
+      }
+      .navbar-brand[_ngcontent-gox-c59] img[_ngcontent-gox-c59] {
+        width: 30px;
+        margin-right: 10px
+      }
+      @media only screen and (min-width:1200px) {
+        .navbar[_ngcontent-gox-c59] {
+          height: 50px
+        }
+      }
+      .navbar[_ngcontent-gox-c59] { /* полоска под шапкой */
+        min-width: 255px;
+        border-bottom: 2px solid #1fb8ff;
+        margin-bottom: 15px;
+        background-color: #000c; /* свечение под шапкой */
+        box-shadow: 0 0 30px 10px #ffffff12;
+      }
+      .dropdown[_ngcontent-gox-c59] img[_ngcontent-gox-c59] {
+        height: 20px;
+        margin-right: 10px
+      }
+      .users-connected[_ngcontent-gox-c59] {
+        font-weight: bolder;
+        text-align: center;
+        padding-top: 2px
+      }
+      .users-connected[_ngcontent-gox-c59] #number-connected[_ngcontent-gox-c59] {
+        font-size: 19px;
+        line-height: 15px
+      }
+      .users-connected[_ngcontent-gox-c59] #label-connected[_ngcontent-gox-c59] {
+        font-size: 11px
+      }
+      .dropdown-menu[_ngcontent-gox-c59] { /* полоска под дропдаун меню */
+        background-color: #000;
+        border-bottom: 2px solid #1fb8ff;
+        padding-bottom: 1px;
+        box-shadow: 0 0 30px 10px #ffffff12;
+      }
+      .dropdown-menu[_ngcontent-gox-c59] .dropdown-item[_ngcontent-gox-c59] {
+        color: #fff;
+        cursor: Pointer;
+        padding: 0rem 0rem
+      }
+      .dropdown-menu[_ngcontent-gox-c59] .dropdown-item[_ngcontent-gox-c59]:hover {
+        background-color: #252525
+      }
+      .btn-select-lang[_ngcontent-gox-c59] {
+        color: #fff;
+        border-color: #343a40;
+        background-color: #201e21;
+        padding: 2px 10px
+      }
+      .btn-select-lang[_ngcontent-gox-c59]:hover {
+        background-color: #151515
+      }
+      #dropdownMenuButton[_ngcontent-gox-c59] img[_ngcontent-gox-c59],
+      .dropdown-menu[_ngcontent-gox-c59] .dropdown-item[_ngcontent-gox-c59] img[_ngcontent-gox-c59] {
+        vertical-align: sub
+      }
+      .version-container[_ngcontent-gox-c59] img[_ngcontent-gox-c59] {
+        width: 32px
+      }
+      .version-container[_ngcontent-gox-c59] {
+        margin-left: 20px
+      }
+      .site-name-a[_ngcontent-gox-c59] {
+        text-decoration: none
+      }
+      .site-name-a[_ngcontent-gox-c59] span[_ngcontent-gox-c59] {
+        font-weight: 600;
+        text-transform: uppercase;
+        vertical-align: middle;
+        display: inline-block;
+        color: #fff;
+        transition: all 1.32s ease;
+        font-size: 16.5px;
+      }
+      .site-name-container[_ngcontent-gox-c59]:hover span[_ngcontent-gox-c59] {
+        color: #6f42c1;
+        animation: fa-vibro1 1.5s infinite ease-in-out;
+        animation-delay: 1.32s;
+      }
+      @-webkit-keyframes fa-vibro1 {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            color: #fff;
+        }
+        2% {
+            -webkit-transform: rotate(25deg);
+            transform: rotate(25deg);
+        }
+        4% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        6% {
+            -webkit-transform: rotate(-25deg);
+            transform: rotate(-25deg);
+        }
+        8% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        10% {
+            -webkit-transform: rotate(25deg);
+            transform: rotate(25deg);
+        }
+        12% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            color: #6f42c1;
+        }
+      }
+    </style>
+
+    <style>
+      .btn-accept-cookie[_ngcontent-gox-c60] {
+        cursor: Pointer;
+        height: 24px;
+        width: 100%;
+        display: block;
+      }
+      a[_ngcontent-gox-c60],
+      a[_ngcontent-gox-c60]:hover {
+        text-decoration: none;
+        color: #fff
+      }
+      .p-2[_ngcontent-gox-c60] {
+        box-shadow: 0 0 30px 10px #ffffff12;
+      }
+      .vibro-da-icon {
+        animation: fa-vibro2 8s infinite ease-in-out;
+        animation-delay: 8s;
+      }
+      @-webkit-keyframes fa-vibro2 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        0.8% {
+          -webkit-transform: rotate(30deg);
+          transform: rotate(30deg);
+        }
+        1.6% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        2.4% {
+          -webkit-transform: rotate(-30deg);
+          transform: rotate(-30deg);
+        }
+        3.2% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        4% {
+          -webkit-transform: rotate(30deg);
+          transform: rotate(30deg);
+        }
+        4.8% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+      }
+      .date[_ngcontent-gox-c37] {
+        color: #868686
+      }
+    </style>
+
+    <style>
+      @media screen and (min-width: 801px) {
+        #background-video {
+          position: fixed;
+          min-height: 111.5%;
+          max-height: 111.5%;
+          z-index: -1;
+        }
+        #bg-video-btn {
+          position: fixed;
+          width: 45px;
+          left: 0.1%;
+          top: 45%;
+        }
+        .mobile-da-icon {
+          display: none;
+        }
+      }
+      @media screen and (max-width: 800px) {
+        #background-video {
+          position: fixed;
+          min-width: 414%;
+          max-width: 414%;
+          left: -234px;
+          z-index: -1;
+        }
+        #bg-video-btn {
+          position: absolute;
+          width: 45px;
+          left: 0.1%;
+          top: 17.5%;
+        }
+        .mobile-da-icon {
+          position: absolute;
+        }
+      }
+    </style>
+
+    <style>
+      .russian-btn {
+        border:none;
+        width: 158px;
+        height: 25px;
+        background: url("{% static 'main_app/images/svg/RU.svg' %}") no-repeat 10px 2px;
+        background-size: auto 85%;
+        text-align: center;
+        padding-left: 30px;
+        color:#fff;
+      }
+      .english-btn {
+        border:none;
+        width: 158px;
+        height: 25px;
+        background: url("{% static 'main_app/images/svg/EN.svg' %}") no-repeat 10px 2px;
+        background-size: auto 85%;
+        text-align: center;
+        padding-left: 30px;
+        color:#fff;
+      }
+    </style>
+
+    <style>
+      .btn-accept-cookie2[_ngcontent-gox-c60] {
+        cursor: Pointer;
+        height: 16px;
+        width: auto;
+        position: relative;
+        top: 3px;
+        left: 20px;
+      }
+      .btn-accept-cookie2-text {
+        position: inherit;
+        top: -2.5px;
+      }
+      #da-btn-bar3[_ngcontent-gox-c60] {
+        display: none;
+        position: fixed;
+        max-width: 545px;
+        height: auto;
+        right: 25px;
+        bottom: 25px;
+        border: 1px solid rgb(60, 60, 60);
+        border-radius: 4px 4px 4px 4px;
+        background-color: rgba(0, 0, 0, 0.75);
+        z-index: 20000;
+        font-size: 12px;
+        line-height: 19px;
+        box-shadow: 0 0 30px 1px #ffffff12
+      }
+      @media screen and (max-width: 800px) {
+        #da-btn-bar3[_ngcontent-gox-c60] {
+          right: 0px;
+        }
+      }
+      .link-terms-of-use[_ngcontent-gox-c60] {
+        color: #676af7;
+      }
+      .link-terms-of-use:hover[_ngcontent-gox-c60] {
+        color: #797cfc;
+      }
+    </style>
+
+    <style>
+      footer[_ngcontent-xpp-c128] {
+        width:100%;
+        background-color:rgba(0,0,0,0.8);
+        padding:10px;
+        text-align:center
+      }
+      .links[_ngcontent-xpp-c128] {
+        font-size:11px;
+        font-weight:700;
+        letter-spacing:2px
+      }
+      .documents[_ngcontent-xpp-c128] {
+        margin-top:6px;
+        margin-bottom:-8px;
+        font-size:12px;
+        color:grey!important;
+        font-weight:500
+      }
+      .documents[_ngcontent-xpp-c128] a[_ngcontent-xpp-c128] {
+        color:silver!important;
+        padding:0 5px
+      }
+      .copyright[_ngcontent-xpp-c128] {
+        letter-spacing:1px;
+        font-size:10px;
+        color:#a0a0a0;
+        margin:5px 0;
+        margin-bottom:0px;
+      }
+      a[_ngcontent-xpp-c128] {
+        padding:0 10px;
+        text-decoration:none;
+        color:#fff
+      }
+      .dalerts[_ngcontent-xpp-c128] {
+        color: #ffa200
+      }
+    </style>
+
+    <style>
+      .app-root-class {
+        flex-grow: 1;
+      }
+      div[_ngcontent-xpp-c17] {
+        flex-shrink: 0;
+      }
+    </style>
+
+    <style>
+      .dev-chat[_ngcontent-gox-c59] img[_ngcontent-gox-c59] {
+        width: 95px !important;
+        margin-bottom: 3px;
+        opacity: 0.9;
+        transition: all .3s ease;
+      }
+      .dev-chat[_ngcontent-gox-c59]:hover img[_ngcontent-gox-c59] {
+        opacity: 1;
+      }
+    </style>
+
+    {% block head %}
+    {% endblock %}
+
+  </head>
+
+  <body>
+
+    <script>
+      // создание задержки перед вызовом функции
+      let debounce = function(func, delay) {
+        let inDebounce;
+        return function() {
+          let _this = this;
+          let _args = arguments;
+          clearTimeout(inDebounce);
+          inDebounce = setTimeout(function() {
+            func.apply(_this, _args);
+          }, delay);
+        };
+      };
+    </script>
+
+    <script>
+      var images = new Array(
+        "{% static 'main_app/images/play.png' %}",
+        "{% static 'main_app/images/pause.png' %}",
+      );
+
+      function setPauseImageOnLoad() {
+        let video = document.getElementById("background-video");
+        let btn_image = document.getElementById("bg-video-btn");
+
+        let videoPaused = window.localStorage.getItem('videoPaused');
+
+        if (videoPaused == 'true') {
+          video.play();
+          btn_image.src = images[1];
+        } else if (videoPaused == 'false') {
+          video.pause();
+          btn_image.src = images[0];
+        } else {
+          window.localStorage.setItem('videoPaused', 'true');
+          btn_image.src = images[1];
+        };
+      };
+
+      function pauseBackgroundVideo() {
+        let video = document.getElementById("background-video");
+        let btn_image = document.getElementById("bg-video-btn");
+
+        let videoPaused = window.localStorage.getItem('videoPaused');
+
+        if (videoPaused == 'true') {
+          window.localStorage.setItem('videoPaused', 'false');
+          video.pause();
+          btn_image.src = images[0];
+        } else if (videoPaused == 'false') {
+          window.localStorage.setItem('videoPaused', 'true');
+          video.play();
+          btn_image.src = images[1];
+        };
+      };
+    </script>
+
+    <video autoplay muted loop id="background-video"
+      poster="{% static 'main_app/images/gingerbread_static.jpg' %}">
+      <source src="{% static 'main_app/images/gingerbread_animatic.webm' %}" type="video/webm">
+    </video>
+    <input id="bg-video-btn" type="image" onclick="pauseBackgroundVideo();">
+    <script>setPauseImageOnLoad();</script>
+
+    <app-root _nghost-gox-c6="" ng-version="12.0.2" class="app-root-class">
+
+      <app-menu _ngcontent-gox-c6="" _nghost-gox-c59="">
+
+        <nav _ngcontent-gox-c59="" class="navbar navbar-expand-xl navbar-dark bg-navbar select-none">
+
+          <!-- Название сайта с картинкой с мобильного устройства в левом верхнем углу -->
+          <a _ngcontent-gox-c59="" data-toggle="collapse" data-target="#nav-menu" aria-controls="nav-menu"
+            aria-expanded="false" aria-label="Toggle navigation" class="navbar-brand d-xl-none">
+            <img _ngcontent-gox-c59="" src="{% static 'main_app/images/logo.png' %}">FRISHUB
+          </a>
+
+          <button _ngcontent-gox-c59="" type="button" data-toggle="collapse" data-target="#nav-menu"
+            aria-controls="nav-menu" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler">
+            <span _ngcontent-gox-c59="" class="navbar-toggler-icon"></span>
+          </button>
+
+          <div _ngcontent-gox-c59="" id="nav-menu" class="collapse navbar-collapse">
+
+            <!-- Селектор выбора локализации для десктопов -->
+            <div _ngcontent-gox-c59="" class="dropdown float-left d-none d-xl-inline">
+              <button _ngcontent-gox-c59="" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" class="btn btn-select-lang dropdown-toggle">
+                <img _ngcontent-gox-c59="" {% if LANGUAGE_CODE == 'ru' %} src="{% static 'main_app/images/svg/RU.svg' %}"
+                  {% elif LANGUAGE_CODE == 'en' %} src="{% static 'main_app/images/svg/EN.svg' %}" {% endif %}>
+              </button>
+              <div _ngcontent-gox-c59="" aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+                  <span _ngcontent-gox-c59="" class="dropdown-item">
+                    <form action="{% url 'set_language' %}" method="POST">
+                      {% csrf_token %}
+                      <input _ngcontent-gox-c59="" class="russian-btn" type="hidden" name="language" value="ru">
+                      <input _ngcontent-gox-c59="" class="russian-btn" value="{% trans 'Русский' %}"
+                        {% if LANGUAGE_CODE != 'ru' %} type="submit" {% else %} type="button" {% endif %}>
+                    </form>
+                  </span>
+                  <span _ngcontent-gox-c59="" class="dropdown-item">
+                    <form action="{% url 'set_language' %}" method="POST">
+                      {% csrf_token %}
+                      <input _ngcontent-gox-c59="" class="english-btn" type="hidden" name="language" value="en">
+                      <input _ngcontent-gox-c59="" class="english-btn" value="English"
+                        {% if LANGUAGE_CODE != 'en' %} type="submit" {% else %} type="button" {% endif %}>
+                    </form>
+                  </span>
+              </div>
+            </div>
+
+            <!-- Название сайта с картинкой с десктопа в левом верхнем углу -->
+            <div _ngcontent-gox-c59="" class="version-container d-none d-xl-inline site-name-container">
+              <a _ngcontent-gox-c59="" href="{% url 'home' %}" class="site-name-a">
+                <img _ngcontent-gox-c59="" src="{% static 'main_app/images/logo.png' %}">
+                <span _ngcontent-gox-c59="">Frishub</span>
+              </a>
+            </div>
+
+            {% block menu %}
+            {% endblock %}
+
+            <!-- Селектор выбора локализации для мобилок -->
+            <div _ngcontent-gox-c59="" class="dropdown float-left d-inline d-xl-none">
+              <button _ngcontent-gox-c59="" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" class="btn btn-select-lang dropdown-toggle">
+                <img _ngcontent-gox-c59="" {% if LANGUAGE_CODE == 'ru' %} src="{% static 'main_app/images/svg/RU.svg' %}"
+                  {% elif LANGUAGE_CODE == 'en' %} src="{% static 'main_app/images/svg/EN.svg' %}" {% endif %}
+                  style="margin-bottom: -1px;">
+              </button>
+              <div _ngcontent-gox-c59="" aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+                <span _ngcontent-gox-c59="" class="dropdown-item">
+                  <form action="{% url 'set_language' %}" method="POST">
+                    {% csrf_token %}
+                    <input _ngcontent-gox-c59="" class="russian-btn" type="hidden" name="language" value="ru">
+                    <input _ngcontent-gox-c59="" class="russian-btn" value="{% trans 'Русский' %}"
+                      {% if LANGUAGE_CODE != 'ru' %} type="submit" {% else %} type="button" {% endif %}>
+                  </form>
+                </span>
+                <span _ngcontent-gox-c59="" class="dropdown-item">
+                  <form action="{% url 'set_language' %}" method="POST">
+                    {% csrf_token %}
+                    <input _ngcontent-gox-c59="" class="english-btn" type="hidden" name="language" value="en">
+                    <input _ngcontent-gox-c59="" class="english-btn" value="English"
+                      {% if LANGUAGE_CODE != 'en' %} type="submit" {% else %} type="button" {% endif %}>
+                  </form>
+                </span>
+              </div>
+            </div>
+
+            <div _ngcontent-gox-c59="" class="float-right users-connected">
+              <div _ngcontent-gox-c59="" id="number-connected" style="margin-top: -1px; color: #28e219;">
+                {{ request.users_online_count }}
+              </div>
+              <div _ngcontent-gox-c59="" id="label-connected">
+                {% trans 'пользователей онлайн' %}
+              </div>
+            </div>
+
+          </div>
+        </nav>
+      </app-menu>
+
+      <script>
+        function toggleImage() {
+          var message = document.getElementsByClassName('toast-bottom-right')[0];
+          if (!message.style.display || message.style.display === 'block') {
+            message.style.display = 'none';
+          }
+        }
+      </script>
+
+      <!-- Фильтры https://django.fun/ru/docs/django/4.1/ref/templates/builtins/ -->
+      <!-- ng-tns-c38-ПОРЯДКОВЫЙ_НОМЕР_ОШИБКИ -->
+      {% if messages %}
+        {% for message in messages %}
+          <div onclick="toggleImage();" id="toast-container" class="toast-bottom-right toast-container">
+            <div class="ng-tns-c38-1 ng-star-inserted ng-trigger ng-trigger-flyInOut ngx-toastr toast-{{ message.tags }}">
+              {% autoescape off %}
+                <div role="alert" class="ng-tns-c38-1 toast-message ng-star-inserted" aria-label="{{ message }}">{{ message }}</div>
+              {% endautoescape %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div _ngcontent-gox-c6="" class="margin-top-l">
+
+        {% block body %}
+        {% endblock %}
+
+      </div>
+
+      <!-- Иконка донейшн алертс -->
+      <div _ngcontent-gox-c6="" class="toolbar-container d-md-block">
+        <div _ngcontent-gox-c6="" class="tool-container">
+          <app-banner-donation-alerts _ngcontent-gox-c6="" _nghost-gox-c60="">
+
+            <div _ngcontent-gox-c60="" id="open-da-btn-bar" class="p-3" style="cursor: pointer;"
+              onclick="document.getElementById('da-btn-bar').style.display = 'block';
+                       document.getElementById('open-da-btn-bar').style.display = 'none';">
+
+              <img _ngcontent-gox-c60="" class="vibro-da-icon"
+                src="{% static 'main_app/images/donation_alerts.png' %}" style="width: 28px;">
+            </div>
+
+            <div _ngcontent-gox-c60="" id="da-btn-bar" class="p-3"
+              style="max-width: 210px; border-bottom: 2px solid #1fb8ff; border-radius: 0.25rem; display: none;">
+
+              <span _ngcontent-gox-c60="" id="cn-notice-text">
+                {% trans 'Если вы цените мою работу, вы можете поддержать меня!' %}
+              </span>
+              <div _ngcontent-gox-c60="" class="d-block d-md-block mt-2">
+                <a _ngcontent-gox-c60="" target="_BLANK"
+                  href="https://www.donationalerts.com/r/friskesx"
+                  class="mb-1 btn-custom btn-accept-cookie" style="padding: 2px;">{% trans 'Поддержать' %}
+                </a>
+                <button _ngcontent-gox-c60="" class="btn-custom btn-accept-cookie"
+                  onclick="document.getElementById('da-btn-bar').style.display = 'none';
+                           document.getElementById('open-da-btn-bar').style.display = 'block';">{% trans 'Позже' %}
+                </button>
+              </div>
+
+            </div>
+
+          </app-banner-donation-alerts>
+        </div>
+      </div>
+
+      <div _ngcontent-gox-c60="" id="da-btn-bar3" class="p-3">
+        <span _ngcontent-gox-c60="" id="cn-notice-text">
+          <p class="cookie-policy__text" style="margin: auto;">
+            {% trans 'Мы используем файлы cookie и другие средства сохранения предпочтений и анализа действий посетителей сайта. Подробнее об этом в' %}
+            <a _ngcontent-gox-c60="" class="link-terms-of-use" target="_BLANK"
+              href="{% url 'terms_of_use' %}">{% trans 'Политике конфиденциальности' %}.
+            </a>
+            {% trans 'Нажмите кнопку «Принять», если даёте согласие на это.' %}
+            <button _ngcontent-gox-c60="" class="btn-custom btn-accept-cookie2">
+              <span class="btn-accept-cookie2-text">{% trans 'Принять' %}</span>
+            </button>
+          </p>
+        </span>
+      </div>
+
+      <script>
+        var accept_cookies = window.localStorage.getItem('accept_cookies');
+        var popup_accept_cookie = document.getElementById("da-btn-bar3");
+
+        if (!accept_cookies) {
+          popup_accept_cookie.style.display = 'block';
+        };
+
+        var btn_accept_cookie = document.querySelector(".btn-accept-cookie2");
+
+        btn_accept_cookie.addEventListener('click', function() {
+          window.localStorage.setItem('accept_cookies', true)
+          popup_accept_cookie.style.display = 'none';
+        });
+      </script>
+
+      <!-- Пустой промежуток внизу экрана -->
+      <div _ngcontent-gox-c6="" class="margin-bottom-l"></div>
+
+    </app-root>
+
+    <div _ngcontent-xpp-c17="">
+      <app-footer _ngcontent-xpp-c17="" _nghost-xpp-c128="">
+        <footer _ngcontent-xpp-c128="" class="select-none">
+          <!-- На пк -->
+          <div _ngcontent-xpp-c128="" class="links d-none d-md-block">
+            <a _ngcontent-xpp-c128="" href="{% url 'contact_me' %}">{% trans 'Связь со мной' %}</a> -
+            <a _ngcontent-xpp-c128="" href="https://www.donationalerts.com/r/friskesx" target="_BLANK" class="dalerts">
+              {% trans 'Поддержать меня на' %} DAlerts
+            </a>
+          </div>
+          <div _ngcontent-xpp-c128="" class="documents d-none d-md-block">
+            <a _ngcontent-xpp-c128="" href="">Terms of use</a> -
+            <a _ngcontent-xpp-c128="" href="">Cookie Policy</a> -
+            <a _ngcontent-xpp-c128="" href="">Privacy Policy</a>
+          </div>
+          <!-- На смартфоне -->
+          <div _ngcontent-xpp-c128="" class="links d-block d-md-none">
+            <div _ngcontent-xpp-c128="" class="my-1">
+              <a _ngcontent-xpp-c128="" href="{% url 'contact_me' %}">{% trans 'Связь со мной' %}</a>
+            </div>
+            <div _ngcontent-xpp-c128="" class="my-1">
+              <a _ngcontent-xpp-c128="" href="https://www.donationalerts.com/r/friskesx" target="_BLANK" class="dalerts">
+                {% trans 'Поддержать меня на' %} DAlerts
+              </a>
+            </div>
+          </div>
+          <div _ngcontent-xpp-c128="" class="documents d-block d-md-none">
+            <a _ngcontent-xpp-c128="" href="">Terms of use</a> -
+            <a _ngcontent-xpp-c128="" href="">Cookie Policy</a> -
+            <a _ngcontent-xpp-c128="" href="">Privacy Policy</a>
+          </div>
+          <!-- Везде -->
+          <div _ngcontent-xpp-c128="" class="mt-3 copyright">© Copyright 2023-2024 frishub.ru</div>
+        </footer>
+      </app-footer>
+    </div>
+
+  </body>
+
+  <app-content ng-version="14.0.2"></app-content>
+
+</html>

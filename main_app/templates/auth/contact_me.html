@@ -1,0 +1,225 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load recaptcha2 %}
+
+{% block head %}
+<style>
+  input[type=password][_ngcontent-xpp-c83],
+  input[type=password][_ngcontent-xpp-c83]:focus,
+  input[type=text][_ngcontent-xpp-c83],
+  input[type=text][_ngcontent-xpp-c83]:focus,
+  input[type=email][_ngcontent-xpp-c83],
+  input[type=email][_ngcontent-xpp-c83]:focus,
+  textarea[_ngcontent-xpp-c83],
+  textarea[_ngcontent-xpp-c83]:focus {
+    background-color: #181618;
+    border: 1px solid #454545;
+    font-family: Poppins;
+    color: #dadada;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    outline: none
+  }
+  input[_ngcontent-xpp-c83]::-moz-placeholder {
+    color: #4b4b4b
+  }
+  input[_ngcontent-xpp-c83]::placeholder {
+    color: #4b4b4b
+  }
+  textarea[_ngcontent-xpp-c83]::-moz-placeholder {
+    color: #4b4b4b
+  }
+  textarea[_ngcontent-xpp-c83]::placeholder {
+    color: #4b4b4b
+  }
+  textarea[_ngcontent-xpp-c83] {
+    resize: none
+  }
+  .container[_ngcontent-xpp-c83] {
+    max-width: 600px;
+    margin: auto
+  }
+  fieldset[_ngcontent-xpp-c83] {
+    border: none !important;
+    margin: 0 0 10px;
+    padding: 0;
+  }
+  fieldset.text-danger[_ngcontent-xpp-c83] {
+    margin-top: 20px;
+    padding-bottom: 30px
+  }
+  .disabled[_ngcontent-xpp-c83] {
+    opacity: .4;
+    cursor: not-allowed
+  }
+  .disabled[_ngcontent-xpp-c83]:hover {
+    background-color: #676af7
+  }
+  /* изменение масштаба бокса капчи для смартфонов */
+  @media only screen and (max-width: 500px) {
+    .g-recaptcha {
+      transform:scale(0.785);
+      transform-origin:0 0;
+    }
+    div#recaptcha {
+      width: 235px;
+      height: 78px;
+    }
+  }
+</style>
+
+{% recaptcha_init %}
+
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  {% if user.is_authenticated %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'account' %}">
+        {{ user }}
+        <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+      </a>
+    </li>
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+    </li>
+  {% else %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'register' %}">{% trans 'Регистрация' %}</a>
+    </li>
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'login' %}">{% trans 'Войти' %}</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-contact _nghost-xpp-c83="" class="ng-star-inserted">
+  <div _ngcontent-xpp-c83="" class="container mt-md-5">
+    <div _ngcontent-xpp-c83="" class="row">
+      <div _ngcontent-xpp-c83="" class="col-12 p-0 fill">
+        <div _ngcontent-xpp-c83="" class="card ml-0 mr-0 fill">
+          <h3 _ngcontent-xpp-c83="">{% trans 'Обратная связь' %}</h3>
+          <div _ngcontent-xpp-c83="" class="card-body">
+
+            <form method="POST">
+              {% csrf_token %}
+
+              {% if user.is_authenticated %}
+                <fieldset _ngcontent-xpp-c83="">
+                  <div _ngcontent-xpp-c83="" class="form-label" style="padding-bottom: 5px;">
+                    {% trans 'Текущий адрес электронной почты' %}
+                  </div>
+                  <input _ngcontent-xpp-c83="" type="email" name="email" value="{{ user.email }}" id="id_email"
+                    readonly="" style="font-family: sans-serif; font-size: 16px; opacity: 0.6;">
+                </fieldset>
+              {% else %}
+                <fieldset _ngcontent-xpp-c83="">
+                  <div _ngcontent-xpp-c83="" class="form-label ng-star-inserted">&nbsp;</div>
+                  {{ form.email }}
+                </fieldset>
+              {% endif %}
+
+              <fieldset _ngcontent-xpp-c83="">
+                <div _ngcontent-xpp-c83="" class="form-label ng-star-inserted">&nbsp;</div>
+                {{ form.message }}
+              </fieldset>
+
+              <fieldset _ngcontent-xpp-c83="">
+                <div _ngcontent-xpp-c83="" id="recaptcha" class="d-inline-block mt-3">
+                  {{ form.captcha }}
+                </div>
+              </fieldset>
+
+              <fieldset _ngcontent-xpp-c83="">
+                <br _ngcontent-xpp-c83="">
+                <button _ngcontent-xpp-c83="" type="submit" class="mat-tooltip-trigger btn-custom w-100% disabled" disabled
+                  aria-describedby="cdk-describedby-message-106" cdk-describedby-host="">{% trans 'Отправить' %}
+                </button>
+              </fieldset>
+            </form>
+
+            <script>
+              var btn_state = document.querySelector('.btn-custom');
+
+              var email = document.getElementById('id_email');
+              var message = document.getElementById('id_message');
+
+              email.addEventListener('input', form_changed_value);
+              message.addEventListener('input', form_changed_value);
+
+              var interval_id = null;
+              function form_changed_value() {
+                if (email.value !== '' && message.value !== '') {
+                  if (!interval_id) {
+                    // не смог зарегистрировать активацию/просрочку капчи,
+                    // поэтому сделал обновление каждую секунду после заполнения формы
+                    interval_id = setInterval(change_btn_state, 1000); // миллисекунды
+                  }
+                }
+                else {
+                  if (interval_id) {
+                    clearInterval(interval_id);
+                    interval_id = null;
+
+                    btn_state.classList.remove('enabled');
+                    btn_state.classList.add('disabled');
+                    btn_state.disabled = true;
+                  }
+                }
+              }
+              function change_btn_state() {
+                if (grecaptcha.getResponse() !== '') {
+                  btn_state.classList.remove('disabled');
+                  btn_state.classList.add('enabled');
+                  btn_state.disabled = false;
+                }
+                else {
+                  btn_state.classList.remove('enabled');
+                  btn_state.classList.add('disabled');
+                  btn_state.disabled = true;
+                }
+              }
+            </script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-contact>
+{% endblock %}
