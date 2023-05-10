@@ -763,8 +763,8 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
         # указываем пользователя в форме в параметре instance для того что бы
         # перезаписать поля у текущего пользователя а не создавать нового пользователя
         form = AccountSettingsForm(self.request.POST,
-                                                self.request.FILES,
-                                                instance=self.request.user)
+                                   self.request.FILES,
+                                   instance=self.request.user)
         form.save()
 
         if delete_avatar:

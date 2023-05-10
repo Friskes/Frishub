@@ -55,7 +55,7 @@ class CustomUser(AbstractUser):
     # значение параметра upload_to будет использоваться только
     # если сохранять форму с изображением через метод form.save()
     avatar = models.ImageField(verbose_name=_('Аватар'), max_length=100, upload_to=get_user_avatar_dir_path, blank=True,
-                               help_text='Макс. разрешение 1000х1000, Макс объём 3МБ.')
+                               help_text='Макс. разрешение 1920х1920, Макс объём 6МБ.')
                                # default='/static/main_app/images/default_avatar.png')
 
     # null=True потому что поле не может быть пустой строкой без даты
