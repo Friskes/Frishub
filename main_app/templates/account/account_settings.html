@@ -239,6 +239,18 @@
     font-size: 16px;
   }
 </style>
+
+<style>
+  #cropper-image-box {
+    margin: 0% 5% 1px 5%;
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    #cropper-image-box {
+      margin: 0% 0% 1px 0%;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block menu %}
@@ -338,7 +350,9 @@
                     <td _ngcontent-gox-c51="" class="text-right">Название области справа</td>
                   </tr> -->
 
-                  <div id="cropper-image-box" style="margin: 0 5% 0 5%;"></div>
+                  <div id="avatar-text"></div>
+                  <div id="cropper-image-box"></div>
+                  <div id="avatar-name"></div>
 
                   <tr _ngcontent-gox-c51="">
                     <td _ngcontent-gox-c51="">{{ form.avatar.label }}:</td>
@@ -372,38 +386,46 @@
                   </tr>
 
                   <script>
-                    function formatBytes(bytes, decimals=1) {
-                      if (bytes === 0) {
-                        return '0';
-                      } else {
-                        var k = 1024;
-                        var dm = decimals < 0 ? 0 : decimals;
-                        var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
-                        var i = Math.floor(Math.log(bytes) / Math.log(k));
-                        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-                      };
+                    function humanize_size(bytes, decimals=1) {
+                      if (bytes === 0) return '0';
+                      var suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                      var power = Math.floor(Math.log(bytes) / Math.log(1024));
+                      return `${parseFloat((bytes / Math.pow(1024, power)).toFixed(decimals))} ${suffixes[power]}`;
                     };
+
                     const cropper_image_box = document.getElementById('cropper-image-box');
                     const input_avatar = document.getElementById('{{ form.avatar.auto_id }}');
-                    input_avatar.addEventListener('change', ()=> {
+                    const avatar_text = document.getElementById('avatar-text');
+                    const avatar_name = document.getElementById('avatar-name');
+
+                    input_avatar.addEventListener('change', (event) => {
+
                       var avatar_url = URL.createObjectURL(input_avatar.files[0]);
-                      cropper_image_box.innerHTML = `<div id="avatar-text"></div><img src="${avatar_url}" id="avatar-img" style="max-width: 100%;">`;
-                      var avatar_text = document.getElementById('avatar-text');
+                      cropper_image_box.innerHTML = `<img src="${avatar_url}" id="avatar-img" style="max-width: 100%;">`;
                       var $image = $('#avatar-img');
-                      var changeTimer = false;
+
+                      avatar_name.innerHTML = $('#{{ form.avatar.auto_id }}')[0].files[0].name;
+
+                      // https://github.com/fengyuanchen/cropperjs#options
                       $image.cropper({
-                        aspectRatio: 9 / 9,
+                        viewMode: 3,
+                        aspectRatio: 1 / 1,
+                        strict: true,
+                        guides: false,
+                        dragMode: 'move',
+                        movable: true,
+                        rotatable: false,
+                        highlight: true,
+                        dragCrop: false,
+                        cropBoxResizable: true,
+                        autoCropArea: 0,
                         crop: function(event) {
-                          var width = String(event.detail.width).split('.')[0];
-                          var height = String(event.detail.height).split('.')[0];
-                          avatar_text.innerHTML = `${width}x${height}&nbsp;&nbsp;${formatBytes($('#{{ form.avatar.auto_id }}')[0].files[0].size)}`;
-                          if (changeTimer !== false) {
-                            clearTimeout(changeTimer);
-                          };
-                          changeTimer = setTimeout(function() {
-                            replace_input_file(width, height);
-                            changeTimer = false;
-                          }, 300);
+                          var width = Math.round(event.detail.width);
+                          var height = Math.round(event.detail.height);
+
+                          avatar_text.innerHTML = `${width}x${height}&nbsp;&nbsp;${humanize_size($('#{{ form.avatar.auto_id }}')[0].files[0].size)}`;
+
+                          debounce_replace_input_file(width, height);
                         },
                       });
                       var cropper = $image.data('cropper');
@@ -415,10 +437,11 @@
                             dt.items.add(new File([blob], file_name, {type: blob['type']}));
                             var file_list = dt.files;
                             $('#{{ form.avatar.auto_id }}')[0].files = file_list;
-                            avatar_text.innerHTML = `${width}x${height}&nbsp;&nbsp;${formatBytes($('#{{ form.avatar.auto_id }}')[0].files[0].size)}`;
+                            avatar_text.innerHTML = `${width}x${height}&nbsp;&nbsp;${humanize_size($('#{{ form.avatar.auto_id }}')[0].files[0].size)}`;
                           };
                         });
                       };
+                      let debounce_replace_input_file = debounce(replace_input_file, 300);
                     });
                   </script>
 

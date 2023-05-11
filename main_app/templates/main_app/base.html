@@ -597,6 +597,7 @@
       // создание задержки перед вызовом функции
       let debounce = function(func, delay) {
         let inDebounce;
+        // return function(..._args) {
         return function() {
           let _this = this;
           let _args = arguments;

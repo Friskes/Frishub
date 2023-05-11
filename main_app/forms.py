@@ -16,6 +16,7 @@ from django.forms import (
 from django.core.files.images import get_image_dimensions
 from mptt.forms import TreeNodeChoiceField
 from django.core.files.uploadedfile import InMemoryUploadedFile
+import math
 
 # Поля джанго
 # https://metanit.com/python/django/4.2.php
@@ -230,6 +231,19 @@ class AccountSettingsForm(ModelForm):
                 return full_url
 
 
+    def humanize_size(self, bytes: int, decimals: int=1) -> str:
+        """Конвертирует байты в крайний объем информации для переданного объёма байт,
+        и оставляет 1 знак после запятой (по умолчанию),
+        так же добавляет суффикс в конце строки."""
+
+        if bytes == 0: return '0'
+        suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        power = math.floor(math.log(bytes, 1024))
+        # return f'{round(bytes / math.pow(1024, power), decimals)} {suffixes[power]}'
+        # return f'{bytes / math.pow(1024, power):.{decimals}f} {suffixes[power]}'
+        return f'{bytes / math.pow(1024, power):.{decimals}f}'.rstrip('0').rstrip('.') + f' {suffixes[power]}'
+
+
     def clean_avatar(self):
         """>>> Проверяет загружаемый пользователем аватар на максимально допустимое
         разрешение 1920х1920 и объём 6МБ, если предел превышен возбуждает исключение."""
@@ -238,22 +252,24 @@ class AccountSettingsForm(ModelForm):
 
         if avatar:
 
+            limit = (1024 * 1024) * 6 # 6 МБ
+
             width, height = get_image_dimensions(avatar)
 
             resolution = str(width) + 'x' + str(height)
-            size = f'{avatar.size / 1024 :,.0f}'[:-1]
+            size = self.humanize_size(avatar.size)
 
             resolution_error = _('Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, ваш файл имеет разрешение ') + resolution + _(' пикселей') + '.'
-            size_error = _('Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём ') + size + _('МБ') + '.'
+            size_error = _('Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём ') + size + '.'
 
-            if ( width > 1920 or height > 1920 ) and ( avatar.size > (1024 * 1024) * 6 ):
+            if ( width > 1920 or height > 1920 ) and ( avatar.size > limit ):
                 # в ValidationError можно передавать несколько ошибок в формате списка
                 raise ValidationError([resolution_error, size_error])
 
             elif width > 1920 or height > 1920:
                 raise ValidationError(resolution_error)
 
-            elif avatar.size > (1024 * 1024) * 6:
+            elif avatar.size > limit:
                 raise ValidationError(size_error)
 
             return avatar
