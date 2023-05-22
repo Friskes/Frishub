@@ -19,36 +19,27 @@ from datetime import datetime as dt
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from channels.layers import InMemoryChannelLayer
 
-import requests
-
-from .models import ServiceInfo
+from main_app.services.services import request_post, request_get
+from main_app.models import ServiceInfo
 from FriskesSite import settings
+
 from typing import Union, Dict
 from ssl import SSLError
-from channels.layers import InMemoryChannelLayer
 
 # import logging
 # logging.basicConfig(level=logging.INFO, filename="py_log.log", filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
+
 #############################################################################
 
-def get_new_token() -> Union[str, None]:
-    """Делаем запрос к discord API на получение токена."""
-
-    request_url = 'https://discord.com/api/v9/auth/login'
-    payload = {
-        'login': settings.DISCORD_LOGIN,
-        'password': settings.DISCORD_PASSWORD
-    }
-    headersPOST = {'content-type': 'application/json'}
-
-    while True:
-        try:
-            response = requests.post(url=request_url, json=payload, headers=headersPOST, timeout=5)
-            return response.json().get('token')
-        except requests.exceptions.ReadTimeout as e:
-            time.sleep(2)
+request_url = 'https://discord.com/api/v9/auth/login'
+headersPOST = {'content-type': 'application/json'}
+payload = {
+    'login': settings.DISCORD_LOGIN,
+    'password': settings.DISCORD_PASSWORD
+}
 
 
 def check_token(token: str) -> Union[str, None]:
@@ -63,15 +54,10 @@ def check_token(token: str) -> Union[str, None]:
         'authorization': token
     }
 
-    while True:
-        try:
-            response = requests.get(url=discord_endpoint_url, headers=headersGET, timeout=5)
-            break
-        except requests.exceptions.ReadTimeout as e:
-            time.sleep(2)
+    json_response = request_get(discord_endpoint_url, headersGET)
 
-    if response.json().get('code') == 0:
-        new_token = get_new_token()
+    if json_response.get('code') == 0:
+        new_token = request_post(request_url, headersPOST, payload).get('token')
         return new_token
     else:
         return
@@ -95,7 +81,7 @@ def token_verification() -> Union[str, None]:
         else:
             return service_info[0].discord_token
     else:
-        token = get_new_token()
+        token = request_post(request_url, headersPOST, payload).get('token')
 
         if token and service_info:
             service_info.update(discord_token=token)

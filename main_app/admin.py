@@ -1,14 +1,17 @@
 from django.contrib import admin
 # from django.contrib.auth.models import User
-# from .models import CustomUserProfile
-from .models import (
+# from django.contrib.auth.admin import UserAdmin
+from django.utils.safestring import mark_safe
+
+from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
     HomeNews, Guides, Comments, Category
 )
-# from django.contrib.auth.admin import UserAdmin
-from django.utils.safestring import mark_safe
+
 from modeltranslation.admin import TranslationAdmin
+
 from mptt.admin import DraggableMPTTAdmin#, MPTTModelAdmin
+
 
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/
 # https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets

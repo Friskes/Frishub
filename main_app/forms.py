@@ -1,10 +1,7 @@
-from datetime import datetime
-from django.utils.translation import gettext_lazy as _
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 # from django.contrib.auth.models import User
-# from .models import CustomUserProfile
-from .models import CustomUser, ContactMe, Comments
+from django.utils.translation import gettext_lazy as _
+from django.core.files.images import get_image_dimensions
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.auth.forms import (
     UserCreationForm, AuthenticationForm, PasswordResetForm,
     SetPasswordForm, PasswordChangeForm
@@ -13,10 +10,17 @@ from django.forms import (
     BooleanField, CheckboxInput, ModelForm, EmailField, EmailInput,
     SelectDateWidget, Textarea, ValidationError, SelectMultiple, TextInput
 )
-from django.core.files.images import get_image_dimensions
+
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
+
+from main_app.models import CustomUser, ContactMe, Comments
+
 from mptt.forms import TreeNodeChoiceField
-from django.core.files.uploadedfile import InMemoryUploadedFile
+
 import math
+from datetime import datetime
+
 
 # Поля джанго
 # https://metanit.com/python/django/4.2.php

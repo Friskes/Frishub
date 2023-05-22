@@ -1,5 +1,6 @@
 from modeltranslation.translator import register, TranslationOptions
-from .models import HomeNews, Category, Guides
+
+from main_app.models import HomeNews, Category, Guides
 
 
 @register(HomeNews)

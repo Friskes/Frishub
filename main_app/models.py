@@ -2,13 +2,17 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # from django.db.models.fields.files import ImageFieldFile, FileField
-from multiselectfield import MultiSelectField
-from datetime import date
 from django.utils.html import format_html
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
-from mptt.models import MPTTModel, TreeForeignKey
 from django.urls import reverse
+
+from mptt.models import MPTTModel, TreeForeignKey
+
+from multiselectfield import MultiSelectField
+
+from datetime import date
+
 
 # Create your models here.
 

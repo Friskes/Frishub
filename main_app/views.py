@@ -1,41 +1,44 @@
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login
-# from django.contrib.auth.models import User
-# from .models import CustomUserProfile
-from .models import CustomUser, HomeNews, Comments, Guides, Category, LikeDislike
 from django.urls import reverse_lazy
-from django.contrib.auth.views import (
-    LoginView, LogoutView, PasswordResetView,
-    PasswordResetConfirmView, PasswordChangeView,
-    PasswordResetDoneView, PasswordResetCompleteView
-)
-from .utils import DataMixin, RedirectAuthUser
 from django.views.generic import CreateView, FormView, ListView, DetailView, View
 from django.views.generic.base import TemplateView
-from .forms import (
-    RegisterForm, LoginForm, PasswordResetCustomForm, PasswordResetConfirmForm,
-    ContactMeForm, AccountSettingsForm, PasswordChangeCustomForm, AccountEmailForm,
-    CommentsForm
-)
 from django.http import JsonResponse, HttpResponse
-from math import floor
 from django.contrib.auth.mixins import LoginRequiredMixin
 # https://django.fun/ru/docs/django/4.0/ref/contrib/messages/
 from django.contrib import messages
 # from django.utils import dateformat
 # from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
-from FriskesSite import settings
-from .parse_twitch_streams import twitch_stream_parser
-import json
-from typing import Union
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from uuid import uuid4
-import urllib.parse
 from django.core.handlers.asgi import ASGIRequest
 from django.core.cache import cache
+# from django.contrib.auth.models import User
+from django.contrib.auth.views import (
+    LoginView, LogoutView, PasswordResetView,
+    PasswordResetConfirmView, PasswordChangeView,
+    PasswordResetDoneView, PasswordResetCompleteView
+)
+
+from main_app.utils import DataMixin, RedirectAuthUser
+from main_app.models import CustomUser, HomeNews, Comments, Guides, Category, LikeDislike
+from main_app.parse_twitch_streams import twitch_stream_parser
+from main_app.forms import (
+    RegisterForm, LoginForm, PasswordResetCustomForm, PasswordResetConfirmForm,
+    ContactMeForm, AccountSettingsForm, PasswordChangeCustomForm, AccountEmailForm,
+    CommentsForm
+)
+
+from FriskesSite import settings
+
+from math import floor
+import json
+from typing import Union
+from uuid import uuid4
+import urllib.parse
+
 
 # Create your views here.
 

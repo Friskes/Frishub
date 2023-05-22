@@ -19,6 +19,7 @@ import string
 from typing import List, Union
 from random import randint
 
+
 # Create your tests here.
 
 #############################################################################

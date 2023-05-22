@@ -1,9 +1,13 @@
-import json
-from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer, AsyncJsonWebsocketConsumer
-from asgiref.sync import async_to_sync
-from .parse_discord_chats import AsyncAction_GetGameChatData, sorting_chat_message
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+
+from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer, AsyncJsonWebsocketConsumer
+from channels.layers import InMemoryChannelLayer
+
+from asgiref.sync import async_to_sync
+
+from main_app.parse_discord_chats import AsyncAction_GetGameChatData, sorting_chat_message
+
 import datetime
 # import codecs
 import urllib.parse
@@ -11,8 +15,9 @@ import urllib.parse
 import time
 from copy import deepcopy
 from typing import Any
-from channels.layers import InMemoryChannelLayer
 from uuid import uuid4
+import json
+
 
 # https://channels.readthedocs.io/en/latest/topics/channel_layers.html
 # https://github.com/django/asgiref/blob/main/specs/www.rst#http-connection-scope
@@ -98,8 +103,6 @@ class GameChatConsumer(WebsocketConsumer):
         """Регистрируем ивент и передаём данные из него в функцию сортировки
         для каждого уникального пользователя отдельно."""
 
-        message = None
-
         # определяем сортировку чата для каждого экземпляра класса GameChatConsumer
         # (то есть для каждого уникального пользователя отдельно)
         # print(self)
@@ -109,7 +112,6 @@ class GameChatConsumer(WebsocketConsumer):
                                            self.player_nickname,
                                            self.only_twitch)
 
-        if message:
             self.send(text_data=json.dumps({'message': message}))
 
 #############################################################################
@@ -117,6 +119,7 @@ class GameChatConsumer(WebsocketConsumer):
 # import os
 # import stat
 # import shutil
+
 
 # def remove_readonly(func, path, _):
 #     '''Clear the readonly bit and reattempt the removal'''

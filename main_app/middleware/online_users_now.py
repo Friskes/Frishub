@@ -1,8 +1,11 @@
-from ..models import VisitorRecord
 from django.utils import timezone
-import datetime
 from django.core.handlers.asgi import ASGIRequest
 # from django.core.exceptions import MiddlewareNotUsed
+
+from main_app.models import VisitorRecord
+
+import datetime
+
 
 # https://webdevblog.ru/nachalo-raboty-s-middleware-v-django/
 

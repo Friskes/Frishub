@@ -1,7 +1,9 @@
 from django import template
-from ..models import Category, Comments, CustomUser
 from django.contrib.humanize.templatetags.humanize import NaturalTimeFormatter
 from django.db.models.query import QuerySet
+
+from main_app.models import Category, Comments, CustomUser
+
 
 register = template.Library()
 

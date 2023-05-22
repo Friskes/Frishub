@@ -1,8 +1,10 @@
 from django.urls import path, re_path
-from . import views
 from django.views.generic import RedirectView
 from django.contrib.auth.decorators import login_required
-from .models import LikeDislike, Comments, Guides
+
+from main_app import views
+from main_app.models import LikeDislike, Comments, Guides
+
 
 urlpatterns = [
 

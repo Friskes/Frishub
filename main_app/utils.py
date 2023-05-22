@@ -6,11 +6,14 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from .parse_twitch_streams import twitch_stream_parser
-from FriskesSite import settings
 from django.core.handlers.asgi import ASGIRequest
 from django.forms.utils import ErrorDict
 from django.core.cache import cache
+
+from main_app.parse_twitch_streams import twitch_stream_parser
+
+from FriskesSite import settings
+
 
 #############################################################################
 

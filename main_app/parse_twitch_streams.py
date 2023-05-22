@@ -2,33 +2,23 @@
 # https://dev.twitch.tv/console
 # https://dev.twitch.tv/docs/api/reference
 
-import requests
-from .models import ServiceInfo, TwitchStreamerInfo, CLASS_COLORS
+from main_app.models import ServiceInfo, TwitchStreamerInfo, CLASS_COLORS
+from main_app.services.services import request_post, request_get
 from FriskesSite import settings
+
 from typing import Union, List
-import time
+
 
 #############################################################################
 
-def get_new_token() -> Union[str, None]:
-    """Делаем запрос к twitch API на получение токена."""
+oauth2_url = 'https://id.twitch.tv/oauth2/token'
+headersPOST = {'Content-Type': 'application/x-www-form-urlencoded'}
+payload = {
+    'client_id': settings.TWITCH_CLIENT_ID,
+    'client_secret': settings.TWITCH_CLIENT_SECRET,
+    'grant_type': 'client_credentials'
+}
 
-    oauth2_url = 'https://id.twitch.tv/oauth2/token'
-    payload = {
-        'client_id': settings.TWITCH_CLIENT_ID,
-        'client_secret': settings.TWITCH_CLIENT_SECRET,
-        'grant_type': 'client_credentials'
-    }
-    headersPOST = {'Content-Type': 'application/x-www-form-urlencoded'}
-
-    while True:
-        try:
-            response = requests.post(url=oauth2_url, data=payload, headers=headersPOST, timeout=5)
-            return response.json().get('access_token')
-        except requests.exceptions.ReadTimeout as e:
-            time.sleep(2)
-
-#############################################################################
 
 def token_verification() -> Union[str, None]:
     """Возвращаем токен из БД если он там есть,
@@ -40,7 +30,7 @@ def token_verification() -> Union[str, None]:
     if service_info and service_info[0].twitch_token:
         return service_info[0].twitch_token
     else:
-        token = get_new_token()
+        token = request_post(oauth2_url, headersPOST, payload).get('access_token')
 
         if token and service_info:
             service_info.update(twitch_token=token)
@@ -53,17 +43,14 @@ def token_verification() -> Union[str, None]:
 def transform_data(stream_data: dict, streamers: dict) -> dict:
     """Перерабатываем данные которые пришли от twitch API."""
 
-    user_login = stream_data['user_login']
-    title = stream_data['title']
-    viewer_count = stream_data['viewer_count']
     language = '/static/main_app/images/svg/' + stream_data['language'].upper() + '.svg'
     # изображение приходит без указанного размера, поэтому необходимо самому указать размер
     thumbnail_url = stream_data['thumbnail_url'].format(width=384, height=216)
     game_classes = streamers[stream_data['user_login']]
 
     clean_stream_data = {
-        'user_login': user_login, 'title': title,
-        'viewer_count': viewer_count, 'language': language,
+        'user_login': stream_data['user_login'], 'title': stream_data['title'],
+        'viewer_count': stream_data['viewer_count'], 'language': language,
         'thumbnail_url': thumbnail_url, 'game_classes': game_classes,
     }
 
@@ -137,17 +124,10 @@ class TwitchStreamParser:
 
         # https://dev.twitch.tv/docs/api/reference#get-streams
         get_streams_url = 'https://api.twitch.tv/helix/streams?'
-        while True:
-            try:
-                response = requests.get(url=get_streams_url + url_params, headers=headersGET, timeout=5)
-                break
-            except requests.exceptions.ReadTimeout as e:
-                time.sleep(2)
-            except requests.exceptions.ConnectTimeout as e:
-                time.sleep(2)
+        json_response = request_get(get_streams_url + url_params, headersGET)
 
-        if response.json().get('status') == 401:
-            new_token = get_new_token()
+        if json_response.get('status') == 401:
+            new_token = request_post(oauth2_url, headersPOST, payload).get('access_token')
 
             service_info = ServiceInfo.objects.filter(pk=1)
             service_info.update(twitch_token=new_token)
@@ -155,7 +135,7 @@ class TwitchStreamParser:
             return self.get_twitch_stream_data(new_token)
 
 
-        data = response.json()['data']
+        data = json_response['data']
 
         twitch_streams = []
 

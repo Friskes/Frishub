@@ -1,4 +1,5 @@
 from channels.testing import ChannelsLiveServerTestCase
+
 # pip install selenium
 from selenium.webdriver import ChromeOptions, Chrome
 from selenium.webdriver.common.action_chains import ActionChains
@@ -12,7 +13,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.ui import Select
 # скачиваем chromedriver и указываем путь к нему в классе Chrome
 # https://sites.google.com/chromium.org/driver/downloads
+
 from time import sleep
+
 
 #############################################################################
 
