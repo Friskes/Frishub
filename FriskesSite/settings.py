@@ -65,6 +65,10 @@ MIDDLEWARE = [
 
     # плагин для подсчёта количества пользователей онлайн
     'main_app.middleware.online_users_now.online_users_now_middleware',
+
+    # плагин для отлова ошибок которые не были отловлены в бизнес логике приложения
+    # и отправки Traceback'a ошибок администраторам на почту
+    'main_app.middleware.catch_errors.ErrorHandlerMiddleware',
 ]
 
 ROOT_URLCONF = 'FriskesSite.urls'
