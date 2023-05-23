@@ -19,3 +19,5 @@ media/*
 !*media/.gitkeep
 
 settings.ini
+
+core/

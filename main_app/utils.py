@@ -5,7 +5,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse#, resolve
 from django.core.handlers.asgi import ASGIRequest
 from django.forms.utils import ErrorDict
 from django.core.cache import cache
@@ -39,6 +39,7 @@ class DataMixin:
         context.update({'toast_message_time': self.toast_message_time})
 
         # сравниваю текущее имя представления с именем представления который указан в urls.py для StreamsView
+        # resolve(self.request.path_info).view_name
         if self.request.resolver_match.view_name != 'streams':
             # обновляем актуальную информацию о количестве стримеров для всех страниц (без учёта фильтрации)
             if cache.get('twitch_stream_count') is None:
