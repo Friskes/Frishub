@@ -44,6 +44,37 @@ import urllib.parse
 
 #############################################################################
 
+def handler403(request, *args):
+    """Обработка ошибки 403"""
+
+    return render(request=request, template_name='errors/error_page.html', status=403, context={
+        'code': 403,
+        'title': _('Отказано в доступе.'),
+        'error_message': _('Доступ к этой странице запрещён или ограничен по ряду причин.')
+    })
+
+
+def handler404(request, *args):
+    """Обработка ошибки 404"""
+
+    return render(request=request, template_name='errors/error_page.html', status=404, context={
+        'code': 404,
+        'title': _('Страница не найдена.'),
+        'error_message': _('К сожалению страница не существует, либо была перемещена.')
+    })
+
+
+def handler500(request, *args):
+    """Обработка ошибки 500"""
+
+    return render(request=request, template_name='errors/error_page.html', status=500, context={
+        'code': 500,
+        'title': _('Внутренняя ошибка сервера.'),
+        'error_message': _('Внутренняя ошибка сайта, вернитесь на главную страницу, отчёт об ошибке уже направлен администрации сайта.')
+    })
+
+#############################################################################
+
 # class TestView(TemplateView):
 
 #     # метод dispatch срабатывает перед отправкой ответа клиенту

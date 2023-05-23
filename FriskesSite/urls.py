@@ -41,5 +41,10 @@ urlpatterns += i18n_patterns(
 )
 
 
+handler403 = 'main_app.views.handler403'
+handler404 = 'main_app.views.handler404'
+handler500 = 'main_app.views.handler500'
+
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
