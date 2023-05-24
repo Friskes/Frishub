@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, ListView, DetailView, View
 from django.views.generic.base import TemplateView
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 # https://django.fun/ru/docs/django/4.0/ref/contrib/messages/
 from django.contrib import messages
@@ -37,14 +37,24 @@ from math import floor
 import json
 from typing import Union
 from uuid import uuid4
-import urllib.parse
+from urllib.parse import unquote
 
 
 # Create your views here.
 
 #############################################################################
 
-def handler403(request, *args):
+def bad_request(request, exception):
+    """Обработка ошибки 400"""
+
+    return render(request=request, template_name='errors/error_page.html', status=400, context={
+        'code': 400,
+        'title': _('Неверный запрос.'),
+        'error_message': _('Сервер не смог понять некорректный запрос.')
+    })
+
+
+def permission_denied(request, exception):
     """Обработка ошибки 403"""
 
     return render(request=request, template_name='errors/error_page.html', status=403, context={
@@ -54,17 +64,21 @@ def handler403(request, *args):
     })
 
 
-def handler404(request, *args):
+def page_not_found(request, exception):
     """Обработка ошибки 404"""
+
+    error_message = _('К сожалению страница не существует, либо была перемещена.')
+    if type(exception) is Http404:
+        error_message = str(exception)
 
     return render(request=request, template_name='errors/error_page.html', status=404, context={
         'code': 404,
         'title': _('Страница не найдена.'),
-        'error_message': _('К сожалению страница не существует, либо была перемещена.')
+        'error_message': error_message
     })
 
 
-def handler500(request, *args):
+def server_error(request):
     """Обработка ошибки 500"""
 
     return render(request=request, template_name='errors/error_page.html', status=500, context={
@@ -343,7 +357,7 @@ class StreamsView(DataMixin, TemplateView):
         encoded_text_data: str = self.request.COOKIES.get('game_classes_selected_data')
 
         if encoded_text_data and len(encoded_text_data) > 2:
-            decoded_text_data: str = urllib.parse.unquote(encoded_text_data, encoding='utf-8') # .replace('%22','"').replace('%2C',',')
+            decoded_text_data: str = unquote(encoded_text_data, encoding='utf-8') # .replace('%22','"').replace('%2C',',')
             game_classes = json.loads(decoded_text_data)
 
             twitch_streams = self.filter_streams(game_classes, twitch_streams)

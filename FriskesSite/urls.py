@@ -43,9 +43,10 @@ urlpatterns += i18n_patterns(
 )
 
 
-handler403 = 'main_app.views.handler403'
-handler404 = 'main_app.views.handler404'
-handler500 = 'main_app.views.handler500'
+handler400 = 'main_app.views.bad_request'
+handler403 = 'main_app.views.permission_denied'
+handler404 = 'main_app.views.page_not_found'
+handler500 = 'main_app.views.server_error'
 
 
 if settings.DEBUG:

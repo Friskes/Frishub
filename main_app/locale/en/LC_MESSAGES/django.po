@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-23 13:15+0300\n"
+"POT-Creation-Date: 2023-05-24 18:42+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -891,73 +891,84 @@ msgstr "Go to Twitch"
 msgid "Игровой опыт"
 msgstr "Gaming experience"
 
-#: .\main_app\utils.py:72
+#: .\main_app\utils.py:73
 msgid "* Поле reCAPTCHA является обязательным для заполнения."
 msgstr "* The reCAPTCHA field is mandatory."
 
 #: .\main_app\views.py:52
+msgid "Неверный запрос."
+msgstr "Bad request."
+
+#: .\main_app\views.py:53
+msgid "Сервер не смог понять некорректный запрос."
+msgstr "The server could not understand the incorrect request."
+
+#: .\main_app\views.py:62
 msgid "Отказано в доступе."
 msgstr "Forbidden."
 
-#: .\main_app\views.py:53
-msgid "Доступ к этой странице запрещён или ограничен по ряду причин."
-msgstr "Access to this page is prohibited or restricted for a number of reasons."
-
-#: .\main_app\views.py:62
-msgid "Страница не найдена."
-msgstr "Page not found."
-
 #: .\main_app\views.py:63
+msgid "Доступ к этой странице запрещён или ограничен по ряду причин."
+msgstr ""
+"Access to this page is prohibited or restricted for a number of reasons."
+
+#: .\main_app\views.py:70
 msgid "К сожалению страница не существует, либо была перемещена."
 msgstr "Unfortunately, the page does not exist or has been moved."
 
-#: .\main_app\views.py:72
+#: .\main_app\views.py:76
+msgid "Страница не найдена."
+msgstr "Page not found."
+
+#: .\main_app\views.py:86
 msgid "Внутренняя ошибка сервера."
 msgstr "Internal server error."
 
-#: .\main_app\views.py:73
+#: .\main_app\views.py:87
 msgid ""
 "Внутренняя ошибка сайта, вернитесь на главную страницу, отчёт об ошибке уже "
 "направлен администрации сайта."
-msgstr "Internal site error, go back to the main page, the error report has already been sent to the site administration."
+msgstr ""
+"Internal site error, go back to the main page, the error report has already "
+"been sent to the site administration."
 
-#: .\main_app\views.py:469
+#: .\main_app\views.py:482
 msgid ", вы успешно зарегистрированы в системе!"
 msgstr ", you are successfully registered in the system!"
 
-#: .\main_app\views.py:502
+#: .\main_app\views.py:515
 msgid "Добро пожаловать, "
 msgstr "Welcome, "
 
-#: .\main_app\views.py:542
+#: .\main_app\views.py:555
 msgid "До скорой встречи, "
 msgstr "See you soon, "
 
-#: .\main_app\views.py:557 .\main_app\views.py:587
+#: .\main_app\views.py:570 .\main_app\views.py:600
 msgid "Письмо успешно отправлено."
 msgstr "The email has been sent successfully."
 
-#: .\main_app\views.py:634 .\main_app\views.py:825
+#: .\main_app\views.py:647 .\main_app\views.py:838
 msgid "Новый пароль успешно сохранён!"
 msgstr "The new password has been successfully saved!"
 
-#: .\main_app\views.py:660
+#: .\main_app\views.py:673
 msgid "Сообщение успешно отправлено!"
 msgstr "The message has been sent successfully!"
 
-#: .\main_app\views.py:721
+#: .\main_app\views.py:734
 msgid "Настройки успешно сохранены!"
 msgstr "Settings have been saved successfully!"
 
-#: .\main_app\views.py:810
+#: .\main_app\views.py:823
 msgid "Изображение успешно удалено."
 msgstr "The image was successfully deleted."
 
-#: .\main_app\views.py:844
+#: .\main_app\views.py:857
 msgid "Новый почтовый адрес успешно сохранён!"
 msgstr "The new email address has been successfully saved!"
 
-#: .\main_app\views.py:883
+#: .\main_app\views.py:896
 msgid ", очень жаль что вы от нас уходите. "
 msgstr ", it's a pity that you're leaving us. "
 
