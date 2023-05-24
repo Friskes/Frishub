@@ -25,6 +25,8 @@ from FriskesSite import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('tinymce/', include('tinymce.urls')),
 ]
 
 

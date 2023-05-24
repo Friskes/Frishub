@@ -29,3 +29,8 @@ DATABASES = {
 
 # вывод почты в консоль при разработке (при восстановлении пароля по почте - только если такая почта существует в БД)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# для выполнения команды python manage.py collectstatic
+# необходимо временно раскомментировать STATIC_ROOT и закомментировать STATICFILES_DIRS
+# STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / 'static']

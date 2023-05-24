@@ -1,5 +1,8 @@
+from pathlib import Path
 # pip install python-decouple
 from decouple import config
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('DJANGO_PRODUCTION_SECRET_KEY')
 
@@ -39,3 +42,5 @@ DATABASES = {
         # 'PORT': '3306',
     }
 }
+
+STATIC_ROOT = BASE_DIR / 'static'

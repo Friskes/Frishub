@@ -2,6 +2,7 @@ from django.contrib import admin
 # from django.contrib.auth.models import User
 # from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
+from django.db.models import TextField
 
 from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
@@ -11,6 +12,8 @@ from main_app.models import (
 from modeltranslation.admin import TranslationAdmin
 
 from mptt.admin import DraggableMPTTAdmin#, MPTTModelAdmin
+
+from tinymce.widgets import TinyMCE
 
 
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/
@@ -335,6 +338,16 @@ class CommentsInline(admin.StackedInline):
 @admin.register(Guides)
 class GuidesAdmin(TranslationAdmin):
     model = Guides
+
+    formfield_overrides = {
+        TextField: {
+            'widget': TinyMCE(
+                attrs={'cols': 80, 'rows': 30},
+                # https://www.tiny.cloud/docs/general-configuration-guide/
+                mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark'}
+            )
+        },
+    }
 
     inlines = [CommentsInline]
 

@@ -44,6 +44,10 @@ INSTALLED_APPS = [
 
     'snowpenguin.django.recaptcha2',
 
+    # https://github.com/jazzband/django-tinymce
+    # https://django-tinymce.readthedocs.io/en/latest/
+    'tinymce', # pip install django-tinymce
+
     'main_app',
 
     # pip install django-mptt
@@ -156,14 +160,27 @@ AUTH_USER_MODEL = 'main_app.CustomUser'
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
-STATIC_DIR = BASE_DIR / 'static'
-# STATICFILES_DIRS = [STATIC_DIR]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 # с джанго 3+ вместо функции join можно использовать синтаксис через слэш
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+TINYMCE_DEFAULT_CONFIG = {
+    'branding': False,
+    "height": "600px",
+    "width": "100%",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+}
 
 
 # Default primary key field type
