@@ -103,6 +103,8 @@ class GameChatConsumer(WebsocketConsumer):
         """Регистрируем ивент и передаём данные из него в функцию сортировки
         для каждого уникального пользователя отдельно."""
 
+        message = None
+
         # определяем сортировку чата для каждого экземпляра класса GameChatConsumer
         # (то есть для каждого уникального пользователя отдельно)
         # print(self)
@@ -112,6 +114,7 @@ class GameChatConsumer(WebsocketConsumer):
                                            self.player_nickname,
                                            self.only_twitch)
 
+        if message:
             self.send(text_data=json.dumps({'message': message}))
 
 #############################################################################
