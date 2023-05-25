@@ -68,7 +68,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # плагин для подсчёта количества пользователей онлайн
-    'main_app.middleware.online_users_now.online_users_now_middleware',
+    'main_app.middleware.online_users_now.OnlineUsersNowMiddleware',
 
     # плагин для отлова ошибок которые не были отловлены в бизнес логике приложения
     # и отправки Traceback'a ошибок администраторам на почту
