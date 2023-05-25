@@ -28,6 +28,7 @@ from datetime import datetime
 #############################################################################
 
 class RegisterForm(UserCreationForm):
+    """#### Форма для страницы регистрации."""
 
     captcha = ReCaptchaField(widget=ReCaptchaWidget(theme='dark'))
 
@@ -71,6 +72,7 @@ class RegisterForm(UserCreationForm):
 #############################################################################
 
 class LoginForm(AuthenticationForm):
+    """#### Форма для страницы авторизации."""
 
     remember_me = BooleanField(required=False,
                                widget=CheckboxInput(attrs={'_ngcontent-xpp-c82': "",
@@ -94,6 +96,7 @@ class LoginForm(AuthenticationForm):
 #############################################################################
 
 class PasswordResetCustomForm(PasswordResetForm):
+    """#### Форма для страницы сброса пароля."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -118,6 +121,7 @@ class PasswordResetCustomForm(PasswordResetForm):
 #############################################################################
 
 class PasswordResetConfirmForm(SetPasswordForm):
+    """#### Форма для страницы ввода нового пароля."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -136,6 +140,7 @@ class PasswordResetConfirmForm(SetPasswordForm):
 
 # https://docs.djangoproject.com/en/4.0/ref/forms/fields/
 class ContactMeForm(ModelForm):
+    """#### Форма для страницы обратной связи."""
 
     captcha = ReCaptchaField(widget=ReCaptchaWidget(theme='dark'))
 
@@ -160,6 +165,7 @@ class ContactMeForm(ModelForm):
 #############################################################################
 
 class AccountSettingsForm(ModelForm):
+    """#### Форма для страницы с настройками аккаунта."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -263,7 +269,8 @@ class AccountSettingsForm(ModelForm):
             resolution = str(width) + 'x' + str(height)
             size = self.humanize_size(avatar.size)
 
-            resolution_error = _('Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, ваш файл имеет разрешение ') + resolution + _(' пикселей') + '.'
+            resolution_error = _('Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, \
+                ваш файл имеет разрешение ') + resolution + _(' пикселей') + '.'
             size_error = _('Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём ') + size + '.'
 
             if ( width > 1920 or height > 1920 ) and ( avatar.size > limit ):
@@ -281,6 +288,7 @@ class AccountSettingsForm(ModelForm):
 #############################################################################
 
 class PasswordChangeCustomForm(PasswordChangeForm):
+    """#### Форма для страницы смены пароля внутри аккаунта."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -302,6 +310,7 @@ class PasswordChangeCustomForm(PasswordChangeForm):
 #############################################################################
 
 class AccountEmailForm(ModelForm):
+    """#### Форма для страницы смены почты внутри аккаунта."""
 
     new_email = EmailField(max_length=254,
                            widget=EmailInput(attrs={'_ngcontent-xcm-c63': '',
@@ -330,6 +339,8 @@ class AccountEmailForm(ModelForm):
 #############################################################################
 
 class CommentsForm(ModelForm):
+    """#### Форма для отправки комментариев."""
+
     parent = TreeNodeChoiceField(queryset=Comments.objects.all())
 
     def __init__(self, *args, **kwargs):

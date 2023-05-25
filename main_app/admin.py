@@ -164,23 +164,26 @@ class CustomUserAdmin(admin.ModelAdmin):
         )}),
     )
 
-    # подставляем кусок html кода вместо дефолтного пути к изображению
     def get_html_avatar30x30(self, object: CustomUser):
+        """Подставляет html код с изображением вместо дефолтного пути к изображению."""
+
         if object.avatar:
             # функция mark_safe позволяет не экранировать html тэги а передать строку какая она есть
             return mark_safe(f'<img src="{object.avatar.url}" width="30">')#<br>{str(object.avatar)[19:]}')
-        else:
-            return mark_safe(f'<img src="{object.get_avatar()}" width="30">')#<br>{str(object.get_avatar())[24:]}')
+
+        return mark_safe(f'<img src="{object.get_avatar()}" width="30">')#<br>{str(object.get_avatar())[24:]}')
 
     # указываем название для колонки с изображениями
     get_html_avatar30x30.short_description = 'Аватар'
 
 
     def get_html_avatar65x65(self, object: CustomUser):
+        """Подставляет html код с изображением вместо дефолтного пути к изображению."""
+
         if object.avatar:
             return mark_safe(f'<img src="{object.avatar.url}" width="65">')
-        else:
-            return mark_safe(f'<img src="{object.get_avatar()}" width="65">')
+
+        return mark_safe(f'<img src="{object.get_avatar()}" width="65">')
 
     get_html_avatar65x65.short_description = ''
 
@@ -416,15 +419,13 @@ class GuidesAdmin(TranslationAdmin):
     def get_html_avatar30x30(self, object: Guides):
         if object.main_image:
             return mark_safe(f'<img src="{object.main_image.url}" width="30">')
-        else:
-            return ''
+        return ''
     get_html_avatar30x30.short_description = 'Изображение'
 
     def get_html_avatar65x65(self, object: Guides):
         if object.main_image:
             return mark_safe(f'<img src="{object.main_image.url}" width="65">')
-        else:
-            return ''
+        return ''
     get_html_avatar65x65.short_description = ''
 
     def get_likes_count(self, object: Guides):
@@ -453,15 +454,13 @@ class CategoryAdmin(TranslationAdmin):
     def get_html_avatar30x30(self, object: Category):
         if object.image_name:
             return mark_safe(f'<img src="{object.image_name.url}" width="30">')
-        else:
-            return ''
+        return ''
     get_html_avatar30x30.short_description = 'Изображение категории'
 
     def get_html_avatar65x65(self, object: Category):
         if object.image_name:
             return mark_safe(f'<img src="{object.image_name.url}" width="65">')
-        else:
-            return ''
+        return ''
     get_html_avatar65x65.short_description = ''
 
 #############################################################################

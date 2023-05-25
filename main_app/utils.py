@@ -18,6 +18,7 @@ from FriskesSite import settings
 #############################################################################
 
 class DataMixin:
+    """#### """
 
     def __init__(self):
         # дефолтное время для всех сообщений которые идут в обход метода errors_handler
@@ -86,7 +87,9 @@ class DataMixin:
 
 #############################################################################
 
-class RedirectAuthUser():
+class RedirectAuthUser:
+    """#### Класс перенаправления авторизованных пользователей на страницу указанную в свойстве:
+    >>> redirect_auth_user_url"""
 
     redirect_auth_user_url = None
 
@@ -94,8 +97,6 @@ class RedirectAuthUser():
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)
     def dispatch(self, request: ASGIRequest, *args, **kwargs):
-        """Класс перенаправления авторизованных пользователей на страницу указанную в свойстве:
-        >>> redirect_auth_user_url"""
 
         if self.redirect_auth_user_url and request.user.is_authenticated:
 

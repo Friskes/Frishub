@@ -13,6 +13,8 @@ register = template.Library()
 # в параметре name можно указать имя тега отличное от названия функции для использования в шаблоне
 @register.inclusion_tag(filename='main_app/filtered_guides_list.html', name='filtering_guides')
 def filtered_guides_list(sorter=None, category_selected=0):
+    """Фильтрует список гайдов если передан параметр sorter, иначе возвращает сразу все."""
+
     if sorter:
         categorys = Category.objects.order_by(sorter)
     else:
@@ -24,6 +26,8 @@ def filtered_guides_list(sorter=None, category_selected=0):
 
 @register.filter
 def user_in(objects: QuerySet, user: CustomUser):
+    """Возвращает True если пользователь авторизован, иначе False."""
+
     if user.is_authenticated:
         return objects.filter(user=user).exists()
     return False
@@ -32,48 +36,52 @@ def user_in(objects: QuerySet, user: CustomUser):
 
 @register.filter
 def translate_datetime(dt, language_code='ru'):
+    """Возвращает сокращённый текст времени на основе переданного datetime,
+    так же учитывает локализацию используя параметр language_code."""
+
     str_dt: str = NaturalTimeFormatter.string_for(dt)
     # print(str_dt.split())
 
     new_list = []
     for text in str_dt.split():
 
+        clean_text = text.replace(',', '')
+
         if language_code == 'ru':
-            if text == 'секунд' or text == 'секунд,' or text == 'секунды' or text == 'секунды,' or text == 'секунду' or text == 'секунду,':
+            if clean_text in {'секунд', 'секунды', 'секунду'}:
                 new_list.append('с. ')
-            elif text == 'минут' or text == 'минут,' or text == 'минуту' or text == 'минуту,' or text == 'минуты' or text == 'минуты,':
+            elif clean_text in {'минут', 'минуту', 'минуты'}:
                 new_list.append('мин. ')
-            elif ( text == 'hour' or text == 'hour,' or text == 'hours' or text == 'hours,' or text == 'час' or text == 'час,'
-            or text == 'часа' or text == 'часа,' or text == 'часов' or text == 'часов,' ):
+            elif clean_text in {'hour', 'hours', 'час', 'часа', 'часов'}:
                 new_list.append('ч. ')
-            elif text == 'day' or text == 'day,' or text == 'days' or text == 'days,':
+            elif clean_text in {'day', 'days'}:
                 new_list.append('д. ')
-            elif text == 'week' or text == 'week,' or text == 'weeks' or text == 'weeks,':
+            elif clean_text in {'week', 'weeks'}:
                 new_list.append('н. ')
-            elif text == 'month' or text == 'month,' or text == 'months' or text == 'months,':
+            elif clean_text in {'month', 'months'}:
                 new_list.append('мес. ')
-            elif text == 'year' or text == 'year,' or text == 'years' or text == 'years,':
+            elif clean_text in {'year', 'years'}:
                 new_list.append('г. ')
             else:
                 new_list.append(text)
         elif language_code == 'en':
-            if text == 'a' or text == 'a,':
+            if clean_text in {'a'}:
                 new_list.append('1')
-            elif text == 'an' or text == 'an,':
+            elif clean_text in {'an'}:
                 new_list.append('1')
-            elif text == 'second' or text == 'second,' or text == 'seconds' or text == 'seconds,':
+            elif clean_text in {'second', 'seconds'}:
                 new_list.append('s. ')
-            elif text == 'minute' or text == 'minute,' or text == 'minutes' or text == 'minutes,':
+            elif clean_text in {'minute', 'minutes'}:
                 new_list.append('min. ')
-            elif text == 'hour' or text == 'hour,' or text == 'hours' or text == 'hours,':
+            elif clean_text in {'hour', 'hours'}:
                 new_list.append('h. ')
-            elif text == 'day' or text == 'day,' or text == 'days' or text == 'days,':
+            elif clean_text in {'day', 'days'}:
                 new_list.append('d. ')
-            elif text == 'week' or text == 'week,' or text == 'weeks' or text == 'weeks,':
+            elif clean_text in {'week', 'weeks'}:
                 new_list.append('w. ')
-            elif text == 'month' or text == 'month,' or text == 'months' or text == 'months,':
+            elif clean_text in {'month', 'months'}:
                 new_list.append('mon. ')
-            elif text == 'year' or text == 'year,' or text == 'years' or text == 'years,':
+            elif clean_text in {'year', 'years'}:
                 new_list.append('y. ')
             else:
                 new_list.append(text)
@@ -87,6 +95,8 @@ def translate_datetime(dt, language_code='ru'):
 
 @register.filter
 def child_count(node):
+    """Возвращает количество дочерних комментариев у комментария."""
+
     count = Comments.objects.get(pk=node.id).get_descendants(include_self=False)
     return len(count)
 

@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 # PAGE_UP   - перейти в самое начало текста
 # PAGE_DOWN - перейти в самый конец текста
 # ENTER     - перейти на следующую строку
-from selenium.webdriver.support.wait import WebDriverWait
+# from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.ui import Select
 # скачиваем chromedriver и указываем путь к нему в классе Chrome
 # https://sites.google.com/chromium.org/driver/downloads
@@ -20,6 +20,7 @@ from time import sleep
 #############################################################################
 
 class UtilsForTest:
+    """#### Хелпер для снижения дублирования кода."""
 
     driver: Chrome
 

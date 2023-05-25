@@ -32,10 +32,19 @@ class VisitorRecord(models.Model):
 
 #############################################################################
 
+CLASS_COLORS_ID = {
+    '0': '198, 155, 109', '1': '244, 140, 186',
+    '2': '170, 211, 114', '3': '255, 244, 104',
+    '4': '255, 255, 255', '5': '196, 30, 58',
+    '6': '0, 112, 221', '7': '63, 199, 235',
+    '8': '135, 136, 238', '9': '255, 124, 10',
+}
+
+
 def get_user_avatar_dir_path(instance: AbstractUser, filename: str) -> str:
     """Генерируем путь к изображению вместе с названием изображения на основе имени пользователя."""
 
-    file_path = 'user_avatars/{0}/{1}'.format(instance.username, filename)
+    file_path = f'user_avatars/{instance.username}/{filename}'
     return file_path
 
 
@@ -90,13 +99,6 @@ class CustomUser(AbstractUser):
     def get_user_game_classes_data(self) -> dict:
         """Создаёт и возвращает словарь наполненный verbose_name и rgb кодом цвета игровых классов пользователя."""
 
-        CLASS_COLORS_ID = {
-            '0': '198, 155, 109', '1': '244, 140, 186',
-            '2': '170, 211, 114', '3': '255, 244, 104',
-            '4': '255, 255, 255', '5': '196, 30, 58',
-            '6': '0, 112, 221', '7': '63, 199, 235',
-            '8': '135, 136, 238', '9': '255, 124, 10',
-        }
         game_classes_data = {}
         for class_id in self.game_class:
             for class_id_and_verbose_name in self.GAME_CLASSES:
@@ -321,7 +323,7 @@ class Guides(models.Model):
     votes = GenericRelation('LikeDislike')
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
     # так же при добавлении данного метода в админку добавляется кнопка 'СМОТРЕТЬ НА САЙТЕ >'
@@ -349,7 +351,7 @@ class Category(models.Model):
     image_name = models.ImageField(upload_to="categorys", verbose_name='Изображение категории')
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
     def get_absolute_url(self):
@@ -395,7 +397,6 @@ class Comments(MPTTModel):
 
 
     def __str__(self):
-        # изза ошибки __str__ returned non-string пришлось принудительно преобразовать значение к строке
         return str(self.author)
 
 
@@ -416,12 +417,14 @@ class LikeDislikeManager(models.Manager):
     use_for_related_fields = True
 
     def likes(self):
-        # Забираем queryset с записями больше 0
+        """Забирает queryset с записями больше 0"""
+
         return self.get_queryset().filter(vote__gt=0)
 
 
     def dislikes(self):
-        # Забираем queryset с записями меньше 0
+        """Забирает queryset с записями меньше 0"""
+
         return self.get_queryset().filter(vote__lt=0)
 
 #############################################################################

@@ -1,4 +1,4 @@
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer, AsyncJsonWebsocketConsumer
@@ -6,17 +6,17 @@ from channels.layers import InMemoryChannelLayer
 
 from asgiref.sync import async_to_sync
 
-from main_app.parse_discord_chats import AsyncAction_GetGameChatData, sorting_chat_message
+from main_app.parse_discord_chats import AsyncActionGetGameChatData, sorting_chat_message
 
 import datetime
-# import codecs
 import urllib.parse
-# from random import randint
 import time
 from copy import deepcopy
 from typing import Any
 from uuid import uuid4
 import json
+# import codecs
+# from random import randint
 
 
 # https://channels.readthedocs.io/en/latest/topics/channel_layers.html
@@ -25,13 +25,14 @@ import json
 #############################################################################
 
 class GameChatConsumer(WebsocketConsumer):
+    """#### Потребитель для игрового чата."""
 
     channel_layer: InMemoryChannelLayer
 
     def __init__(self):
         super().__init__()
 
-        self.async_action_get_game_chat_data = AsyncAction_GetGameChatData()
+        self.async_action_get_game_chat_data = AsyncActionGetGameChatData()
 
         self.server_name = None
         self.player_nickname = False
@@ -53,7 +54,7 @@ class GameChatConsumer(WebsocketConsumer):
         self.async_action_get_game_chat_data.start()
 
 
-    def disconnect(self, close_code):
+    def disconnect(self, code):
         """При разрыве соединения с вебсокетом отправляем команду в ранее открытый поток
         на прекращение выполнения бесконечного цикла тем самым убивая поток."""
 
@@ -249,7 +250,7 @@ class GameChatConsumer(WebsocketConsumer):
 #         # print('\n>>> DEF CONNECT <<<')
 
 #         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-#         self.room_group_name = "dev_chat_%s" % self.room_id
+#         self.room_group_name = f"dev_chat_{self.room_id}"
 
 #         async_to_sync(self.channel_layer.group_add)(self.room_group_name, self.channel_name)
 
@@ -296,7 +297,7 @@ class GameChatConsumer(WebsocketConsumer):
 #         # print()
 
 
-#     def disconnect(self, close_code: int):
+#     def disconnect(self, code: int):
 #         """Обрабатывает отключение пользователя,
 #         удаляет пользователя из rooms_data при выходе со всех вкладок,
 #         иначе уменьшает количество открытых вкладок,
@@ -314,14 +315,14 @@ class GameChatConsumer(WebsocketConsumer):
 #         # print()
 
 
-#     def receive_json(self, content: dict):
+#     def receive_json(self, content: dict, **kwargs):
 #         """Принимает сообщения переданные с фронта, обрабатывает их,
 #         и отправляет все необходимые данные обратно на фронт."""
 
 #         # print('>>> DEF RECEIVE <<<')
 
 #         message = content.get("message")
-#         if message != None:
+#         if not message is None:
 #             # print('MESSAGE:', repr(message))
 
 #             self.rooms_data[self.room_id]['chat_text'] = message
@@ -403,7 +404,7 @@ class GameChatConsumer(WebsocketConsumer):
 #         """Принимает ивент и отправляет его всем/[всем кроме отправителя] подключенным потребителям на фронт."""
 
 #         message = event.get("message")
-#         if message != None:
+#         if not message is None:
 #             # пропускаем отправителя для отправки
 #             # (т.к. для обновления чата у себя между вкладками лучше использовать localStorage на фронте)
 #             # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender/57035230#57035230
@@ -584,7 +585,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # print('\n>>> DEF CONNECT <<<')
 
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-        self.room_group_name = "dev_chat_%s" % self.room_id
+        self.room_group_name = f"dev_chat_{self.room_id}"
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -631,7 +632,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # print()
 
 
-    async def disconnect(self, close_code: int):
+    async def disconnect(self, code: int):
         """Обрабатывает отключение пользователя,
         удаляет пользователя из rooms_data при выходе со всех вкладок,
         иначе уменьшает количество открытых вкладок,
@@ -649,14 +650,14 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # print()
 
 
-    async def receive_json(self, content: dict):
+    async def receive_json(self, content: dict, **kwargs):
         """Принимает сообщения переданные с фронта, обрабатывает их,
         и отправляет все необходимые данные обратно на фронт."""
 
         # print('>>> DEF RECEIVE <<<')
 
         message = content.get("message")
-        if message != None:
+        if not message is None:
             # print('MESSAGE:', repr(message))
 
             self.rooms_data[self.room_id]['chat_text'] = message
@@ -738,7 +739,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         """Принимает ивент и отправляет его всем/[всем кроме отправителя] подключенным потребителям на фронт."""
 
         message = event.get("message")
-        if message != None:
+        if not message is None:
             # пропускаем отправителя для отправки
             # (т.к. для обновления чата у себя между вкладками лучше использовать localStorage на фронте)
             # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender/57035230#57035230

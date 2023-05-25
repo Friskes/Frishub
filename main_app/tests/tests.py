@@ -1,13 +1,13 @@
-from django.test import TestCase, SimpleTestCase, LiveServerTestCase, Client, TransactionTestCase
-from django.utils.crypto import get_random_string
+# from django.test import TestCase, SimpleTestCase, LiveServerTestCase, Client, TransactionTestCase
+# from django.utils.crypto import get_random_string
 
 # https://pytest-django.readthedocs.io/en/latest/tutorial.html
 # pip install pytest
 # pip install pytest-django
-import pytest
+# import pytest
 
 import asyncio
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import sync_to_async#, async_to_sync
 
 from channels.testing import WebsocketCommunicator, ChannelsLiveServerTestCase
 
@@ -15,9 +15,9 @@ from FriskesSite.asgi import application
 from FriskesSite import settings
 
 from uuid import uuid4
-import string
 from typing import List, Union
 from random import randint
+# import string
 
 
 # Create your tests here.
@@ -25,6 +25,7 @@ from random import randint
 #############################################################################
 
 class UtilsForTest:
+    """#### Хелпер для создания пользователей."""
 
     user_counter = 0
 
@@ -95,6 +96,7 @@ class UtilsForTest:
 
 # для того чтобы добавить что то в headers необходимо использовать ChannelsLiveServerTestCase либо TransactionTestCase
 class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
+
     serve_static = True
 # class TestDevChat(TransactionTestCase, UtilsForTest):
 
@@ -344,8 +346,8 @@ class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
     async def write_text(self, text: str, cursor_pos: List[dict],
         sender: WebsocketCommunicator, *recipients: WebsocketCommunicator):
 
-        for i in range(len(text)):
-            self.actual_chat_text_data['message'] += text[i]
+        for i, char in enumerate(text):
+            self.actual_chat_text_data['message'] += char
             self.actual_cur_pos_data['users_curs_pos'][sender.scope['userid']] = cursor_pos[i]
 
             await sender.send_json_to(data=self.actual_chat_text_data)

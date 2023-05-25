@@ -192,9 +192,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # смысл этих файлов в том что, при необходимости можно
 # включить дебаг режим прямо на продакшене.
 try:
-    from .local_settings import *
+    from FriskesSite.local_settings import *
 except ImportError:
-    from .prod_settings import *
+    from FriskesSite.prod_settings import *
 
 
 # https://support.google.com/mail/answer/7126229?visit_id=638015537565678308-2329622254&p=BadCredentials&rd=2#cantsignin&zippy=%2C%D0%BD%D0%B5-%D1%83%D0%B4%D0%B0%D0%B5%D1%82%D1%81%D1%8F-%D0%B2%D0%BE%D0%B9%D1%82%D0%B8-%D0%B2-%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%2C%D1%88%D0%B0%D0%B3-%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D0%B5-imap-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%2C%D1%88%D0%B0%D0%B3-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D0%B5-smtp-%D0%B8-%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%B5-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B-%D0%B2-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D0%B5
@@ -227,4 +227,4 @@ try:
     TWITCH_CLIENT_SECRET = service_info[0].twitch_client_secret
     RECAPTCHA_PUBLIC_KEY = service_info[0].recaptcha_public_key
     RECAPTCHA_PRIVATE_KEY = service_info[0].recaptcha_private_key
-except: pass
+except Exception: pass

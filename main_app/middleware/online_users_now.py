@@ -80,11 +80,13 @@ from django.utils.deprecation import MiddlewareMixin
 
 # middleware в ООП стиле
 # class MyCustomMiddleware:
+
 #     # Метод __init__() вызывается только один раз при запуске веб-сервера.
 #     def __init__(self, get_response):
 #         # с помощью кастомного исключения можно по какому либо условию пропустить данный плагин.
 #         # raise MiddlewareNotUsed('плагин: MyCustomMiddleware - Пропущен.')
 #         self.get_response = get_response
+
 
 #     # Метод __call__() вызывается для каждого запроса.
 #     def __call__(self, request):
@@ -97,6 +99,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 
 
+# https://docs.djangoproject.com/en/4.2/topics/cache/
 # https://djangosnippets.org/snippets/10617/
 # https://gist.github.com/dfalk/1472104
 class OnlineUsersNowMiddleware(MiddlewareMixin):
@@ -119,7 +122,7 @@ class OnlineUsersNowMiddleware(MiddlewareMixin):
         # список ip всех пользователей
         cached_user_ips = cache.get('online-now-user-ips', [])
         # добавляем префикс к ip пользователей
-        user_ips_with_prefix = ['online-user-ip-%s' % (user_ip,) for user_ip in cached_user_ips]
+        user_ips_with_prefix = [f'online-user-ip-{(user_ip,)}' for user_ip in cached_user_ips]
         # получаем пользователей которые есть в кэше по префиксу + ip
         fresh_user_ips = cache.get_many(user_ips_with_prefix).keys()
         # убираем префикс
@@ -131,5 +134,5 @@ class OnlineUsersNowMiddleware(MiddlewareMixin):
 
         request.__class__.users_online_count = len(online_now_user_ips)
 
-        cache.set('online-user-ip-%s' % (current_user_ip,), True, self.seconds_alive)
+        cache.set(f'online-user-ip-{(current_user_ip,)}', True, self.seconds_alive)
         cache.set('online-now-user-ips', online_now_user_ips, self.seconds_alive)

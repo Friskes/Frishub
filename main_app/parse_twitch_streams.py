@@ -11,9 +11,9 @@ from typing import Union, List
 
 #############################################################################
 
-oauth2_url = 'https://id.twitch.tv/oauth2/token'
-headersPOST = {'Content-Type': 'application/x-www-form-urlencoded'}
-payload = {
+OAUTH2_URL = 'https://id.twitch.tv/oauth2/token'
+HEADERS_POST = {'Content-Type': 'application/x-www-form-urlencoded'}
+PAYLOAD = {
     'client_id': settings.TWITCH_CLIENT_ID,
     'client_secret': settings.TWITCH_CLIENT_SECRET,
     'grant_type': 'client_credentials'
@@ -29,14 +29,14 @@ def token_verification() -> Union[str, None]:
 
     if service_info and service_info[0].twitch_token:
         return service_info[0].twitch_token
-    else:
-        token = request_post(oauth2_url, headersPOST, payload).get('access_token')
 
-        if token and service_info:
-            service_info.update(twitch_token=token)
-        elif token:
-            service_info.create(twitch_token=token)
-        return token
+    token = request_post(OAUTH2_URL, HEADERS_POST, PAYLOAD).get('access_token')
+
+    if token and service_info:
+        service_info.update(twitch_token=token)
+    elif token:
+        service_info.create(twitch_token=token)
+    return token
 
 #############################################################################
 
@@ -59,6 +59,7 @@ def transform_data(stream_data: dict, streamers: dict) -> dict:
 #############################################################################
 
 class TwitchStreamParser:
+    """#### Класс для парсинга стримеров с помощью Twitch API."""
 
     forbidding_flag = True
 
@@ -112,7 +113,7 @@ class TwitchStreamParser:
         if new_twitch_token:
             self.twitch_token = new_twitch_token
 
-        headersGET = {
+        headers_get = {
             'Authorization': f'Bearer {self.twitch_token}',
             'Client-Id': settings.TWITCH_CLIENT_ID
         }
@@ -124,10 +125,10 @@ class TwitchStreamParser:
 
         # https://dev.twitch.tv/docs/api/reference#get-streams
         get_streams_url = 'https://api.twitch.tv/helix/streams?'
-        json_response = request_get(get_streams_url + url_params, headersGET)
+        json_response = request_get(get_streams_url + url_params, headers_get)
 
         if json_response.get('status') == 401:
-            new_token = request_post(oauth2_url, headersPOST, payload).get('access_token')
+            new_token = request_post(OAUTH2_URL, HEADERS_POST, PAYLOAD).get('access_token')
 
             service_info = ServiceInfo.objects.filter(pk=1)
             service_info.update(twitch_token=new_token)

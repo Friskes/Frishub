@@ -34,12 +34,14 @@ from ssl import SSLError
 
 #############################################################################
 
-request_url = 'https://discord.com/api/v9/auth/login'
-headersPOST = {'content-type': 'application/json'}
-payload = {
+REQUEST_URL = 'https://discord.com/api/v9/auth/login'
+HEADERS_POST = {'content-type': 'application/json'}
+PAYLOAD = {
     'login': settings.DISCORD_LOGIN,
     'password': settings.DISCORD_PASSWORD
 }
+
+DISCORD_ENDPOINT_URL = 'https://discord.com/api/users/@me'
 
 
 def check_token(token: str) -> Union[str, None]:
@@ -47,20 +49,19 @@ def check_token(token: str) -> Union[str, None]:
     >>> Если токен рабочий возвращаем None
     >>> Если токен нерабочий получаем новый и возвращаем его."""
 
-    discord_endpoint_url = 'https://discord.com/api/users/@me'
     # передаём заголовок с user-agent для того что бы сервер думал что данные отправляются с браузера
-    headersGET = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+    headers_get = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
+            AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         'authorization': token
     }
 
-    json_response = request_get(discord_endpoint_url, headersGET)
+    json_response = request_get(DISCORD_ENDPOINT_URL, headers_get)
 
     if json_response.get('code') == 0:
-        new_token = request_post(request_url, headersPOST, payload).get('token')
+        new_token = request_post(REQUEST_URL, HEADERS_POST, PAYLOAD).get('token')
         return new_token
-    else:
-        return
+    return None
 
 
 def token_verification() -> Union[str, None]:
@@ -78,20 +79,20 @@ def token_verification() -> Union[str, None]:
         if token:
             service_info.update(discord_token=token)
             return token
-        else:
-            return service_info[0].discord_token
-    else:
-        token = request_post(request_url, headersPOST, payload).get('token')
+        return service_info[0].discord_token
 
-        if token and service_info:
-            service_info.update(discord_token=token)
-        elif token:
-            service_info.create(discord_token=token)
-        return token
+    token = request_post(REQUEST_URL, HEADERS_POST, PAYLOAD).get('token')
+
+    if token and service_info:
+        service_info.update(discord_token=token)
+    elif token:
+        service_info.create(discord_token=token)
+    return token
 
 #############################################################################
 
 class DiscordChatParser:
+    """#### Класс для парсинга чата с помощью Discord API."""
 
     forbidding_flag = True
 
@@ -121,7 +122,7 @@ class DiscordChatParser:
 
         # при установлении соединения через вебсокет необходимо отправлять запрос
         # с полезной нагрузкой с токеном что бы сервер принял нас за авторизованного клиента
-        payload = {
+        fake_user_payload = {
             "op": 2,
             "d": {
                 "token": self.token,
@@ -133,7 +134,7 @@ class DiscordChatParser:
             }
         }
 
-        self.send_json_request(payload)
+        self.send_json_request(fake_user_payload)
 
 
     def send_json_request(self, request: dict):
@@ -225,7 +226,7 @@ class DiscordChatParser:
         while not self.ws.connected:
             try:
                 self.__init__()
-            except:
+            except Exception as e:
                 time.sleep(3)
 
 
@@ -237,11 +238,11 @@ class DiscordChatParser:
         while True:
             time.sleep(self.heartbeat_interval)
 
-            heartbeatJSON = {
+            HEARTBEAT_JSON = {
                 "op": 1,
                 "d": "null"
             }
-            self.send_json_request(heartbeatJSON)
+            self.send_json_request(HEARTBEAT_JSON)
 
 
 # единоразово создаём экземпляр класса DiscordChatParser при загрузке сервера
@@ -325,7 +326,7 @@ def event_trigger(data: dict):
 
 #############################################################################
 
-class AsyncAction_GetGameChatData(threading.Thread):
+class AsyncActionGetGameChatData(threading.Thread):
     """#### Потоковый класс для вызова запроса на получение данных с discord сервера в бесконечном цикле.
     >>> Остановить цикл можно вызвав метод stop() у экземпляра класса."""
 

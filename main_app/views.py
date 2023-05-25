@@ -93,7 +93,8 @@ def server_error(request):
     return render(request=request, template_name='errors/error_page.html', status=500, context={
         'code': 500,
         'title': _('Внутренняя ошибка сервера.'),
-        'error_message': _('Внутренняя ошибка сайта, вернитесь на главную страницу, отчёт об ошибке уже направлен администрации сайта.')
+        'error_message': _('Внутренняя ошибка сайта, вернитесь на главную страницу, \
+            отчёт об ошибке уже направлен администрации сайта.')
     })
 
 #############################################################################
@@ -132,6 +133,7 @@ def server_error(request):
 #############################################################################
 
 class HomeView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее домашнюю страницу."""
 
     template_name = 'main_app/home.html'
 
@@ -151,6 +153,8 @@ class HomeView(DataMixin, TemplateView):
 # https://docs.djangoproject.com/en/4.1/topics/pagination/
 # https://docs.djangoproject.com/en/4.1/ref/paginator/
 class GuidesListView(DataMixin, ListView):
+    """#### Представление обрабатывающее страницу списка гайдов."""
+
     # в классе ListView уже встроена пагинация
     # При использовании класса ListView в шаблон автоматически передаётся объект paginator и page_obj
     paginate_by: int = 99 # определяем свойство в котором указываем макс количество элементов на одной странице
@@ -184,6 +188,7 @@ class GuidesListView(DataMixin, ListView):
 #############################################################################
 
 class GuideView(DataMixin, FormView, DetailView):
+    """#### Представление обрабатывающее страницу гайда."""
 
     form_class = CommentsForm
 
@@ -203,7 +208,12 @@ class GuideView(DataMixin, FormView, DetailView):
         slug = self.request.META.get('PATH_INFO').split('/')[-2]
         guide = Guides.objects.get(slug=slug)
 
-        mptt_comments = Comments(guide=guide, author=self.request.user, parent=data['parent'], content=data['content'])
+        mptt_comments = Comments(
+            guide=guide,
+            author=self.request.user,
+            parent=data['parent'],
+            content=data['content']
+        )
         mptt_comments.save()
 
         return super(GuideView, self).form_valid(form)
@@ -246,17 +256,24 @@ class GuideView(DataMixin, FormView, DetailView):
 #############################################################################
 
 class VotesView(View):
+    """#### Представление обрабатывающее API установки оценок LIKE/DISLIKE."""
 
     model = None # Модель данных которая передаётся из urls.py
     vote_type = None # Тип оценки которая передаётся из urls.py
 
     def post(self, request: ASGIRequest, pk):
+        """Принимает primary key и получает объект из переданной модели,
+        создаёт/обновляет количество оценок и возвращает в ответе количество оценок."""
 
         # GenericForeignKey не поддерживает метод get_or_create
         obj: Union[Guides, Comments] = self.model.objects.get(pk=pk)
 
         try:
-            likedislike: LikeDislike = LikeDislike.objects.get(content_type=ContentType.objects.get_for_model(obj), object_id=obj.id, user=request.user)
+            likedislike: LikeDislike = LikeDislike.objects.get(
+                content_type=ContentType.objects.get_for_model(obj),
+                object_id=obj.id,
+                user=request.user
+            )
             if likedislike.vote is not self.vote_type:
                 likedislike.vote = self.vote_type
                 likedislike.save(update_fields=['vote'])
@@ -277,6 +294,7 @@ class VotesView(View):
 #############################################################################
 
 class FilteringGuidesView(DataMixin, ListView):
+    """#### Представление сортирующее список гайдов по категории переданной в url."""
 
     paginate_by: int = 99
 
@@ -313,35 +331,38 @@ class FilteringGuidesView(DataMixin, ListView):
         # ключ для kwargs 'category_slug' равен тому что написано в маршруте в urls.py
         if self.request.user.is_superuser:
             return Guides.objects.filter(category__slug=self.kwargs['category_slug']).select_related('category')
-        else:
-            return Guides.objects.filter(category__slug=self.kwargs['category_slug'], is_published=True).select_related('category')
+
+        return Guides.objects.filter(category__slug=self.kwargs['category_slug'],
+                                     is_published=True).select_related('category')
 
 #############################################################################
 
 class GameChatView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее игровой чат."""
 
     template_name = 'main_app/game_chat.html'
 
 #############################################################################
 
 class DevChatView(DataMixin, View):
-    """- Представление которое генерирует uuid4
+    """#### Представление которое генерирует uuid4\
     и использует его для создания уникального url адреса для веб-сокет комнаты."""
 
     def get(self, request, *args, **kwargs):
-        self.object = None
 
         return redirect('dev_chat_room', uuid4())
 
 #############################################################################
 
 class DevChatRoomView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее страницу чата разработчиков."""
 
     template_name = 'main_app/dev_chat_room.html'
 
 #############################################################################
 
 class StreamsView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее страницу стримов."""
 
     template_name = 'main_app/streams.html'
 
@@ -382,8 +403,6 @@ class StreamsView(DataMixin, TemplateView):
         и передаём эти данные в метод фильтрации если пользователь выбрал
         хотя бы один класс, либо отдаём список в шаблон без фильтрации."""
 
-        self.object = None
-
         game_classes = request.POST.keys()
 
         twitch_streams = twitch_stream_parser.get_twitch_stream_data()
@@ -416,6 +435,7 @@ class StreamsView(DataMixin, TemplateView):
 #############################################################################
 
 class ArenaPointCalculatorView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее страницу калькулятора очков арены."""
 
     template_name = 'main_app/ap_calculator.html'
 
@@ -444,8 +464,8 @@ class ArenaPointCalculatorView(DataMixin, TemplateView):
 
         if server_type:
             return floor(points)
-        else:
-            return round(points)
+
+        return round(points)
 
 
     def post(self, request: ASGIRequest, *args, **kwargs):
@@ -453,8 +473,6 @@ class ArenaPointCalculatorView(DataMixin, TemplateView):
         от пользователя и передаём в метод расчёта очков арены.
         - Затем возвращаем результат в шаблон в json формате
         который примет ajax скрипт."""
-
-        self.object = None
 
         data = {}
         for key, value in request.POST.items():
@@ -474,6 +492,7 @@ class ArenaPointCalculatorView(DataMixin, TemplateView):
 #############################################################################
 
 class RegisterView(DataMixin, RedirectAuthUser, CreateView):
+    """#### Представление обрабатывающее страницу регистрации."""
 
     redirect_auth_user_url = 'home'
 
@@ -505,12 +524,14 @@ class RegisterView(DataMixin, RedirectAuthUser, CreateView):
 #############################################################################
 
 class TermsOfUseView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее страницу условий использования."""
 
     template_name = 'auth/terms_of_use.html'
 
 #############################################################################
 
 class LoginCustomView(DataMixin, RedirectAuthUser, LoginView):
+    """#### Представление обрабатывающее страницу авторизации."""
 
     redirect_auth_user_url = 'home'
 
@@ -549,12 +570,12 @@ class LoginCustomView(DataMixin, RedirectAuthUser, LoginView):
 #############################################################################
 
 class LogoutCustomView(DataMixin, LoginRequiredMixin, LogoutView):
+    """#### Представление обрабатывающее выход из аккаунта."""
 
     raise_exception = True
     permission_denied_message = _("Вы уже вышли из аккаунта.")
 
     def get(self, request, *args, **kwargs):
-        self.object = None
 
         self.username = request.user.get_username()
 
@@ -569,6 +590,7 @@ class LogoutCustomView(DataMixin, LoginRequiredMixin, LogoutView):
 #############################################################################
 
 class PasswordResetCustomView1(DataMixin, RedirectAuthUser, PasswordResetView):
+    """#### Первое представление обрабатывающее сброс пароля."""
 
     redirect_auth_user_url = 'home'
 
@@ -601,6 +623,7 @@ class PasswordResetCustomView1(DataMixin, RedirectAuthUser, PasswordResetView):
 #############################################################################
 
 class PasswordResetCustomView2(DataMixin, RedirectAuthUser, PasswordResetView):
+    """#### Второе представление обрабатывающее сброс пароля."""
 
     redirect_auth_user_url = 'home'
 
@@ -614,8 +637,6 @@ class PasswordResetCustomView2(DataMixin, RedirectAuthUser, PasswordResetView):
     def get(self, request, *args, **kwargs):
         """Если пользователь пытается зайти на страницу для повторной отправки почты
         не использовав перед этим первую страницу, перенаправляем его на первую."""
-
-        self.object = None
 
         if not 'email' in request.session.keys():
             return redirect('password_reset1')
@@ -634,6 +655,8 @@ class PasswordResetCustomView2(DataMixin, RedirectAuthUser, PasswordResetView):
 #############################################################################
 
 class PasswordResetDoneCustomView(DataMixin, RedirectAuthUser, PasswordResetDoneView):
+    """#### Представление обрабатывающее информационную страницу\
+    об отправке письма для сброса пароля."""
 
     redirect_auth_user_url = 'home'
 
@@ -643,6 +666,7 @@ class PasswordResetDoneCustomView(DataMixin, RedirectAuthUser, PasswordResetDone
 
 # https://docs.djangoproject.com/en/4.1/topics/auth/default/
 class PasswordResetConfirmCustomView(DataMixin, RedirectAuthUser, PasswordResetConfirmView):
+    """#### Представление обрабатывающее страницу с формой для ввода нового пароля."""
 
     redirect_auth_user_url = 'home'
 
@@ -666,6 +690,7 @@ class PasswordResetConfirmCustomView(DataMixin, RedirectAuthUser, PasswordResetC
 #############################################################################
 
 class PasswordResetCompleteCustomView(DataMixin, RedirectAuthUser, PasswordResetCompleteView):
+    """#### Представление обрабатывающее страницу с сообщением об успешной смене пароля."""
 
     redirect_auth_user_url = 'home'
 
@@ -674,6 +699,7 @@ class PasswordResetCompleteCustomView(DataMixin, RedirectAuthUser, PasswordReset
 #############################################################################
 
 class ContactMeView(DataMixin, CreateView):
+    """#### Представление обрабатывающее страницу с формой для отправки обратной связи."""
 
     form_class = ContactMeForm
 
@@ -714,6 +740,7 @@ class ContactMeView(DataMixin, CreateView):
 #############################################################################
 
 class AccountView(DataMixin, LoginRequiredMixin, TemplateView):
+    """#### Представление обрабатывающее главную страницу аккаунта."""
 
     # перенаправляет неавторизованного пользователя на указанную страницу
     # (при выключенном raise_exception)
@@ -723,7 +750,8 @@ class AccountView(DataMixin, LoginRequiredMixin, TemplateView):
     # возбуждает исключение PermissionDenied при попытке входа неавторизованного пользователя
     raise_exception = True
     # кастомное сообщение для исключения PermissionDenied
-    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account"'
+    permission_denied_message = _("Для получения доступа к странице %s, \
+        войдите в свой аккаунт.") % '"/account"'
 
     template_name: str = 'account/account.html'
 
@@ -738,9 +766,11 @@ class AccountView(DataMixin, LoginRequiredMixin, TemplateView):
 #############################################################################
 
 class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
+    """#### Представление обрабатывающее страницу с настройками аккаунта."""
 
     raise_exception = True
-    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/settings"'
+    permission_denied_message = _("Для получения доступа к странице %s, \
+        войдите в свой аккаунт.") % '"/account/settings"'
 
     form_class = AccountSettingsForm
     template_name: str = 'account/account_settings.html'
@@ -758,22 +788,21 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
         """При входе на страницу настроек учётной записи, автоматически
         заполняем поля, информацией которую пользователь указывал ранее."""
 
-        self.object = None
-
-        self.initial = {'first_name': request.user.first_name, 'last_name': request.user.last_name,
-                        'birth_date': request.user.birth_date, 'gender': request.user.gender,
-                        'game_class': request.user.game_class, 'discord_username': request.user.discord_username,
-                        'battlenet_username': request.user.battlenet_username, 'twitch_link': request.user.twitch_link}
+        self.initial = {
+            'first_name': request.user.first_name, 'last_name': request.user.last_name,
+            'birth_date': request.user.birth_date, 'gender': request.user.gender,
+            'game_class': request.user.game_class, 'discord_username': request.user.discord_username,
+            'battlenet_username': request.user.battlenet_username, 'twitch_link': request.user.twitch_link
+        }
 
         return super().get(request, *args, **kwargs)
 
 
     # [Оставил метод для примера]
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        # метод getlist() возвращает данные в формате списка
-        # print(request.POST.getlist('game_class'))
-        return super().post(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     # метод getlist() возвращает данные в формате списка
+    #     print(request.POST.getlist('game_class'))
+    #     return super().post(request, *args, **kwargs)
 
 
     def form_invalid(self, form):
@@ -847,9 +876,11 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
 #############################################################################
 
 class PasswordChangeCustomView(DataMixin, LoginRequiredMixin, PasswordChangeView):
+    """#### Представление обрабатывающее страницу смены пароля внутри аккаунта."""
 
     raise_exception = True
-    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/password"'
+    permission_denied_message = _("Для получения доступа к странице %s, \
+        войдите в свой аккаунт.") % '"/account/password"'
 
     form_class = PasswordChangeCustomForm
     template_name: str = 'account/account_password.html'
@@ -867,9 +898,11 @@ class PasswordChangeCustomView(DataMixin, LoginRequiredMixin, PasswordChangeView
 #############################################################################
 
 class AccountEmailView(DataMixin, LoginRequiredMixin, FormView):
+    """#### Представление обрабатывающее страницу смены почты внутри аккаунта."""
 
     raise_exception = True
-    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/email"'
+    permission_denied_message = _("Для получения доступа к странице %s, \
+        войдите в свой аккаунт.") % '"/account/email"'
 
     form_class = AccountEmailForm
     template_name: str = 'account/account_email.html'
@@ -899,16 +932,17 @@ class AccountEmailView(DataMixin, LoginRequiredMixin, FormView):
 #############################################################################
 
 class AccountDeleteView(DataMixin, LoginRequiredMixin, TemplateView):
+    """#### Представление обрабатывающее страницу удаления аккаунта."""
 
     raise_exception = True
-    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/delete"'
+    permission_denied_message = _("Для получения доступа к странице %s, \
+        войдите в свой аккаунт.") % '"/account/delete"'
 
     template_name: str = 'account/account_delete.html'
 
     def post(self, request: ASGIRequest, *args, **kwargs):
         """Удаляем поле пользователя из БД, перенаправляем на домашнюю страницу и выводим сообщение."""
 
-        self.object = None
         context = self.get_context_data(**kwargs)
 
         if request.POST.get('DELETE_ACCOUNT'):
