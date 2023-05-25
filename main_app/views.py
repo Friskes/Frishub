@@ -15,6 +15,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.handlers.asgi import ASGIRequest
 from django.core.cache import cache
+from django.core.exceptions import BadRequest, PermissionDenied
 # from django.contrib.auth.models import User
 from django.contrib.auth.views import (
     LoginView, LogoutView, PasswordResetView,
@@ -47,20 +48,28 @@ from urllib.parse import unquote
 def bad_request(request, exception):
     """Обработка ошибки 400"""
 
+    error_message = _('Сервер не смог понять некорректный запрос.')
+    if type(exception) is BadRequest and str(exception):
+        error_message = str(exception)
+
     return render(request=request, template_name='errors/error_page.html', status=400, context={
         'code': 400,
         'title': _('Неверный запрос.'),
-        'error_message': _('Сервер не смог понять некорректный запрос.')
+        'error_message': error_message
     })
 
 
 def permission_denied(request, exception):
     """Обработка ошибки 403"""
 
+    error_message = _('Доступ к этой странице запрещён или ограничен по ряду причин.')
+    if type(exception) is PermissionDenied and str(exception):
+        error_message = str(exception)
+
     return render(request=request, template_name='errors/error_page.html', status=403, context={
         'code': 403,
         'title': _('Отказано в доступе.'),
-        'error_message': _('Доступ к этой странице запрещён или ограничен по ряду причин.')
+        'error_message': error_message
     })
 
 
@@ -68,7 +77,7 @@ def page_not_found(request, exception):
     """Обработка ошибки 404"""
 
     error_message = _('К сожалению страница не существует, либо была перемещена.')
-    if type(exception) is Http404:
+    if type(exception) is Http404 and str(exception):
         error_message = str(exception)
 
     return render(request=request, template_name='errors/error_page.html', status=404, context={
@@ -541,7 +550,8 @@ class LoginCustomView(DataMixin, RedirectAuthUser, LoginView):
 
 class LogoutCustomView(DataMixin, LoginRequiredMixin, LogoutView):
 
-    login_url = reverse_lazy('home')
+    raise_exception = True
+    permission_denied_message = _("Вы уже вышли из аккаунта.")
 
     def get(self, request, *args, **kwargs):
         self.object = None
@@ -705,7 +715,15 @@ class ContactMeView(DataMixin, CreateView):
 
 class AccountView(DataMixin, LoginRequiredMixin, TemplateView):
 
-    login_url = reverse_lazy('home')
+    # перенаправляет неавторизованного пользователя на указанную страницу
+    # (при выключенном raise_exception)
+    # login_url = reverse_lazy('home')
+    # redirect_field_name = ""
+
+    # возбуждает исключение PermissionDenied при попытке входа неавторизованного пользователя
+    raise_exception = True
+    # кастомное сообщение для исключения PermissionDenied
+    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account"'
 
     template_name: str = 'account/account.html'
 
@@ -721,7 +739,8 @@ class AccountView(DataMixin, LoginRequiredMixin, TemplateView):
 
 class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
 
-    login_url = reverse_lazy('home')
+    raise_exception = True
+    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/settings"'
 
     form_class = AccountSettingsForm
     template_name: str = 'account/account_settings.html'
@@ -829,7 +848,8 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
 
 class PasswordChangeCustomView(DataMixin, LoginRequiredMixin, PasswordChangeView):
 
-    login_url = reverse_lazy('home')
+    raise_exception = True
+    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/password"'
 
     form_class = PasswordChangeCustomForm
     template_name: str = 'account/account_password.html'
@@ -848,7 +868,8 @@ class PasswordChangeCustomView(DataMixin, LoginRequiredMixin, PasswordChangeView
 
 class AccountEmailView(DataMixin, LoginRequiredMixin, FormView):
 
-    login_url = reverse_lazy('home')
+    raise_exception = True
+    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/email"'
 
     form_class = AccountEmailForm
     template_name: str = 'account/account_email.html'
@@ -879,7 +900,8 @@ class AccountEmailView(DataMixin, LoginRequiredMixin, FormView):
 
 class AccountDeleteView(DataMixin, LoginRequiredMixin, TemplateView):
 
-    login_url = reverse_lazy('home')
+    raise_exception = True
+    permission_denied_message = _("Для получения доступа к странице %s, войдите в свой аккаунт.") % '"/account/delete"'
 
     template_name: str = 'account/account_delete.html'
 
