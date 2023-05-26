@@ -241,17 +241,17 @@ class AccountSettingsForm(ModelForm):
                 return full_url
 
 
-    def humanize_size(self, bytes: int, decimals: int=1) -> str:
+    def humanize_size(self, bytes_size: int, decimals: int=1) -> str:
         """Конвертирует байты в крайний объем информации для переданного объёма байт,
         и оставляет 1 знак после запятой (по умолчанию),
         так же добавляет суффикс в конце строки."""
 
-        if bytes == 0: return '0'
+        if bytes_size == 0: return '0'
         suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-        power = math.floor(math.log(bytes, 1024))
-        # return f'{round(bytes / math.pow(1024, power), decimals)} {suffixes[power]}'
-        # return f'{bytes / math.pow(1024, power):.{decimals}f} {suffixes[power]}'
-        return f'{bytes / math.pow(1024, power):.{decimals}f}'.rstrip('0').rstrip('.') + f' {suffixes[power]}'
+        power = math.floor(math.log(bytes_size, 1024))
+        # return f'{round(bytes_size / math.pow(1024, power), decimals)} {suffixes[power]}'
+        # return f'{bytes_size / math.pow(1024, power):.{decimals}f} {suffixes[power]}'
+        return f'{bytes_size / math.pow(1024, power):.{decimals}f}'.rstrip('0').rstrip('.') + f' {suffixes[power]}'
 
 
     def clean_avatar(self):

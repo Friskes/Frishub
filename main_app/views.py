@@ -638,7 +638,7 @@ class PasswordResetCustomView2(DataMixin, RedirectAuthUser, PasswordResetView):
         """Если пользователь пытается зайти на страницу для повторной отправки почты
         не использовав перед этим первую страницу, перенаправляем его на первую."""
 
-        if not 'email' in request.session.keys():
+        if 'email' not in request.session.keys():
             return redirect('password_reset1')
 
         return super().get(request, *args, **kwargs)

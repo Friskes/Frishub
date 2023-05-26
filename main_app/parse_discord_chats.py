@@ -279,11 +279,11 @@ def sorting_chat_message(event_data: dict,
         for message in content.split('\n'):
 
             if player_nickname:
-                if not f"][**{player_nickname}**]:" in message:
+                if f"][**{player_nickname}**]:" not in message:
                     continue
 
             if only_twitch:
-                if not 'twitch.tv/' in message:
+                if 'twitch.tv/' not in message:
                     continue
 
             # фильтры для (wotlk-x1, wotlk_x5_alliance, wotlk_x5_horde, wotlk_x100_alliance, wotlk_x100_horde)

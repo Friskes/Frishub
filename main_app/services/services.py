@@ -1,7 +1,8 @@
 import time
 import requests
 
-# import logging
+import logging
+log = logging.getLogger(__name__)
 # logging.basicConfig(level=logging.INFO, filename="py_log.log", filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
 
@@ -20,19 +21,29 @@ def request_post(url: str, headers: dict, payload: dict) -> dict:
 
 #############################################################################
 
-def request(type: str, url: str, headers: dict=None, payload: dict=None) -> requests.models.Response:
+def request(req_type: str, url: str, headers: dict=None, payload: dict=None) -> requests.models.Response:
     """Отправляет get/post запрос и при возникновении исключений делает повторные запросы
     в бесконечном цикле пока не получит ответ."""
 
     while True:
         try:
-            if type == 'get':
-                return requests.get(url=url, headers=headers, timeout=5)
-            return requests.post(url=url, json=payload, headers=headers, timeout=5)
+            if req_type == 'get':
+                with requests.get(url=url, headers=headers, timeout=5) as response:
+                    response.raise_for_status()
+                    return response
 
-        except requests.exceptions.ReadTimeout as error:
+            with requests.post(url=url, json=payload, headers=headers, timeout=5) as response:
+                response.raise_for_status()
+                return response
+
+        except requests.exceptions.RequestException as error: # родительский exception
+            log.error(error)
             time.sleep(2)
-        except requests.exceptions.ConnectTimeout as error:
-            time.sleep(2)
+        # except requests.exceptions.ReadTimeout as error:
+        #     log.error(error)
+        #     time.sleep(2)
+        # except requests.exceptions.ConnectTimeout as error:
+        #     log.error(error)
+        #     time.sleep(2)
 
 #############################################################################

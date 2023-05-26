@@ -322,7 +322,7 @@ class GameChatConsumer(WebsocketConsumer):
 #         # print('>>> DEF RECEIVE <<<')
 
 #         message = content.get("message")
-#         if not message is None:
+#         if message is not None:
 #             # print('MESSAGE:', repr(message))
 
 #             self.rooms_data[self.room_id]['chat_text'] = message
@@ -404,7 +404,7 @@ class GameChatConsumer(WebsocketConsumer):
 #         """Принимает ивент и отправляет его всем/[всем кроме отправителя] подключенным потребителям на фронт."""
 
 #         message = event.get("message")
-#         if not message is None:
+#         if message is not None:
 #             # пропускаем отправителя для отправки
 #             # (т.к. для обновления чата у себя между вкладками лучше использовать localStorage на фронте)
 #             # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender/57035230#57035230
@@ -657,7 +657,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # print('>>> DEF RECEIVE <<<')
 
         message = content.get("message")
-        if not message is None:
+        if message is not None:
             # print('MESSAGE:', repr(message))
 
             self.rooms_data[self.room_id]['chat_text'] = message
@@ -739,7 +739,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         """Принимает ивент и отправляет его всем/[всем кроме отправителя] подключенным потребителям на фронт."""
 
         message = event.get("message")
-        if not message is None:
+        if message is not None:
             # пропускаем отправителя для отправки
             # (т.к. для обновления чата у себя между вкладками лучше использовать localStorage на фронте)
             # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender/57035230#57035230
