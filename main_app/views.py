@@ -40,6 +40,9 @@ from typing import Union
 from uuid import uuid4
 from urllib.parse import unquote
 
+import logging
+log = logging.getLogger(__name__)
+
 
 # Create your views here.
 

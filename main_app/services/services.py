@@ -3,7 +3,6 @@ import requests
 
 import logging
 log = logging.getLogger(__name__)
-# logging.basicConfig(level=logging.INFO, filename="py_log.log", filemode="w", format="%(asctime)s %(levelname)s %(message)s")
 
 
 #############################################################################
@@ -37,13 +36,7 @@ def request(req_type: str, url: str, headers: dict=None, payload: dict=None) -> 
                 return response
 
         except requests.exceptions.RequestException as error: # родительский exception
-            log.error(error)
+            log.info(f'[def request] RequestException:\n{error}')
             time.sleep(2)
-        # except requests.exceptions.ReadTimeout as error:
-        #     log.error(error)
-        #     time.sleep(2)
-        # except requests.exceptions.ConnectTimeout as error:
-        #     log.error(error)
-        #     time.sleep(2)
 
 #############################################################################

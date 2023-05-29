@@ -18,6 +18,9 @@ import json
 # import codecs
 # from random import randint
 
+import logging
+log = logging.getLogger(__name__)
+
 
 # https://channels.readthedocs.io/en/latest/topics/channel_layers.html
 # https://github.com/django/asgiref/blob/main/specs/www.rst#http-connection-scope
@@ -129,6 +132,7 @@ class GameChatConsumer(WebsocketConsumer):
 #     '''Clear the readonly bit and reattempt the removal'''
 #     os.chmod(path, stat.S_IWRITE)
 #     func(path)
+
 
 # class DevChatHistory:
 

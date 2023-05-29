@@ -15,7 +15,6 @@ import websocket
 import json
 import threading
 import time
-from datetime import datetime as dt
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -26,10 +25,9 @@ from main_app.models import ServiceInfo
 from FriskesSite import settings
 
 from typing import Union, Dict
-from ssl import SSLError
 
-# import logging
-# logging.basicConfig(level=logging.INFO, filename="py_log.log", filemode="w", format="%(asctime)s %(levelname)s %(message)s")
+import logging
+log = logging.getLogger(__name__)
 
 
 #############################################################################
@@ -102,7 +100,7 @@ class DiscordChatParser:
         единоразово запускаем бесконечный цикл в отдельном потоке для пинга сервера
         и отправляем запрос с токеном для того чтобы сервер думал что мы человек."""
 
-        # print(f'>>> {dt.now().strftime("%H:%M:%S")} DiscordChatParser __init__ <<<')
+        log.debug(f'[class DiscordChatParser -> def __init__]')
 
         self.token = token_verification()
 
@@ -143,26 +141,9 @@ class DiscordChatParser:
 
         try:
             self.ws.send(json.dumps(request))
-            # print(f'>>> {dt.now().strftime("%H:%M:%S")} Heartbeat Sent Request:', request)
-
-        except websocket.WebSocketConnectionClosedException as e:
-            # print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (send_json_request) WebSocketConnectionClosedException:', e)
-            pass
-
-        except ConnectionResetError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (send_json_request) ConnectionResetError:', e)
-
-        except SSLError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (send_json_request) SSLError:', e)
-
-        except websocket.WebSocketTimeoutException as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (send_json_request) WebSocketTimeoutException:', e)
-
-        except websocket.WebSocketProtocolException as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (send_json_request) WebSocketProtocolException:', e)
-
-        except BrokenPipeError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (send_json_request) BrokenPipeError:', e)
+            log.debug(f'[class DiscordChatParser -> def send_json_request] Heartbeat Sent Request:\n{request}')
+        except Exception as error:
+            log.info(f'[class DiscordChatParser -> def send_json_request] Exception:\n{error}')
 
 
     def recieve_json_response(self) -> Dict[dict, list]:
@@ -184,40 +165,25 @@ class DiscordChatParser:
                     return json.loads(responce)
 
                 # Expecting value: line 1 column 1 (char 0)
-                except json.decoder.JSONDecodeError as e:
-                    print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) JSONDecodeError:', e)
-                    print(f'^^^ {dt.now().strftime("%H:%M:%S")}', repr(responce))
+                except json.decoder.JSONDecodeError as error:
+                    log.info(f'[class DiscordChatParser -> def recieve_json_response] \
+                        JSONDecodeError:\n{error}\n{repr(responce)}')
 
         # ("Connection to remote host was lost.")
         # ("socket is already closed.")
-        except websocket.WebSocketConnectionClosedException as e:
-            # print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) WebSocketConnectionClosedException:', e)
+        except websocket.WebSocketConnectionClosedException as error:
+            log.info(f'[class DiscordChatParser -> def recieve_json_response] \
+                WebSocketConnectionClosedException:\n{error}')
             self.re_connect()
-
-        # ConnectionResetError: [WinError 10054] Удаленный хост принудительно разорвал существующее подключение
-        except ConnectionResetError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) ConnectionResetError:', e)
 
         # WebSocketProtocolException("rsv is not implemented, yet")
-        except websocket.WebSocketProtocolException as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) WebSocketProtocolException:', e)
+        except websocket.WebSocketProtocolException as error:
+            log.info(f'[class DiscordChatParser -> def recieve_json_response] \
+                WebSocketProtocolException:\n{error}')
             self.re_connect()
 
-        # ssl.SSLError: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:2629)
-        except SSLError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) SSLError:', e)
-
-        # cannot decode:
-        except websocket.WebSocketPayloadException as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) WebSocketPayloadException:', e)
-
-        # [Errno 32] Broken pipe
-        except BrokenPipeError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) BrokenPipeError:', e)
-
-        # 'utf-8' codec can't decode byte 0xd4 in position 0: invalid continuation byte
-        except UnicodeDecodeError as e:
-            print(f'>>> {dt.now().strftime("%H:%M:%S")} Исключение (recieve_json_response) UnicodeDecodeError:', e)
+        except Exception as error:
+            log.info(f'[class DiscordChatParser -> def recieve_json_response] Exception:\n{error}')
 
 
     def re_connect(self):
@@ -226,7 +192,8 @@ class DiscordChatParser:
         while not self.ws.connected:
             try:
                 self.__init__()
-            except Exception as e:
+            except Exception as error:
+                log.info(f'[class DiscordChatParser -> def re_connect] Exception:\n{error}')
                 time.sleep(3)
 
 

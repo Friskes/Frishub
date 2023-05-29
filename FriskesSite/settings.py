@@ -72,7 +72,7 @@ MIDDLEWARE = [
 
     # плагин для отлова ошибок которые не были отловлены в бизнес логике приложения
     # и отправки Traceback'a ошибок администраторам на почту
-    'main_app.middleware.catch_errors.ErrorHandlerMiddleware',
+    # 'main_app.middleware.catch_errors.ErrorHandlerMiddleware',
 ]
 
 ROOT_URLCONF = 'FriskesSite.urls'
@@ -220,6 +220,13 @@ RECAPTCHA_PRIVATE_KEY = ''
 try:
     service_info = ServiceInfo.objects.all()
     EMAIL_HOST_USER = service_info[0].server_email_login
+
+    SERVER_EMAIL = EMAIL_HOST_USER
+    ADMINS = (
+        ('Friskes', EMAIL_HOST_USER),
+    )
+    EMAIL_SUBJECT_PREFIX = ""
+
     EMAIL_HOST_PASSWORD = service_info[0].server_email_password
     DISCORD_LOGIN = service_info[0].discord_login
     DISCORD_PASSWORD = service_info[0].discord_password
@@ -228,3 +235,60 @@ try:
     RECAPTCHA_PUBLIC_KEY = service_info[0].recaptcha_public_key
     RECAPTCHA_PRIVATE_KEY = service_info[0].recaptcha_private_key
 except Exception: pass
+
+
+# https://docs.djangoproject.com/en/4.2/topics/logging/
+# https://docs.djangoproject.com/en/4.2/ref/logging/#logging-ref
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": { # словарь с шаблонами форматирования строки
+        # "verbose": { # расширенный
+        #     "format": "{levelname} {asctime} {module}.py {process:d} {thread:d} {message}",
+        #     "style": "{",
+        # },
+        "medium": { # средний
+            "format": "{levelname} {asctime} {module}.py {message}", # {server_time}
+            "style": "{",
+        },
+        "simple": { # простой
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "filters": { # словарь с фильтрами
+        "require_debug_true": { # писать лог сообщение только при DEBUG = True
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        "require_debug_false": { # писать лог сообщение только при DEBUG = False
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "handlers": { # словарь с обработчиками логов
+        "console_local": {
+            "level": "DEBUG", # все уровни >= указанного уровня будут обработаны этим обработчиком
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "console_prod": {
+            "level": "INFO", # все уровни >= указанного уровня будут обработаны этим обработчиком
+            "filters": ["require_debug_false"],
+            "class": "logging.StreamHandler",
+            "formatter": "medium",
+        },
+        # "file": {
+        #     "level": "ERROR", # все уровни >= указанного уровня будут обработаны этим обработчиком
+        #     "filters": ["require_debug_false"],
+        #     "class": "logging.FileHandler",
+        #     "formatter": "medium",
+        #     "filename": BASE_DIR / "logs/log.log", # директория "logs/" должна быть создана вручную.
+        # },
+    },
+    "loggers": {
+        "main_app": { # название приложения
+            "handlers": ["console_local", "console_prod"],
+            "level": "INFO", # все уровни >= указанного уровня будут переданы в указанные обработчики
+        },
+    },
+}

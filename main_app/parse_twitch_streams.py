@@ -8,6 +8,9 @@ from FriskesSite import settings
 
 from typing import Union, List
 
+import logging
+log = logging.getLogger(__name__)
+
 
 #############################################################################
 

@@ -54,8 +54,9 @@ class ErrorHandlerMiddleware(MiddlewareMixin):
         view_name = request.resolver_match.view_name
         path = f'Internal Server Error: {request.path}'
 
-        message = (("-"*99) + "\n{0}\n{1}\n\n{2}\n{3}" + ("-"*99)).format(error_url, view_name, path, self.traceback_exc)
-        log.error(message)
+        long_dash = "—"*99
+        message = f"{long_dash}\n{error_url}\n{view_name}\n\n{path}\n{self.traceback_exc}{long_dash}"
+        log.warning(f'[class ErrorHandlerMiddleware -> def send_mail_with_error_log]:\n{message}')
 
         send_mail(
             subject=message_head,
