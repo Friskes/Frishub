@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-25 14:26+0300\n"
+"POT-Creation-Date: 2023-05-31 00:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,154 +18,158 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\main_app\forms.py:41 .\main_app\forms.py:84
-#: .\main_app\templates\account\account_settings.html:319
+#: .\main_app\forms.py:42 .\main_app\forms.py:86
+#: .\main_app\templates\account\account_settings.html:322
 msgid "Имя пользователя"
 msgstr "Username"
 
-#: .\main_app\forms.py:45 .\main_app\forms.py:88
+#: .\main_app\forms.py:46 .\main_app\forms.py:90
 msgid "Пароль"
 msgstr "Password"
 
-#: .\main_app\forms.py:49 .\main_app\forms.py:126 .\main_app\forms.py:293
+#: .\main_app\forms.py:50 .\main_app\forms.py:130 .\main_app\forms.py:301
 msgid "Подтвердите пароль"
 msgstr "Confirm your password"
 
-#: .\main_app\forms.py:53 .\main_app\forms.py:102 .\main_app\forms.py:146
-#: .\main_app\templates\account\account_settings.html:325
+#: .\main_app\forms.py:54 .\main_app\forms.py:105 .\main_app\forms.py:151
+#: .\main_app\templates\account\account_settings.html:328
 #: .\main_app\templates\main_app\guide.html:467
 #: .\main_app\templates\main_app\guide.html:640
 msgid "Адрес электронной почты"
 msgstr "Email address"
 
-#: .\main_app\forms.py:68 .\main_app\forms.py:327
+#: .\main_app\forms.py:69 .\main_app\forms.py:336
 msgid "Такой почтовый адрес уже существует."
 msgstr "Such a mailing address already exists."
 
-#: .\main_app\forms.py:115
+#: .\main_app\forms.py:118
 msgid "Такого почтового адреса не существует."
 msgstr "There is no such postal address."
 
-#: .\main_app\forms.py:125 .\main_app\forms.py:291
-#: .\main_app\templates\auth\password_reset_confirm.html:94
+#: .\main_app\forms.py:129 .\main_app\forms.py:299
+#: .\main_app\templates\auth\password_reset_confirm.html:97
 msgid "Новый пароль"
 msgstr "New password"
 
-#: .\main_app\forms.py:155
+#: .\main_app\forms.py:160
 msgid "Напишите ваше обращение к администрации сайта"
 msgstr "Write your appeal to the site administration"
 
-#: .\main_app\forms.py:225
+#: .\main_app\forms.py:231
 msgid "Неправильная ссылка."
 msgstr "Incorrect link."
 
-#: .\main_app\forms.py:266
+#: .\main_app\forms.py:272
+#, fuzzy
+#| msgid ""
+#| "Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, ваш "
+#| "файл имеет разрешение "
 msgid ""
-"Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, ваш "
-"файл имеет разрешение "
+"Загружаемый файл должен иметь разрешение не более 1920x1920 "
+"пикселей,                 ваш файл имеет разрешение "
 msgstr ""
 "The uploaded file must have a resolution of no more than 1920x1920 pixels, "
 "your file has a resolution of"
 
-#: .\main_app\forms.py:266
+#: .\main_app\forms.py:273
 msgid " пикселей"
 msgstr " pixels"
 
-#: .\main_app\forms.py:267
+#: .\main_app\forms.py:274
 msgid "Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём "
 msgstr ""
 "The downloaded file should have a volume of no more than 6MB, your file has "
 "a volume of "
 
-#: .\main_app\forms.py:289
+#: .\main_app\forms.py:297
 msgid "Текущий пароль"
 msgstr "Current password"
 
-#: .\main_app\forms.py:308
+#: .\main_app\forms.py:317
 msgid "Новый почтовый адрес"
 msgstr "New mailing address"
 
-#: .\main_app\forms.py:352
+#: .\main_app\forms.py:363
 msgid "Введите текст комментария"
 msgstr "Enter the comment text"
 
-#: .\main_app\models.py:52 .\main_app\templates\main_app\guide.html:502
+#: .\main_app\models.py:61 .\main_app\templates\main_app\guide.html:502
 #: .\main_app\templates\main_app\guide.html:675
 msgid "Мужчина"
 msgstr "Man"
 
-#: .\main_app\models.py:53 .\main_app\templates\main_app\guide.html:504
+#: .\main_app\models.py:62 .\main_app\templates\main_app\guide.html:504
 #: .\main_app\templates\main_app\guide.html:677
 msgid "Женщина"
 msgstr "Woman"
 
-#: .\main_app\models.py:55 .\main_app\templates\main_app\guide.html:499
+#: .\main_app\models.py:64 .\main_app\templates\main_app\guide.html:499
 #: .\main_app\templates\main_app\guide.html:672
 msgid "Пол"
 msgstr "Gender"
 
-#: .\main_app\models.py:61
+#: .\main_app\models.py:70
 msgid "Аватар"
 msgstr "Avatar"
 
-#: .\main_app\models.py:66 .\main_app\templates\main_app\guide.html:491
+#: .\main_app\models.py:75 .\main_app\templates\main_app\guide.html:491
 #: .\main_app\templates\main_app\guide.html:664
 msgid "Дата рождения"
 msgstr "Date of birth"
 
-#: .\main_app\models.py:68
+#: .\main_app\models.py:77
 msgid "Имя пользователя Discord"
 msgstr "Discord User Name"
 
-#: .\main_app\models.py:70
+#: .\main_app\models.py:79
 msgid "Имя пользователя Battle.net"
 msgstr "User name Battle.net"
 
-#: .\main_app\models.py:74
+#: .\main_app\models.py:83
 msgid "Ссылка на ваш Twitch"
 msgstr "Link to your Twitch"
 
-#: .\main_app\models.py:77 .\main_app\models.py:212
+#: .\main_app\models.py:86 .\main_app\models.py:214
 msgid "Воин"
 msgstr "Warrior"
 
-#: .\main_app\models.py:77 .\main_app\models.py:213
+#: .\main_app\models.py:86 .\main_app\models.py:215
 msgid "Паладин"
 msgstr "Paladin"
 
-#: .\main_app\models.py:77 .\main_app\models.py:214
+#: .\main_app\models.py:86 .\main_app\models.py:216
 msgid "Охотник"
 msgstr "Hunter"
 
-#: .\main_app\models.py:78 .\main_app\models.py:215
+#: .\main_app\models.py:87 .\main_app\models.py:217
 msgid "Разбойник"
 msgstr "Rogue"
 
-#: .\main_app\models.py:78 .\main_app\models.py:216
+#: .\main_app\models.py:87 .\main_app\models.py:218
 msgid "Жрец"
 msgstr "Priest"
 
-#: .\main_app\models.py:78 .\main_app\models.py:217
+#: .\main_app\models.py:87 .\main_app\models.py:219
 msgid "Рыцарь Смерти"
 msgstr "Death Knight"
 
-#: .\main_app\models.py:79 .\main_app\models.py:218
+#: .\main_app\models.py:88 .\main_app\models.py:220
 msgid "Шаман"
 msgstr "Shaman"
 
-#: .\main_app\models.py:79 .\main_app\models.py:219
+#: .\main_app\models.py:88 .\main_app\models.py:221
 msgid "Маг"
 msgstr "Mage"
 
-#: .\main_app\models.py:79 .\main_app\models.py:220
+#: .\main_app\models.py:88 .\main_app\models.py:222
 msgid "Чернокнижник"
 msgstr "Warlock"
 
-#: .\main_app\models.py:79 .\main_app\models.py:221
+#: .\main_app\models.py:88 .\main_app\models.py:223
 msgid "Друид"
 msgstr "Druid"
 
-#: .\main_app\models.py:86
+#: .\main_app\models.py:95
 msgid "Игровой класс"
 msgstr "Game class"
 
@@ -186,6 +190,7 @@ msgstr "Game class"
 #: .\main_app\templates\errors\error_page.html:42
 #: .\main_app\templates\main_app\ap_calculator.html:160
 #: .\main_app\templates\main_app\dev_chat_room.html:339
+#: .\main_app\templates\main_app\dressing_room.html:19
 #: .\main_app\templates\main_app\game_chat.html:216
 #: .\main_app\templates\main_app\guides_list.html:18
 #: .\main_app\templates\main_app\home.html:17
@@ -210,10 +215,11 @@ msgstr "Main"
 #: .\main_app\templates\errors\error_page.html:45
 #: .\main_app\templates\main_app\ap_calculator.html:163
 #: .\main_app\templates\main_app\dev_chat_room.html:342
+#: .\main_app\templates\main_app\dressing_room.html:22
 #: .\main_app\templates\main_app\game_chat.html:219
 #: .\main_app\templates\main_app\guides_list.html:21
 #: .\main_app\templates\main_app\home.html:20
-#: .\main_app\templates\main_app\home.html:91
+#: .\main_app\templates\main_app\home.html:94
 #: .\main_app\templates\main_app\streams.html:181
 msgid "Гайды"
 msgstr "Guides"
@@ -235,11 +241,12 @@ msgstr "Guides"
 #: .\main_app\templates\errors\error_page.html:48
 #: .\main_app\templates\main_app\ap_calculator.html:166
 #: .\main_app\templates\main_app\dev_chat_room.html:345
+#: .\main_app\templates\main_app\dressing_room.html:25
 #: .\main_app\templates\main_app\game_chat.html:222
-#: .\main_app\templates\main_app\game_chat.html:262
+#: .\main_app\templates\main_app\game_chat.html:265
 #: .\main_app\templates\main_app\guides_list.html:24
 #: .\main_app\templates\main_app\home.html:23
-#: .\main_app\templates\main_app\home.html:94
+#: .\main_app\templates\main_app\home.html:97
 #: .\main_app\templates\main_app\streams.html:184
 msgid "Игровой чат"
 msgstr "Game chat"
@@ -261,10 +268,11 @@ msgstr "Game chat"
 #: .\main_app\templates\errors\error_page.html:51
 #: .\main_app\templates\main_app\ap_calculator.html:169
 #: .\main_app\templates\main_app\dev_chat_room.html:348
+#: .\main_app\templates\main_app\dressing_room.html:28
 #: .\main_app\templates\main_app\game_chat.html:225
 #: .\main_app\templates\main_app\guides_list.html:27
 #: .\main_app\templates\main_app\home.html:26
-#: .\main_app\templates\main_app\home.html:97
+#: .\main_app\templates\main_app\home.html:100
 #: .\main_app\templates\main_app\streams.html:187
 msgid "Стримы"
 msgstr "Streams"
@@ -286,114 +294,20 @@ msgstr "Streams"
 #: .\main_app\templates\errors\error_page.html:56
 #: .\main_app\templates\main_app\ap_calculator.html:174
 #: .\main_app\templates\main_app\dev_chat_room.html:353
+#: .\main_app\templates\main_app\dressing_room.html:33
 #: .\main_app\templates\main_app\game_chat.html:230
 #: .\main_app\templates\main_app\guides_list.html:32
 #: .\main_app\templates\main_app\home.html:31
-#: .\main_app\templates\main_app\home.html:100
 #: .\main_app\templates\main_app\streams.html:192
-msgid "Калькулятор апа"
-msgstr "Calculator AP"
+msgid "Примерочная"
+msgstr "Dressing room"
 
-#: .\main_app\templates\account\account.html:89
-#: .\main_app\templates\account\account_delete.html:83
-#: .\main_app\templates\account\account_email.html:77
-#: .\main_app\templates\account\account_password.html:77
-#: .\main_app\templates\account\account_settings.html:287
-#: .\main_app\templates\auth\contact_me.html:112
-#: .\main_app\templates\auth\terms_of_use.html:49
-#: .\main_app\templates\errors\error_page.html:66
-#: .\main_app\templates\main_app\ap_calculator.html:184
-#: .\main_app\templates\main_app\dev_chat_room.html:363
-#: .\main_app\templates\main_app\game_chat.html:240
-#: .\main_app\templates\main_app\guides_list.html:42
-#: .\main_app\templates\main_app\home.html:41
-#: .\main_app\templates\main_app\streams.html:202
-msgid "Выйти"
-msgstr "Exit"
-
-#: .\main_app\templates\account\account.html:105
-msgid "Добро пожаловать"
-msgstr "Welcome"
-
-#: .\main_app\templates\account\account.html:113
-#: .\main_app\templates\account\account_settings.html:303
-msgid "Настройки учётной записи"
-msgstr "Account Settings"
-
-#: .\main_app\templates\account\account.html:122
-#: .\main_app\templates\account\account_password.html:93
-msgid "Изменить пароль"
-msgstr "Change Password"
-
-#: .\main_app\templates\account\account.html:131
-msgid "Изменить электронную почту"
-msgstr "Change Email"
-
-#: .\main_app\templates\account\account.html:145
-#: .\main_app\templates\account\account.html:158
-#: .\main_app\templates\main_app\base.html:866
-#: .\main_app\templates\main_app\base.html:879
-msgid "Связь со мной"
-msgstr "Contact with me"
-
-#: .\main_app\templates\account\account.html:149
-#: .\main_app\templates\main_app\guide.html:514
-#: .\main_app\templates\main_app\guide.html:687
-msgid "Закрыть"
-msgstr "Close"
-
-#: .\main_app\templates\account\account.html:166
-#: .\main_app\templates\account\account_delete.html:138
-msgid "Удалить учётную запись"
-msgstr "Delete an account"
-
-#: .\main_app\templates\account\account_delete.html:99
-msgid "Безвозвратное удаление учётной записи"
-msgstr "Irrevocable account deletion"
-
-#: .\main_app\templates\account\account_delete.html:103
-msgid "Все ваши личные данные будут удалены."
-msgstr "All your personal data will be deleted."
-
-#: .\main_app\templates\account\account_delete.html:104
-msgid "Удаление не может быть отменено."
-msgstr "The deletion cannot be undone."
-
-#: .\main_app\templates\account\account_delete.html:110
-msgid "Я подтверждаю, что хочу удалить свою учётную запись."
-msgstr "I confirm that I want to delete my account."
-
-#: .\main_app\templates\account\account_email.html:93
-msgid "Изменить адрес электронной почты"
-msgstr "Change Email Address"
-
-#: .\main_app\templates\account\account_email.html:98
-#: .\main_app\templates\auth\contact_me.html:145
-msgid "Текущий адрес электронной почты"
-msgstr "Current email address"
-
-#: .\main_app\templates\account\account_email.html:113
-#: .\main_app\templates\account\account_password.html:115
-#: .\main_app\templates\account\account_settings.html:511
-#: .\main_app\templates\auth\password_reset_confirm.html:112
-msgid "Сохранить"
-msgstr "Save"
-
-#: .\main_app\templates\account\account_settings.html:331
-#: .\main_app\templates\main_app\guide.html:473
-#: .\main_app\templates\main_app\guide.html:646
-msgid "Дата создания учётной записи"
-msgstr "Account creation date"
-
-#: .\main_app\templates\account\account_settings.html:528
-msgid "Вы можете выбрать максимум 3 игровых класса."
-msgstr "You can choose a maximum of 3 game classes."
-
-#: .\main_app\templates\account\account_settings.html:547
-msgid "Не найдено:"
-msgstr "Not found:"
-
-#: .\main_app\templates\auth\contact_me.html:116
+#: .\main_app\templates\account\account.html:83
+#: .\main_app\templates\account\account_delete.html:77
+#: .\main_app\templates\account\account_email.html:71
+#: .\main_app\templates\account\account_password.html:71
+#: .\main_app\templates\account\account_settings.html:281
+#: .\main_app\templates\auth\contact_me.html:105
 #: .\main_app\templates\auth\login.html:186
 #: .\main_app\templates\auth\password_reset1.html:76
 #: .\main_app\templates\auth\password_reset2.html:149
@@ -401,44 +315,167 @@ msgstr "Not found:"
 #: .\main_app\templates\auth\password_reset_confirm.html:75
 #: .\main_app\templates\auth\password_reset_done.html:129
 #: .\main_app\templates\auth\register.html:112
-#: .\main_app\templates\auth\register.html:176
-#: .\main_app\templates\auth\terms_of_use.html:53
-#: .\main_app\templates\errors\error_page.html:70
-#: .\main_app\templates\main_app\ap_calculator.html:188
-#: .\main_app\templates\main_app\dev_chat_room.html:367
-#: .\main_app\templates\main_app\game_chat.html:244
-#: .\main_app\templates\main_app\guides_list.html:46
-#: .\main_app\templates\main_app\home.html:45
-#: .\main_app\templates\main_app\streams.html:206
-msgid "Регистрация"
-msgstr "Register"
+#: .\main_app\templates\auth\terms_of_use.html:42
+#: .\main_app\templates\errors\error_page.html:59
+#: .\main_app\templates\main_app\ap_calculator.html:177
+#: .\main_app\templates\main_app\dev_chat_room.html:356
+#: .\main_app\templates\main_app\dressing_room.html:36
+#: .\main_app\templates\main_app\game_chat.html:233
+#: .\main_app\templates\main_app\guides_list.html:35
+#: .\main_app\templates\main_app\home.html:34
+#: .\main_app\templates\main_app\home.html:103
+#: .\main_app\templates\main_app\streams.html:195
+msgid "Калькулятор апа"
+msgstr "Calculator AP"
+
+#: .\main_app\templates\account\account.html:92
+#: .\main_app\templates\account\account_delete.html:86
+#: .\main_app\templates\account\account_email.html:80
+#: .\main_app\templates\account\account_password.html:80
+#: .\main_app\templates\account\account_settings.html:290
+#: .\main_app\templates\auth\contact_me.html:115
+#: .\main_app\templates\auth\terms_of_use.html:52
+#: .\main_app\templates\errors\error_page.html:69
+#: .\main_app\templates\main_app\ap_calculator.html:187
+#: .\main_app\templates\main_app\dev_chat_room.html:366
+#: .\main_app\templates\main_app\dressing_room.html:46
+#: .\main_app\templates\main_app\game_chat.html:243
+#: .\main_app\templates\main_app\guides_list.html:45
+#: .\main_app\templates\main_app\home.html:44
+#: .\main_app\templates\main_app\streams.html:205
+msgid "Выйти"
+msgstr "Exit"
+
+#: .\main_app\templates\account\account.html:108
+msgid "Добро пожаловать"
+msgstr "Welcome"
+
+#: .\main_app\templates\account\account.html:116
+#: .\main_app\templates\account\account_settings.html:306
+msgid "Настройки учётной записи"
+msgstr "Account Settings"
+
+#: .\main_app\templates\account\account.html:125
+#: .\main_app\templates\account\account_password.html:96
+msgid "Изменить пароль"
+msgstr "Change Password"
+
+#: .\main_app\templates\account\account.html:134
+msgid "Изменить электронную почту"
+msgstr "Change Email"
+
+#: .\main_app\templates\account\account.html:148
+#: .\main_app\templates\account\account.html:161
+#: .\main_app\templates\main_app\base.html:866
+#: .\main_app\templates\main_app\base.html:879
+msgid "Связь со мной"
+msgstr "Contact with me"
+
+#: .\main_app\templates\account\account.html:152
+#: .\main_app\templates\main_app\guide.html:514
+#: .\main_app\templates\main_app\guide.html:687
+msgid "Закрыть"
+msgstr "Close"
+
+#: .\main_app\templates\account\account.html:169
+#: .\main_app\templates\account\account_delete.html:141
+msgid "Удалить учётную запись"
+msgstr "Delete an account"
+
+#: .\main_app\templates\account\account_delete.html:102
+msgid "Безвозвратное удаление учётной записи"
+msgstr "Irrevocable account deletion"
+
+#: .\main_app\templates\account\account_delete.html:106
+msgid "Все ваши личные данные будут удалены."
+msgstr "All your personal data will be deleted."
+
+#: .\main_app\templates\account\account_delete.html:107
+msgid "Удаление не может быть отменено."
+msgstr "The deletion cannot be undone."
+
+#: .\main_app\templates\account\account_delete.html:113
+msgid "Я подтверждаю, что хочу удалить свою учётную запись."
+msgstr "I confirm that I want to delete my account."
+
+#: .\main_app\templates\account\account_email.html:96
+msgid "Изменить адрес электронной почты"
+msgstr "Change Email Address"
+
+#: .\main_app\templates\account\account_email.html:101
+#: .\main_app\templates\auth\contact_me.html:148
+msgid "Текущий адрес электронной почты"
+msgstr "Current email address"
+
+#: .\main_app\templates\account\account_email.html:116
+#: .\main_app\templates\account\account_password.html:118
+#: .\main_app\templates\account\account_settings.html:514
+#: .\main_app\templates\auth\password_reset_confirm.html:115
+msgid "Сохранить"
+msgstr "Save"
+
+#: .\main_app\templates\account\account_settings.html:334
+#: .\main_app\templates\main_app\guide.html:473
+#: .\main_app\templates\main_app\guide.html:646
+msgid "Дата создания учётной записи"
+msgstr "Account creation date"
+
+#: .\main_app\templates\account\account_settings.html:531
+msgid "Вы можете выбрать максимум 3 игровых класса."
+msgstr "You can choose a maximum of 3 game classes."
+
+#: .\main_app\templates\account\account_settings.html:550
+msgid "Не найдено:"
+msgstr "Not found:"
 
 #: .\main_app\templates\auth\contact_me.html:119
 #: .\main_app\templates\auth\login.html:189
-#: .\main_app\templates\auth\login.html:236
 #: .\main_app\templates\auth\password_reset1.html:79
 #: .\main_app\templates\auth\password_reset2.html:152
 #: .\main_app\templates\auth\password_reset_complete.html:79
-#: .\main_app\templates\auth\password_reset_complete.html:105
 #: .\main_app\templates\auth\password_reset_confirm.html:78
 #: .\main_app\templates\auth\password_reset_done.html:132
 #: .\main_app\templates\auth\register.html:115
+#: .\main_app\templates\auth\register.html:179
 #: .\main_app\templates\auth\terms_of_use.html:56
 #: .\main_app\templates\errors\error_page.html:73
 #: .\main_app\templates\main_app\ap_calculator.html:191
 #: .\main_app\templates\main_app\dev_chat_room.html:370
+#: .\main_app\templates\main_app\dressing_room.html:50
 #: .\main_app\templates\main_app\game_chat.html:247
 #: .\main_app\templates\main_app\guides_list.html:49
 #: .\main_app\templates\main_app\home.html:48
 #: .\main_app\templates\main_app\streams.html:209
+msgid "Регистрация"
+msgstr "Register"
+
+#: .\main_app\templates\auth\contact_me.html:122
+#: .\main_app\templates\auth\login.html:192
+#: .\main_app\templates\auth\login.html:239
+#: .\main_app\templates\auth\password_reset1.html:82
+#: .\main_app\templates\auth\password_reset2.html:155
+#: .\main_app\templates\auth\password_reset_complete.html:82
+#: .\main_app\templates\auth\password_reset_complete.html:108
+#: .\main_app\templates\auth\password_reset_confirm.html:81
+#: .\main_app\templates\auth\password_reset_done.html:135
+#: .\main_app\templates\auth\register.html:118
+#: .\main_app\templates\auth\terms_of_use.html:59
+#: .\main_app\templates\errors\error_page.html:76
+#: .\main_app\templates\main_app\ap_calculator.html:194
+#: .\main_app\templates\main_app\dev_chat_room.html:373
+#: .\main_app\templates\main_app\dressing_room.html:53
+#: .\main_app\templates\main_app\game_chat.html:250
+#: .\main_app\templates\main_app\guides_list.html:52
+#: .\main_app\templates\main_app\home.html:51
+#: .\main_app\templates\main_app\streams.html:212
 msgid "Войти"
 msgstr "Enter"
 
-#: .\main_app\templates\auth\contact_me.html:136
+#: .\main_app\templates\auth\contact_me.html:139
 msgid "Обратная связь"
 msgstr "Feedback"
 
-#: .\main_app\templates\auth\contact_me.html:171
+#: .\main_app\templates\auth\contact_me.html:174
 #: .\main_app\templates\main_app\guide.html:1039
 msgid "Отправить"
 msgstr "Send"
@@ -453,23 +490,23 @@ msgstr "NOT"
 msgid "ДА"
 msgstr "YE"
 
-#: .\main_app\templates\auth\login.html:206
+#: .\main_app\templates\auth\login.html:209
 msgid "Вход в аккаунт"
 msgstr "Log in to your account"
 
-#: .\main_app\templates\auth\login.html:221
+#: .\main_app\templates\auth\login.html:224
 msgid "Забыли пароль?"
 msgstr "Forgot your password?"
 
-#: .\main_app\templates\auth\login.html:226
+#: .\main_app\templates\auth\login.html:229
 msgid "Запомнить меня"
 msgstr "Remember me"
 
-#: .\main_app\templates\auth\login.html:249
+#: .\main_app\templates\auth\login.html:252
 msgid "Преимущества авторизованных пользователей"
 msgstr "Advantages of authorized users"
 
-#: .\main_app\templates\auth\login.html:252
+#: .\main_app\templates\auth\login.html:255
 msgid ""
 "Возможность оставлять положительные или отрицательные оценки, а так же "
 "комментарии на странице «Гайды»."
@@ -477,7 +514,7 @@ msgstr ""
 "The ability to leave positive or negative ratings, as well as comments on "
 "the «Guides» page."
 
-#: .\main_app\templates\auth\login.html:253
+#: .\main_app\templates\auth\login.html:256
 msgid ""
 "Нажав на кнопку «Связь со мной» в личном кабинете, вы сможете получить мои "
 "контакты для связи."
@@ -485,7 +522,7 @@ msgstr ""
 "By clicking on the «Contact me» button in your personal account, you can get "
 "my contacts for communication."
 
-#: .\main_app\templates\auth\login.html:254
+#: .\main_app\templates\auth\login.html:257
 msgid ""
 "Вы можете задать настройки для вашей учётной записи в личном кабинете, "
 "сменить пароль, адрес электронной почты и удалить учётную запись в любое "
@@ -495,13 +532,13 @@ msgstr ""
 "your password, email address and delete your account at any time by clicking "
 "on the button of the same name."
 
-#: .\main_app\templates\auth\password_reset1.html:95
-#: .\main_app\templates\auth\password_reset2.html:168
-#: .\main_app\templates\auth\password_reset_done.html:148
+#: .\main_app\templates\auth\password_reset1.html:98
+#: .\main_app\templates\auth\password_reset2.html:171
+#: .\main_app\templates\auth\password_reset_done.html:151
 msgid "Восстановление пароля"
 msgstr "Password Recovery"
 
-#: .\main_app\templates\auth\password_reset1.html:102
+#: .\main_app\templates\auth\password_reset1.html:105
 msgid ""
 "Введите адрес электронной почты, связанный с вашей учётной записью, затем "
 "нажмите кнопку «Сбросить пароль». Вы получите электронное письмо на "
@@ -511,12 +548,12 @@ msgstr ""
 "Password button. You will receive an email to the specified email address "
 "with a link to select a new password."
 
-#: .\main_app\templates\auth\password_reset1.html:116
+#: .\main_app\templates\auth\password_reset1.html:119
 msgid "Сбросить пароль"
 msgstr "Reset Password"
 
-#: .\main_app\templates\auth\password_reset2.html:173
-#: .\main_app\templates\auth\password_reset_done.html:152
+#: .\main_app\templates\auth\password_reset2.html:176
+#: .\main_app\templates\auth\password_reset_done.html:155
 msgid ""
 "Письмо успешно отправлено, не забудьте проверить вкладку спам у себя на "
 "почте."
@@ -524,25 +561,25 @@ msgstr ""
 "The email has been sent successfully, don't forget to check the spam tab in "
 "your mail."
 
-#: .\main_app\templates\auth\password_reset2.html:175
+#: .\main_app\templates\auth\password_reset2.html:178
 msgid ""
 "Если вы не получили электронное письмо, нажмите на текст ниже для повторной "
 "отправки."
 msgstr "If you haven't received the email, click on the text below to resend."
 
-#: .\main_app\templates\auth\password_reset2.html:190
+#: .\main_app\templates\auth\password_reset2.html:193
 msgid "Отправить письмо еще раз"
 msgstr "Send the email again"
 
-#: .\main_app\templates\auth\password_reset_complete.html:95
+#: .\main_app\templates\auth\password_reset_complete.html:98
 msgid "Восстановление пароля успешно завершено"
 msgstr "Password recovery completed successfully"
 
-#: .\main_app\templates\auth\password_reset_complete.html:100
+#: .\main_app\templates\auth\password_reset_complete.html:103
 msgid "Для авторизации в своём аккаунте нажмите на кнопку «Войти»"
 msgstr "To log in to your account, click on the «Log in» button"
 
-#: .\main_app\templates\auth\password_reset_confirm.html:116
+#: .\main_app\templates\auth\password_reset_confirm.html:119
 msgid ""
 "Ссылка для сброса пароля была недействительной, возможно, потому, что она "
 "уже использовалась.  Пожалуйста, запросите сброс нового пароля."
@@ -550,23 +587,23 @@ msgstr ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 
-#: .\main_app\templates\auth\register.html:131
+#: .\main_app\templates\auth\register.html:134
 msgid "Регистрация аккаунта"
 msgstr "Account registration"
 
-#: .\main_app\templates\auth\register.html:160
+#: .\main_app\templates\auth\register.html:163
 msgid "Я соглашаюсь с"
 msgstr "I agree with"
 
-#: .\main_app\templates\auth\register.html:162
+#: .\main_app\templates\auth\register.html:165
 msgid "Политикой конфиденциальности"
 msgstr "Privacy Policy"
 
-#: .\main_app\templates\main_app\ap_calculator.html:206
+#: .\main_app\templates\main_app\ap_calculator.html:209
 msgid "Калькулятор очков арены"
 msgstr "Arena Points Calculator"
 
-#: .\main_app\templates\main_app\ap_calculator.html:209
+#: .\main_app\templates\main_app\ap_calculator.html:212
 msgid ""
 "Укажите рейтинг для необходимого вам брекета чтобы узнать, сколько очков "
 "арены вы получите в конце недели."
@@ -574,42 +611,42 @@ msgstr ""
 "Specify the rating for the bracket you need to find out how many arena "
 "points you will receive at the end of the week."
 
-#: .\main_app\templates\main_app\ap_calculator.html:215
+#: .\main_app\templates\main_app\ap_calculator.html:218
 msgid "Классический"
 msgstr "Classic"
 
-#: .\main_app\templates\main_app\ap_calculator.html:221
+#: .\main_app\templates\main_app\ap_calculator.html:224
 msgid "Пиратский"
 msgstr "Private"
 
-#: .\main_app\templates\main_app\ap_calculator.html:226
+#: .\main_app\templates\main_app\ap_calculator.html:229
 msgid "Брекет"
 msgstr "Bracket"
 
-#: .\main_app\templates\main_app\ap_calculator.html:227
+#: .\main_app\templates\main_app\ap_calculator.html:230
 msgid "Рейтинг"
 msgstr "Rating"
 
-#: .\main_app\templates\main_app\ap_calculator.html:228
-#: .\main_app\templates\main_app\ap_calculator.html:247
-#: .\main_app\templates\main_app\ap_calculator.html:270
-#: .\main_app\templates\main_app\ap_calculator.html:293
+#: .\main_app\templates\main_app\ap_calculator.html:231
+#: .\main_app\templates\main_app\ap_calculator.html:250
+#: .\main_app\templates\main_app\ap_calculator.html:273
+#: .\main_app\templates\main_app\ap_calculator.html:296
 msgid "Очки арены"
 msgstr "Arena Points"
 
-#: .\main_app\templates\main_app\ap_calculator.html:232
+#: .\main_app\templates\main_app\ap_calculator.html:235
 msgid "2на2"
 msgstr "2vs2"
 
-#: .\main_app\templates\main_app\ap_calculator.html:255
+#: .\main_app\templates\main_app\ap_calculator.html:258
 msgid "3на3"
 msgstr "3vs3"
 
-#: .\main_app\templates\main_app\ap_calculator.html:278
+#: .\main_app\templates\main_app\ap_calculator.html:281
 msgid "5на5"
 msgstr "5vs5"
 
-#: .\main_app\templates\main_app\ap_calculator.html:366
+#: .\main_app\templates\main_app\ap_calculator.html:369
 msgid ""
 "Чтобы претендовать на очки арены у вас должно быть сыграно не менее 10 игр к "
 "концу недели."
@@ -663,45 +700,45 @@ msgstr "Accept"
 msgid "Поддержать меня на"
 msgstr "Support me on"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:384
+#: .\main_app\templates\main_app\dev_chat_room.html:387
 msgid "Пожалуйста, представьтесь"
 msgstr "Please, introduce yourself"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:389
+#: .\main_app\templates\main_app\dev_chat_room.html:392
 msgid "Ваше имя"
 msgstr "Your name"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:395
+#: .\main_app\templates\main_app\dev_chat_room.html:398
 msgid "Подтвердить"
 msgstr "Confirm"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:451
+#: .\main_app\templates\main_app\dev_chat_room.html:454
 msgid "Копировать"
 msgstr "Copy"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:453
+#: .\main_app\templates\main_app\dev_chat_room.html:456
 msgid "Скопировать ссылку"
 msgstr "Copy link"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:457
-#: .\main_app\templates\main_app\dev_chat_room.html:879
+#: .\main_app\templates\main_app\dev_chat_room.html:460
+#: .\main_app\templates\main_app\dev_chat_room.html:882
 msgid "Остановить чат"
 msgstr "Stopping chat"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:461
-#: .\main_app\templates\main_app\dev_chat_room.html:884
+#: .\main_app\templates\main_app\dev_chat_room.html:464
+#: .\main_app\templates\main_app\dev_chat_room.html:887
 msgid "Чат открыт"
 msgstr "Chat opened"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:902
+#: .\main_app\templates\main_app\dev_chat_room.html:905
 msgid "Возобновить чат"
 msgstr "Starting chat"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:907
+#: .\main_app\templates\main_app\dev_chat_room.html:910
 msgid "Чат закрыт"
 msgstr "Chat closed"
 
-#: .\main_app\templates\main_app\dev_chat_room.html:1136
+#: .\main_app\templates\main_app\dev_chat_room.html:1139
 msgid "Ссылка скопирована!"
 msgstr "Link has been copied!"
 
@@ -709,32 +746,32 @@ msgstr "Link has been copied!"
 msgid "Категории"
 msgstr "Categories"
 
-#: .\main_app\templates\main_app\game_chat.html:268
+#: .\main_app\templates\main_app\game_chat.html:271
 msgid "Серверы:"
 msgstr "Servers:"
 
-#: .\main_app\templates\main_app\game_chat.html:279
+#: .\main_app\templates\main_app\game_chat.html:282
 msgid "Фильтрация по никнейму игрока"
 msgstr "Filtering by player's nickname"
 
-#: .\main_app\templates\main_app\game_chat.html:281
+#: .\main_app\templates\main_app\game_chat.html:284
 msgid "Никнейм игрока"
 msgstr "Player's nickname"
 
-#: .\main_app\templates\main_app\game_chat.html:287
+#: .\main_app\templates\main_app\game_chat.html:290
 msgid "Только ссылки на"
 msgstr "Only links to"
 
-#: .\main_app\templates\main_app\game_chat.html:302
+#: .\main_app\templates\main_app\game_chat.html:305
 msgid "Чат приостановлен из-за прокрутки"
 msgstr "Chat suspended due to scrolling"
 
-#: .\main_app\templates\main_app\game_chat.html:328
+#: .\main_app\templates\main_app\game_chat.html:331
 msgid "Чат сервера: "
 msgstr "Server Chat: "
 
 #: .\main_app\templates\main_app\guide.html:309
-#: .\main_app\templates\main_app\guides_list.html:193
+#: .\main_app\templates\main_app\guides_list.html:196
 msgid "Изменено"
 msgstr "Changed"
 
@@ -787,23 +824,23 @@ msgstr "Enter the answer"
 msgid "Отмена"
 msgstr "Cancel"
 
-#: .\main_app\templates\main_app\guides_list.html:177
+#: .\main_app\templates\main_app\guides_list.html:180
 msgid "Гайды для данной категории не найдены."
 msgstr "Guides for this category were not found."
 
-#: .\main_app\templates\main_app\home.html:62
+#: .\main_app\templates\main_app\home.html:65
 msgid "Добро пожаловать на FRISHUB"
 msgstr "Welcome to FRISHUB"
 
-#: .\main_app\templates\main_app\home.html:70
+#: .\main_app\templates\main_app\home.html:73
 msgid "Новости"
 msgstr "News"
 
-#: .\main_app\templates\main_app\home.html:88
+#: .\main_app\templates\main_app\home.html:91
 msgid "Что такое FRISHUB?"
 msgstr "What is FRISHUB?"
 
-#: .\main_app\templates\main_app\home.html:89
+#: .\main_app\templates\main_app\home.html:92
 msgid ""
 "FRISHUB это сайт который был создан мною для повышения навыков "
 "программирования но так же может быть полезен для игроков из игры World of "
@@ -812,7 +849,7 @@ msgstr ""
 "FRISHUB is a site that was created by me to improve programming skills, but "
 "it can also be useful for players from the game World of Warcraft WotLK."
 
-#: .\main_app\templates\main_app\home.html:92
+#: .\main_app\templates\main_app\home.html:95
 msgid ""
 "На странице Гайды вы сможете найти пвп гайды по разным классам и спекам от "
 "лучших представителей своего класса."
@@ -820,7 +857,7 @@ msgstr ""
 "On the Guides page you can find pvp guides for different classes and specks "
 "from the best representatives of their class."
 
-#: .\main_app\templates\main_app\home.html:95
+#: .\main_app\templates\main_app\home.html:98
 msgid ""
 "На странице Игровой чат вы сможете следить за онлайн чатом с сервера "
 "WowCircle на любом из реалмов и применять к чату различные сортировки и "
@@ -830,7 +867,7 @@ msgstr ""
 "server on any of the realms and apply various sorting and filters to the "
 "chat."
 
-#: .\main_app\templates\main_app\home.html:98
+#: .\main_app\templates\main_app\home.html:101
 msgid ""
 "На странице Стримы вы сможете найти множество твитч стримеров по дополнению "
 "WotLK с возможностью сортировки по классам."
@@ -838,7 +875,7 @@ msgstr ""
 "On the Streams page you can find a lot of twitch streamers for the WotLK "
 "supplement with the ability to sort by class."
 
-#: .\main_app\templates\main_app\home.html:101
+#: .\main_app\templates\main_app\home.html:104
 msgid ""
 "На странице Калькулятор апа вы сможете найти калькулятор который позволяет "
 "рассчитать какое количество очков арены"
@@ -846,7 +883,7 @@ msgstr ""
 "On the Calculator AP page you can find a calculator that allows you to "
 "calculate how many arena points"
 
-#: .\main_app\templates\main_app\home.html:103
+#: .\main_app\templates\main_app\home.html:106
 msgid ""
 "вы сможете получить в конце недели с указанным рейтингом в брекетах 2на2, "
 "3на3, 5на5."
@@ -854,11 +891,11 @@ msgstr ""
 "you will be able to get at the end of the week with the specified rating in "
 "braces 2vs2, 3vs3, 5vs5."
 
-#: .\main_app\templates\main_app\home.html:105
+#: .\main_app\templates\main_app\home.html:108
 msgid "Обо мне"
 msgstr "About me"
 
-#: .\main_app\templates\main_app\home.html:106
+#: .\main_app\templates\main_app\home.html:109
 msgid ""
 "Меня зовут Арсений, я Python веб разработчик с второй половины 2022 года. "
 "Данный сайт был создан мною с целью развития навыков программирования. Вы "
@@ -868,18 +905,18 @@ msgstr ""
 "of 2022. This site was created by me in order to develop programming skills. "
 "You can visit my page at"
 
-#: .\main_app\templates\main_app\home.html:108
+#: .\main_app\templates\main_app\home.html:111
 msgid "где я выкладываю свои проекты, либо страницу на"
 msgstr "where do I post my projects, or a page on"
 
-#: .\main_app\templates\main_app\home.html:110
+#: .\main_app\templates\main_app\home.html:113
 msgid ""
 "где я переодически транслирую игру World of Warcraft в дополнении WotLK."
 msgstr ""
 "where I periodically broadcast the World of Warcraft game in the WotLK "
 "supplement."
 
-#: .\main_app\templates\main_app\streams.html:232
+#: .\main_app\templates\main_app\streams.html:235
 msgid "Классы"
 msgstr "Classes"
 
@@ -891,94 +928,99 @@ msgstr "Go to Twitch"
 msgid "Игровой опыт"
 msgstr "Gaming experience"
 
-#: .\main_app\utils.py:73
+#: .\main_app\utils.py:74
 msgid "* Поле reCAPTCHA является обязательным для заполнения."
 msgstr "* The reCAPTCHA field is mandatory."
 
-#: .\main_app\views.py:51
+#: .\main_app\views.py:54
 msgid "Сервер не смог понять некорректный запрос."
 msgstr "The server could not understand the incorrect request."
 
-#: .\main_app\views.py:57
+#: .\main_app\views.py:60
 msgid "Неверный запрос."
 msgstr "Bad request."
 
-#: .\main_app\views.py:65
+#: .\main_app\views.py:68
 msgid "Доступ к этой странице запрещён или ограничен по ряду причин."
 msgstr ""
 "Access to this page is prohibited or restricted for a number of reasons."
 
-#: .\main_app\views.py:71
+#: .\main_app\views.py:74
 msgid "Отказано в доступе."
 msgstr "Forbidden."
 
-#: .\main_app\views.py:79
+#: .\main_app\views.py:82
 msgid "К сожалению страница не существует, либо была перемещена."
 msgstr "Unfortunately, the page does not exist or has been moved."
 
-#: .\main_app\views.py:85
+#: .\main_app\views.py:88
 msgid "Страница не найдена."
 msgstr "Page not found."
 
-#: .\main_app\views.py:95
+#: .\main_app\views.py:98
 msgid "Внутренняя ошибка сервера."
 msgstr "Internal server error."
 
-#: .\main_app\views.py:96
+#: .\main_app\views.py:99
+#, fuzzy
+#| msgid ""
+#| "Внутренняя ошибка сайта, вернитесь на главную страницу, отчёт об ошибке "
+#| "уже направлен администрации сайта."
 msgid ""
-"Внутренняя ошибка сайта, вернитесь на главную страницу, отчёт об ошибке уже "
-"направлен администрации сайта."
+"Внутренняя ошибка сайта, вернитесь на главную страницу,             отчёт об "
+"ошибке уже направлен администрации сайта."
 msgstr ""
 "Internal site error, go back to the main page, the error report has already "
 "been sent to the site administration."
 
-#: .\main_app\views.py:491
+#: .\main_app\views.py:520
 msgid ", вы успешно зарегистрированы в системе!"
 msgstr ", you are successfully registered in the system!"
 
-#: .\main_app\views.py:524
+#: .\main_app\views.py:555
 msgid "Добро пожаловать, "
 msgstr "Welcome, "
 
-#: .\main_app\views.py:554
+#: .\main_app\views.py:586
 msgid "Вы уже вышли из аккаунта."
 msgstr "You have already logged out of your account."
 
-#: .\main_app\views.py:565
+#: .\main_app\views.py:596
 msgid "До скорой встречи, "
 msgstr "See you soon, "
 
-#: .\main_app\views.py:580 .\main_app\views.py:610
+#: .\main_app\views.py:612 .\main_app\views.py:643
 msgid "Письмо успешно отправлено."
 msgstr "The email has been sent successfully."
 
-#: .\main_app\views.py:657 .\main_app\views.py:858
+#: .\main_app\views.py:691 .\main_app\views.py:899
 msgid "Новый пароль успешно сохранён!"
 msgstr "The new password has been successfully saved!"
 
-#: .\main_app\views.py:683
+#: .\main_app\views.py:719
 msgid "Сообщение успешно отправлено!"
 msgstr "The message has been sent successfully!"
 
-#: .\main_app\views.py:726 .\main_app\views.py:743 .\main_app\views.py:852
-#: .\main_app\views.py:872 .\main_app\views.py:904
-#, python-format
-msgid "Для получения доступа к странице %s, войдите в свой аккаунт."
+#: .\main_app\views.py:763 .\main_app\views.py:782 .\main_app\views.py:892
+#: .\main_app\views.py:914 .\main_app\views.py:948
+#, fuzzy, python-format
+#| msgid "Для получения доступа к странице %s, войдите в свой аккаунт."
+msgid "Для получения доступа к странице %s,         войдите в свой аккаунт."
 msgstr "To access the %s page, log in to your account."
 
-#: .\main_app\views.py:753
+#: .\main_app\views.py:793
 msgid "Настройки успешно сохранены!"
 msgstr "Settings have been saved successfully!"
 
-#: .\main_app\views.py:842
+#: .\main_app\views.py:881
 msgid "Изображение успешно удалено."
 msgstr "The image was successfully deleted."
 
-#: .\main_app\views.py:878
+#: .\main_app\views.py:921
 msgid "Новый почтовый адрес успешно сохранён!"
 msgstr "The new email address has been successfully saved!"
 
-#: .\main_app\views.py:918
+#: .\main_app\views.py:962
 msgid ", очень жаль что вы от нас уходите. "
 msgstr ", it's a pity that you're leaving us. "
 

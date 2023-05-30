@@ -36,6 +36,8 @@ urlpatterns = [
 
     path('streams', views.StreamsView.as_view(), name='streams'),
 
+    path('dressing-room/', views.DressingRoomView.as_view(), name='dressing_room'),
+
     path('arena-point-calculator', views.ArenaPointCalculatorView.as_view(), name='ap_calculator'),
 
     ##################### Авторизация #####################

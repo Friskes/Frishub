@@ -437,6 +437,13 @@ class StreamsView(DataMixin, TemplateView):
 
 #############################################################################
 
+class DressingRoomView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее гардеробную комнату."""
+
+    template_name = 'main_app/dressing_room.html'
+
+#############################################################################
+
 class ArenaPointCalculatorView(DataMixin, TemplateView):
     """#### Представление обрабатывающее страницу калькулятора очков арены."""
 
