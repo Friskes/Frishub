@@ -1,0 +1,98 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<script src="https://wow.zamimg.com/modelviewer/live/viewer/viewer.min.js"></script>
+<script type="module" src="{% static 'main_app\javascript\wow-model-viewer\index.js' %}"></script>
+{% endblock %}
+
+{% block menu %}
+<ul _ngcontent-gox-c59="" class="navbar-nav">
+  {% if user.is_superuser %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
+      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+    </a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'dressing_room' %}">{% trans 'Примерочная' %}</a>
+  </li>
+  <li _ngcontent-gox-c59="" class="nav-item">
+    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
+  </li>
+  {% if user.is_authenticated %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'account' %}">
+        {{ user }}
+        <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
+      </a>
+    </li>
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
+    </li>
+  {% else %}
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'register' %}">{% trans 'Регистрация' %}</a>
+    </li>
+    <li _ngcontent-gox-c59="" class="nav-item">
+      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'login' %}">{% trans 'Войти' %}</a>
+    </li>
+  {% endif %}
+  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
+    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
+      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
+    </a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<app-dressing-room _nghost-gox-c37="" style="font-size: 14.5px;">
+  <div _ngcontent-gox-c37="" class="page-size bg-check p-2 p-md-5 mb-5">
+    <div _ngcontent-gox-c37="" class="w-75 m-auto text-center pt-5 pb-5">
+      <div _ngcontent-gox-c37="" class="mb-2">
+
+
+        <div id="model_3d"></div>
+
+        <script type="module">
+          import {generateModels} from "{% static 'main_app\javascript\wow-model-viewer\index.js' %}";
+
+          const character = {
+            "race": 7,
+            "gender": 1,
+            "skin": 4,
+            "face": 0,
+            "hairStyle": 5,
+            "hairColor": 5,
+            "facialStyle": 5,
+            "items": [
+              [1, 1170], [3, 4925], [5, 9575], [6, 25235], [7, 2311], [8, 21154],
+              [9, 14618], [10, 9534], [15, 17238], [21, 20379], [22, 28787]
+            ]
+          };
+
+          generateModels(2, `#model_3d`, character);
+        </script>
+
+
+      </div>
+    </div>
+  </div>
+</app-dressing-room>
+{% endblock %}
