@@ -14,7 +14,7 @@ class Test1(TestCase):
 
         client = Client()
 
-        response = client.get('/log-in')
+        response = client.get('/login')
 
         assert response.status_code == 200
 

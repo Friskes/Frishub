@@ -34,8 +34,6 @@ urlpatterns += i18n_patterns(
     # необходимо для записи выбранного пользователем языка в файл cookie
     path('i18n/', include('django.conf.urls.i18n')),
 
-    path('', include('django.contrib.auth.urls')),
-
     path('', include('main_app.urls')),
 
     # отключить добавочный префикс языка выбранного по умолчанию в url
