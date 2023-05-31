@@ -167,59 +167,6 @@
 </style>
 {% endblock %}
 
-{% block menu %}
-<ul _ngcontent-gox-c59="" class="navbar-nav">
-  {% if user.is_superuser %}
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
-    </li>
-  {% endif %}
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'streams' %}">{% trans 'Стримы' %}
-      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
-    </a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'dressing_room' %}">{% trans 'Примерочная' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
-  </li>
-  {% if user.is_authenticated %}
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'account' %}">
-        {{ user }}
-        <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
-      </a>
-    </li>
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
-    </li>
-  {% else %}
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'register' %}">{% trans 'Регистрация' %}</a>
-    </li>
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'login' %}">{% trans 'Войти' %}</a>
-    </li>
-  {% endif %}
-  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
-    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
-      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
-    </a>
-  </li>
-</ul>
-{% endblock %}
-
 {% block body %}
 <app-twitch _nghost-xpp-c94="" class="ng-star-inserted">
   <div _ngcontent-xpp-c94="" class="container mt-md-3">
