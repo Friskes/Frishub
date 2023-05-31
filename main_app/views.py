@@ -310,7 +310,7 @@ class FilteringGuidesView(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        category = Category.objects.get(slug=self.kwargs['category_slug'])
+        category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
         context.update({'category_selected': category.pk})
 
         return context
