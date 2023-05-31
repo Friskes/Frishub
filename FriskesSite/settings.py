@@ -81,6 +81,10 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
+        # django будет искать шаблоны в приложении main_app в каталоге templates
+        # 'DIRS': [BASE_DIR / 'main_app/templates'],
+        # django будет искать шаблоны в коревом каталоге проекта в каталоге templates
+        # 'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
