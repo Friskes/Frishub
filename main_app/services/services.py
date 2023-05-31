@@ -35,8 +35,8 @@ def request(req_type: str, url: str, headers: dict=None, payload: dict=None) -> 
                 response.raise_for_status()
                 return response
 
-        except requests.exceptions.RequestException as error: # родительский exception
-            log.info(f'[def request] RequestException:\n{error}')
+        except requests.exceptions.RequestException as exc: # родительский exception
+            log.info(f'[def request] RequestException:\n{exc}')
             time.sleep(2)
 
 #############################################################################

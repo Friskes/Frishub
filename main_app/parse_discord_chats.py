@@ -142,8 +142,8 @@ class DiscordChatParser:
         try:
             self.ws.send(json.dumps(request))
             log.debug(f'[class DiscordChatParser -> def send_json_request] Heartbeat Sent Request:\n{request}')
-        except Exception as error:
-            log.info(f'[class DiscordChatParser -> def send_json_request] Exception:\n{error}')
+        except Exception as exc:
+            log.info(f'[class DiscordChatParser -> def send_json_request] Exception:\n{exc}')
 
 
     def recieve_json_response(self) -> Dict[dict, list]:
@@ -165,25 +165,25 @@ class DiscordChatParser:
                     return json.loads(responce)
 
                 # Expecting value: line 1 column 1 (char 0)
-                except json.decoder.JSONDecodeError as error:
+                except json.decoder.JSONDecodeError as exc:
                     log.info(f'[class DiscordChatParser -> def recieve_json_response] \
-                        JSONDecodeError:\n{error}\n{repr(responce)}')
+                        JSONDecodeError:\n{exc}\n{repr(responce)}')
 
         # ("Connection to remote host was lost.")
         # ("socket is already closed.")
-        except websocket.WebSocketConnectionClosedException as error:
+        except websocket.WebSocketConnectionClosedException as exc:
             log.info(f'[class DiscordChatParser -> def recieve_json_response] \
-                WebSocketConnectionClosedException:\n{error}')
+                WebSocketConnectionClosedException:\n{exc}')
             self.re_connect()
 
         # WebSocketProtocolException("rsv is not implemented, yet")
-        except websocket.WebSocketProtocolException as error:
+        except websocket.WebSocketProtocolException as exc:
             log.info(f'[class DiscordChatParser -> def recieve_json_response] \
-                WebSocketProtocolException:\n{error}')
+                WebSocketProtocolException:\n{exc}')
             self.re_connect()
 
-        except Exception as error:
-            log.info(f'[class DiscordChatParser -> def recieve_json_response] Exception:\n{error}')
+        except Exception as exc:
+            log.info(f'[class DiscordChatParser -> def recieve_json_response] Exception:\n{exc}')
 
 
     def re_connect(self):
@@ -192,8 +192,8 @@ class DiscordChatParser:
         while not self.ws.connected:
             try:
                 self.__init__()
-            except Exception as error:
-                log.info(f'[class DiscordChatParser -> def re_connect] Exception:\n{error}')
+            except Exception as exc:
+                log.info(f'[class DiscordChatParser -> def re_connect] Exception:\n{exc}')
                 time.sleep(3)
 
 
