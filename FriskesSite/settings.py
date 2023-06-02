@@ -297,3 +297,6 @@ LOGGING = {
         },
     },
 }
+
+# фикс ошибки в терминале браузера: "The Cross Origin Opener Policy header has been ignored"
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None # 'same-origin'
