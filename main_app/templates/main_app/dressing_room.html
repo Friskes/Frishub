@@ -5,76 +5,809 @@
 
 {% block head %}
 <script src="https://wow.zamimg.com/modelviewer/live/viewer/viewer.min.js"></script>
-<script type="module" src="{% static 'main_app\javascript\wow-model-viewer\index.js' %}"></script>
-{% endblock %}
 
-{% block menu %}
-<ul _ngcontent-gox-c59="" class="navbar-nav">
-  {% if user.is_superuser %}
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
-    </li>
-  {% endif %}
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'home' %}">{% trans 'Главная' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'guides' %}">{% trans 'Гайды' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'game_chat' %}">{% trans 'Игровой чат' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
-      <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
-    </a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link active" href="{% url 'dressing_room' %}">{% trans 'Примерочная' %}</a>
-  </li>
-  <li _ngcontent-gox-c59="" class="nav-item">
-    <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'ap_calculator' %}">{% trans 'Калькулятор апа' %}</a>
-  </li>
-  {% if user.is_authenticated %}
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'account' %}">
-        {{ user }}
-        <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}">
-      </a>
-    </li>
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'logout' %}">{% trans 'Выйти' %}</a>
-    </li>
-  {% else %}
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'register' %}">{% trans 'Регистрация' %}</a>
-    </li>
-    <li _ngcontent-gox-c59="" class="nav-item">
-      <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'login' %}">{% trans 'Войти' %}</a>
-    </li>
-  {% endif %}
-  <li _ngcontent-gox-c59="" class="nav-item dev-chat">
-    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="{% url 'dev_chat' %}">
-      <img _ngcontent-gox-c59="" src="{% static 'main_app/images/dev_chat_btn.png' %}">
-    </a>
-  </li>
-</ul>
+<script type="module" src="{% static 'main_app/javascript/wow-model-viewer/index.js' %}"></script>
+
+<!-- <link rel="stylesheet" type="text/css" href="https://wow.zamimg.com/css/standard/tools/dressing-room.css?6b3d1ffb34"> -->
+<link rel="stylesheet" type="text/css" href="{% static 'main_app/css/dressing-room.css' %}">
+
+<style>
+  .dress-btn {
+    user-select: none;
+    border: 0;
+    border-radius: 2px;
+    color: #cccccc;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 600 !important;
+    line-height: 1.4;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap
+  }
+  .dress-btn:focus {
+    box-shadow: 0 0 0 0;
+  }
+  .btn-site:hover,
+  .btn-site:active {
+    color: #676af7 !important;
+  }
+  .btn-site[disabled],
+  .btn-site.btn-disabled {
+    opacity: 0.3;
+  }
+</style>
+
+<style>
+  input[type="checkbox"] {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: inherit;
+    margin: 0.1em 0.25em 0;
+    padding: 0;
+    top: auto !important;
+    -moz-appearance: initial
+  }
+  input[type="checkbox"],
+  input[type="checkbox"]:before {
+    line-height: inherit !important;
+    vertical-align: top
+  }
+  input[type="checkbox"]::-ms-check {
+    width: 1.2em;
+  }
+  input[type="checkbox"]:after {
+    background: rgba(30, 30, 30, 1);
+    border-radius: 1px;
+    border: 0.125em solid #444;
+    box-sizing: border-box;
+    content: "";
+    display: inline-block;
+    height: 1.2em;
+    width: 1.2em;
+  }
+  input[type="checkbox"]::-ms-check {
+    background: rgba(30, 30, 30, 1);
+    border-radius: 4px;
+    border: 0.125em solid #444;
+    box-sizing: border-box;
+    content: "";
+    display: inline-block;
+    height: 1.2em;
+    width: 1.2em;
+    color: #ffd100
+  }
+  input[type="checkbox"]:checked:before {
+    display: inline-block;
+    font: normal normal normal 14px FontAwesome;
+    font-size: inherit;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-decoration: none;
+    text-rendering: auto;
+    content: "";
+    color: #ffd100;
+    margin-right: 0
+  }
+  input[type="checkbox"]:checked:before {
+    font-size: 1.5em;
+    margin: -.2em 0 0 -.05em;
+    line-height: 1 !important;
+    pointer-events: none;
+    position: absolute
+  }
+  input[type="checkbox"] {
+    margin: 0.1em 0.25em 0 !important;
+    vertical-align: top !important
+  }
+  input[type="checkbox"] {
+    margin: 12px 12px 0 0 !important;
+    position: relative;
+    top: 2px;
+  }
+</style>
+
+<style>
+  .paperdoll {
+    /* бэкграунд под моделью */
+    /* background: #202020; */
+    border-radius: 6px;
+    line-height: 0;
+
+    min-height: 411px;
+    max-height: 619px !important;
+
+    min-width: 300px;
+    overflow: hidden;
+    position: relative
+  }
+  .paperdoll div {
+    line-height: normal
+  }
+  .paperdoll .paperdoll-left,
+  .paperdoll .paperdoll-right,
+  .paperdoll .paperdoll-bottom {
+    pointer-events: none
+  }
+  .paperdoll .paperdoll-left>*:not(.paperdoll-hidden),
+  .paperdoll .paperdoll-right>*:not(.paperdoll-hidden),
+  .paperdoll .paperdoll-bottom>*:not(.paperdoll-hidden) {
+    pointer-events: auto
+  }
+  .paperdoll .paperdoll-left,
+  .paperdoll .paperdoll-right {
+    bottom: 55px;
+    position: absolute;
+    top: 3px;
+    width: 44px;
+    z-index: 11
+  }
+  .paperdoll .paperdoll-left {
+    left: 3px
+  }
+  .paperdoll .paperdoll-right {
+    right: 3px
+  }
+  .paperdoll .paperdoll-bottom {
+    bottom: 47px;
+    height: 0;
+    left: 0;
+    position: absolute;
+    text-align: center;
+    white-space: nowrap;
+    width: 100%;
+    z-index: 12
+  }
+  .paperdoll .paperdoll-bottom .iconlarge,
+  .paperdoll .paperdoll-bottom .iconmedium,
+  .paperdoll .paperdoll-bottom .iconsmall {
+    display: inline-block;
+    position: relative;
+    z-index: 1
+  }
+  .paperdoll .paperdoll-bottom .paperdoll-enchant {
+    transform: scale(0.75);
+    transform-origin: right
+  }
+  .paperdoll .paperdoll-bottom .iconlarge+.paperdoll-enchant,
+  .paperdoll .paperdoll-bottom .iconmedium+.paperdoll-enchant {
+    transform-origin: left
+  }
+  .paperdoll .paperdoll-sheathed {
+    cursor: pointer;
+    font-size: 13px;
+    left: calc(50% - 70px);
+    opacity: .5;
+    position: absolute;
+    right: calc(50% - 70px);
+    text-align: center;
+    top: -18px
+  }
+  .paperdoll .paperdoll-sheathed:hover {
+    opacity: 1
+  }
+  .paperdoll .paperdoll-sheathed input {
+    margin: 0 3px 0 0;
+    position: relative;
+    top: 3px;
+    vertical-align: top
+  }
+  .paperdoll .paperdoll-model {
+    bottom: 47px;
+    left: 47px;
+    min-width: 277px;
+    position: absolute;
+    right: 47px;
+    top: 0;
+    z-index: 1
+  }
+  .paperdoll .paperdoll-model-inner {
+    bottom: 0;
+    height: auto !important;
+    left: 0;
+    position: absolute !important;
+    right: 0;
+    top: 0;
+    width: auto !important
+  }
+  .paperdoll .paperdoll-model-inner canvas {
+    height: 100%;
+    width: 100%
+  }
+  .paperdoll .paperdoll-model-pause {
+    bottom: 10px;
+    color: #fff;
+    font-size: 18px;
+    opacity: .5;
+    position: absolute;
+    right: 10px
+  }
+  .paperdoll .paperdoll-model-pause:hover {
+    opacity: 1
+  }
+  .paperdoll .paperdoll-responsive-shell {
+    line-height: 0;
+    margin: 0 47px 47px;
+    position: relative;
+    width: calc(100% - 94px)
+  }
+  .paperdoll .paperdoll-responsive-expander {
+    /* margin-top: 131.407942238%; */
+    /* margin-top: 164.3%; */
+    margin-top: 999%;
+  }
+  .paperdoll .paperdoll-hidden.iconlarge,
+  .paperdoll .paperdoll-hidden.iconmedium,
+  .paperdoll .paperdoll-hidden.iconsmall {
+    opacity: .2
+  }
+  .paperdoll .paperdoll-hidden.iconlarge,
+  .paperdoll .paperdoll-hidden.iconlarge *,
+  .paperdoll .paperdoll-hidden.iconmedium,
+  .paperdoll .paperdoll-hidden.iconmedium *,
+  .paperdoll .paperdoll-hidden.iconsmall,
+  .paperdoll .paperdoll-hidden.iconsmall * {
+    pointer-events: none
+  }
+  .paperdoll .paperdoll-controls-left,
+  .paperdoll .paperdoll-controls-right {
+    bottom: 5px;
+    font-size: 12px;
+    left: 5px;
+    line-height: 1.2;
+    position: absolute;
+    right: calc(50% - -44px);
+    text-align: left;
+    z-index: 10
+  }
+  .paperdoll .paperdoll-controls-left div,
+  .paperdoll .paperdoll-controls-right div {
+    margin: 3px 0 0
+  }
+  .paperdoll .paperdoll-controls-left div:first-child,
+  .paperdoll .paperdoll-controls-right div:first-child {
+    margin: 0
+  }
+  .paperdoll .paperdoll-controls-right {
+    left: calc(50% - -44px);
+    right: 5px;
+    text-align: right
+  }
+  .paperdoll .paperdoll-fullscreen {
+    background: #202020;
+    border-radius: 6px 0 0 0;
+    padding-top: 1px;
+    pointer-events: none
+  }
+  .paperdoll .paperdoll-quality a {
+    font-size: 14px
+  }
+  .paperdoll .paperdoll-quality .active {
+    color: #fff;
+    cursor: default;
+    font-weight: bold
+  }
+  .paperdoll .paperdoll-animation {
+    display: none
+  }
+  .paperdoll .paperdoll-animation select {
+    background: #303030;
+    border: 0;
+    box-shadow: none !important;
+    color: #fff;
+    font-size: inherit;
+    padding: 0;
+    width: 105px
+  }
+  .paperdoll .paperdoll-mount {
+    display: none;
+    line-height: 26px;
+    margin-left: -2px !important;
+    white-space: nowrap
+  }
+  .paperdoll .paperdoll-mount>a {
+    background: url(https://wow.zamimg.com/images/Paperdoll/red-drake.png) left bottom no-repeat;
+    border-radius: 0 0 0 6px;
+    box-sizing: border-box;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 60px;
+    margin: 0 0 -5px -3px;
+    min-width: 74px;
+    padding: 37px 0 0 5px;
+    text-shadow: 1px 1px 1px #202020;
+
+    letter-spacing: .05em;
+    text-decoration: none;
+  }
+  .paperdoll .paperdoll-mount>a:hover {
+    -webkit-filter: brightness(1.35);
+    filter: brightness(1.35);
+
+    color: white;
+  }
+  .paperdoll .paperdoll-mount:after {
+    content: ' ';
+    clear: left;
+    display: block
+  }
+  .paperdoll[data-icon-size="large"] .paperdoll-left,
+  .paperdoll[data-icon-size="large"] .paperdoll-right {
+    width: 68px
+  }
+  .paperdoll[data-icon-size="large"] .paperdoll-bottom {
+    bottom: 71px
+  }
+  /* .paperdoll[data-icon-size="large"] .paperdoll-model {
+    bottom: 71px;
+    left: 71px;
+    right: 71px
+  } */
+  .paperdoll[data-icon-size="large"] .paperdoll-responsive-shell {
+    margin: 0 71px 71px
+  }
+  .paperdoll[data-icon-size="large"] .paperdoll-controls-left,
+  .paperdoll[data-icon-size="large"] .paperdoll-controls-right {
+    right: calc(50% - -68px)
+  }
+  .paperdoll[data-icon-size="large"] .paperdoll-controls-right {
+    left: calc(50% - -68px)
+  }
+  .paperdoll-picker .listview td.none {
+    text-align: center;
+    font-weight: bold
+  }
+  .paperdoll-enchant-disabled {
+    opacity: 0.2;
+    pointer-events: none
+  }
+</style>
+
+<style>
+  /* button icons https://fontawesome.com/v4/icons/ */
+  @font-face {
+    font-family: "FontAwesome";
+    src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/FontAwesome.otf);
+    src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.eot) format("embedded-opentype"),
+         url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2) format("woff2"),
+         url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff) format("woff"),
+         url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.ttf) format("truetype"),
+         url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg) format("svg");
+    font-weight: normal;
+    font-style: normal;
+  }
+  .fa:before {
+      display: inline-block;
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale
+  }
+  .fa-caret-left:before {
+    content: "\f0d9"
+  }
+  .fa-caret-right:before {
+    content: "\f0da"
+  }
+  .fa-save:before {
+    content: "\f0c7"
+  }
+  .fa-users:before {
+    content: "\f0c0"
+  }
+  .fa-times:before {
+    content: "\f00d"
+  }
+  .fa-plus:before {
+    content: "\f067"
+  }
+  .fa-eye-slash:before {
+    content: "\f070"
+  }
+  .fa-link:before {
+    content: "\f0c1"
+  }
+  .fa-camera:before {
+    content: "\f030"
+  }
+  .fa-pause:before {
+    content: "\f04c"
+  }
+  .fa-play:before {
+    content: "\f04b"
+  }
+  .fa-random:before {
+    content: "\f074"
+  }
+  .fa-undo:before {
+    content: "\f0e2"
+  }
+  .fa-repeat:before {
+    content: "\f01e"
+  }
+</style>
 {% endblock %}
 
 {% block body %}
 <app-dressing-room _nghost-gox-c37="" style="font-size: 14.5px;">
   <div _ngcontent-gox-c37="" class="page-size bg-check p-2 p-md-5 mb-5">
-    <div _ngcontent-gox-c37="" class="w-75 m-auto text-center pt-5 pb-5">
+    <div _ngcontent-gox-c37="" class="m-auto text-center pt-5 pb-5">
       <div _ngcontent-gox-c37="" class="mb-2">
 
 
-        <div id="model_3d"></div>
+        <div id="dressing-room" class="dressing-room" data-loaded="true">
+          <div class="dressing-room-character" data-class="1" data-race="10" data-npc-race="false"
+            data-gender="0" data-gender-restriction="no-restriction" data-category="gear">
+
+            <div class="paperdoll" id="dressing-room-paperdoll" data-icon-size="large" data-separate-shoulders="false">
+              <!-- style="background-image: url(&quot;https://wow.zamimg.com/modelviewer/live/background-181818.png&quot;);"> -->
+
+              <div class="paperdoll-left">
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="1">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_head.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="2">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_neck.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="3">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shoulder.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="20">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shoulder.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="15">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_chest.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="5">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_chest.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="4">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shirt.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="19">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_tabard.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="9">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_wrists.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+              </div>
+
+              <div class="paperdoll-right">
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="10">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_hands.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="6">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_waist.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="7">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_legs.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="8">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_feet.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="11">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_finger.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="12">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_finger.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="13">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_trinket.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="14">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_trinket.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+              </div>
+
+              <div class="paperdoll-bottom">
+                <div class="iconlarge paperdoll-enchant paperdoll-enchant-disabled" data-env="live" data-tree="live" data-game="wow">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_enchant.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="16">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_mainhand.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="17">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_offhand.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <div class="iconlarge paperdoll-enchant paperdoll-enchant-disabled" data-env="live" data-tree="live" data-game="wow">
+                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_enchant.jpg&quot;);" class=""></ins>
+                  <del></del>
+                  <a href="javascript:"></a>
+                </div>
+                <label class="paperdoll-sheathed" style="display: none;"><input type="checkbox" data-field-filled="true">Sheathed</label>
+              </div>
+
+              <div class="paperdoll-model">
+                <!-- style="border: 1px solid rgba(255, 255, 255, 0.5);"> -->
+                <div class="paperdoll-model-inner" id="paperdoll-model-dressing-room-paperdoll"></div>
+                <a class="paperdoll-model-pause fa fa-pause"></a>
+              </div>
+
+              <div class="paperdoll-responsive-shell">
+                <div class="paperdoll-responsive-expander"></div>
+              </div>
+
+              <div class="paperdoll-controls-right">
+                <div class="paperdoll-fullscreen">
+                  <i class="fa fa-expand"></i> Double-click model to view fullscreen
+                </div>
+                <div class="paperdoll-animation">
+                  <select data-field-filled="false"></select>
+                </div>
+              </div>
+
+              <!-- <div class="paperdoll-controls-left">
+                <div class="paperdoll-mount" style="display: block;">
+                  <a href="javascript:">Choose Mount</a>
+                </div>
+              </div> -->
+
+            </div>
+
+            <div class="dressing-room-character-controls-category-switchers">
+              <a data-category="gear" id="gear_button" href="javascript:" data-active="true" class=""
+                style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate15.jpg&quot;);">
+              </a>
+              <a data-category="character" id="character_button" href="javascript:" class=""
+                style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/race_bloodelf_male.jpg&quot;);">
+              </a>
+              <a data-category="face" id="face_button" href="javascript:"></a>
+            </div>
+
+            <div class="dressing-room-character-controls-category" id="dressing-room-face-settings" data-category="face">
+              <h2 class="heading-size-2">Face</h2>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="face">
+                <div data-role="label">Face</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">5</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="skin-color">
+                <div data-role="label">Skin Color</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">8</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="hair-style">
+                <div data-role="label">Hair Style</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Windswept</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="hair-color">
+                <div data-role="label">Hair Color</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">5</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="facial-hair">
+                <div data-role="label">Facial Hair</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Chin Strap</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="ears">
+                <div data-role="label">Ears</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Medium</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="eye-color">
+                <div data-role="label">Eye Color</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">4</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="eyesight">
+                <div data-role="label">Eyesight</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Right</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="dressing-room-character-controls-category" id="dressing-room-character-settings" data-category="character">
+              <h2 class="heading-size-2">Character</h2>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="race">
+                <div data-role="label">Race</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Blood Elf</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="class">
+                <div data-role="label">Class</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Warrior</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="gender">
+                <div data-role="label">Gender</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Body 1</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="sheathed">
+                <div data-role="label">Weapons</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Unsheathed</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="pepe">
+                <div data-role="label">Pepe</div>
+                <div tabindex="0" data-role="control">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">None</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="animation">
+                <div data-role="label">Animation</div>
+                <div tabindex="0" data-role="control" data-disabled="false">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">DressingRoom</a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="npc-options">
+                <div data-role="label">
+                  <label for="npc-options">NPC Options</label>
+                </div>
+                <div data-role="control">
+                  <input type="checkbox" name="npc-options" id="npc-options" data-field-filled="true">
+                </div>
+              </div>
+            </div>
+
+            <div class="dressing-room-character-controls-general">
+              <button class="btn dress-btn btn-site fa fa-save" id="dr-save" type="button">Save</button>
+              <button class="btn dress-btn btn-site fa fa-users" id="dr-import" type="button">Import</button>
+              <button class="btn dress-btn btn-site fa fa-times" id="dr-reset" type="button">Reset</button>
+              <button class="btn dress-btn btn-site fa fa-plus" id="dr-transmog-set" type="button">Transmog</button>
+              <button class="btn dress-btn btn-site fa fa-eye-slash" id="dr-toggle-ui" type="button">Hide UI</button>
+              <button class="btn dress-btn btn-site fa fa-link" id="dr-links" type="button">Links</button>
+              <button class="btn dress-btn btn-site fa fa-camera" id="dr-screenshot" type="button">Screenshot</button>
+              <button class="btn dress-btn btn-site fa fa-pause" id="dr-pause" type="button">Pause</button>
+              <div>
+                <button class="btn dress-btn btn-site fa fa-random" id="dr-randomize" type="button">Random</button>
+                <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
+                <button class="btn dress-btn btn-site fa fa-repeat" id="dr-redo" type="button" disabled="">Redo</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <script>
+          let gear_button = $('#gear_button')[0];
+          let face_button = $('#face_button')[0];
+          let char_button = $('#character_button')[0];
+
+          let paperdoll_left = $('.paperdoll-left')[0];
+          let paperdoll_right = $('.paperdoll-right')[0];
+          let paperdoll_bottom = $('.paperdoll-bottom')[0];
+
+          let face_settings = $('#dressing-room-face-settings')[0];
+          let char_settings = $('#dressing-room-character-settings')[0];
+
+          $('.dressing-room-character-controls-category-switchers a').on('click', function(event) {
+
+            let category = event.target.getAttribute('data-category');
+            event.target.setAttribute('data-active', 'true');
+
+            if (category === 'gear') {
+              face_button.removeAttribute('data-active');
+              char_button.removeAttribute('data-active');
+              paperdoll_left.style.display = 'block';
+              paperdoll_right.style.display = 'block';
+              paperdoll_bottom.style.display = 'block';
+              face_settings.style.display = 'none';
+              char_settings.style.display = 'none';
+
+            } else if (category === 'face') {
+              gear_button.removeAttribute('data-active');
+              char_button.removeAttribute('data-active');
+              paperdoll_left.style.display = 'none';
+              paperdoll_right.style.display = 'none';
+              paperdoll_bottom.style.display = 'none';
+              face_settings.style.display = 'block';
+              char_settings.style.display = 'none';
+
+            } else if (category === 'character') {
+              gear_button.removeAttribute('data-active');
+              face_button.removeAttribute('data-active');
+              paperdoll_left.style.display = 'none';
+              paperdoll_right.style.display = 'none';
+              paperdoll_bottom.style.display = 'none';
+              face_settings.style.display = 'none';
+              char_settings.style.display = 'block';
+            };
+          });
+        </script>
 
         <script type="module">
-          import {generateModels} from "{% static 'main_app\javascript\wow-model-viewer\index.js' %}";
+          import {
+            findRaceGenderOptions,
+            generateModels,
+            getDisplaySlot,
+            findItemsInEquipments,
+          } from "{% static 'main_app/javascript/wow-model-viewer/index.js' %}";
 
+
+          //////////////////////////////////////////////////////////////////////////////
           const character = {
-            "race": 7,
+            "race": 1,
             "gender": 1,
             "skin": 4,
             "face": 0,
@@ -82,13 +815,131 @@
             "hairColor": 5,
             "facialStyle": 5,
             "items": [
-              [1, 1170], [3, 4925], [5, 9575], [6, 25235], [7, 2311], [8, 21154],
-              [9, 14618], [10, 9534], [15, 17238], [21, 20379], [22, 28787]
+              // [1, 1170],
+              // [3, 4925],
+              // [5, 9575],
+              // [6, 25235],
+              // [7, 2311],
+              // [8, 21154],
+              // [9, 14618],
+              // [10, 9534],
+              // [15, 17238],
+              // [21, 20379],
+              // [22, 28787],
             ]
           };
+          // const prince_of_lordaeron = {type: 8, id: 24949};
 
-          generateModels(2, `#model_3d`, character);
+          window.char_model = await generateModels(2, `#paperdoll-model-dressing-room-paperdoll`, character);
+
+          function set_model_default_settings_after_loading() {
+            window.char_model.setDistance(6);
+            // console.log(window.char_model.getListAnimations());
+            // window.char_model.setAnimation('ShieldBash');
+          };
+          //////////////////////////////////////////////////////////////////////////////
+
+
+          let char_model_ready_interval_id = setInterval(() => {
+            if (!window.char_model) {
+              clearInterval(char_model_ready_interval_id);
+              return false;
+            };
+
+            if (window.char_model.renderer.models[0].ap) {
+              clearInterval(char_model_ready_interval_id);
+
+              setTimeout(() => {
+                window.char_model.ready = true;
+                set_model_default_settings_after_loading();
+              }, 4);
+            };
+          }, 4);
         </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+        <script>
+          $('#dr-screenshot').on('click', function(event) {
+            if (!window.char_model.ready) {
+              alert('Пожалуйста, дождитесь полной загрузки модели.')
+              return false;
+            };
+
+            window.char_model.setFullscreen(true);
+            setTimeout(() => {
+
+              html2canvas($('body')[0], {
+                onrendered: function(canvas) {
+                  canvas.toBlob(function(blob) {
+                    saveAs(blob, 'image_name.png');
+                  });
+                }
+              });
+
+              setTimeout(() => {
+                window.char_model.setFullscreen(false);
+              }, 1500);
+
+            }, 1500);
+          });
+
+
+          $('#dr-pause').on('click', function(event) {
+            if (!window.char_model.ready) {
+              alert('Пожалуйста, дождитесь полной загрузки модели.')
+              return false;
+            };
+
+            window.char_model.AnimIsPaused = !window.char_model.AnimIsPaused;
+
+            if (window.char_model.AnimIsPaused) {
+              this.classList.remove('fa-pause');
+              this.classList.add('fa-play');
+            } else {
+              this.classList.remove('fa-play');
+              this.classList.add('fa-pause');
+            };
+
+            window.char_model.setAnimPaused(window.char_model.AnimIsPaused);
+          });
+        </script>
+
+
+
+        <!-- <script src="//cdn.warmane.com/wmmv/wmmv.js?v=1671575235"></script>
+        <script>
+          var charactermodel = {
+            type: ModelViewer.WOW,
+            contentPath: "//cdn.warmane.com/wmmv/",
+            background: "background.png",
+            container: $('#paperdoll-model-dressing-room-paperdoll'),
+            hd: true,
+            // aspect: 0.76,
+            aspect: 1,
+            sk: 9,
+            ha: 9,
+            hc: 9,
+            fa: 0,
+            fh: 2,
+            fc: 0,
+            ep: 0,
+            ho: 0,
+            ta: 0,
+            cls: 1,
+            items: [
+              [1, 45248], [3, 35605], [16, 61031], [5, 35606], [9, 63534],
+              [10, 48570], [6, 63474], [7, 35608], [8, 35609], [17, 65153]
+            ],
+            models: {
+              type: ModelViewer.Wow.Types.CHARACTER,
+              id: 'humanmale'
+            }
+          };
+          var viewer = new ModelViewer(charactermodel);
+        </script> -->
+
 
 
       </div>

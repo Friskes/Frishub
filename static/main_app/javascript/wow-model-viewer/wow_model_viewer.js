@@ -1,10 +1,10 @@
 // if (!window.WH) { // фикс бага
-    window.WH = {};
+    // window.WH = {};
     // eslint-disable-next-line no-unused-vars
     window.WH.debug = function (...args) {
         // console.log(args);
     };
-    window.WH.defaultAnimation = `Stand`;
+    // window.WH.defaultAnimation = `Stand`;
 // }
 
 
