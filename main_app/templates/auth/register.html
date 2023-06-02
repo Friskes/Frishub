@@ -2,7 +2,6 @@
 
 {% load static %}
 {% load i18n %}
-{% load recaptcha2 %}
 
 {% block head %}
 <style>
@@ -79,9 +78,6 @@
     }
   }
 </style>
-
-{% recaptcha_init %}
-
 {% endblock %}
 
 {% block body %}
@@ -183,6 +179,22 @@
                 btn_state.disabled = true;
               }
             }
+          </script>
+
+          <script type="text/javascript">
+            var reCaptchaOnLoadCallback = function() {
+              updateGoogleCaptchaLanguage("{{ LANGUAGE_CODE }}");
+            };
+
+            function updateGoogleCaptchaLanguage(selectedLanguage) {
+              let iframeGoogleCaptcha = $('#id_captcha').find('iframe');
+              let language = iframeGoogleCaptcha.attr("src").match(/hl=(.*?)&/).pop();
+              if (language !== selectedLanguage) {
+                iframeGoogleCaptcha.attr("src",
+                  iframeGoogleCaptcha.attr("src").replace(/hl=(.*?)&/, 'hl=' + selectedLanguage + '&')
+                );
+              };
+            };
           </script>
 
         </div>

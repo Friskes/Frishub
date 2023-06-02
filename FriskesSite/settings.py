@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'snowpenguin.django.recaptcha2',
+    # https://github.com/torchbox/django-recaptcha
+    'captcha',
 
     # https://github.com/jazzband/django-tinymce
     # https://django-tinymce.readthedocs.io/en/latest/

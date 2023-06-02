@@ -11,8 +11,8 @@ from django.forms import (
     SelectDateWidget, Textarea, ValidationError, SelectMultiple, TextInput
 )
 
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 
 from main_app.models import CustomUser, ContactMe, Comments
 
@@ -30,7 +30,18 @@ from datetime import datetime
 class RegisterForm(UserCreationForm):
     """#### Форма для страницы регистрации."""
 
-    captcha = ReCaptchaField(widget=ReCaptchaWidget(theme='dark'))
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV2Checkbox(
+            api_params={
+                'onload': 'reCaptchaOnLoadCallback',
+                'hl': 'ru'
+            },
+            attrs={
+                'data-theme': 'dark',
+                # 'data-size': 'compact' # 'normal'
+            }
+        )
+    )
 
     accept_terms = BooleanField(widget=CheckboxInput(attrs={'_ngcontent-xpp-c83': "", 'class': "checkbox"}))
 
@@ -142,7 +153,18 @@ class PasswordResetConfirmForm(SetPasswordForm):
 class ContactMeForm(ModelForm):
     """#### Форма для страницы обратной связи."""
 
-    captcha = ReCaptchaField(widget=ReCaptchaWidget(theme='dark'))
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV2Checkbox(
+            api_params={
+                'onload': 'reCaptchaOnLoadCallback',
+                'hl': 'ru'
+            },
+            attrs={
+                'data-theme': 'dark',
+                # 'data-size': 'compact' # 'normal'
+            }
+        )
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
