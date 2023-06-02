@@ -808,18 +808,12 @@
 
       <script>
         // скрипт для установки цвета кнопки текущей страницы
-        (() => {
-          $('.navbar-nav li a').each(function(index, element) {
-            if (document.location.href.includes(element.href)) {
-              if (document.location.pathname !== '/'
-              && document.location.pathname !== '/en/') {
-                if (index !== 1) element.classList.add('active');
-              } else {
-                element.classList.add('active');
-              };
-            };
-          });
-        })();
+        let location_pathname = document.location.pathname;
+        $('.navbar-nav li a').each(function(index, element) {
+          if (location_pathname === element.pathname) {
+            element.classList.add('active');
+          };
+        });
       </script>
 
       <script>
