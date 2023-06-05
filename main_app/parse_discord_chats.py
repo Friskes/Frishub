@@ -20,11 +20,12 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from channels.layers import InMemoryChannelLayer
 
-from main_app.services.services import request_post, request_get
 from main_app.models import ServiceInfo
 from FriskesSite import settings
 
 from typing import Union, Dict
+
+import requests
 
 import logging
 log = logging.getLogger(__name__)
@@ -54,10 +55,10 @@ def check_token(token: str) -> Union[str, None]:
         'authorization': token
     }
 
-    json_response = request_get(DISCORD_ENDPOINT_URL, headers_get)
+    json_response: dict = requests.get(url=DISCORD_ENDPOINT_URL, headers=headers_get, timeout=5).json()
 
     if json_response.get('code') == 0:
-        new_token = request_post(REQUEST_URL, HEADERS_POST, PAYLOAD).get('token')
+        new_token = requests.post(url=REQUEST_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('token')
         return new_token
     return None
 
@@ -79,7 +80,7 @@ def token_verification() -> Union[str, None]:
             return token
         return service_info[0].discord_token
 
-    token = request_post(REQUEST_URL, HEADERS_POST, PAYLOAD).get('token')
+    token = requests.post(url=REQUEST_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('token')
 
     if token and service_info:
         service_info.update(discord_token=token)

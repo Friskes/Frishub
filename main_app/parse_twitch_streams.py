@@ -3,10 +3,11 @@
 # https://dev.twitch.tv/docs/api/reference
 
 from main_app.models import ServiceInfo, TwitchStreamerInfo, CLASS_COLORS
-from main_app.services.services import request_post, request_get
 from FriskesSite import settings
 
 from typing import Union, List
+
+import requests
 
 import logging
 log = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ def token_verification() -> Union[str, None]:
     if service_info and service_info[0].twitch_token:
         return service_info[0].twitch_token
 
-    token = request_post(OAUTH2_URL, HEADERS_POST, PAYLOAD).get('access_token')
+    token = requests.post(url=OAUTH2_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('access_token')
 
     if token and service_info:
         service_info.update(twitch_token=token)
@@ -128,10 +129,24 @@ class TwitchStreamParser:
 
         # https://dev.twitch.tv/docs/api/reference#get-streams
         get_streams_url = 'https://api.twitch.tv/helix/streams?'
-        json_response = request_get(get_streams_url + url_params, headers_get)
+        json_response = requests.get(url=get_streams_url + url_params, headers=headers_get, timeout=5).json()
 
         if json_response.get('status') == 401:
-            new_token = request_post(OAUTH2_URL, HEADERS_POST, PAYLOAD).get('access_token')
+            # print(self.twitch_token)
+            # print(requests.get(url='https://id.twitch.tv/oauth2/validate', headers={'Authorization': f'Bearer {self.twitch_token}'}).json())
+            # REFRESH_TOKEN_PAYLOAD = {
+            #     'client_id': settings.TWITCH_CLIENT_ID,
+            #     'client_secret': settings.TWITCH_CLIENT_SECRET,
+            #     'grant_type': 'refresh_token',
+            #     'refresh_token': self.twitch_token
+            # }
+            post_json_response = requests.post(url=OAUTH2_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json()
+            if post_json_response.get('status') == 400:
+                # {'status': 400, 'message': 'missing client id'}
+                log.error(f'[class TwitchStreamParser -> def get_twitch_stream_data] missing client id: {post_json_response}')
+                return []
+
+            new_token = post_json_response.get('access_token')
 
             service_info = ServiceInfo.objects.filter(pk=1)
             service_info.update(twitch_token=new_token)
