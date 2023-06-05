@@ -34,7 +34,7 @@ def token_verification() -> Union[str, None]:
     if service_info and service_info[0].twitch_token:
         return service_info[0].twitch_token
 
-    token = requests.post(url=OAUTH2_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('access_token')
+    token = requests.post(url=OAUTH2_URL, data=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('access_token')
 
     if token and service_info:
         service_info.update(twitch_token=token)
@@ -132,18 +132,10 @@ class TwitchStreamParser:
         json_response = requests.get(url=get_streams_url + url_params, headers=headers_get, timeout=5).json()
 
         if json_response.get('status') == 401:
-            # print(self.twitch_token)
-            # print(requests.get(url='https://id.twitch.tv/oauth2/validate', headers={'Authorization': f'Bearer {self.twitch_token}'}).json())
-            # REFRESH_TOKEN_PAYLOAD = {
-            #     'client_id': settings.TWITCH_CLIENT_ID,
-            #     'client_secret': settings.TWITCH_CLIENT_SECRET,
-            #     'grant_type': 'refresh_token',
-            #     'refresh_token': self.twitch_token
-            # }
-            post_json_response = requests.post(url=OAUTH2_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json()
+            post_json_response = requests.post(url=OAUTH2_URL, data=PAYLOAD, headers=HEADERS_POST, timeout=5).json()
+
             if post_json_response.get('status') == 400:
-                # {'status': 400, 'message': 'missing client id'}
-                log.error(f'[class TwitchStreamParser -> def get_twitch_stream_data] missing client id: {post_json_response}')
+                log.error(f'[class TwitchStreamParser -> def get_twitch_stream_data]: {post_json_response}')
                 return []
 
             new_token = post_json_response.get('access_token')
