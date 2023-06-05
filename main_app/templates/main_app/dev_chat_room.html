@@ -398,7 +398,7 @@
 
     <a _ngcontent-xpp-c94="" class="info">
       <button _ngcontent-gox-c64="" class="btn-custom2 select-none"
-        onclick="copy_text.copy($(this).parent(), '#chat-path-input');">{% trans 'Копировать' %}</button>
+        onclick="copy_text.copy($('#chat-path-input')[0].value);">{% trans 'Копировать' %}</button>
       <span _ngcontent-xpp-c94="" class="info-text"
         style="color: #fff; margin-top: -23px; margin-left: -126px;">{% trans 'Скопировать ссылку' %}</span>
     </a>
@@ -1056,51 +1056,6 @@
 </script>
 
 <script>
-  // https://professorweb.ru/my/javascript/jquery/level1/1_4.php
-
-  class CopyText {
-
-    constructor() {
-      this.changeTimer = false;
-      this.stoppedvar = true;
-      this.old_text = '';
-    };
-
-    copy(element, target_id=null) {
-
-      if (this.stoppedvar) {
-        this.stoppedvar = false;
-        this.old_text = $(element).find("span").text();
-      };
-
-      var $tmp = $("<textarea>");
-      $("body").append($tmp);
-      if (target_id) {
-        $tmp.val($(target_id)[0].value).select();
-      } else {
-        $tmp.val(this.old_text).select();
-      };
-      document.execCommand("copy");
-      $tmp.remove();
-
-      $(element).find("span").html("{% trans 'Ссылка скопирована!' %}");
-      $(element).find("span").css("color", "lime");
-
-      if (this.changeTimer !== false) {
-        clearTimeout(this.changeTimer);
-      };
-      let _this = this;
-
-      this.changeTimer = setTimeout(function() {
-
-        $(element).find("span").html(_this.old_text);
-        $(element).find("span").css("color", "#fff");
-
-        _this.stoppedvar = true;
-        _this.changeTimer = false;
-      }, 1500);
-    };
-  };
   const copy_text = new CopyText();
 </script>
 
@@ -1122,10 +1077,6 @@
     };
   });
 
-  function get_rand_int(min, max) {
-    min = Math.ceil(min);
-    return Math.floor(Math.random() * (Math.floor(max) - min + 1)) + min;
-  };
   function get_random_hex_color(min=0, max=255, alpha='') {
     return '#' + get_rand_int(min, max).toString(16) + get_rand_int(min, max).toString(16) + get_rand_int(min, max).toString(16) + alpha.toString();
   };

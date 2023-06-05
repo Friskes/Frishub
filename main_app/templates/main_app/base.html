@@ -611,6 +611,62 @@
     </script>
 
     <script>
+      // https://professorweb.ru/my/javascript/jquery/level1/1_4.php
+
+      class CopyText {
+
+        constructor() {
+          this.lock = false;
+          this.span_text = '';
+          this.span_color = '#fff';
+          this.debounce = debounce(this.schedule, 1500);
+        };
+
+        // метод copy можно размещать как в теге <a> так и внутри элемента внутри тега <a>
+        copy(text) {
+          // this.span = $('элемент_который_надо_передать_в_метод_copy').parent().find("span");
+          let element = window.event.target || window.event.srcElement;
+          this.span = $(element).parent().find("span");
+
+          if (!this.lock) {
+            this.lock = true;
+            this.span_text = this.span.text();
+            this.span_color = this.span.css("color");
+          };
+
+          let $tmp = $("<textarea>");
+          $("body").append($tmp);
+          $tmp.val(text).select();
+          document.execCommand("copy");
+          $tmp.remove();
+
+          this.anim();
+        };
+
+        anim() {
+          this.span.html("{% trans 'Текст скопирован!' %}");
+          this.span.css("color", "lime");
+
+          this.debounce();
+        };
+
+        schedule() {
+          this.span.html(this.span_text);
+          this.span.css("color", this.span_color);
+
+          this.lock = false;
+        };
+      };
+    </script>
+
+    <script>
+      function get_rand_int(min=0, max=255) {
+        min = Math.ceil(min);
+        return Math.floor(Math.random() * (Math.floor(max) - min + 1)) + min;
+      };
+    </script>
+
+    <script>
       var images = new Array(
         "{% static 'main_app/images/play.png' %}",
         "{% static 'main_app/images/pause.png' %}",

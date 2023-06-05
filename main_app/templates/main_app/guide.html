@@ -355,53 +355,6 @@
   <br><br>
   <hr>
 
-  <script>
-    class CopyTextClass {
-
-      constructor() {
-        this.changeTimer = false;
-        this.stoppedvar = true;
-        this.old_text = '';
-      }
-
-      copytext(el) {
-
-        if (this.stoppedvar) {
-          this.stoppedvar = false
-          this.old_text = $(el).find("span").text()
-        }
-
-        var $tmp = $("<textarea>");
-        $("body").append($tmp);
-        $tmp.val(this.old_text).select();
-        document.execCommand("copy");
-        $tmp.remove();
-
-        $(el).find("span").html("{% trans 'Текст скопирован!' %}")
-        $(el).find("span").css("color", "lime")
-
-        if (this.changeTimer !== false) {
-          clearTimeout(this.changeTimer);
-        };
-        var _this = this;
-
-        this.changeTimer = setTimeout(function() {
-
-          $(el).find("span").html(_this.old_text)
-
-          if (el.slice(0, 15) == '#battlenet_icon') {
-            $(el).find("span").css("color", "rgb(0, 154, 209)")
-          } else if (el.slice(0, 13) == '#discord_icon') {
-            $(el).find("span").css("color", "#7289DA")
-          }
-
-          _this.stoppedvar = true
-          _this.changeTimer = false;
-        }, 1500);
-      }
-    }
-  </script>
-
   <div class="container">
     <div class="row justify-content-md-center pt-5">
       <div class="col-md-7">
@@ -443,9 +396,9 @@
             <div id="{{ node.id }}" class="my-4">
 
               <script>
-                var ccc = "{{ node.id }}";
-                window["copy_text_class_1_" + ccc] = new CopyTextClass();
-                window["copy_text_class_2_" + ccc] = new CopyTextClass();
+                var node_id = "{{ node.id }}";
+                window["battlenet_copy_text_" + node_id] = new CopyText();
+                window["discord_copy_text_" + node_id] = new CopyText();
               </script>
 
               {% if node.level == 0 %}
@@ -548,14 +501,14 @@
                     {% endif %}
 
                     {% if node.author.discord_username %}
-                      <a _ngcontent-xpp-c94="" class="info" onclick="copy_text_class_2_{{ node.id }}.copytext('#discord_icon-{{ node.id }}');" id="discord_icon-{{ node.id }}">
+                      <a _ngcontent-xpp-c94="" class="info" onclick="discord_copy_text_{{ node.id }}.copy('{{ node.author.discord_username }}');" id="discord_icon-{{ node.id }}">
                         <img src="/static/main_app/images/discord.png" style="border-radius: 50%; cursor: pointer;" width="22">
                         <span _ngcontent-xpp-c94="" class="info-text" style="color: #7289DA; margin-top: 25px; margin-left: -{{ node.author.discord_username|length|add:76 }}px;">{{ node.author.discord_username }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.battlenet_username %}
-                      <a _ngcontent-xpp-c94="" class="info" onclick="copy_text_class_1_{{ node.id }}.copytext('#battlenet_icon-{{ node.id }}');" id="battlenet_icon-{{ node.id }}">
+                      <a _ngcontent-xpp-c94="" class="info" onclick="battlenet_copy_text_{{ node.id }}.copy('{{ node.author.battlenet_username }}');" id="battlenet_icon-{{ node.id }}">
                         <img src="/static/main_app/images/battlenet.png" style="border-radius: 50%; cursor: pointer;" width="22">
                         <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 25px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
                       </a>
@@ -721,14 +674,14 @@
                     {% endif %}
 
                     {% if node.author.discord_username %}
-                      <a _ngcontent-xpp-c94="" class="info" onclick="copy_text_class_2_{{ node.id }}.copytext('#discord_icon-{{ node.id }}');" id="discord_icon-{{ node.id }}">
+                      <a _ngcontent-xpp-c94="" class="info" onclick="discord_copy_text_{{ node.id }}.copy('{{ node.author.discord_username }}');" id="discord_icon-{{ node.id }}">
                         <img src="/static/main_app/images/discord.png" style="border-radius: 50%; cursor: pointer;" width="17.6">
                         <span _ngcontent-xpp-c94="" class="info-text" style="color: #7289DA; margin-top: 20px; margin-left: -{{ node.author.discord_username|length|add:76 }}px;">{{ node.author.discord_username }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.battlenet_username %}
-                      <a _ngcontent-xpp-c94="" class="info" onclick="copy_text_class_1_{{ node.id }}.copytext('#battlenet_icon-{{ node.id }}');" id="battlenet_icon-{{ node.id }}">
+                      <a _ngcontent-xpp-c94="" class="info" onclick="battlenet_copy_text_{{ node.id }}.copy('{{ node.author.battlenet_username }}');" id="battlenet_icon-{{ node.id }}">
                         <img src="/static/main_app/images/battlenet.png" style="border-radius: 50%; cursor: pointer;" width="17.6">
                         <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 20px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
                       </a>
