@@ -222,6 +222,7 @@ button {
 }
 .info {
   position: relative;
+  text-decoration: none !important;
 }
 .info .info-text {
   visibility: hidden;

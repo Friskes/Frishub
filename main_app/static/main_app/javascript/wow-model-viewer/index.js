@@ -260,4 +260,5 @@ export {
     generateModels,
     getDisplaySlot,
     findItemsInEquipments,
+    optionsFromModel,
 };

@@ -41,6 +41,8 @@ urlpatterns = [
 
     path('dressing-room/', views.DressingRoomView.as_view(), name='dressing_room'),
 
+    path('dressing-room/<uuid:room_id>/', views.UniqueDressingRoomView.as_view(), name='unique_dressing_room'),
+
     path('arena-point-calculator/', views.ArenaPointCalculatorView.as_view(), name='ap_calculator'),
 
     ##################### Авторизация #####################

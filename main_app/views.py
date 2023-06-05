@@ -437,8 +437,18 @@ class StreamsView(DataMixin, TemplateView):
 
 #############################################################################
 
-class DressingRoomView(DataMixin, TemplateView):
-    """#### Представление обрабатывающее гардеробную комнату."""
+class DressingRoomView(DataMixin, View):
+    """#### Представление которое генерирует uuid4\
+    и использует его для создания уникального url адреса для примерочной страницы."""
+
+    def get(self, request, *args, **kwargs):
+
+        return redirect('unique_dressing_room', uuid4())
+
+#############################################################################
+
+class UniqueDressingRoomView(DataMixin, TemplateView):
+    """#### Представление обрабатывающее примерочную страницу."""
 
     template_name = 'main_app/dressing_room.html'
 
