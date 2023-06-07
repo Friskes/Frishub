@@ -129,7 +129,11 @@ class TwitchStreamParser:
 
         # https://dev.twitch.tv/docs/api/reference#get-streams
         get_streams_url = 'https://api.twitch.tv/helix/streams?'
-        json_response = requests.get(url=get_streams_url + url_params, headers=headers_get, timeout=5).json()
+
+        try:
+            json_response = requests.get(url=get_streams_url + url_params, headers=headers_get, timeout=5).json()
+        except requests.exceptions.RequestException as exc:
+            log.error(f'[class TwitchStreamParser -> def get_twitch_stream_data]: {exc}')
 
         if json_response.get('status') == 401:
             post_json_response = requests.post(url=OAUTH2_URL, data=PAYLOAD, headers=HEADERS_POST, timeout=5).json()
