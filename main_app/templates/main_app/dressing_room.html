@@ -701,8 +701,8 @@
               <button class="btn dress-btn btn-site fa fa-pause" id="dr-pause" type="button">Pause</button>
               <div>
                 <button class="btn dress-btn btn-site fa fa-random" id="dr-randomize" type="button">Random</button>
-                <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
-                <button class="btn dress-btn btn-site fa fa-repeat" id="dr-redo" type="button" disabled="">Redo</button>
+                <!-- <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
+                <button class="btn dress-btn btn-site fa fa-repeat" id="dr-redo" type="button" disabled="">Redo</button> -->
               </div>
             </div>
 
@@ -1157,6 +1157,26 @@
           // };
 
 
+          async function get_items_data_from_database_file() {
+            fetch("{% static 'main_app/json/itemsdata.json' %}")
+            .then((response) => response.json())
+            // .then((json) => json.map((x) => {
+            //   x.icon = `https://render-classic-us.worldofwarcraft.com/icons/56/${x.icon}.jpg`;
+            //   // x.icon = `https://wow.zamimg.com/images/wow/icons/large/${x.icon}.jpg`;
+            //   return x;
+            // }))
+            .then((data) => {
+              window.itemsData = data;
+            });
+          };
+          await get_items_data_from_database_file();
+
+          function getItemLink(itemId) {
+            let link = window.itemsData.find((p) => p.itemId === itemId).itemLink.replace(/\|/g, '\\124');
+            return `/script DEFAULT_CHAT_FRAME:AddMessage("${link}");`;
+          };
+
+
           window.setAppearance = async function() {
             const charCustomization = {
               "race": model_opts.race,
@@ -1231,19 +1251,46 @@
         </script>
 
         <script>
-          $('#dr-randomize').on('click', function(event) {
+          $('#dr-randomize').on('click', async function(event) {
             // проверяет, полностью ли загружена модель.
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
-            // получить случайное число в указанном диапазоне (по дефолту 0-255)
-            // min max 0-999++
-            // console.log(get_rand_int())
+            // надо будет порефакторить
+
+            let rand_face = get_rand_int(0, window.dressUI.face.race_gender_opts[0].Choices.length - 1)
+            $('#select_face_btn').find('a')[1].textContent = rand_face + 1;
+            model_opts.face = rand_face;
+
+            let rand_skin = get_rand_int(0, window.dressUI.face.race_gender_opts[1].Choices.length - 1)
+            $('#select_skin_color_btn').find('a')[1].textContent = rand_skin + 1
+            model_opts.skin = rand_skin;
+
+            let rand_hairStyle = get_rand_int(0, window.dressUI.face.race_gender_opts[2].Choices.length - 1)
+            $('#select_hair_style_btn').find('a')[1].textContent =
+            window.dressUI.face.race_gender_opts[2].Choices[rand_hairStyle].Name;
+            model_opts.hairStyle = rand_hairStyle;
+
+            let rand_hairColor = get_rand_int(0, window.dressUI.face.race_gender_opts[3].Choices.length - 1)
+            $('#select_hair_color_btn').find('a')[1].textContent = rand_hairColor + 1;
+            model_opts.hairColor = rand_hairColor;
+
+            let rand_facialStyle = get_rand_int(0, window.dressUI.face.race_gender_opts[5].Choices.length - 1)
+            $('#select_facial_hair_btn').find('a')[1].textContent =
+            window.dressUI.face.race_gender_opts[5].Choices[rand_facialStyle].Name;
+            model_opts.facialStyle = rand_facialStyle;
+
+            await window.setAppearance();
           });
         </script>
 
         <script>
           $('#dr-reset').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
+
+            window.model.setDistance(6);
+            window.model.setAzimuth(1.5 * Math.PI); // горизонталь
+            window.model.setZenith(Math.PI / 2); // вертикаль
+            window.model.renderer.viewer.setOffset(0, 0); // X, Y
           });
         </script>
 
@@ -1257,7 +1304,9 @@
             window.model.setFullscreen(true);
             setTimeout(() => {
 
-              html2canvas($('body')[0], {
+              // let element = $('body')[0];
+              let element = $('#paperdoll-model-dressing-room-paperdoll')[0];
+              html2canvas(element, {
                 onrendered: function(canvas) {
                   canvas.toBlob(function(blob) {
                     saveAs(blob, 'image_name.png');
