@@ -5,6 +5,7 @@
 
 {% block head %}
 <script src="https://wow.zamimg.com/modelviewer/live/viewer/viewer.min.js"></script>
+<!-- <script src="https://wow.zamimg.com/modelviewer/wrath/viewer/viewer.min.js"></script> -->
 
 <script type="module" src="{% static 'main_app/javascript/wow-model-viewer/index.js' %}"></script>
 
@@ -184,25 +185,6 @@
   .paperdoll .paperdoll-bottom .iconmedium+.paperdoll-enchant {
     transform-origin: left
   }
-  .paperdoll .paperdoll-sheathed {
-    cursor: pointer;
-    font-size: 13px;
-    left: calc(50% - 70px);
-    opacity: .5;
-    position: absolute;
-    right: calc(50% - 70px);
-    text-align: center;
-    top: -18px
-  }
-  .paperdoll .paperdoll-sheathed:hover {
-    opacity: 1
-  }
-  .paperdoll .paperdoll-sheathed input {
-    margin: 0 3px 0 0;
-    position: relative;
-    top: 3px;
-    vertical-align: top
-  }
   .paperdoll .paperdoll-model {
     bottom: 47px;
     left: 47px;
@@ -224,17 +206,6 @@
   .paperdoll .paperdoll-model-inner canvas {
     height: 100%;
     width: 100%
-  }
-  .paperdoll .paperdoll-model-pause {
-    bottom: 10px;
-    color: #fff;
-    font-size: 18px;
-    opacity: .5;
-    position: absolute;
-    right: 10px
-  }
-  .paperdoll .paperdoll-model-pause:hover {
-    opacity: 1
   }
   .paperdoll .paperdoll-responsive-shell {
     line-height: 0;
@@ -260,9 +231,14 @@
   .paperdoll .paperdoll-hidden.iconsmall * {
     pointer-events: none
   }
-  .paperdoll .paperdoll-controls-left,
-  .paperdoll .paperdoll-controls-right {
-    bottom: 5px;
+  .fullscreen-icon {
+    color: #cccccc;
+  }
+  .fullscreen-icon:hover {
+    color: #cccccc;
+  }
+  .paperdoll .paperdoll-controls-left {
+    bottom: 16px;
     font-size: 12px;
     left: 5px;
     line-height: 1.2;
@@ -270,6 +246,21 @@
     right: calc(50% - -44px);
     text-align: left;
     z-index: 10
+  }
+  .paperdoll .paperdoll-controls-right {
+    bottom: 31px;
+    font-size: 20px;
+    position: absolute;
+    z-index: 10;
+    left: calc(50% - 153px);
+  }
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    .paperdoll .paperdoll-controls-right {
+      bottom: 26px;
+      font-size: 17px;
+      left: calc(50% - 80px);
+    }
   }
   .paperdoll .paperdoll-controls-left div,
   .paperdoll .paperdoll-controls-right div {
@@ -279,17 +270,6 @@
   .paperdoll .paperdoll-controls-right div:first-child {
     margin: 0
   }
-  .paperdoll .paperdoll-controls-right {
-    left: calc(50% - -44px);
-    right: 5px;
-    text-align: right
-  }
-  .paperdoll .paperdoll-fullscreen {
-    background: #202020;
-    border-radius: 6px 0 0 0;
-    padding-top: 1px;
-    pointer-events: none
-  }
   .paperdoll .paperdoll-quality a {
     font-size: 14px
   }
@@ -297,18 +277,6 @@
     color: #fff;
     cursor: default;
     font-weight: bold
-  }
-  .paperdoll .paperdoll-animation {
-    display: none
-  }
-  .paperdoll .paperdoll-animation select {
-    background: #303030;
-    border: 0;
-    box-shadow: none !important;
-    color: #fff;
-    font-size: inherit;
-    padding: 0;
-    width: 105px
   }
   .paperdoll .paperdoll-mount {
     display: none;
@@ -350,20 +318,11 @@
   .paperdoll[data-icon-size="large"] .paperdoll-bottom {
     bottom: 71px
   }
-  /* .paperdoll[data-icon-size="large"] .paperdoll-model {
-    bottom: 71px;
-    left: 71px;
-    right: 71px
-  } */
   .paperdoll[data-icon-size="large"] .paperdoll-responsive-shell {
     margin: 0 71px 71px
   }
-  .paperdoll[data-icon-size="large"] .paperdoll-controls-left,
-  .paperdoll[data-icon-size="large"] .paperdoll-controls-right {
+  .paperdoll[data-icon-size="large"] .paperdoll-controls-left {
     right: calc(50% - -68px)
-  }
-  .paperdoll[data-icon-size="large"] .paperdoll-controls-right {
-    left: calc(50% - -68px)
   }
   .paperdoll-picker .listview td.none {
     text-align: center;
@@ -429,6 +388,9 @@
   .fa-repeat:before {
     content: "\f01e"
   }
+  .fa-expand:before {
+    content: "\f065"
+  }
 </style>
 {% endblock %}
 
@@ -444,7 +406,6 @@
             data-gender="0" data-gender-restriction="no-restriction" data-category="gear">
 
             <div class="paperdoll" id="dressing-room-paperdoll" data-icon-size="large" data-separate-shoulders="false">
-              <!-- style="background-image: url(&quot;https://wow.zamimg.com/modelviewer/live/background-181818.png&quot;);"> -->
 
               <div class="paperdoll-left">
                 <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="1">
@@ -538,11 +499,6 @@
               </div>
 
               <div class="paperdoll-bottom">
-                <div class="iconlarge paperdoll-enchant paperdoll-enchant-disabled" data-env="live" data-tree="live" data-game="wow">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_enchant.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
-                </div>
                 <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="16">
                   <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_mainhand.jpg&quot;);" class=""></ins>
                   <del></del>
@@ -553,18 +509,11 @@
                   <del></del>
                   <a href="javascript:"></a>
                 </div>
-                <div class="iconlarge paperdoll-enchant paperdoll-enchant-disabled" data-env="live" data-tree="live" data-game="wow">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_enchant.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
-                </div>
-                <label class="paperdoll-sheathed" style="display: none;"><input type="checkbox" data-field-filled="true">Sheathed</label>
               </div>
 
               <div class="paperdoll-model">
                 <!-- style="border: 1px solid rgba(255, 255, 255, 0.5);"> -->
                 <div class="paperdoll-model-inner" id="paperdoll-model-dressing-room-paperdoll"></div>
-                <a class="paperdoll-model-pause fa fa-pause"></a>
               </div>
 
               <div class="paperdoll-responsive-shell">
@@ -573,10 +522,11 @@
 
               <div class="paperdoll-controls-right">
                 <div class="paperdoll-fullscreen">
-                  <i class="fa fa-expand"></i> Double-click model to view fullscreen
-                </div>
-                <div class="paperdoll-animation">
-                  <select data-field-filled="false"></select>
+                  <a _ngcontent-xpp-c94="" class="info fullscreen-icon">
+                    <i class="fa fa-expand"></i>
+                    <span _ngcontent-xpp-c94="" class="info-text"
+                      style="color: #fff; margin-top: -47px; margin-left: -40px;">Double-click model to view fullscreen</span>
+                  </a>
                 </div>
               </div>
 
@@ -589,12 +539,8 @@
             </div>
 
             <div class="dressing-room-character-controls-category-switchers">
-              <a data-category="gear" id="gear_button" href="javascript:" data-active="true" class=""
-                style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate15.jpg&quot;);">
-              </a>
-              <a data-category="character" id="character_button" href="javascript:" class=""
-                style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/race_bloodelf_male.jpg&quot;);">
-              </a>
+              <a data-category="gear" id="gear_button" href="javascript:" data-active="true" class=""></a>
+              <a data-category="character" id="character_button" href="javascript:" class=""></a>
               <a data-category="face" id="face_button" href="javascript:"></a>
             </div>
 
@@ -604,7 +550,7 @@
                 <div data-role="label">Face</div>
                 <div tabindex="0" data-role="control" id="select_face_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">1</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -612,7 +558,7 @@
                 <div data-role="label">Skin Color</div>
                 <div tabindex="0" data-role="control" id="select_skin_color_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">4</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -620,7 +566,7 @@
                 <div data-role="label">Hair Style</div>
                 <div tabindex="0" data-role="control" id="select_hair_style_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Flipped</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -628,7 +574,7 @@
                 <div data-role="label">Hair Color</div>
                 <div tabindex="0" data-role="control" id="select_hair_color_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">1</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -636,7 +582,7 @@
                 <div data-role="label">Facial Hair</div>
                 <div tabindex="0" data-role="control" id="select_facial_hair_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Narrow</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -648,7 +594,7 @@
                 <div data-role="label">Race</div>
                 <div tabindex="0" data-role="control" id="select_race_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Human</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -656,7 +602,7 @@
                 <div data-role="label">Gender</div>
                 <div tabindex="0" data-role="control" id="select_gender_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Female</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -664,7 +610,7 @@
                 <div data-role="label">Weapons</div>
                 <div tabindex="0" data-role="control" id="select_sheathed_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Unsheathed</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
@@ -672,18 +618,10 @@
                 <div data-role="label">Animation</div>
                 <div tabindex="0" data-role="control" data-disabled="false" id="select_animation_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1">Stand</a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
               </div>
-              <!-- <div class="dressing-room-character-controls-category-option" data-character-customization-type="npc-options">
-                <div data-role="label">
-                  <label for="npc-options">NPC Options</label>
-                </div>
-                <div data-role="control">
-                  <input type="checkbox" name="npc-options" id="npc-options" data-field-filled="true">
-                </div>
-              </div> -->
             </div>
 
             <div class="dressing-room-character-controls-general">
@@ -709,61 +647,57 @@
           </div>
         </div>
 
-
-        <!-- <script>
+        <script>
+          // Установка дефолтного текста настроек после получения ответа от findRaceGenderOptions
           function setDefaultText() {
             $('#select_race_btn').find('a')[1].textContent = RACES[window.dressUI.char.race_id];
             $('#select_gender_btn').find('a')[1].textContent = GENDERS[window.dressUI.char.gender_id];
-            $('#select_sheathed_btn').find('a')[1].textContent = 'Sheathed';
+            updateSheathText();
             $('#select_animation_btn').find('a')[1].textContent = window.dressUI.char.anim.name;
 
-
-            $('#select_face_btn').find('a')[1].textContent = window.dressUI.face.face + 1;
-            $('#select_skin_color_btn').find('a')[1].textContent = window.dressUI.face.skin + 1;
-
-            $('#select_hair_style_btn').find('a')[1].textContent =
-            window.dressUI.face.race_gender_opts[2].Choices[window.dressUI.face.hairStyle].Name;
-
-            $('#select_hair_color_btn').find('a')[1].textContent = window.dressUI.face.hairColor + 1;
-
-            $('#select_facial_hair_btn').find('a')[1].textContent =
-            window.dressUI.face.race_gender_opts[5].Choices[window.dressUI.face.facialStyle].Name;
+            updateFieldAndTextValues(false);
           };
-        </script> -->
+        </script>
 
         <script>
           // Character HANDLERS
+
           $('#select_race_btn a').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.race_id > 1) {
+
               RACES[window.dressUI.char.race_id] === 'Bloodelf'
               ? window.dressUI.char.race_id -= 2 : window.dressUI.char.race_id -= 1;
-              $('#select_race_btn').find('a')[1].textContent = RACES[window.dressUI.char.race_id];
-              re_creation_model();
+              updateCharacterHandler('race_id', '#select_race_btn', RACES);
 
             } else if (this.classList.contains('fa-caret-right') && window.dressUI.char.race_id < 11) {
+
               RACES[window.dressUI.char.race_id] === 'Troll'
               ? window.dressUI.char.race_id += 2 : window.dressUI.char.race_id += 1;
-              $('#select_race_btn').find('a')[1].textContent = RACES[window.dressUI.char.race_id];
-              re_creation_model();
+              updateCharacterHandler('race_id', '#select_race_btn', RACES);
             };
           });
+
 
           $('#select_gender_btn a').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.gender_id === 1) {
-              window.dressUI.char.gender_id = 0;
-              $('#select_gender_btn').find('a')[1].textContent = GENDERS[window.dressUI.char.gender_id];
-              re_creation_model();
+              window.dressUI.char.gender_id -= 1;
+              updateCharacterHandler('gender_id', '#select_gender_btn', GENDERS);
 
             } else if (this.classList.contains('fa-caret-right') && window.dressUI.char.gender_id === 0) {
-              window.dressUI.char.gender_id = 1;
-              $('#select_gender_btn').find('a')[1].textContent = GENDERS[window.dressUI.char.gender_id];
-              re_creation_model();
+              window.dressUI.char.gender_id += 1;
+              updateCharacterHandler('gender_id', '#select_gender_btn', GENDERS);
             };
           });
+
+          function updateCharacterHandler(field, id, data) {
+            $(id).find('a')[1].textContent = data[window.dressUI.char[field]];
+            re_creation_model();
+          };
+
           // для изменения race и gender требуется полное пересоздание модели
           function re_creation_model() {
             // Полностью удаляем модель (включая DOM дерево)
@@ -773,6 +707,7 @@
             // Заного создаём модель с другим гендером
             window.createModel(model_opts);
           };
+
 
           $('#select_sheathed_btn a').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
@@ -814,9 +749,10 @@
             if (window.dressUI.char.sheath.index === 0) {
               $('#select_sheathed_btn').find('a')[1].textContent = 'Unsheathed';
             } else {
-              $('#select_sheathed_btn').find('a')[1].textContent = 'Sheathed';
+              $('#select_sheathed_btn').find('a')[1].textContent = `Sheathed-${window.dressUI.char.sheath.index}`;
             };
           };
+
 
           $('#select_animation_btn a').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
@@ -844,26 +780,16 @@
 
         <script>
           // Face HANDLERS
-          // TODO много дублирования кода, можно и нужно порефакторить, передавая в функцию ключ-поле и индекс
 
           $('#select_face_btn a').on('click', async function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.face > 0) {
-
-              window.dressUI.face.face -= 1;
-              $('#select_face_btn').find('a')[1].textContent = window.dressUI.face.face + 1;
-              model_opts.face = window.dressUI.face.face;
-              await window.setAppearance();
-
+              await updateAppearanceHandler(true, 'face', '#select_face_btn');
             } else if (this.classList.contains('fa-caret-right')
             && window.dressUI.face.face < window.dressUI.face.race_gender_opts[0].Choices.length - 1) {
-
-              window.dressUI.face.face += 1;
-              $('#select_face_btn').find('a')[1].textContent = window.dressUI.face.face + 1;
-              model_opts.face = window.dressUI.face.face;
-              await window.setAppearance();
+              await updateAppearanceHandler(false, 'face', '#select_face_btn');
             };
           });
 
@@ -873,19 +799,10 @@
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.skin > 0) {
-
-              window.dressUI.face.skin -= 1;
-              $('#select_skin_color_btn').find('a')[1].textContent = window.dressUI.face.skin + 1;
-              model_opts.skin = window.dressUI.face.skin;
-              await window.setAppearance();
-
+              await updateAppearanceHandler(true, 'skin', '#select_skin_color_btn');
             } else if (this.classList.contains('fa-caret-right')
             && window.dressUI.face.skin < window.dressUI.face.race_gender_opts[1].Choices.length - 1) {
-
-              window.dressUI.face.skin += 1;
-              $('#select_skin_color_btn').find('a')[1].textContent = window.dressUI.face.skin + 1;
-              model_opts.skin = window.dressUI.face.skin;
-              await window.setAppearance();
+              await updateAppearanceHandler(false, 'skin', '#select_skin_color_btn');
             };
           });
 
@@ -895,21 +812,10 @@
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.hairStyle > 0) {
-
-              window.dressUI.face.hairStyle -= 1;
-              $('#select_hair_style_btn').find('a')[1].textContent =
-              window.dressUI.face.race_gender_opts[2].Choices[window.dressUI.face.hairStyle].Name;
-              model_opts.hairStyle = window.dressUI.face.hairStyle;
-              await window.setAppearance();
-
+              await updateAppearanceHandler(true, 'hairStyle', '#select_hair_style_btn', 2);
             } else if (this.classList.contains('fa-caret-right')
             && window.dressUI.face.hairStyle < window.dressUI.face.race_gender_opts[2].Choices.length - 1) {
-
-              window.dressUI.face.hairStyle += 1;
-              $('#select_hair_style_btn').find('a')[1].textContent =
-              window.dressUI.face.race_gender_opts[2].Choices[window.dressUI.face.hairStyle].Name;
-              model_opts.hairStyle = window.dressUI.face.hairStyle;
-              await window.setAppearance();
+              await updateAppearanceHandler(false, 'hairStyle', '#select_hair_style_btn', 2);
             };
           });
 
@@ -919,19 +825,10 @@
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.hairColor > 0) {
-
-              window.dressUI.face.hairColor -= 1;
-              $('#select_hair_color_btn').find('a')[1].textContent = window.dressUI.face.hairColor + 1;
-              model_opts.hairColor = window.dressUI.face.hairColor;
-              await window.setAppearance();
-
+              await updateAppearanceHandler(true, 'hairColor', '#select_hair_color_btn');
             } else if (this.classList.contains('fa-caret-right')
             && window.dressUI.face.hairColor < window.dressUI.face.race_gender_opts[3].Choices.length - 1) {
-
-              window.dressUI.face.hairColor += 1;
-              $('#select_hair_color_btn').find('a')[1].textContent = window.dressUI.face.hairColor + 1;
-              model_opts.hairColor = window.dressUI.face.hairColor;
-              await window.setAppearance();
+              await updateAppearanceHandler(false, 'hairColor', '#select_hair_color_btn');
             };
           });
 
@@ -941,25 +838,26 @@
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.facialStyle > 0) {
-
-              window.dressUI.face.facialStyle -= 1;
-              $('#select_facial_hair_btn').find('a')[1].textContent =
-              window.dressUI.face.race_gender_opts[5].Choices[window.dressUI.face.facialStyle].Name;
-              model_opts.facialStyle = window.dressUI.face.facialStyle;
-              await window.setAppearance();
-
+              await updateAppearanceHandler(true, 'facialStyle', '#select_facial_hair_btn', 5);
             } else if (this.classList.contains('fa-caret-right')
             && window.dressUI.face.facialStyle < window.dressUI.face.race_gender_opts[5].Choices.length - 1) {
-
-              window.dressUI.face.facialStyle += 1;
-              $('#select_facial_hair_btn').find('a')[1].textContent =
-              window.dressUI.face.race_gender_opts[5].Choices[window.dressUI.face.facialStyle].Name;
-              model_opts.facialStyle = window.dressUI.face.facialStyle;
-              await window.setAppearance();
+              await updateAppearanceHandler(false, 'facialStyle', '#select_facial_hair_btn', 5);
             };
             // Для мужчин "Beard" index=5
             // Для женщин "Face Shape" index=5
           });
+
+          async function updateAppearanceHandler(type, field, id, index=null) {
+            type ? window.dressUI.face[field] -= 1 : window.dressUI.face[field] += 1;
+            if (index) {
+              $(id).find('a')[1].textContent =
+              window.dressUI.face.race_gender_opts[index].Choices[window.dressUI.face[field]].Name;
+            } else {
+              $(id).find('a')[1].textContent = window.dressUI.face[field] + 1;
+            };
+            model_opts[field] = window.dressUI.face[field];
+            await window.setAppearance();
+          };
         </script>
 
         <script>
@@ -992,7 +890,20 @@
             "items": [
               [21, 58944], [22, 58944]
               // [21, 58921]
-            ]
+            ],
+            // general_opts: {
+            //   background: "background-181818.png",
+            //   // sk: 9,
+            //   // ha: 16,
+            //   // hc: 6,
+            //   // fa: 0,
+            //   // fh: 5,
+            //   // fc: 0,
+            //   // ep: 0,
+            //   // ho: 0,
+            //   // ta: 0,
+            //   // cls: 1
+            // }
           };
 
           function onlyTwoHandWeapon() {
@@ -1028,6 +939,24 @@
         </script>
 
         <script>
+          function set_race_gender_image() {
+            let race = RACES[window.dressUI.char.race_id].toLowerCase();
+            let gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
+            $('#character_button').css('background-image',
+            `url(https://wow.zamimg.com/images/wow/icons/large/race_${race}_${gender}.jpg)`);
+          };
+          function set_gear_image() {
+            let cloth_gear = 'inv_chest_cloth_21';
+            let leather_gear = 'inv_chest_leather_09';
+            let chain_gear = 'inv_chest_chain_05';
+            let plate_gear = 'inv_chest_plate15';
+            $('#gear_button').css('background-image',
+            `url(https://wow.zamimg.com/images/wow/icons/large/${plate_gear}.jpg)`);
+          };
+          set_gear_image();
+        </script>
+
+        <script>
           let gear_button = $('#gear_button')[0];
           let face_button = $('#face_button')[0];
           let char_button = $('#character_button')[0];
@@ -1045,74 +974,53 @@
             event.target.setAttribute('data-active', 'true');
 
             if (category === 'gear') {
-              face_button.removeAttribute('data-active');
-              char_button.removeAttribute('data-active');
-              paperdoll_left.style.display = 'block';
-              paperdoll_right.style.display = 'block';
-              paperdoll_bottom.style.display = 'block';
-              face_settings.style.display = 'none';
-              char_settings.style.display = 'none';
+              removeAttr('data-active', face_button, char_button);
+              setDisplayState('block', paperdoll_left, paperdoll_right, paperdoll_bottom);
+              setDisplayState('none', face_settings, char_settings);
               window.dressUI.active_cat = 'gear';
 
             } else if (category === 'face') {
-              gear_button.removeAttribute('data-active');
-              char_button.removeAttribute('data-active');
-              paperdoll_left.style.display = 'none';
-              paperdoll_right.style.display = 'none';
-              paperdoll_bottom.style.display = 'none';
-              face_settings.style.display = 'block';
-              char_settings.style.display = 'none';
+              removeAttr('data-active', gear_button, char_button);
+              setDisplayState('block', face_settings);
+              setDisplayState('none', paperdoll_left, paperdoll_right, paperdoll_bottom, char_settings);
               window.dressUI.active_cat = 'face';
 
             } else if (category === 'character') {
-              gear_button.removeAttribute('data-active');
-              face_button.removeAttribute('data-active');
-              paperdoll_left.style.display = 'none';
-              paperdoll_right.style.display = 'none';
-              paperdoll_bottom.style.display = 'none';
-              face_settings.style.display = 'none';
-              char_settings.style.display = 'block';
+              removeAttr('data-active', gear_button, face_button);
+              setDisplayState('block', char_settings);
+              setDisplayState('none', paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings);
               window.dressUI.active_cat = 'character';
             };
           });
-        </script>
 
-        <script>
+
           $('#dr-toggle-ui').on('click', function(event) {
             window.dressUI.show = !window.dressUI.show;
 
             if (window.dressUI.show) {
-              gear_button.style.display = 'none';
-              face_button.style.display = 'none';
-              char_button.style.display = 'none';
-              paperdoll_left.style.display = 'none';
-              paperdoll_right.style.display = 'none';
-              paperdoll_bottom.style.display = 'none';
-              face_settings.style.display = 'none';
-              char_settings.style.display = 'none';
+              setDisplayState('none', gear_button, face_button, char_button, paperdoll_left,
+              paperdoll_right, paperdoll_bottom, face_settings, char_settings);
             } else {
-              gear_button.style.display = 'block';
-              face_button.style.display = 'block';
-              char_button.style.display = 'block';
+              setDisplayState('block', gear_button, face_button, char_button);
 
               if (window.dressUI.active_cat === 'gear') {
-                paperdoll_left.style.display = 'block';
-                paperdoll_right.style.display = 'block';
-                paperdoll_bottom.style.display = 'block';
+                setDisplayState('block', paperdoll_left, paperdoll_right, paperdoll_bottom);
               } else if (window.dressUI.active_cat === 'face') {
-                face_settings.style.display = 'block';
+                setDisplayState('block', face_settings);
               } else if (window.dressUI.active_cat === 'character') {
-                char_settings.style.display = 'block';
+                setDisplayState('block', char_settings);
               };
             };
           });
+
+          function removeAttr(attr, ...elements) { for (i in elements) elements[i].removeAttribute(attr); };
+
+          function setDisplayState(state, ...elements) { for (i in elements) elements[i].style.display = state; };
         </script>
 
         <script>
           const copy_text = new CopyText();
-        </script>
 
-        <script>
           $('#paperdoll-model-dressing-room-paperdoll').on('touchmove', function(event) {
             event.preventDefault(); // отменяем скролл страницы на время пока выполняется вращение модели
           });
@@ -1122,8 +1030,6 @@
           import {
             findRaceGenderOptions,
             generateModels,
-            getDisplaySlot,
-            findItemsInEquipments,
             optionsFromModel,
           } from "{% static 'main_app/javascript/wow-model-viewer/index.js' %}";
 
@@ -1136,24 +1042,28 @@
 
             window.model.renderer.viewer.method("setModelLoadedCallback", setModelLoadedCallback);
             // window.model.renderer.viewer.method("setCustomizationsLoadedCallback", setCustomizationsLoadedCallback);
+            // window.model.renderer.screenshotCallback = function() { console.log('screenshotCallback'); };
 
             // Получить все доступные опции для указанной расы и гендера
             const fullOptions = await findRaceGenderOptions(opts.race, opts.gender);
             window.dressUI.face.race_gender_opts = fullOptions.Options;
+
+            setDefaultText();
+            set_race_gender_image();
           };
           await window.createModel(model_opts);
+
 
           function setModelLoadedCallback() {
             window.dressUI.char.anims_list = window.model.getListAnimations();
 
             setTimeout(() => { // требуется небольшая задержка для некоторых методов
-              window.model.isLoaded = true;
               window.model.setDistance(6);
             }, 4);
           };
 
           // function setCustomizationsLoadedCallback(t) {
-          //   console.log(t)
+          //   console.log('setCustomizationsLoadedCallback', t);
           // };
 
 
@@ -1171,10 +1081,10 @@
           };
           await get_items_data_from_database_file();
 
-          function getItemLink(itemId) {
-            let link = window.itemsData.find((p) => p.itemId === itemId).itemLink.replace(/\|/g, '\\124');
-            return `/script DEFAULT_CHAT_FRAME:AddMessage("${link}");`;
-          };
+          // function getItemLink(itemId) {
+          //   let link = window.itemsData.find((p) => p.itemId === itemId).itemLink.replace(/\|/g, '\\124');
+          //   return `/script DEFAULT_CHAT_FRAME:AddMessage("${link}");`;
+          // };
 
 
           window.setAppearance = async function() {
@@ -1193,44 +1103,8 @@
 
 
           //////////////////////////////////////////////////////////////////////////////////////////////////////////
-          // https://wow.zamimg.com/modelviewer/live/meta/charactercustomization2/айдирассы_айдигендера.json
-          // https://wow.zamimg.com/modelviewer/live/meta/charactercustomization2/1_1.json
-
-          // https://wow.zamimg.com/modelviewer/live/textures/название_либо_айди_текстуры_хз.png
-          // https://wow.zamimg.com/modelviewer/live/meta/itemvisual/название_либо_айди_итема_хз.json
-          // https://wow.zamimg.com/modelviewer/live/meta/item/название_либо_айди_итема_хз.json
-          // https://wow.zamimg.com/modelviewer/live/meta/armor/айди_слота/дисплей_айди.json
-          // https://wow.zamimg.com/modelviewer/live/meta/npc/название_либо_айди_нпс_хз.json
-          // https://wow.zamimg.com/modelviewer/live/meta/object/название_либо_айди_объекта_хз.json
-          // https://wow.zamimg.com/modelviewer/live/meta/character/название_либо_айди_персонажа_хз.json
-          // https://wow.zamimg.com/modelviewer/live/mo3/название_аудиофайла.mo3
-
-
-          // все опции указанной модели
-          // console.log(window.model.options.charCustomization.options) // choiceId, optionId
-          // одетые на данную модель шмотки
-          // console.log(window.model.options.items[0]) // itemSlot, displayId
-          // раса и гендер
-          // console.log(window.model.options.models) // race+gender
-
-
-          // var a = window.model.renderer.viewer.method("getNumAnimations"); // int
-          // var s = {};
-          // for (var o = 0; o < a; ++o) {
-          //   let e = window.model.renderer.viewer.method("getAnimation", o);
-          //   if (e) {
-          //     s[e] = 1;
-          //   }
-          // }
-          // console.log(s)
-
-
           // Отменить анимацию
           // window.model.renderer.viewer.method("resetAnimation")
-
-
-          // перемещение модели по осям X, Y
-          // window.model.renderer.viewer.setOffset(0.5, 0.5) // X, Y
 
 
           // Удалить итем с указанного айди слота
@@ -1255,35 +1129,35 @@
             // проверяет, полностью ли загружена модель.
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
-            // надо будет порефакторить
-
-            let rand_face = get_rand_int(0, window.dressUI.face.race_gender_opts[0].Choices.length - 1)
-            $('#select_face_btn').find('a')[1].textContent = rand_face + 1;
-            model_opts.face = rand_face;
-
-            let rand_skin = get_rand_int(0, window.dressUI.face.race_gender_opts[1].Choices.length - 1)
-            $('#select_skin_color_btn').find('a')[1].textContent = rand_skin + 1
-            model_opts.skin = rand_skin;
-
-            let rand_hairStyle = get_rand_int(0, window.dressUI.face.race_gender_opts[2].Choices.length - 1)
-            $('#select_hair_style_btn').find('a')[1].textContent =
-            window.dressUI.face.race_gender_opts[2].Choices[rand_hairStyle].Name;
-            model_opts.hairStyle = rand_hairStyle;
-
-            let rand_hairColor = get_rand_int(0, window.dressUI.face.race_gender_opts[3].Choices.length - 1)
-            $('#select_hair_color_btn').find('a')[1].textContent = rand_hairColor + 1;
-            model_opts.hairColor = rand_hairColor;
-
-            let rand_facialStyle = get_rand_int(0, window.dressUI.face.race_gender_opts[5].Choices.length - 1)
-            $('#select_facial_hair_btn').find('a')[1].textContent =
-            window.dressUI.face.race_gender_opts[5].Choices[rand_facialStyle].Name;
-            model_opts.facialStyle = rand_facialStyle;
-
+            updateFieldAndTextValues();
             await window.setAppearance();
           });
-        </script>
 
-        <script>
+          function updateFieldAndTextValues(random_vals=true) {
+            let ids = [
+              [0, '#select_face_btn'], [1, '#select_skin_color_btn'], [2, '#select_hair_style_btn', true],
+              [3, '#select_hair_color_btn'], [5, '#select_facial_hair_btn', true]
+            ];
+            let fields = Object.keys(window.dressUI.face);
+
+            for (i in ids) {
+              if (random_vals) {
+                var int_param = get_rand_int(0, window.dressUI.face.race_gender_opts[ids[i][0]].Choices.length - 1);
+              } else {
+                var int_param = window.dressUI.face[[fields[i]]];
+              };
+
+              if (ids[i][2]) {
+                $(ids[i][1]).find('a')[1].textContent =
+                window.dressUI.face.race_gender_opts[ids[i][0]].Choices[int_param].Name;
+              } else {
+                $(ids[i][1]).find('a')[1].textContent = int_param + 1;
+              };
+              model_opts[fields[i]] = int_param;
+            };
+          };
+
+
           $('#dr-reset').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
@@ -1292,34 +1166,28 @@
             window.model.setZenith(Math.PI / 2); // вертикаль
             window.model.renderer.viewer.setOffset(0, 0); // X, Y
           });
-        </script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-        <script>
+
           $('#dr-screenshot').on('click', function(event) {
             if (!window.model.renderer.viewer.method("isLoaded")) return false;
 
-            /////////////////////////////////////////////////
-            window.model.setFullscreen(true);
-            setTimeout(() => {
+            let race = RACES[window.dressUI.char.race_id].toLowerCase();
+            let gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
 
-              // let element = $('body')[0];
-              let element = $('#paperdoll-model-dressing-room-paperdoll')[0];
-              html2canvas(element, {
-                onrendered: function(canvas) {
-                  canvas.toBlob(function(blob) {
-                    saveAs(blob, 'image_name.png');
-                  });
-                }
+            window.requestAnimationFrame(function() {
+              window.model.renderer.makeDataURL = ["image/png", 1];
+
+              window.requestAnimationFrame(function() {
+
+                let temp_ele = $("<a>");
+                $("body").append(temp_ele);
+                temp_ele[0].download = `${race}_${gender}_${window.location.hostname}_dressing_room.png`;
+                temp_ele[0].href = window.model.renderer.screenshotDataURL;
+                temp_ele[0].click();
+                temp_ele.remove();
+
               });
-
-              setTimeout(() => {
-                window.model.setFullscreen(false);
-              }, 1500);
-
-            }, 1500);
-            /////////////////////////////////////////////////
+            });
           });
 
 
@@ -1339,7 +1207,6 @@
             window.model.setAnimPaused(window.model.AnimIsPaused);
           });
         </script>
-
 
       </div>
     </div>
