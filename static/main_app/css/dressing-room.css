@@ -182,13 +182,6 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     right: 0
 }
 
-.dressing-room .paperdoll .paperdoll-sheathed,
-.dressing-room .paperdoll .paperdoll-model-pause,
-.dressing-room .paperdoll .paperdoll-fullscreen,
-.dressing-room .paperdoll .paperdoll-animation {
-    display: none
-}
-
 .dressing-room .paperdoll .paperdoll-responsive-shell {
     margin: 0 auto;
     max-width: 547px;
@@ -211,13 +204,8 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     width: calc(100% - 118px)
 }
 
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-controls-left,
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-controls-right {
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-controls-left {
     right: calc(50% - -56px)
-}
-
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-controls-right {
-    left: calc(50% - -56px)
 }
 
 @media screen and (max-width: 596px) {

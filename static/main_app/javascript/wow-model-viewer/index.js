@@ -1,6 +1,7 @@
 import {WowModelViewer} from './wow_model_viewer.js';
 
 const CONTENT_PATH = `https://wow.zamimg.com/modelviewer/live/`;
+// const CONTENT_PATH = `https://wow.zamimg.com/modelviewer/wrath/`;
 
 const NOT_DISPLAYED_SLOTS = [
     2, // neck
@@ -197,6 +198,7 @@ async function optionsFromModel(model) {
             id: raceToModelId,
             type: 16
         },
+        ...model.general_opts
     };
 }
 

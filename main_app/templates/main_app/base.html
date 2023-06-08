@@ -634,11 +634,11 @@
             this.span_color = this.span.css("color");
           };
 
-          let $tmp = $("<textarea>");
-          $("body").append($tmp);
-          $tmp.val(text).select();
+          let temp_ele = $("<textarea>");
+          $("body").append(temp_ele);
+          temp_ele.val(text).select();
           document.execCommand("copy");
-          $tmp.remove();
+          temp_ele.remove();
 
           this.anim();
         };
