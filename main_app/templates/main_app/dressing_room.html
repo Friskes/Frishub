@@ -648,6 +648,14 @@
         </div>
 
         <script>
+          let modelIsLoaded = function(func) {
+            return function(...args) {
+              // проверяет, полностью ли загружена модель.
+              if (!window.model.renderer.viewer.method("isLoaded")) return false;
+              func.apply(this, args);
+            };
+          };
+
           // Установка дефолтного текста настроек после получения ответа от findRaceGenderOptions
           function setDefaultText() {
             $('#select_race_btn').find('a')[1].textContent = RACES[window.dressUI.char.race_id];
@@ -662,9 +670,7 @@
         <script>
           // Character HANDLERS
 
-          $('#select_race_btn a').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_race_btn a').on('click', modelIsLoaded(function(event) {
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.race_id > 1) {
 
               RACES[window.dressUI.char.race_id] === 'Bloodelf'
@@ -677,12 +683,10 @@
               ? window.dressUI.char.race_id += 2 : window.dressUI.char.race_id += 1;
               updateCharacterHandler('race_id', '#select_race_btn', RACES);
             };
-          });
+          }));
 
 
-          $('#select_gender_btn a').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_gender_btn a').on('click', modelIsLoaded(function(event) {
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.gender_id === 1) {
               window.dressUI.char.gender_id -= 1;
               updateCharacterHandler('gender_id', '#select_gender_btn', GENDERS);
@@ -691,7 +695,7 @@
               window.dressUI.char.gender_id += 1;
               updateCharacterHandler('gender_id', '#select_gender_btn', GENDERS);
             };
-          });
+          }));
 
           function updateCharacterHandler(field, id, data) {
             $(id).find('a')[1].textContent = data[window.dressUI.char[field]];
@@ -709,9 +713,7 @@
           };
 
 
-          $('#select_sheathed_btn a').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_sheathed_btn a').on('click', modelIsLoaded(function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.sheath.index > 0) {
 
@@ -743,7 +745,7 @@
             // [1, 2]
             // для двуручных оружий смотрящих вверх
             // [2, 1]
-          });
+          }));
 
           function updateSheathText() {
             if (window.dressUI.char.sheath.index === 0) {
@@ -754,9 +756,7 @@
           };
 
 
-          $('#select_animation_btn a').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_animation_btn a').on('click', modelIsLoaded(function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.anim.index > 0) {
 
@@ -769,7 +769,7 @@
               window.dressUI.char.anim.index += 1;
               setAnim();
             };
-          });
+          }));
 
           function setAnim() {
             window.dressUI.char.anim.name = window.dressUI.char.anims_list[window.dressUI.char.anim.index];
@@ -781,9 +781,7 @@
         <script>
           // Face HANDLERS
 
-          $('#select_face_btn a').on('click', async function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_face_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.face > 0) {
               await updateAppearanceHandler(true, 'face', '#select_face_btn');
@@ -791,12 +789,10 @@
             && window.dressUI.face.face < window.dressUI.face.race_gender_opts[0].Choices.length - 1) {
               await updateAppearanceHandler(false, 'face', '#select_face_btn');
             };
-          });
+          }));
 
 
-          $('#select_skin_color_btn a').on('click', async function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_skin_color_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.skin > 0) {
               await updateAppearanceHandler(true, 'skin', '#select_skin_color_btn');
@@ -804,12 +800,10 @@
             && window.dressUI.face.skin < window.dressUI.face.race_gender_opts[1].Choices.length - 1) {
               await updateAppearanceHandler(false, 'skin', '#select_skin_color_btn');
             };
-          });
+          }));
 
 
-          $('#select_hair_style_btn a').on('click', async function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_hair_style_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.hairStyle > 0) {
               await updateAppearanceHandler(true, 'hairStyle', '#select_hair_style_btn', 2);
@@ -817,12 +811,10 @@
             && window.dressUI.face.hairStyle < window.dressUI.face.race_gender_opts[2].Choices.length - 1) {
               await updateAppearanceHandler(false, 'hairStyle', '#select_hair_style_btn', 2);
             };
-          });
+          }));
 
 
-          $('#select_hair_color_btn a').on('click', async function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_hair_color_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.hairColor > 0) {
               await updateAppearanceHandler(true, 'hairColor', '#select_hair_color_btn');
@@ -830,12 +822,10 @@
             && window.dressUI.face.hairColor < window.dressUI.face.race_gender_opts[3].Choices.length - 1) {
               await updateAppearanceHandler(false, 'hairColor', '#select_hair_color_btn');
             };
-          });
+          }));
 
 
-          $('#select_facial_hair_btn a').on('click', async function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#select_facial_hair_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.facialStyle > 0) {
               await updateAppearanceHandler(true, 'facialStyle', '#select_facial_hair_btn', 5);
@@ -845,7 +835,7 @@
             };
             // Для мужчин "Beard" index=5
             // Для женщин "Face Shape" index=5
-          });
+          }));
 
           async function updateAppearanceHandler(type, field, id, index=null) {
             type ? window.dressUI.face[field] -= 1 : window.dressUI.face[field] += 1;
@@ -1125,13 +1115,10 @@
         </script>
 
         <script>
-          $('#dr-randomize').on('click', async function(event) {
-            // проверяет, полностью ли загружена модель.
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#dr-randomize').on('click', modelIsLoaded(async function(event) {
             updateFieldAndTextValues();
             await window.setAppearance();
-          });
+          }));
 
           function updateFieldAndTextValues(random_vals=true) {
             let ids = [
@@ -1158,19 +1145,15 @@
           };
 
 
-          $('#dr-reset').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#dr-reset').on('click', modelIsLoaded(function(event) {
             window.model.setDistance(6);
             window.model.setAzimuth(1.5 * Math.PI); // горизонталь
             window.model.setZenith(Math.PI / 2); // вертикаль
             window.model.renderer.viewer.setOffset(0, 0); // X, Y
-          });
+          }));
 
 
-          $('#dr-screenshot').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#dr-screenshot').on('click', modelIsLoaded(function(event) {
             let race = RACES[window.dressUI.char.race_id].toLowerCase();
             let gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
 
@@ -1188,12 +1171,10 @@
 
               });
             });
-          });
+          }));
 
 
-          $('#dr-pause').on('click', function(event) {
-            if (!window.model.renderer.viewer.method("isLoaded")) return false;
-
+          $('#dr-pause').on('click', modelIsLoaded(function(event) {
             window.model.AnimIsPaused = !window.model.AnimIsPaused;
 
             if (window.model.AnimIsPaused) {
@@ -1205,7 +1186,7 @@
             };
 
             window.model.setAnimPaused(window.model.AnimIsPaused);
-          });
+          }));
         </script>
 
       </div>
