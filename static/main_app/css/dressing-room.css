@@ -118,7 +118,7 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     margin: 0 0 0;
     min-height: 400px;
     min-width: 300px;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative
 }
 
@@ -322,30 +322,6 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     background: #181818 !important
 }
 
-.dressing-room .paperdoll[data-icon-size="large"] .iconlarge[data-character-slot="3"] {
-    margin: 0 !important;
-    z-index: 1
-}
-
-.dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="false"] .iconlarge[data-character-slot="20"] {
-    margin: -56px 0 0 !important;
-    opacity: 0;
-    transform: scale(0);
-    transform-origin: top
-}
-
-@media screen and (max-width: 539px) {
-    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="false"] .iconlarge[data-character-slot="20"] {
-        margin: -44px 0 0 !important
-    }
-}
-
-@media screen and (max-width: 379px) {
-    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="false"] .iconlarge[data-character-slot="20"] {
-        margin: -35px 0 0 !important
-    }
-}
-
 .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="2"] {
     margin: 0 0 -56px !important;
     opacity: 0;
@@ -399,65 +375,60 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     }
 }
 
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div,
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div {
+.iconlarge {
     margin: 10px 0
 }
 
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div:first-child,
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div:first-child {
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div>div:first-child,
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div>div:first-child {
     margin-top: 0
 }
 
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div:last-child,
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div:last-child {
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div>div:last-child,
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div>div:last-child {
     margin-bottom: 0
 }
 
 @media screen and (max-width: 449px) {
 
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div,
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div {
+    .iconlarge {
         margin: 5px 0
     }
 }
 
 @media screen and (max-width: 409px) {
 
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div,
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div {
+    .iconlarge {
         margin: 0
     }
 }
 
 @media screen and (max-width: 379px) {
 
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div,
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div {
+    .iconlarge {
         margin: 5px 0
     }
 }
 
 @media screen and (max-width: 349px) {
 
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div,
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div {
+    .iconlarge {
         margin: 0
     }
 }
 
-.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div {
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
     margin: 0 5px
 }
 
 @media screen and (max-width: 449px) {
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div {
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
         margin: 0 2.5px
     }
 }
 
 @media screen and (max-width: 409px) {
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div {
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
         margin: 0
     }
 }

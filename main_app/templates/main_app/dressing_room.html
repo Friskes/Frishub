@@ -123,7 +123,7 @@
     max-height: 619px !important;
 
     min-width: 300px;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative
   }
   /* Если мы на мобильном */
@@ -170,9 +170,15 @@
     z-index: 12;
     user-select: none;
   }
-  .paperdoll .paperdoll-bottom .iconlarge,
+  /* .paperdoll .paperdoll-bottom .iconlarge,
   .paperdoll .paperdoll-bottom .iconmedium,
-  .paperdoll .paperdoll-bottom .iconsmall {
+  .paperdoll .paperdoll-bottom .iconsmall { */
+  .paperdoll .paperdoll-bottom>div:first-child,
+  .paperdoll .paperdoll-bottom>div:first-child,
+  .paperdoll .paperdoll-bottom>div:first-child,
+  .paperdoll .paperdoll-bottom>div:last-child,
+  .paperdoll .paperdoll-bottom>div:last-child,
+  .paperdoll .paperdoll-bottom>div:last-child {
     display: inline-block;
     position: relative;
     z-index: 1
@@ -248,7 +254,7 @@
     z-index: 10
   }
   .paperdoll .paperdoll-controls-right {
-    bottom: 31px;
+    bottom: 33px;
     font-size: 20px;
     position: absolute;
     z-index: 10;
@@ -392,11 +398,132 @@
     content: "\f065"
   }
 </style>
+
+<style>
+  .btn-close-items-menu-left {
+    cursor: Pointer;
+    height: 24px;
+    width: auto;
+    margin-right: 3%;
+  }
+  .btn-close-items-menu-right {
+    cursor: Pointer;
+    height: 24px;
+    width: auto;
+    margin-left: 3%;
+  }
+  .table-responsive {
+    max-height: 219px;
+  }
+
+  .items-menu {
+    position: absolute;
+    display: none;
+    min-width: 326px;
+    /* max-width: 326px; */
+    height: auto;
+    border: 2px solid #1fb8ff;
+    border-radius: 4px 4px 4px 4px;
+    background-color: rgba(0, 0, 0, 1);
+    z-index: 20000;
+    font-size: 12px;
+    line-height: 19px;
+    text-align: center;
+    box-shadow: 0 0 30px 10px #ffffff12;
+    padding: 1px 1px 8px 0; /* top, right, bottom, left */
+    margin-top: -10px;
+  }
+
+  .items-menu-left-up {
+    right: 3px;
+  }
+  .items-menu-left-down {
+    right: 3px;
+  }
+  .items-menu-left-down-crutch {
+    bottom: 66px;
+  }
+
+  .items-menu-right-up {
+    left: 3px;
+  }
+  .items-menu-right-down {
+    left: 3px;
+  }
+
+  .items-menu-bottom-left {
+    right: 56px;
+    top: 3px;
+  }
+  .items-menu-bottom-right {
+    left: 56px;
+    top: 3px;
+  }
+
+  /* Если мы на мобильном */
+  @media screen and (max-width: 800px) {
+    .table-responsive {
+      max-height: 203px;
+    }
+
+    .items-menu {
+      min-width: 318px;
+      margin-top: 0px;
+    }
+
+    .items-menu-left-up {
+      left: -17px;
+    }
+    .items-menu-left-down {
+      left: -17px;
+    }
+    .items-menu-left-down-crutch {
+      bottom: 35px;
+    }
+
+    .items-menu-right-up {
+      left: -266px;
+    }
+    .items-menu-right-down {
+      left: -266px;
+    }
+
+    .items-menu-bottom-left {
+      right: -161px;
+      top: 36px;
+    }
+    .items-menu-bottom-right {
+      left: -161px;
+      top: 36px;
+    }
+  }
+</style>
+
+<style>
+  .warning-toast-message {
+    display: none;
+    position: absolute;
+    margin: auto;
+    top: calc(35%);
+    left: calc(25%);
+    right: calc(25%);
+    bottom: calc(15%);
+    max-width: 35%;
+  }
+  .warning-toast-message-icon {
+    font-size: 50px;
+  }
+  .warning-toast-message-text {
+    font-size: 22px;
+    font-weight: 600;
+    white-space: break-spaces;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
 <app-dressing-room _nghost-gox-c37="" style="font-size: 14.5px;">
-  <div _ngcontent-gox-c37="" class="page-size bg-check p-2 p-md-5 mb-5">
+  <div _ngcontent-gox-c37="" class="page-size bg-check p-2 p-md-5 mb-5" style="overflow: hidden;">
     <div _ngcontent-gox-c37="" class="m-auto text-center pt-5 pb-5">
       <div _ngcontent-gox-c37="" class="mb-2">
 
@@ -408,106 +535,281 @@
             <div class="paperdoll" id="dressing-room-paperdoll" data-icon-size="large" data-separate-shoulders="false">
 
               <div class="paperdoll-left">
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="1">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_head.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="1">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_head.jpg&quot;);"></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(1);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(1, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="2">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_neck.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="2">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_neck.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(2);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(2, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="3">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shoulder.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="3">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shoulder.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(3);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(3, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="20">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shoulder.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="15">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_chest.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(15);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(15, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="15">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_chest.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="5">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_chest.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(5);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(5, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="5">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_chest.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="4">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shirt.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(4);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(4, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="4">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_shirt.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="19">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_tabard.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(19);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(19, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="19">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_tabard.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
-                </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="9">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_wrists.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="9">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_wrists.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-left-down items-menu-left-down-crutch">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(9);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(9, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div class="paperdoll-right">
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="10">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_hands.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="10">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_hands.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(10);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(10, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="6">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_waist.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="6">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_waist.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(6);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(6, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="7">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_legs.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="7">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_legs.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(7);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(7, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="8">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_feet.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="8">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_feet.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-up">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(8);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(8, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="11">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_finger.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="11">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_finger.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(11);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(11, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="12">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_finger.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="12">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_finger.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(12);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(12, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="13">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_trinket.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="13">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_trinket.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(13);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(13, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="14">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_trinket.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge paperdoll-hidden" data-env="live" data-tree="live" data-game="wow" data-character-slot="14">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_trinket.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-right-down">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(14);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(14, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div class="paperdoll-bottom">
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="16">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_mainhand.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="21">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_mainhand.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-bottom-left">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(21);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(21, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="17">
-                  <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_offhand.jpg&quot;);" class=""></ins>
-                  <del></del>
-                  <a href="javascript:"></a>
+                <div>
+                  <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="22">
+                    <ins style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_offhand.jpg&quot;);" class=""></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-bottom-right">
+                    <div class="table-responsive"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(22);">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher(22, this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -528,6 +830,12 @@
                       style="color: #fff; margin-top: -47px; margin-left: -40px;">Double-click model to view fullscreen</span>
                   </a>
                 </div>
+              </div>
+
+              <div class="warning-toast-message">
+                <span class="warning-toast-message-icon">⚠️</span>
+                <br>
+                <div class="warning-toast-message-text"></div>
               </div>
 
               <!-- <div class="paperdoll-controls-left">
@@ -650,12 +958,177 @@
         <script>
           let modelIsLoaded = function(func) {
             return function(...args) {
+              // проверяет, была ли создана модель.
+              if (!window.model) {
+                errorMessageHandler('Ошибка, модель не была создана.');
+                return false;
               // проверяет, полностью ли загружена модель.
-              if (!window.model.renderer.viewer.method("isLoaded")) return false;
+              } else if (!window.model.renderer.viewer.method("isLoaded")) {
+                errorMessageHandler('Пожалуйста, дождитесь полной загрузки модели.');
+                return false;
+              };
               func.apply(this, args);
             };
           };
+        </script>
 
+        <script>
+          let warning_toast_message = $('.warning-toast-message');
+          let animate_lock = false;
+
+          function errorMessageHandler(message) {
+            if (animate_lock) return false;
+            animate_lock = true;
+
+            warning_toast_message.find('div').text(message);
+            warning_toast_message.css('display', 'block');
+
+            warning_toast_message.animate(
+              { opacity: 0 },
+              { duration: 2000, queue: false,
+                complete: function() {
+                  warning_toast_message.css('opacity', '1');
+                  warning_toast_message.css('display', 'none');
+                  animate_lock = false;
+                }
+              }
+            );
+          };
+        </script>
+
+        <script>
+          const DEFAULT_SLOT_ICONS = {
+            1: 'inventoryslot_head',
+            3: 'inventoryslot_shoulder',
+            15: 'inventoryslot_chest', // cloak
+            5: 'inventoryslot_chest',
+            4: 'inventoryslot_shirt',
+            19: 'inventoryslot_tabard',
+            9: 'inventoryslot_wrists',
+            16: 'inventoryslot_mainhand',
+            17: 'inventoryslot_offhand',
+            10: 'inventoryslot_hands',
+            6: 'inventoryslot_waist',
+            7: 'inventoryslot_legs',
+            8: 'inventoryslot_feet'
+          };
+
+          function clearItemSlotIcon(element, slotId) {
+            let slot_btn = element.parentElement.parentElement.parentElement.children[0];
+            let ins = slot_btn.children[0];
+            let icon = DEFAULT_SLOT_ICONS[slotId];
+
+            ins.style.backgroundImage = `url(https://wow.zamimg.com/images/wow/icons/large/${icon}.jpg)`;
+            slot_btn.children[2].href = 'javascript:';
+          };
+
+          function setItemSlotIcon(element, slot_btn) {
+            let ins = slot_btn.children[0];
+            let icon = element.children[0].children[0].style.backgroundImage.split('/').pop().split('.')[0];
+            let itemId = element.href.split('=').pop();
+
+            ins.style.backgroundImage = `url(https://wow.zamimg.com/images/wow/icons/large/${icon}.jpg)`;
+            slot_btn.children[2].href =
+            `https://www.wowhead.com/{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}item=${itemId}`;
+          };
+
+          function clearItemSlots(slotId) {
+            let element = window.event.target || window.event.srcElement;
+            if (element) clearItemSlotIcon(element, slotId);
+
+            // Удалить итем с указанного айди слота
+            window.model.renderer.viewer.method("clearSlots", String(slotId));
+            // удалить несколько итемов по айди слотов (чистит но выдаёт ошибку, хз чё ему не нравится)
+            // передаётся строка в таком формате: "21,22"
+            // window.model.renderer.viewer.method("clearSlots", [21, 22].join());
+          };
+
+          function setItemSlots(element) {
+            let slot_btn = element.parentElement.parentElement.parentElement.children[0];
+            let slotId = slot_btn.getAttribute('data-character-slot');
+            let displayId = element.getAttribute('display-id');
+
+            setItemSlotIcon(element, slot_btn);
+
+            // Установить итемы на модель
+            window.model.renderer.viewer.method("setItems", [[
+              // slotId, displayId, enchantVisualId
+              { slot: slotId, display: displayId, visual: 0 },
+              // можно устанавливать несколько итемов за раз
+              // { slot: 3, display: 65286, visual: 0 },
+            ]]);
+          };
+
+          function slot_switcher(slotId, items_menu) {
+            window.dressUI.gear[`slot${slotId}`] = !window.dressUI.gear[`slot${slotId}`];
+            window.dressUI.gear[`slot${slotId}`] ? $(items_menu).css('display', 'block') : $(items_menu).css('display', 'none');
+          };
+
+          let already_initialized_slots = {};
+
+          function oneTimeInitialization(slotId, items_menu) {
+            let elements_list = [];
+            for (i in window.itemsData[0][slotId]) {
+
+              if (i === "21") break; // for tests
+
+              let element_a = document.createElement('a');
+              let element_br = document.createElement('br');
+
+              // data-wh-icon-size="medium"
+              element_a.setAttribute('href',
+              `https://www.wowhead.com/{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}item=${window.itemsData[0][slotId][i].itemId}`);
+              element_a.setAttribute('display-id', window.itemsData[0][slotId][i].displayId);
+
+              if (i > 0) elements_list.push(element_br);
+              elements_list.push(element_a);
+            };
+
+            items_menu.children[0].addEventListener('click', function(event) {
+              event.preventDefault(); // блокирует переход по ссылке но обрабатывает клик и отображает тултип
+              if (event.target.tagName === 'SPAN') { setItemSlots(event.target.parentElement); }
+              else if (event.target.tagName === 'A') { setItemSlots(event.target); };
+            });
+
+            items_menu.children[0].append(...elements_list);
+
+            window.WH.Tooltips.init();
+          };
+
+          function slots_handler(event) {
+            event.preventDefault(); // блокирует переход по ссылке но обрабатывает клик и отображает тултип
+
+            let slotId = event.target.parentElement.getAttribute('data-character-slot');
+            let items_menu = event.target.parentElement.parentElement.children[1];
+
+            if (!already_initialized_slots[slotId]) {
+              already_initialized_slots[slotId] = true;
+              oneTimeInitialization(slotId, items_menu);
+            };
+
+            slot_switcher(slotId, items_menu);
+          };
+
+
+          $('.paperdoll-left a').on('click', modelIsLoaded(function(event) {
+            // $('.paperdoll-left a').on('click', function(event) {
+            slots_handler(event);
+          }));
+
+
+          $('.paperdoll-right a').on('click', modelIsLoaded(function(event) {
+          // $('.paperdoll-right a').on('click', function(event) {
+            slots_handler(event);
+          }));
+
+
+          $('.paperdoll-bottom a').on('click', modelIsLoaded(function(event) {
+          // $('.paperdoll-bottom a').on('click', function(event) {
+            slots_handler(event);
+          }));
+        </script>
+
+        <script>
           // Установка дефолтного текста настроек после получения ответа от findRaceGenderOptions
           function setDefaultText() {
             $('#select_race_btn').find('a')[1].textContent = RACES[window.dressUI.char.race_id];
@@ -663,7 +1136,7 @@
             updateSheathText();
             $('#select_animation_btn').find('a')[1].textContent = window.dressUI.char.anim.name;
 
-            updateFieldAndTextValues(false);
+            updateFaceFields(false);
           };
         </script>
 
@@ -774,6 +1247,7 @@
           function setAnim() {
             window.dressUI.char.anim.name = window.dressUI.char.anims_list[window.dressUI.char.anim.index];
             window.model.setAnimation(window.dressUI.char.anim.name);
+            // window.model.renderer.viewer.method("resetAnimation"); // Отменить анимацию
             $('#select_animation_btn').find('a')[1].textContent = window.dressUI.char.anim.name;
           };
         </script>
@@ -786,7 +1260,7 @@
             && window.dressUI.face.face > 0) {
               await updateAppearanceHandler(true, 'face', '#select_face_btn');
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.face.face < window.dressUI.face.race_gender_opts[0].Choices.length - 1) {
+            && window.dressUI.face.face < window.dressUI.face.race_gender_opts[GVP['face']].Choices.length - 1) {
               await updateAppearanceHandler(false, 'face', '#select_face_btn');
             };
           }));
@@ -797,7 +1271,7 @@
             && window.dressUI.face.skin > 0) {
               await updateAppearanceHandler(true, 'skin', '#select_skin_color_btn');
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.face.skin < window.dressUI.face.race_gender_opts[1].Choices.length - 1) {
+            && window.dressUI.face.skin < window.dressUI.face.race_gender_opts[GVP['skin']].Choices.length - 1) {
               await updateAppearanceHandler(false, 'skin', '#select_skin_color_btn');
             };
           }));
@@ -806,10 +1280,10 @@
           $('#select_hair_style_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.hairStyle > 0) {
-              await updateAppearanceHandler(true, 'hairStyle', '#select_hair_style_btn', 2);
+              await updateAppearanceHandler(true, 'hairStyle', '#select_hair_style_btn', GVP['hairStyle']);
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.face.hairStyle < window.dressUI.face.race_gender_opts[2].Choices.length - 1) {
-              await updateAppearanceHandler(false, 'hairStyle', '#select_hair_style_btn', 2);
+            && window.dressUI.face.hairStyle < window.dressUI.face.race_gender_opts[GVP['hairStyle']].Choices.length - 1) {
+              await updateAppearanceHandler(false, 'hairStyle', '#select_hair_style_btn', GVP['hairStyle']);
             };
           }));
 
@@ -819,7 +1293,7 @@
             && window.dressUI.face.hairColor > 0) {
               await updateAppearanceHandler(true, 'hairColor', '#select_hair_color_btn');
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.face.hairColor < window.dressUI.face.race_gender_opts[3].Choices.length - 1) {
+            && window.dressUI.face.hairColor < window.dressUI.face.race_gender_opts[GVP['hairColor']].Choices.length - 1) {
               await updateAppearanceHandler(false, 'hairColor', '#select_hair_color_btn');
             };
           }));
@@ -828,10 +1302,10 @@
           $('#select_facial_hair_btn a').on('click', modelIsLoaded(async function(event) {
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.face.facialStyle > 0) {
-              await updateAppearanceHandler(true, 'facialStyle', '#select_facial_hair_btn', 5);
+              await updateAppearanceHandler(true, 'facialStyle', '#select_facial_hair_btn', GVP['facialStyle']);
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.face.facialStyle < window.dressUI.face.race_gender_opts[5].Choices.length - 1) {
-              await updateAppearanceHandler(false, 'facialStyle', '#select_facial_hair_btn', 5);
+            && window.dressUI.face.facialStyle < window.dressUI.face.race_gender_opts[GVP['facialStyle']].Choices.length - 1) {
+              await updateAppearanceHandler(false, 'facialStyle', '#select_facial_hair_btn', GVP['facialStyle']);
             };
             // Для мужчин "Beard" index=5
             // Для женщин "Face Shape" index=5
@@ -869,7 +1343,7 @@
             1: 'Female'
           };
 
-          var model_opts = {
+          let model_opts = {
             "race": 1,
             "gender": 1,
             "face": 0,
@@ -881,20 +1355,38 @@
               [21, 58944], [22, 58944]
               // [21, 58921]
             ],
-            // general_opts: {
-            //   background: "background-181818.png",
-            //   // sk: 9,
-            //   // ha: 16,
-            //   // hc: 6,
-            //   // fa: 0,
-            //   // fh: 5,
-            //   // fc: 0,
-            //   // ep: 0,
-            //   // ho: 0,
-            //   // ta: 0,
-            //   // cls: 1
-            // }
+            general_opts: {
+              contentPath: 'https://wow.zamimg.com/modelviewer/live/',
+              // contentPath: 'https://wow.zamimg.com/modelviewer/wrath/',
+              // background: "background-181818.png",
+              // sk: 9,
+              // ha: 16,
+              // hc: 6,
+              // fa: 0,
+              // fh: 5,
+              // fc: 0,
+              // ep: 0,
+              // ho: 0,
+              // ta: 0,
+              // cls: 1
+            }
           };
+
+          // game version parameters
+          let GVP = { // LIVE
+            'face': 0,
+            'skin': 1,
+            'hairStyle': 2,
+            'hairColor': 3,
+            'facialStyle': 5
+          };
+          // WRATH
+          if (model_opts.general_opts.contentPath.split('/').at(-2) === 'wrath') {
+            GVP['face'] = 1;
+            GVP['skin'] = 0;
+            GVP['facialStyle'] = 4;
+          };
+
 
           function onlyTwoHandWeapon() {
             for (i in model_opts.items) if (model_opts.items[i][0] === 22) return false;
@@ -906,6 +1398,8 @@
 
           window.dressUI = {
             active_cat: 'gear',
+            gear: {
+            },
             char: {
               race_id: model_opts.race,
               gender_id: model_opts.gender,
@@ -958,6 +1452,8 @@
           let face_settings = $('#dressing-room-face-settings')[0];
           let char_settings = $('#dressing-room-character-settings')[0];
 
+          let fullscreen_hint = $('.paperdoll-controls-right')[0];
+
           $('.dressing-room-character-controls-category-switchers a').on('click', function(event) {
 
             let category = event.target.getAttribute('data-category');
@@ -989,9 +1485,9 @@
 
             if (window.dressUI.show) {
               setDisplayState('none', gear_button, face_button, char_button, paperdoll_left,
-              paperdoll_right, paperdoll_bottom, face_settings, char_settings);
+              paperdoll_right, paperdoll_bottom, face_settings, char_settings, fullscreen_hint);
             } else {
-              setDisplayState('block', gear_button, face_button, char_button);
+              setDisplayState('block', gear_button, face_button, char_button, fullscreen_hint);
 
               if (window.dressUI.active_cat === 'gear') {
                 setDisplayState('block', paperdoll_left, paperdoll_right, paperdoll_bottom);
@@ -1076,7 +1572,6 @@
           //   return `/script DEFAULT_CHAT_FRAME:AddMessage("${link}");`;
           // };
 
-
           window.setAppearance = async function() {
             const charCustomization = {
               "race": model_opts.race,
@@ -1090,40 +1585,19 @@
             const modelOptions = await optionsFromModel(charCustomization);
             window.model.renderer.viewer.method("setAppearance", modelOptions.charCustomization);
           };
-
-
-          //////////////////////////////////////////////////////////////////////////////////////////////////////////
-          // Отменить анимацию
-          // window.model.renderer.viewer.method("resetAnimation")
-
-
-          // Удалить итем с указанного айди слота
-          // window.model.renderer.viewer.method("clearSlots", String(21))
-          // удалить несколько итемов по айди слотов (чистит но выдаёт ошибку, хз чё ему не нравится)
-          // передаётся строка в таком формате: "21,22"
-          // window.model.renderer.viewer.method("clearSlots", [21, 22].join())
-
-
-          // Установить итемы на модель
-          // window.model.renderer.viewer.method("setItems", [[
-          //   // slotId, displayId, enchantVisualId
-          //   { slot: 21, display: 58944, visual: 0 },
-          //   { slot: 22, display: 58944, visual: 0 },
-          //   { slot: 3, display: 65286, visual: 0 },
-          // ]]);
-          //////////////////////////////////////////////////////////////////////////////////////////////////////////
         </script>
 
         <script>
           $('#dr-randomize').on('click', modelIsLoaded(async function(event) {
-            updateFieldAndTextValues();
+            updateFaceFields();
             await window.setAppearance();
           }));
 
-          function updateFieldAndTextValues(random_vals=true) {
+          function updateFaceFields(random_vals=true) {
             let ids = [
-              [0, '#select_face_btn'], [1, '#select_skin_color_btn'], [2, '#select_hair_style_btn', true],
-              [3, '#select_hair_color_btn'], [5, '#select_facial_hair_btn', true]
+              [GVP['face'], '#select_face_btn'], [GVP['skin'], '#select_skin_color_btn'],
+              [GVP['hairStyle'], '#select_hair_style_btn', true], [GVP['hairColor'], '#select_hair_color_btn'],
+              [GVP['facialStyle'], '#select_facial_hair_btn', true]
             ];
             let fields = Object.keys(window.dressUI.face);
 

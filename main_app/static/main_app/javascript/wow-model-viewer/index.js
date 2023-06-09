@@ -1,7 +1,7 @@
 import {WowModelViewer} from './wow_model_viewer.js';
 
-const CONTENT_PATH = `https://wow.zamimg.com/modelviewer/live/`;
-// const CONTENT_PATH = `https://wow.zamimg.com/modelviewer/wrath/`;
+let CONTENT_PATH = `https://wow.zamimg.com/modelviewer/live/`;
+// let CONTENT_PATH = `https://wow.zamimg.com/modelviewer/wrath/`;
 
 const NOT_DISPLAYED_SLOTS = [
     2, // neck
@@ -198,7 +198,6 @@ async function optionsFromModel(model) {
             id: raceToModelId,
             type: 16
         },
-        ...model.general_opts
     };
 }
 
@@ -210,15 +209,18 @@ async function optionsFromModel(model) {
  * @returns {Promise<WowModelViewer>}
  */
 async function generateModels(aspect, containerSelector, model) {
+    CONTENT_PATH = model.general_opts.contentPath;
+
     const modelOptions = await optionsFromModel(model);
     const models = {
         type: 2,
-        contentPath: CONTENT_PATH,
+        // contentPath: CONTENT_PATH,
         // eslint-disable-next-line no-undef
         container: jQuery(containerSelector),
         aspect: aspect,
         hd: true,
-        ...modelOptions
+        ...modelOptions,
+        ...model.general_opts
     };
     window.models = models;
 
