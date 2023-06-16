@@ -300,6 +300,3 @@ LOGGING = {
 
 # фикс ошибки в терминале браузера: "The Cross Origin Opener Policy header has been ignored"
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None # 'same-origin'
-
-# попытка фикса ошибки: Invalid HTTP_HOST header: The domain name provided is not valid according to RFC 1034/1035.
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
