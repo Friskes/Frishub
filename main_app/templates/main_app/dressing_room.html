@@ -378,7 +378,9 @@
   }
   .paperdoll .paperdoll-model-inner canvas {
     height: 100%;
-    width: 100%
+    width: 100%;
+    max-height: 100%;
+    max-width: 100%;
   }
   .paperdoll .paperdoll-responsive-shell {
     line-height: 0;
@@ -699,6 +701,8 @@
     z-index: 13;
     border-radius: 15%;
     background-color: rgba(0, 0, 0, 0.5);
+    user-select: none;
+    pointer-events: none;
   }
   /* Если мы на мобильном */
   @media screen and (max-width: 800px) {
@@ -800,6 +804,11 @@
   .dressing-room-character-controls-category-switchers a[data-category="patch"]:after {
     background: left;
     background-size: auto 100%;
+  }
+
+  .dressing-room-character-controls-category[data-category="face"],
+  .dressing-room-character-controls-category[data-category="character"] {
+    user-select: none;
   }
 </style>
 {% endblock %}
@@ -1726,10 +1735,12 @@
             removeItemUnderline(element);
             element.classList.add('text-uline');
 
-            let index = slotIdsIsExists(slotId);
-            if (index !== false) { model_opts.items[index][1] = displayId;
-            } else { model_opts.items.push([slotId, displayId]); };
-            if (slotId == 21 || slotId == 22 || slotId == 23) updateSheathInfo();
+            if (!window.dressUI.char.only_item) {
+              let index = slotIdsIsExists(slotId);
+              if (index !== false) { model_opts.items[index][1] = displayId;
+              } else { model_opts.items.push([slotId, displayId]); };
+              if (slotId == 21 || slotId == 22 || slotId == 23) updateSheathInfo();
+            };
 
             switch (slotId) {
               case "22": clearItemSlots(23); break;
@@ -1878,17 +1889,17 @@
           };
 
 
-          $('.paperdoll-left a').on('click', modelIsLoaded(function(event) {
+          $('.paperdoll-left a').on('click touchstart', modelIsLoaded(function(event) {
             slots_handler(event);
           }));
 
 
-          $('.paperdoll-right a').on('click', modelIsLoaded(function(event) {
+          $('.paperdoll-right a').on('click touchstart', modelIsLoaded(function(event) {
             slots_handler(event);
           }));
 
 
-          $('.paperdoll-bottom a').on('click', modelIsLoaded(function(event) {
+          $('.paperdoll-bottom a').on('click touchstart', modelIsLoaded(function(event) {
             slots_handler(event);
           }));
         </script>
