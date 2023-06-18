@@ -1467,7 +1467,7 @@
                 <div class="paperdoll-responsive-expander"></div>
               </div>
 
-              <div class="paperdoll-controls-right">
+              <!-- <div class="paperdoll-controls-right">
                 <div class="paperdoll-fullscreen">
                   <a _ngcontent-xpp-c94="" class="info fullscreen-icon">
                     <i class="fa fa-expand"></i>
@@ -1475,7 +1475,7 @@
                       style="color: #fff; margin-top: -47px; margin-left: -30px;">Double-click model to view fullscreen</span>
                   </a>
                 </div>
-              </div>
+              </div> -->
 
               <div class="warning-toast-message">
                 <span class="warning-toast-message-icon">⚠️</span>
@@ -1630,7 +1630,8 @@
                 warnMessageHandler(4000, 'Ошибка, модель не была создана.');
                 return false;
               // проверяет, полностью ли загружена модель.
-              } else if (!window.model.renderer.viewer.method("isLoaded")) {
+              // } else if (!window.model.renderer.viewer.method("isLoaded")) {
+              } else if (!window.model.modelIsLoaded) {
                 warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки модели.');
                 return false;
               };
@@ -1900,7 +1901,7 @@
               slot_data.available_types.length - 1
             );
 
-            items_menu.children[0].addEventListener('click', function(event) {
+            items_menu.children[0].addEventListener('click', modelIsLoaded(function(event) {
 
               let item_types_len = slot_data.available_types.length - 1;
               if (event.target.classList.contains('fa-caret-left')
@@ -1925,13 +1926,13 @@
                 slot_data.quality = quality;
                 sortItems(items_menu, slot_data);
               };
-            });
+            }));
 
-            items_menu.children[1].addEventListener('click', function(event) {
+            items_menu.children[1].addEventListener('click', modelIsLoaded(function(event) {
               event.preventDefault(); // блокирует переход по ссылке но обрабатывает клик и отображает тултип
               if (event.target.tagName === 'SPAN') { setItemSlots(event.target.parentElement); }
               else if (event.target.tagName === 'A') { setItemSlots(event.target); };
-            });
+            }));
 
             $(items_menu.children[0].children[0]).find('div')[0].children[1].textContent = slot_data.type;
             sortItems(items_menu, slot_data, elements_list);
@@ -2362,6 +2363,8 @@
           } from "{% static 'main_app/javascript/wow-model-viewer/wow_model_viewer.js' %}";
 
           window.createCharModel = async function() {
+            if (window.model) window.model.modelIsLoaded = false;
+
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
 
             // для изменения race и gender требуется полное пересоздание модели
@@ -2450,6 +2453,8 @@
 
 
           window.createItemModel = async function(opts) {
+            if (window.model) window.model.modelIsLoaded = false;
+
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
 
             // Полностью удаляем модель (включая DOM дерево)
@@ -2468,7 +2473,13 @@
 
             window.model.renderer.viewer.method("setModelLoadedCallback", function() {
               $('.paperdoll-model').css('background', 'none');
+
+              window.dressUI.AnimIsPaused = false;
+              updateAnimPaused();
+
               window.model.renderer.zoom.target = -8;
+
+              window.model.modelIsLoaded = true;
             });
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, 'К сожалению не удалось загрузить итем.');
@@ -2515,6 +2526,11 @@
           function setModelLoadedCallback() {
             $('.paperdoll-model').css('background', 'none');
 
+            window.model.renderer.viewer.method("setSheath",
+            window.dressUI.char.sheath_opts[window.dressUI.char.sheath]);
+
+            updateAnimPaused(true);
+
             if (window.GAME_PATCH == 'wrath') {
               window.dressUI.char.anims_list = [...new Set(window.model.renderer.models[0].ao.map(e => e.j))];
             } else if (window.GAME_PATCH == 'live') {
@@ -2538,6 +2554,12 @@
             // setTimeout(() => { // требуется небольшая задержка после загрузки модели для некоторых методов
             //   window.model.renderer.distance = 6;
             // }, 10);
+
+            // фикс ошибки: "Uncaught TypeError: Cannot read properties of null"
+            setTimeout(() => {
+              window.model.modelIsLoaded = true;
+              setDefaultText();
+            }, 200);
           };
 
 
@@ -2590,8 +2612,8 @@
 
             await optionsFromModel(charCustomization)
             .then((modelOptions) => {
-              // modelOptions.charCustomization.sheathMain = -1;
-              // modelOptions.charCustomization.sheathOff = -1;
+              modelOptions.charCustomization.sheathMain = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][0];
+              modelOptions.charCustomization.sheathOff = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][1];
               window.model.renderer.viewer.method("setAppearance", modelOptions.charCustomization);
             });
           };
@@ -2673,19 +2695,22 @@
           }));
 
 
-          $('#dr-pause').on('click', modelIsLoaded(function(event) {
-            window.model.AnimIsPaused = !window.model.AnimIsPaused;
-
-            if (window.model.AnimIsPaused) {
-              this.classList.remove('fa-pause');
-              this.classList.add('fa-play');
-            } else {
-              this.classList.remove('fa-play');
-              this.classList.add('fa-pause');
-            };
-
-            window.model.renderer.models[0].setAnimPaused(window.model.AnimIsPaused);
+          let dr_pause = $('#dr-pause');
+          dr_pause.on('click', modelIsLoaded(function(event) {
+            window.dressUI.AnimIsPaused = !window.dressUI.AnimIsPaused;
+            updateAnimPaused(true);
           }));
+
+          function updateAnimPaused(flag) {
+            if (window.dressUI.AnimIsPaused) {
+              dr_pause[0].classList.remove('fa-pause');
+              dr_pause[0].classList.add('fa-play');
+            } else {
+              dr_pause[0].classList.remove('fa-play');
+              dr_pause[0].classList.add('fa-pause');
+            };
+            if (flag) setTimeout(() => { window.model.renderer.models[0].setAnimPaused(window.dressUI.AnimIsPaused); }, 4);
+          };
         </script>
 
       </div>
