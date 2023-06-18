@@ -8018,12 +8018,13 @@
           i != Ni) ||
           (e = "meta/armor/" + i + "/");
         ///////////////////////////// friskes /////////////////////////////
+        let contentPath = t.a.l.contentPath;
         let try_again_with_another_patch = function() {
-          let contentPath = t.a.l.contentPath.split('/').at(-2) == 'wrath'
+          let content_path = contentPath.split('/').at(-2) == 'wrath'
           ? 'https://wow.zamimg.com/modelviewer/live/'
           : 'https://wow.zamimg.com/modelviewer/wrath/';
 
-          let r = contentPath + e + t.s + ".json";
+          let r = content_path + e + t.s + ".json";
           $.getJSON(r)
             .done(function (e) {
               t.z(e);

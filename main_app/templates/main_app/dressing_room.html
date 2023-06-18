@@ -27,6 +27,8 @@
   // const DEFAULT_ICON_URL = `https://render-classic-us.worldofwarcraft.com/icons/56/`; // 18 // 36 // 56
 </script>
 
+<script type="module" src="{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}"></script>
+
 <script>
   const RACES = {
     1: 'Human',
@@ -181,14 +183,6 @@
 
   let PREV_ITEM_ELEMS = {1:{},3:{},16:{},5:{},4:{},19:{},9:{},10:{},6:{},7:{},8:{},21:{},22:{},23:{}};
 </script>
-
-<script>
-  window.WH.debug = function(...args) {
-    // console.log(args);
-  };
-</script>
-
-<script type="module" src="{% static 'main_app/javascript/wow-model-viewer/wow_model_viewer.js' %}"></script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'main_app/css/dressing-room.css' %}">
 
@@ -2089,13 +2083,12 @@
           function setAnim() {
             let anim_name = window.dressUI.char.anims_list[window.dressUI.char.anim];
 
-            window.model.renderer.models[0].setAnimation(anim_name);
-            // window.model.renderer.viewer.method("setAnimation", anim_name);
+            window.model.renderer.viewer.method("setAnimation", anim_name);
             // window.model.renderer.viewer.method("resetAnimation"); // Отменить анимацию
             $('#select_animation_btn').find('a')[1].textContent = anim_name;
           };
 
-          function findDefaultStandAnim() {
+          function findDefaultStandAnimIndex() {
             for (let i in window.dressUI.char.anims_list) {
               if (window.dressUI.char.anims_list[i] == 'Stand') {
                 window.dressUI.char.anim = parseInt(i);
@@ -2360,7 +2353,7 @@
             findRaceGenderOptions,
             generateModels,
             optionsFromModel,
-          } from "{% static 'main_app/javascript/wow-model-viewer/wow_model_viewer.js' %}";
+          } from "{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}";
 
           window.createCharModel = async function() {
             if (window.model) window.model.modelIsLoaded = false;
@@ -2449,7 +2442,22 @@
             });
             set_race_gender_image();
           };
-          window.createCharModel();
+
+          $(document).ready(function() {
+            window.createCharModel();
+
+            //////////////// TEST №1 ////////////////
+            // model_opts.items.push([5, 64859]); // item with CORS policy
+            // window.createCharModel();
+            // setInterval(function() { modelIsLoaded(window.createCharModel)(); }, 4);
+            //////////////// TEST №1 ////////////////
+
+            //////////////// TEST №2 ////////////////
+            // window.dressUI.char.only_item = true;
+            // window.createItemModel({type: 1, id: 58187});
+            // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 58187}); }, 4);
+            //////////////// TEST №2 ////////////////
+          });
 
 
           window.createItemModel = async function(opts) {
@@ -2523,6 +2531,17 @@
             };
           }));
 
+          function getListAnimations() {
+            let anim_names = [];
+            let anims_len = window.model.renderer.viewer.method("getNumAnimations");
+            for (let i=0; i < anims_len; ++i) {
+              let anim_name = window.model.renderer.viewer.method("getAnimation", i);
+              if (anim_name) anim_names.push(anim_name);
+            };
+            // anim_names.sort();
+            return anim_names;
+          };
+
           function setModelLoadedCallback() {
             $('.paperdoll-model').css('background', 'none');
 
@@ -2531,13 +2550,14 @@
 
             updateAnimPaused(true);
 
-            if (window.GAME_PATCH == 'wrath') {
-              window.dressUI.char.anims_list = [...new Set(window.model.renderer.models[0].ao.map(e => e.j))];
-            } else if (window.GAME_PATCH == 'live') {
-              window.dressUI.char.anims_list = [...new Set(window.model.renderer.models[0].ap.map(e => e.j))];
-            };
+            window.dressUI.char.anims_list = getListAnimations();
+            // if (window.GAME_PATCH == 'wrath') {
+            //   window.dressUI.char.anims_list = [...new Set(window.model.renderer.models[0].ao.map(e => e.j))];
+            // } else if (window.GAME_PATCH == 'live') {
+            //   window.dressUI.char.anims_list = [...new Set(window.model.renderer.models[0].ap.map(e => e.j))];
+            // };
 
-            findDefaultStandAnim();
+            findDefaultStandAnimIndex();
 
             setDefaultText();
 
@@ -2551,15 +2571,8 @@
             refreshAlphaForExtremeButtonPosition(char_data);
 
             window.model.renderer.zoom.target = -2;
-            // setTimeout(() => { // требуется небольшая задержка после загрузки модели для некоторых методов
-            //   window.model.renderer.distance = 6;
-            // }, 10);
 
-            // фикс ошибки: "Uncaught TypeError: Cannot read properties of null"
-            setTimeout(() => {
-              window.model.modelIsLoaded = true;
-              setDefaultText();
-            }, 200);
+            window.model.modelIsLoaded = true;
           };
 
 
@@ -2661,7 +2674,7 @@
             window.model.renderer.zenith = Math.PI / 2; // вертикаль
             window.model.renderer.viewer.setOffset(0, 0); // X, Y
 
-            findDefaultStandAnim();
+            findDefaultStandAnimIndex();
             setAlphaForExtremeButtonPosition(
               $('#select_animation_btn')[0].children[0],
               window.dressUI.char.anim,
@@ -2709,7 +2722,7 @@
               dr_pause[0].classList.remove('fa-play');
               dr_pause[0].classList.add('fa-pause');
             };
-            if (flag) setTimeout(() => { window.model.renderer.models[0].setAnimPaused(window.dressUI.AnimIsPaused); }, 4);
+            if (flag) setTimeout(() => { window.model.renderer.viewer.method("setAnimPaused", window.dressUI.AnimIsPaused); }, 4);
           };
         </script>
 
