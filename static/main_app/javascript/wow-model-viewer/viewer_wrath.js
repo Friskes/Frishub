@@ -7481,12 +7481,12 @@
       }
     };
     const mo = class {
-      constructor(t, e, i) {
+      constructor(tt, e, i) {
         var r = this;
-        t.aT.context;
+        tt.aT.context;
         0 == i && console.log("Texture file is 0"),
-          (r.b = t),
-          (r.c = t.l.contentPath + "textures/" + i + ".png"),
+          (r.b = tt),
+          (r.c = tt.l.contentPath + "textures/" + i + ".png"),
           (r.d = null),
           (r.f = !1),
           (function (t, e) {
@@ -7496,7 +7496,28 @@
                 t.i();
               }),
               (t.a.onerror = function () {
-                t.a = null;
+                ///////////////////////////// friskes /////////////////////////////
+                let contentPath = tt.l.contentPath.split('/').at(-2) == 'wrath'
+                ? 'https://wow.zamimg.com/modelviewer/live/'
+                : 'https://wow.zamimg.com/modelviewer/wrath/';
+                r.c = contentPath + "textures/" + i + ".png";
+                (function (t, e) {
+                  (t.a = new Image()),
+                    (t.a.crossOrigin = ""),
+                    (t.a.onload = function () {
+                      t.i();
+                    }),
+                    (t.a.onerror = function () {
+                      t.a = null;
+
+                      window.errorLoadingItemCallback
+                      ? window.errorLoadingItemCallback({displayId: tt.l.items[0][1], slotId: tt.l.items[0][0], type: null})
+                      : undefined;
+                    }),
+                    (t.a.src = t.c);
+                })(r);
+                ///////////////////////////// friskes /////////////////////////////
+                // t.a = null;
               }),
               (t.a.src = t.c);
           })(r);
