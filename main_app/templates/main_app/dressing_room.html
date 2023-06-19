@@ -164,6 +164,7 @@
       race_id: model_opts.race,
       gender_id: model_opts.gender,
       anim: 0,
+      default_anim: 0,
       sheath: 0,
       sheath_opts: [],
       only_item: false
@@ -292,18 +293,12 @@
     border-radius: 6px;
     line-height: 0;
 
-    /* min-height: 362px;
-    max-height: 620px !important; */
+    /* min-height: 362px; */
+    max-height: 620px !important;
 
     min-width: 300px;
     /* overflow: hidden; */
     position: relative
-  }
-  /* Если мы на мобильном */
-  @media screen and (max-width: 800px) {
-    /* .paperdoll {
-      max-height: 362px !important;
-    } */
   }
   .paperdoll div {
     line-height: normal
@@ -384,106 +379,6 @@
   .paperdoll .paperdoll-responsive-expander {
     /* margin-top: 131.407942238%; */
     margin-top: 999%;
-  }
-  @media screen and (max-width: 539px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 151%;
-    }
-  }
-  @media screen and (max-width: 490px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 162%;
-    }
-  }
-  @media screen and (max-width: 470px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 178%;
-    }
-  }
-  @media screen and (max-width: 452px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 194%;
-    }
-  }
-  @media screen and (max-width: 449px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 167%;
-    }
-  }
-  @media screen and (max-width: 435px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 181%;
-    }
-  }
-  @media screen and (max-width: 425px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 191%;
-    }
-  }
-  @media screen and (max-width: 415px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 203%;
-    }
-  }
-  @media screen and (max-width: 409px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 188%;
-    }
-  }
-  @media screen and (max-width: 400px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 202%;
-    }
-  }
-  @media screen and (max-width: 390px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 212%;
-    }
-  }
-  @media screen and (max-width: 370px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 225%;
-    }
-  }
-  @media screen and (max-width: 360px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 245%;
-    }
-  }
-  @media screen and (max-width: 350px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 270%;
-    }
-  }
-  @media screen and (max-width: 340px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 262%;
-    }
-  }
-  @media screen and (max-width: 335px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 281%;
-    }
-  }
-  @media screen and (max-width: 330px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 295%;
-    }
-  }
-  @media screen and (max-width: 325px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 320%;
-    }
-  }
-  @media screen and (max-width: 320px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 339%;
-    }
-  }
-  @media screen and (max-width: 315px) {
-    .paperdoll .paperdoll-responsive-expander {
-      margin-top: 363%;
-    }
   }
   .paperdoll .paperdoll-hidden.iconlarge,
   .paperdoll .paperdoll-hidden.iconmedium,
@@ -2187,15 +2082,6 @@
             // window.model.renderer.viewer.method("resetAnimation"); // Отменить анимацию
             $('#select_animation_btn').find('a')[1].textContent = anim_name;
           };
-
-          function findDefaultStandAnimIndex() {
-            for (let i in window.dressUI.char.anims_list) {
-              if (window.dressUI.char.anims_list[i] == 'Stand') {
-                window.dressUI.char.anim = parseInt(i);
-                break;
-              };
-            };
-          };
         </script>
 
         <script>
@@ -2599,7 +2485,7 @@
               window.dressUI.AnimIsPaused = false;
               updateAnimPaused();
 
-              window.model.renderer.zoom.target = -8;
+              document.documentElement.clientWidth < 800 ? window.model.renderer.zoom.target = -2 : window.model.renderer.zoom.target = -8;
 
               setTimeout(function() {
                 window.model.modelIsLoaded = true;
@@ -2648,6 +2534,10 @@
             for (let i=0; i < anims_len; ++i) {
               let anim_name = window.model.renderer.viewer.method("getAnimation", i);
               if (anim_name) anim_names.push(anim_name);
+              if (anim_name == 'Stand') {
+                window.dressUI.char.default_anim = parseInt(i);
+                window.dressUI.char.anim = window.dressUI.char.default_anim;
+              };
             };
             // anim_names.sort();
             return anim_names;
@@ -2667,8 +2557,6 @@
             // } else if (window.GAME_PATCH == 'live') {
             //   window.dressUI.char.anims_list = [...new Set(window.model.renderer.models[0].ap.map(e => e.j))];
             // };
-
-            findDefaultStandAnimIndex();
 
             setDefaultText();
 
@@ -2781,13 +2669,19 @@
 
 
           $('#dr-reset').on('click', modelIsLoaded(function(event) {
-            window.model.renderer.zoom.target = -2;
+
+            if (document.documentElement.clientWidth < 800) {
+              window.dressUI.char.only_item ? window.model.renderer.zoom.target = -2 : window.model.renderer.zoom.target = -2;
+            } else {
+              window.dressUI.char.only_item ? window.model.renderer.zoom.target = -8 : window.model.renderer.zoom.target = -2;
+            };
+
             // window.model.renderer.distance = 6;
             window.model.renderer.azimuth = 1.5 * Math.PI; // горизонталь
             window.model.renderer.zenith = Math.PI / 2; // вертикаль
             window.model.renderer.viewer.setOffset(0, 0); // X, Y
 
-            findDefaultStandAnimIndex();
+            window.dressUI.char.anim = window.dressUI.char.default_anim;
             setAlphaForExtremeButtonPosition(
               $('#select_animation_btn')[0].children[0],
               window.dressUI.char.anim,

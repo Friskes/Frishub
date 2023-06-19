@@ -221,16 +221,16 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
         width: auto
     }
 
-    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom {
+    /* .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom {
         bottom: 66px
-    }
+    } */
 }
 
-@media screen and (max-width: 539px) {
+/* @media screen and (max-width: 539px) {
     .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom {
         bottom: 54px
     }
-}
+} */
 
 @media screen and (max-width: 449px) {
 
@@ -266,7 +266,7 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     width: 50px
 }
 
-@media screen and (max-width: 539px) {
+/* @media screen and (max-width: 539px) {
     .dressing-room .paperdoll[data-icon-size="large"] .iconlarge ins {
         left: 4px;
         top: 4px;
@@ -284,7 +284,7 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
         height: 38px;
         width: 38px
     }
-}
+} */
 
 @media screen and (max-width: 379px) {
     .dressing-room .paperdoll[data-icon-size="large"] .iconlarge ins {
@@ -425,11 +425,37 @@ body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
     .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
         margin: 0 2.5px
     }
+
+    .paperdoll {
+        height: 565px
+    }
 }
 
 @media screen and (max-width: 409px) {
     .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
         margin: 0
+    }
+
+    .paperdoll {
+        height: 530px
+    }
+}
+
+@media screen and (max-width: 379px) {
+    .paperdoll {
+        height: 395px
+    }
+    .paperdoll-bottom {
+        bottom: 52px !important
+    }
+}
+
+@media screen and (max-width: 349px) {
+    .paperdoll {
+        height: 358px
+    }
+    .paperdoll-bottom {
+        bottom: 50px !important
     }
 }
 
