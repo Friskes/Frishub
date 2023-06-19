@@ -27,8 +27,6 @@
   // const DEFAULT_ICON_URL = `https://render-classic-us.worldofwarcraft.com/icons/56/`; // 18 // 36 // 56
 </script>
 
-<script type="module" src="{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}"></script>
-
 <script>
   const RACES = {
     1: 'Human',
@@ -294,8 +292,8 @@
     border-radius: 6px;
     line-height: 0;
 
-    min-height: 362px;
-    max-height: 620px !important;
+    /* min-height: 362px;
+    max-height: 620px !important; */
 
     min-width: 300px;
     /* overflow: hidden; */
@@ -303,9 +301,9 @@
   }
   /* Если мы на мобильном */
   @media screen and (max-width: 800px) {
-    .paperdoll {
+    /* .paperdoll {
       max-height: 362px !important;
-    }
+    } */
   }
   .paperdoll div {
     line-height: normal
@@ -385,8 +383,107 @@
   }
   .paperdoll .paperdoll-responsive-expander {
     /* margin-top: 131.407942238%; */
-    /* margin-top: 164.3%; */
     margin-top: 999%;
+  }
+  @media screen and (max-width: 539px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 151%;
+    }
+  }
+  @media screen and (max-width: 490px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 162%;
+    }
+  }
+  @media screen and (max-width: 470px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 178%;
+    }
+  }
+  @media screen and (max-width: 452px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 194%;
+    }
+  }
+  @media screen and (max-width: 449px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 167%;
+    }
+  }
+  @media screen and (max-width: 435px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 181%;
+    }
+  }
+  @media screen and (max-width: 425px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 191%;
+    }
+  }
+  @media screen and (max-width: 415px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 203%;
+    }
+  }
+  @media screen and (max-width: 409px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 188%;
+    }
+  }
+  @media screen and (max-width: 400px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 202%;
+    }
+  }
+  @media screen and (max-width: 390px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 212%;
+    }
+  }
+  @media screen and (max-width: 370px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 225%;
+    }
+  }
+  @media screen and (max-width: 360px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 245%;
+    }
+  }
+  @media screen and (max-width: 350px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 270%;
+    }
+  }
+  @media screen and (max-width: 340px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 262%;
+    }
+  }
+  @media screen and (max-width: 335px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 281%;
+    }
+  }
+  @media screen and (max-width: 330px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 295%;
+    }
+  }
+  @media screen and (max-width: 325px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 320%;
+    }
+  }
+  @media screen and (max-width: 320px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 339%;
+    }
+  }
+  @media screen and (max-width: 315px) {
+    .paperdoll .paperdoll-responsive-expander {
+      margin-top: 363%;
+    }
   }
   .paperdoll .paperdoll-hidden.iconlarge,
   .paperdoll .paperdoll-hidden.iconmedium,
@@ -1628,6 +1725,9 @@
               } else if (!window.model.modelIsLoaded) {
                 warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки модели.');
                 return false;
+              } else if (!window.itemsData) {
+                warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки базы данных.');
+                return false;
               };
               func.apply(this, args);
             };
@@ -2447,15 +2547,29 @@
             window.createCharModel();
 
             //////////////// TEST №1 ////////////////
-            // model_opts.items.push([5, 64859]); // item with CORS policy
+            // model_opts.items = [ // items with CORS policy
+            //   [1, 64897],
+            //   [3, 64896],
+            //   [16, 22996],
+            //   [5, 64859],
+            //   [4, 11977],
+            //   [19, 65733],
+            //   [9, 63901],
+            //   [21, 65153],
+            //   [22, 45146],
+            //   [10, 63910],
+            //   [6, 109302],
+            //   [7, 64246],
+            //   [8, 63825]
+            // ];
             // window.createCharModel();
             // setInterval(function() { modelIsLoaded(window.createCharModel)(); }, 4);
             //////////////// TEST №1 ////////////////
 
             //////////////// TEST №2 ////////////////
             // window.dressUI.char.only_item = true;
-            // window.createItemModel({type: 1, id: 58187});
-            // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 58187}); }, 4);
+            // window.createItemModel({type: 1, id: 65153});
+            // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 65153}); }, 4);
             //////////////// TEST №2 ////////////////
           });
 
@@ -2487,7 +2601,9 @@
 
               window.model.renderer.zoom.target = -8;
 
-              window.model.modelIsLoaded = true;
+              setTimeout(function() {
+                window.model.modelIsLoaded = true;
+              }, 100);
             });
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, 'К сожалению не удалось загрузить итем.');
@@ -2496,11 +2612,6 @@
           };
 
           $('#only-item').on('click', modelIsLoaded(function(event) {
-            if (!window.itemsData) {
-              warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки базы данных.');
-              return false;
-            };
-
             window.dressUI.char.only_item = event.target.checked;
 
             if (window.dressUI.char.only_item) {
@@ -2572,7 +2683,9 @@
 
             window.model.renderer.zoom.target = -2;
 
-            window.model.modelIsLoaded = true;
+            setTimeout(function() {
+              window.model.modelIsLoaded = true;
+            }, 100);
           };
 
 

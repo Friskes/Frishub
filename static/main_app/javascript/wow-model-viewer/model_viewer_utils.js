@@ -1,4 +1,6 @@
-import {WowModelViewer} from './wow_model_viewer.js';
+window.WH.debug = function(...args) {
+    // console.log(args);
+};
 
 let CONTENT_PATH;
 
@@ -225,7 +227,7 @@ async function optionsFromModel(model) {
  * @param {number} aspect: Размер персонажа
  * @param {string} containerSelector: Селектор jQuery для контейнера
  * @param {{}|{id: number, type: number}} model: Представление персонажа в формате json
- * @returns {Promise<WowModelViewer>}
+ * @returns {Promise<ZamModelViewer>}
  */
 async function generateModels(aspect, containerSelector, model) {
     CONTENT_PATH = model.general_opts.contentPath;
@@ -241,7 +243,7 @@ async function generateModels(aspect, containerSelector, model) {
     };
     window.models = models;
 
-    return new WowModelViewer(models);
+    return new ZamModelViewer(models);
 }
 
 function optionalChaining(choice) {
