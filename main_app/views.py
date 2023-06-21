@@ -450,7 +450,7 @@ class DressingRoomView(DataMixin, View):
 class UniqueDressingRoomView(DataMixin, TemplateView):
     """#### Представление обрабатывающее примерочную страницу."""
 
-    template_name = 'main_app/COPY_dressing_room.html'
+    template_name = 'main_app/dressing_room.html'
 
 #############################################################################
 
