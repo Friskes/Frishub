@@ -401,27 +401,10 @@
     text-align: left;
     z-index: 10
   }
-  .paperdoll .paperdoll-controls-right {
-    bottom: 34px;
-    font-size: 20px;
-    position: absolute;
-    z-index: 10;
-    left: calc(50% - 168px);
-  }
-  /* Если мы на мобильном */
-  @media screen and (max-width: 800px) {
-    .paperdoll .paperdoll-controls-right {
-      bottom: 25px;
-      font-size: 17px;
-      left: calc(50% - 90px);
-    }
-  }
-  .paperdoll .paperdoll-controls-left div,
-  .paperdoll .paperdoll-controls-right div {
+  .paperdoll .paperdoll-controls-left div {
     margin: 3px 0 0
   }
-  .paperdoll .paperdoll-controls-left div:first-child,
-  .paperdoll .paperdoll-controls-right div:first-child {
+  .paperdoll .paperdoll-controls-left div:first-child {
     margin: 0
   }
   .paperdoll .paperdoll-quality a {
@@ -687,7 +670,7 @@
     left: 0;
     right: 0;
     max-width: 35%;
-    z-index: 13;
+    z-index: 14;
     border-radius: 15%;
     background-color: rgba(0, 0, 0, 0.5);
     user-select: none;
@@ -697,7 +680,7 @@
   @media screen and (max-width: 379px) {
     .warning-toast-message {
       top: calc(20%);
-      max-width: 50%;
+      max-width: 60%;
     }
   }
   .warning-toast-message-icon {
@@ -1443,16 +1426,6 @@
                 <div class="paperdoll-responsive-expander"></div>
               </div>
 
-              <!-- <div class="paperdoll-controls-right">
-                <div class="paperdoll-fullscreen">
-                  <a _ngcontent-xpp-c94="" class="info fullscreen-icon">
-                    <i class="fa fa-expand"></i>
-                    <span _ngcontent-xpp-c94="" class="info-text"
-                      style="color: #fff; margin-top: -47px; margin-left: -30px;">Double-click model to view fullscreen</span>
-                  </a>
-                </div>
-              </div> -->
-
               <div class="warning-toast-message">
                 <span class="warning-toast-message-icon">⚠️</span>
                 <br>
@@ -2167,8 +2140,6 @@
           const face_settings = $('#dressing-room-face-settings')[0];
           const char_settings = $('#dressing-room-character-settings')[0];
 
-          const fullscreen_hint = $('.paperdoll-controls-right')[0];
-
           $('.dressing-room-character-controls-category-switchers a').on('click', function(event) {
 
             const category = event.target.getAttribute('data-category');
@@ -2224,10 +2195,10 @@
             window.dressUI.show = !window.dressUI.show;
 
             if (window.dressUI.show) {
-              setDisplayState('none', gear_button, face_button, char_button, patch_button, paperdoll_left,
-              paperdoll_right, paperdoll_bottom, face_settings, char_settings, fullscreen_hint);
+              setDisplayState('none', gear_button, face_button, char_button, patch_button,
+              paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings, char_settings);
             } else {
-              setDisplayState('block', gear_button, face_button, char_button, patch_button, fullscreen_hint);
+              setDisplayState('block', gear_button, face_button, char_button, patch_button);
 
               if (window.dressUI.active_cat === 'gear') {
                 setDisplayState('block', paperdoll_left, paperdoll_right, paperdoll_bottom);
@@ -2583,6 +2554,7 @@
 
 
           $('#dr-randomize').on('click', modelIsLoaded(function(event) {
+            if (window.dressUI.char.only_item) return false;
             updateFaceFields();
             window.model.updateAppearance(model_opts);
           }));
@@ -2601,15 +2573,17 @@
             window.model.renderer.zenith = Math.PI / 2; // вертикаль
             window.model.renderer.viewer.setOffset(0, 0); // X, Y
 
-            window.dressUI.char.anim = window.dressUI.char.default_anim;
+            if (!window.dressUI.char.only_item) {
+              window.dressUI.char.anim = window.dressUI.char.default_anim;
 
-            setAlphaForExtremeButtonPosition(
-              $('#select_animation_btn')[0].children[0],
-              window.dressUI.char.anim,
-              window.dressUI.char.anims_list.length - 1,
-              0
-            );
-            setAnim();
+              setAlphaForExtremeButtonPosition(
+                $('#select_animation_btn')[0].children[0],
+                window.dressUI.char.anim,
+                window.dressUI.char.anims_list.length - 1,
+                0
+              );
+              setAnim();
+            };
           }));
 
 

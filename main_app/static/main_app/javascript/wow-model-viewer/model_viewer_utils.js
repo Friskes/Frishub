@@ -146,23 +146,20 @@ class WowModelViewer extends ZamModelViewer {
                 if (X_difference > 0) { // L
                     if (Y_difference > 0) this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset - this.offset_coeff)); // TL
                     this.X_offset = Math.max(-1, Math.min(1, this.X_offset - this.offset_coeff));
-                    this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
                 } else { // R
                     if (Y_difference < 0) this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset + this.offset_coeff)); // BR
                     this.X_offset = Math.max(-1, Math.min(1, this.X_offset + this.offset_coeff));
-                    this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
                 };
             } else { // Vertical
                 if (Y_difference > 0) { // T
                     if (X_difference < 0) this.X_offset = Math.max(-1, Math.min(1, this.X_offset + this.offset_coeff)); // TR
                     this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset - this.offset_coeff));
-                    this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
                 } else { // B
                     if (X_difference > 0) this.X_offset = Math.max(-1, Math.min(1, this.X_offset - this.offset_coeff)); // BL
                     this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset + this.offset_coeff));
-                    this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
                 };
             };
+            this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
 
         };
     };
