@@ -93,9 +93,8 @@
       // 'все дальнобойные кроме луков': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
       // 'только луки': 15, 22, 23 (лев. рука)
     ],
-    general_opts: {
-      // background: "background-181818.png"
-    }
+    sheathMain: -1,
+    sheathOff: -1,
   };
 
 
@@ -808,8 +807,6 @@
   <div _ngcontent-gox-c37="" class="page-size bg-check p-2 p-md-5 mb-5" style="overflow: hidden;">
     <div _ngcontent-gox-c37="" class="m-auto text-center" style="padding-top: 60px; padding-bottom: 60px;">
       <div _ngcontent-gox-c37="" class="mb-2">
-
-        <div id="log_info_ele"></div>
 
         <div id="dressing-room" class="dressing-room" data-loaded="true">
           <div class="dressing-room-character" data-class="1" data-race="10" data-npc-race="false"
@@ -1569,8 +1566,8 @@
                 warnMessageHandler(4000, 'Ошибка, модель не была создана.');
                 return false;
               // проверяет, полностью ли загружена модель.
+              } else if (!window.model.renderer || !window.model.renderer.models[0].modelIsLoaded) {
               // } else if (!window.model.renderer.viewer.method("isLoaded")) {
-              } else if (!window.model.modelIsLoaded) {
                 warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки модели.');
                 return false;
               } else if (!window.itemsData) {
@@ -1965,8 +1962,10 @@
               RACES[window.dressUI.char.race_id] === 'Troll'
               ? window.dressUI.char.race_id += 2 : window.dressUI.char.race_id += 1;
             };
-            updateCharacterHandler('race_id', event, RACES);
+            model_opts.race = window.dressUI.char.race_id;
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.race_id, 11, 1);
+            event.target.parentElement.children[1].textContent = RACES[window.dressUI.char.race_id];
+            window.createCharModel();
           }));
 
 
@@ -1980,19 +1979,11 @@
 
               window.dressUI.char.gender_id += 1;
             };
-            updateCharacterHandler('gender_id', event, GENDERS);
-            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.gender_id, 1);
-          }));
-
-
-          function updateCharacterHandler(field, event, data) {
-            event.target.parentElement.children[1].textContent = data[window.dressUI.char[field]];
-
-            model_opts.race = window.dressUI.char.race_id;
             model_opts.gender = window.dressUI.char.gender_id;
-            // Заного создаём модель с другим гендером
+            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.gender_id, 1);
+            event.target.parentElement.children[1].textContent = GENDERS[window.dressUI.char.gender_id];
             window.createCharModel();
-          };
+          }));
 
 
           $('#select_sheathed_btn a').on('click', modelIsLoaded(function(event) {
@@ -2022,6 +2013,8 @@
             } else {
               $('#select_sheathed_btn').find('a')[1].textContent = `Sheathed-${window.dressUI.char.sheath}`;
             };
+            model_opts.sheathMain = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][0];
+            model_opts.sheathOff = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][1];
           };
 
 
@@ -2250,99 +2243,9 @@
           function removeAttr(attr, ...elements) { for (let element of elements) element.removeAttribute(attr); };
 
           function setDisplayState(state, ...elements) { for (let element of elements) element.style.display = state; };
-        </script>
 
-        <style>.paperdoll-model { touch-action: none; }</style>
-        <script>
+
           const copy_text = new CopyText();
-
-
-          const paperdoll_model = document.querySelector('.paperdoll-model');
-
-          let twoFingers = false;
-
-          let prev_distance = 0;
-
-          let X_start = 0;
-          let Y_start = 0;
-
-          let X_offset = 0;
-          let Y_offset = 0;
-
-          paperdoll_model.addEventListener("touchstart", function(event) {
-            if (event.touches.length === 2) {
-
-              X_start = event.touches[0].clientX;
-              Y_start = event.touches[0].clientY;
-
-              prev_distance = Math.hypot(
-                event.touches[0].pageX - event.touches[1].pageX,
-                event.touches[0].pageY - event.touches[1].pageY
-              );
-
-              twoFingers = true;
-            };
-          });
-
-          paperdoll_model.addEventListener("touchmove", function(event) {
-            if (twoFingers) {
-              // $('#log_info_ele').text(`azimuth: ${window.model.renderer.azimuth.toFixed(2)} zenith: ${window.model.renderer.zenith.toFixed(2)}`);
-              event.stopPropagation(); // отключаем изменение azimuth/zenith во время движения/кропа модели
-
-              const distance = Math.hypot(
-                event.touches[0].pageX - event.touches[1].pageX,
-                event.touches[0].pageY - event.touches[1].pageY
-              );
-              // $('#log_info_ele').text(`distance: ${distance.toFixed(2)}`);
-
-              // Если расстояние между пальцами более 85 тогда это возможно кроп
-              if (distance > 85) {
-
-                if (distance > prev_distance) {
-                  // $('#log_info_ele').text(`+${window.model.renderer.zoom.rateCurrent.toFixed(2)}`);
-                  window.model.renderer.zoom.rateCurrent += 0.05; // range(-0.15, 0.15)
-                } else {
-                  // $('#log_info_ele').text(`${window.model.renderer.zoom.rateCurrent.toFixed(2)}`);
-                  window.model.renderer.zoom.rateCurrent -= 0.05;
-                };
-                prev_distance = distance;
-
-              // Если расстояние между пальцами менее 85 тогда это возможно мув
-              } else {
-
-                const displ_coeff = 0.004;
-                const X_difference = X_start - event.touches[0].clientX;
-                const Y_difference = Y_start - event.touches[0].clientY;
-
-                if (Math.abs(X_difference) > Math.abs(Y_difference)) {
-                  if (X_difference > 0) {
-                    // $('#log_info_ele').text(`LEFT: ${X_offset.toFixed(3)}`);
-                    X_offset = Math.max(-1, Math.min(1, X_offset - displ_coeff));
-                    window.model.renderer.viewer.setOffset(X_offset, Y_offset);
-                  } else {
-                    // $('#log_info_ele').text(`RIGHT: ${X_offset.toFixed(3)}`);
-                    X_offset = Math.max(-1, Math.min(1, X_offset + displ_coeff));
-                    window.model.renderer.viewer.setOffset(X_offset, Y_offset);
-                  };
-                } else {
-                  if (Y_difference > 0) {
-                    // $('#log_info_ele').text(`UP: ${Y_offset.toFixed(3)}`);
-                    Y_offset = Math.max(-1, Math.min(1, Y_offset - displ_coeff));
-                    window.model.renderer.viewer.setOffset(X_offset, Y_offset);
-                  } else { 
-                    // $('#log_info_ele').text(`DOWN: ${Y_offset.toFixed(3)}`);
-                    Y_offset = Math.max(-1, Math.min(1, Y_offset + displ_coeff));
-                    window.model.renderer.viewer.setOffset(X_offset, Y_offset);
-                  };
-                };
-
-              };
-            };
-          });
-
-          paperdoll_model.addEventListener("touchcancel", function(event) { twoFingers = false; });
-
-          paperdoll_model.addEventListener("touchend", function(event) { if (twoFingers) twoFingers = false; });
         </script>
 
         <script type="module">
@@ -2450,31 +2353,29 @@
                 : window.dressUI.face.current[i] + 1;
 
                 model_opts[opt_name] = window.dressUI.face.current[i];
-                window.setAppearance();
+                window.model.updateAppearance(model_opts);
               }));
             };
           };
 
 
           window.generateCharModel = async function() {
-            // для изменения race и gender требуется полное пересоздание модели
-            // Полностью удаляем модель (включая DOM дерево)
-            if (window.model) window.model.renderer.viewer.destroy();
 
             // глубокая копия model_opts для удаления itemId из items для последующей передачи в generateModels
             let dc_model_opts = JSON.parse(JSON.stringify(model_opts));
             dc_model_opts.items = [...new Set(dc_model_opts.items.map(item => [item[0], item[1]]))];
 
-            const aspect = document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetWidth
-            / document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetHeight;
-
             window.model = await generateModels(
-              aspect,
               '#paperdoll-model-dressing-room-paperdoll',
-              dc_model_opts
+              Object.assign(dc_model_opts, {
+                // generalOptions: {
+                //   background: "background-181818.png"
+                // }
+              })
             );
 
-            window.model.renderer.viewer.method("setModelLoadedCallback", function() {
+            window.model.setModelLoadedCallback(function() {
+            // window.model.renderer.viewer.method("setModelLoadedCallback", function() {
               $('.paperdoll-model').css('background', 'none');
 
               window.model.renderer.viewer.method("setSheath",
@@ -2482,7 +2383,10 @@
 
               updateAnimPaused(true);
 
-              window.dressUI.char.anims_list = getListAnimations();
+              const {animNames, standIndex} = window.model.getListAnimations();
+              window.dressUI.char.anims_list = animNames;
+              window.dressUI.char.default_anim = standIndex;
+              window.dressUI.char.anim = standIndex;
 
               setDefaultText();
 
@@ -2496,10 +2400,6 @@
               refreshAlphaForExtremeButtonPosition(char_data);
 
               window.model.renderer.viewer.setZoom(-2);
-
-              setTimeout(function() {
-                window.model.modelIsLoaded = true;
-              }, 100);
             });
             // window.model.renderer.viewer.method("setCustomizationsLoadedCallback", function(t) { console.log('setCustomizationsLoadedCallback', t); });
             // window.model.renderer.screenshotCallback = function() { console.log('screenshotCallback'); };
@@ -2519,13 +2419,15 @@
 
 
           window.createCharModel = function() {
-
-            if (window.model) window.model.modelIsLoaded = false;
+            if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
 
             $('#dressing-room-face-settings div').each(function(index, option) {
-              if (option.classList.contains('dressing-room-character-controls-category-option')) option.remove();
+              if (option.classList.contains('dressing-room-character-controls-category-option')) {
+                delete model_opts[option.getAttribute('data-character-customization-type')];
+                option.remove();
+              };
             });
 
             // Получить все доступные опции для указанной расы и гендера
@@ -2574,37 +2476,27 @@
 
 
           window.createItemModel = async function(opts) {
-            if (window.model) window.model.modelIsLoaded = false;
+            if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
 
-            // Полностью удаляем модель (включая DOM дерево)
-            if (window.model) window.model.renderer.viewer.destroy();
-
-            const aspect = document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetWidth
-            / document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetHeight;
-
             window.model = await generateModels(
-              aspect,
               '#paperdoll-model-dressing-room-paperdoll',
               Object.assign(opts, {
-                general_opts: {
-                  // background: "background-181818.png"
-                }
+                // generalOptions: {
+                //   background: "background-181818.png"
+                // }
               })
             );
 
-            window.model.renderer.viewer.method("setModelLoadedCallback", function() {
+            window.model.setModelLoadedCallback(function() {
+            // window.model.renderer.viewer.method("setModelLoadedCallback", function() {
               $('.paperdoll-model').css('background', 'none');
 
               window.dressUI.AnimIsPaused = false;
               updateAnimPaused();
 
               document.documentElement.clientWidth < 800 ? window.model.renderer.viewer.setZoom(-2) : window.model.renderer.viewer.setZoom(-8);
-
-              setTimeout(function() {
-                window.model.modelIsLoaded = true;
-              }, 100);
             });
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, 'К сожалению не удалось загрузить итем.');
@@ -2642,27 +2534,6 @@
           }));
 
 
-          function getListAnimations() {
-            let lock = false;
-            let anim_names = [];
-            const anims_len = window.model.renderer.viewer.method("getNumAnimations");
-
-            for (let i=0; i < anims_len; ++i) {
-              const anim_name = window.model.renderer.viewer.method("getAnimation", i);
-
-              if (anim_name) anim_names.push(anim_name);
-
-              if (!lock && anim_name === 'Stand') {
-                lock = true;
-                window.dressUI.char.default_anim = i;
-                window.dressUI.char.anim = window.dressUI.char.default_anim;
-              };
-            };
-            // anim_names.sort();
-            return anim_names;
-          };
-
-
           function get_items_data_from_database_file() {
             fetch("{% static 'main_app/json/itemsdata.json' %}")
             .then((response) => response.json())
@@ -2676,31 +2547,6 @@
             });
           };
           get_items_data_from_database_file();
-
-
-          window.setAppearance = async function() {
-
-            let dc_model_opts = JSON.parse(JSON.stringify(model_opts));
-            delete dc_model_opts.items;
-            delete dc_model_opts.general_opts;
-
-            // Структура которая передаётся в viewer setAppearance
-            // {
-            //   options: [
-            //     {'optionId': айди, 'choiceId': айди},
-            //     {'optionId': айди, 'choiceId': айди}
-            //     ... и т.д.
-            //   ],
-            //   sheathMain: индекс,
-            //   sheathOff: индекс
-            // }
-
-            await optionsFromModel(dc_model_opts).then((modelOptions) => {
-              modelOptions.charCustomization.sheathMain = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][0];
-              modelOptions.charCustomization.sheathOff = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][1];
-              window.model.renderer.viewer.method("setAppearance", modelOptions.charCustomization);
-            });
-          };
         </script>
 
         <script>
@@ -2728,7 +2574,7 @@
 
           $('#dr-randomize').on('click', modelIsLoaded(function(event) {
             updateFaceFields();
-            window.setAppearance();
+            window.model.updateAppearance(model_opts);
           }));
 
 
@@ -2758,25 +2604,7 @@
 
 
           $('#dr-screenshot').on('click', modelIsLoaded(function(event) {
-
-            const race = RACES[window.dressUI.char.race_id].toLowerCase();
-            const gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
-
-            window.requestAnimationFrame(function() {
-              // баг в яндекс браузере, выдаёт ошибку:
-              // uncaught RangeError: offset is out of bounds at Uint8ClampedArray.set
-              window.model.renderer.makeDataURL = ["image/png", 1];
-
-              window.requestAnimationFrame(function() {
-
-                let temp_ele = $("<a>");
-                $("body").append(temp_ele);
-                temp_ele[0].download = `${race}_${gender}_${window.location.hostname}_dressing_room.png`;
-                temp_ele[0].href = window.model.renderer.screenshotDataURL;
-                temp_ele[0].click();
-                temp_ele.remove();
-              });
-            });
+            window.model.makeScreenshot();
           }));
 
 
