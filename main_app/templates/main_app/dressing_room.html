@@ -2551,14 +2551,24 @@
 
         <script>
           function updateFaceFields(random_vals=true) {
+            const NOT_ALLOWED_FACE_FIELDS = [ // эти настройки выглядит не красиво
+              'eyesight'
+            ];
+
             const face_data = window.dressUI.face;
 
             for (const i in face_data.fields) {
 
               const field_name = face_data.fields[i];
+
+              if (NOT_ALLOWED_FACE_FIELDS.indexOf(field_name) !== -1) continue;
+
               const max_len = face_data.max_len[i];
 
               const int_param = random_vals ? get_rand_int(0, max_len) : face_data.current[i];
+
+              if (field_name === 'eye_color' && int_param > 19) continue; // эта настройка выглядит не красиво
+
               model_opts[field_name] = int_param;
               face_data.current[i] = int_param;
 
