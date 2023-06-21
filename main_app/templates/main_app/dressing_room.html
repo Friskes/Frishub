@@ -2300,10 +2300,10 @@
 
                 if (distance > prev_distance) {
                   // $('#log_info_ele').text(`+${window.model.renderer.zoom.rateCurrent.toFixed(2)}`);
-                  window.model.renderer.zoom.rateCurrent += 0.06; // range(-0.15, 0.15)
+                  window.model.renderer.zoom.rateCurrent += 0.05; // range(-0.15, 0.15)
                 } else {
                   // $('#log_info_ele').text(`${window.model.renderer.zoom.rateCurrent.toFixed(2)}`);
-                  window.model.renderer.zoom.rateCurrent -= 0.06;
+                  window.model.renderer.zoom.rateCurrent -= 0.05;
                 };
                 prev_distance = distance;
 
@@ -2403,6 +2403,13 @@
 
 
           window.generateFaceOptions = function() {
+            // очистка настроек при создании новой модели
+            window.dressUI.face.fields = [];
+            window.dressUI.face.have_text_opt = [];
+            window.dressUI.face.max_len = [];
+            window.dressUI.face.min_len = [];
+            window.dressUI.face.current = [];
+
             const default_index = 0;
             const NOT_ALLOWED_CHAR_OPTS = [
               // 'Hair Color', 'Piercings'
@@ -2458,8 +2465,11 @@
             let dc_model_opts = JSON.parse(JSON.stringify(model_opts));
             dc_model_opts.items = [...new Set(dc_model_opts.items.map(item => [item[0], item[1]]))];
 
+            const aspect = document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetWidth
+            / document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetHeight;
+
             window.model = await generateModels(
-              document.documentElement.clientWidth < 800 ? 1 : 2,
+              aspect,
               '#paperdoll-model-dressing-room-paperdoll',
               dc_model_opts
             );
@@ -2571,8 +2581,11 @@
             // Полностью удаляем модель (включая DOM дерево)
             if (window.model) window.model.renderer.viewer.destroy();
 
+            const aspect = document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetWidth
+            / document.querySelector('#paperdoll-model-dressing-room-paperdoll').offsetHeight;
+
             window.model = await generateModels(
-              document.documentElement.clientWidth < 800 ? 1 : 2,
+              aspect,
               '#paperdoll-model-dressing-room-paperdoll',
               Object.assign(opts, {
                 general_opts: {
