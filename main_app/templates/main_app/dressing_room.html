@@ -187,19 +187,19 @@
     return function(...args) {
       // проверяет есть ли у пользователя разрешение на редактирование персонажа
       if (!ignoreUserRights && !window.dressUI.room_creator && !window.dressUI.allow_edit) {
-        warnMessageHandler(3000, 'Создатель этой комнаты запретил изменение персонажа другими пользователями.');
+        warnMessageHandler(3000, "{% trans 'Создатель этой комнаты запретил изменение персонажа другими пользователями.' %}");
         return false;
       // проверяет, была ли создана модель.
       } else if (!window.model) {
-        warnMessageHandler(4000, 'Ошибка, модель не была создана.');
+        warnMessageHandler(4000, "{% trans 'Ошибка, модель не была создана.' %}");
         return false;
       // проверяет, полностью ли загружена модель.
       } else if (!window.model.renderer || !window.model.renderer.models[0].modelIsLoaded) {
       // } else if (!window.model.renderer.viewer.method("isLoaded")) {
-        warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки модели.');
+        warnMessageHandler(2000, "{% trans 'Пожалуйста, дождитесь полной загрузки модели.' %}");
         return false;
       } else if (!window.itemsData) {
-        warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки базы данных.');
+        warnMessageHandler(2000, "{% trans 'Пожалуйста, дождитесь полной загрузки базы данных.' %}");
         return false;
       };
       func.apply(this, args);
@@ -988,14 +988,22 @@
     user-select: none;
   }
 
-  .my-saved-rooms {
+  .my-saved-rooms-container {
     /* display: grid; */
     display: none;
     margin: auto;
-    max-height: 145px;
     max-width: max-content;
     position: relative;
     bottom: 30px;
+  }
+  .my-saved-rooms-title {
+    display: flex;
+    text-align: left;
+    font-weight: bold;
+  }
+  .my-saved-rooms {
+    display: grid;
+    max-height: 145px;
   }
   .rooms-list-link {
     text-align: left;
@@ -1026,7 +1034,10 @@
 
         <div id="dressing-room" class="dressing-room" data-loaded="true">
 
-          <div class="table-responsive my-saved-rooms"></div>
+          <div class="my-saved-rooms-container">
+            <span class="my-saved-rooms-title">{% trans 'Сохранённые комнаты' %}:</span>
+            <div class="table-responsive my-saved-rooms"></div>
+          </div>
 
           <div class="dressing-room-character" data-class="1" data-race="10" data-npc-race="false"
             data-gender="0" data-gender-restriction="no-restriction" data-category="gear">
@@ -1686,13 +1697,13 @@
             </div>
 
             <div class="dressing-room-character-controls-category" id="dressing-room-face-settings" data-category="face">
-              <h2 class="heading-size-2">Face</h2>
+              <h2 class="heading-size-2">{% trans 'Внешность' %}</h2>
             </div>
 
             <div class="dressing-room-character-controls-category" id="dressing-room-character-settings" data-category="character">
-              <h2 class="heading-size-2">Character</h2>
+              <h2 class="heading-size-2">{% trans 'Персонаж' %}</h2>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="___race">
-                <div data-role="label">Race</div>
+                <div data-role="label">{% trans 'Раса' %}</div>
                 <div tabindex="0" data-role="control" id="select_race_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
                   <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
@@ -1700,7 +1711,7 @@
                 </div>
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="gender">
-                <div data-role="label">Gender</div>
+                <div data-role="label">{% trans 'Пол' %}</div>
                 <div tabindex="0" data-role="control" id="select_gender_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
                   <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
@@ -1708,7 +1719,7 @@
                 </div>
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="sheathed">
-                <div data-role="label">Weapons</div>
+                <div data-role="label">{% trans 'Оружие' %}</div>
                 <div tabindex="0" data-role="control" id="select_sheathed_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
                   <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
@@ -1716,7 +1727,7 @@
                 </div>
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="animation">
-                <div data-role="label">Animation</div>
+                <div data-role="label">{% trans 'Анимация' %}</div>
                 <div tabindex="0" data-role="control" data-disabled="false" id="select_animation_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
                   <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
@@ -1725,7 +1736,7 @@
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="only-item">
                 <div data-role="label">
-                  <label for="only-item">Только итем</label>
+                  <label for="only-item">{% trans 'Только итем' %}</label>
                 </div>
                 <div data-role="control">
                   <input type="checkbox" name="only-item" id="only-item" data-field-filled="true">
@@ -1734,29 +1745,29 @@
             </div>
 
             <div class="dressing-room-character-controls-general">
-              <button class="btn dress-btn btn-site fa fa-eye-slash" id="dr-toggle-ui" type="button">Hide UI</button>
-              <button class="btn dress-btn btn-site fa fa-pause" id="dr-pause" type="button">Pause</button>
-              <button class="btn dress-btn btn-site fa fa-camera" id="dr-screenshot" type="button">Screenshot</button>
+              <button class="btn dress-btn btn-site fa fa-eye-slash" id="dr-toggle-ui" type="button">{% trans 'Скрыть' %} UI</button>
+              <button class="btn dress-btn btn-site fa fa-pause" id="dr-pause" type="button">{% trans 'Пауза' %}</button>
+              <button class="btn dress-btn btn-site fa fa-camera" id="dr-screenshot" type="button">{% trans 'Скриншот' %}</button>
 
               <a _ngcontent-xpp-c94="" class="info">
-                <button class="btn dress-btn btn-site fa fa-times" id="dr-reset" type="button">Reset</button>
+                <button class="btn dress-btn btn-site fa fa-times" id="dr-reset" type="button">{% trans 'Сброс' %}</button>
                 <span _ngcontent-xpp-c94="" class="info-text"
-                  style="color: #fff; margin-top: -95px; margin-left: -180px;">{% trans 'Сбросить позицию и анимацию персонажа' %}</span>
+                  style="color: #fff; margin-top: -93px; margin-left: -200px;">{% trans 'Сбросить позицию и анимацию персонажа' %}</span>
               </a>
 
               <a _ngcontent-xpp-c94="" class="info">
-                <button class="btn dress-btn btn-site fa fa-random" id="dr-randomize" type="button">Random</button>
+                <button class="btn dress-btn btn-site fa fa-random" id="dr-randomize" type="button">{% trans 'Рандом' %}</button>
                 <span _ngcontent-xpp-c94="" class="info-text"
-                  style="color: #fff; margin-top: -95px; margin-left: -230px;">{% trans 'Сгенерировать случайные настройки персонажа' %}</span>
+                  style="color: #fff; margin-top: -93px; margin-left: -285px;">{% trans 'Сгенерировать случайные настройки персонажа' %}</span>
               </a>
 
-              <button class="btn dress-btn btn-site fa fa-list-ol" id="dr-my-saved-rooms" type="button">My Rooms</button>
+              <button class="btn dress-btn btn-site fa fa-list-ol" id="dr-my-saved-rooms" type="button">{% trans 'Комнаты' %}</button>
 
               <a _ngcontent-xpp-c94="" class="info">
                 <button class="btn dress-btn btn-site fa fa-link" id="dr-links" type="button"
-                  onclick="copy_text.copy(document.location.href);">Links</button>
+                  onclick="copy_text.copy(document.location.href);">{% trans 'Ссылка' %}</button>
                 <span _ngcontent-xpp-c94="" class="info-text"
-                  style="color: #fff; margin-top: -95px; margin-left: -75px;">{% trans 'Скопировать ссылку' %}</span>
+                  style="color: #fff; margin-top: -93px; margin-left: -75px;">{% trans 'Скопировать ссылку на комнату' %}</span>
               </a>
 
               <!-- <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
@@ -1767,11 +1778,12 @@
         </div>
 
         <script>
+          const my_saved_rooms_container = $('.my-saved-rooms-container')[0];
           const my_saved_rooms = $('.my-saved-rooms')[0];
 
           function generateRoomsListHtml() {
             if (!charData.my_saved_rooms) {
-              my_saved_rooms.textContent = 'У вас нету ни одной сохранённой комнаты.';
+              my_saved_rooms.textContent = "{% trans 'У вас нету ни одной сохранённой комнаты.' %}";
             } else {
               for (const roomData of charData.my_saved_rooms) {
 
@@ -1823,7 +1835,7 @@
 
           $('#dr-my-saved-rooms').on('click', function(event) {
             window.dressUI.saved_rooms = !window.dressUI.saved_rooms;
-            my_saved_rooms.style.display = window.dressUI.saved_rooms ? 'grid' : 'none';
+            my_saved_rooms_container.style.display = window.dressUI.saved_rooms ? 'grid' : 'none';
           });
 
 
@@ -1831,15 +1843,17 @@
             window.dressUI.game_patch = window.dressUI.game_patch === 'wrath' ? 'live' : 'wrath';
             event.target.style.backgroundImage = `url(/static/main_app/images/${window.dressUI.game_patch}.png)`;
             sendAjaxRequest();
-            warnMessageHandler(6000, `Для изменения на ${window.dressUI.game_patch} патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.`);
+            // warnMessageHandler(6000, interpolate(gettext('Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.'), [window.dressUI.game_patch.toUpperCase()]));
+            // warnMessageHandler(6000, interpolate("{% blocktrans %}Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.{% endblocktrans %}", [window.dressUI.game_patch.toUpperCase()]));
+            warnMessageHandler(6000, interpolate("{% trans 'Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.' %}", [window.dressUI.game_patch.toUpperCase()]));
           }));
 
 
           if (window.dressUI.room_creator) {
             $('.dressing-room-character-controls-general')[0].insertAdjacentHTML('beforeEnd',
               `<a _ngcontent-xpp-c94="" class="info">
-                <button class="btn dress-btn btn-site fa fa-user" id="dr-allow-edit" type="button">Allow Edit</button>
-                <span _ngcontent-xpp-c94="" class="info-text" style="color: #fff; margin-top: -95px; margin-left: -340px;"></span>
+                <button class="btn dress-btn btn-site fa fa-user" id="dr-allow-edit" type="button">{% trans 'Редакт' %}</button>
+                <span _ngcontent-xpp-c94="" class="info-text" style="color: #fff; margin-top: -93px; margin-left: -230px;"></span>
               </a>`
             );
 
@@ -1949,7 +1963,7 @@
           function clearItemSlots(slotId) {
 
             if (window.dressUI.char.only_item) {
-              warnMessageHandler(2000, 'Отключено в режиме "Только итем".');
+              warnMessageHandler(2000, "{% trans 'Отключено в режиме «Только итем».' %}");
               return false;
             };
 
@@ -1959,7 +1973,7 @@
             const index = slotIdsIsExists(slotId);
             // если текущий slotId не записан в items тогда выходим из функции
             if (index === false) {
-              warnMessageHandler(1500, 'Выбранный слот уже пуст.');
+              warnMessageHandler(1500, "{% trans 'Выбранный слот уже пуст.' %}");
               return false;
             };
             // иначе удаляем итем из items
@@ -2509,10 +2523,10 @@
 
             if (window.dressUI.show) {
               setDisplayState('none', gear_button, face_button, char_button, patch_button,
-              paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings, char_settings, my_saved_rooms);
+              paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings, char_settings, my_saved_rooms_container);
             } else {
               setDisplayState('block', gear_button, face_button, char_button, patch_button);
-              if (window.dressUI.saved_rooms) my_saved_rooms.style.display = 'grid';
+              if (window.dressUI.saved_rooms) my_saved_rooms_container.style.display = 'grid';
 
               if (window.dressUI.active_cat === 'gear') {
                 setDisplayState('block', paperdoll_left, paperdoll_right, paperdoll_bottom);
@@ -2739,7 +2753,7 @@
             // window.model.renderer.viewer.method("setCustomizationsLoadedCallback", function(t) { console.log('setCustomizationsLoadedCallback', t); });
             // window.model.renderer.screenshotCallback = function() { console.log('screenshotCallback'); };
             window.errorLoadingItemCallback = function(data) {
-              warnMessageHandler(2000, 'К сожалению не удалось загрузить итем.');
+              warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
 
               if (PREV_ITEM_ELEMS[data.slotId].previous) {
                 setItemSlots(PREV_ITEM_ELEMS[data.slotId].previous);
@@ -2801,7 +2815,7 @@
               document.documentElement.clientWidth < 800 ? window.model.renderer.viewer.setZoom(-2) : window.model.renderer.viewer.setZoom(-8);
             });
             window.errorLoadingItemCallback = function(data) {
-              warnMessageHandler(2000, 'К сожалению не удалось загрузить итем.');
+              warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
               if (data.slotId) clearItemSlotIcon(data.slotId);
             };
           };
@@ -2825,11 +2839,11 @@
               for (const _ in dc_face_data.fields) dc_face_data.max_len.push(0);
               refreshAlphaForExtremeButtonPosition(dc_face_data);
 
-              warnMessageHandler(4000, 'Теперь вы можете просматривать итемы без персонажа.');
+              warnMessageHandler(4000, "{% trans 'Теперь вы можете просматривать итемы без персонажа.' %}");
               updateItemSlotIcon(true);
               window.createItemModel(window.dressUI.char.only_item_data);
             } else {
-              warnMessageHandler(4000, 'Теперь вы можете просматривать итемы на персонаже.');
+              warnMessageHandler(4000, "{% trans 'Теперь вы можете просматривать итемы на персонаже.' %}");
               updateItemSlotIcon(false);
               window.createCharModel();
             };
