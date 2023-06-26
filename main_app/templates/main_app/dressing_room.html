@@ -1770,48 +1770,52 @@
           const my_saved_rooms = $('.my-saved-rooms')[0];
 
           function generateRoomsListHtml() {
-            for (const roomData of charData.my_saved_rooms) {
+            if (!charData.my_saved_rooms) {
+              my_saved_rooms.textContent = 'У вас нету ни одной сохранённой комнаты.';
+            } else {
+              for (const roomData of charData.my_saved_rooms) {
 
-              const element_char_img = document.createElement('img');
-              element_char_img.setAttribute('src',
-              `${DEFAULT_ICON_URL}race_${RACES[roomData.race].toLowerCase()}_${GENDERS[roomData.gender].toLowerCase()}.jpg`);
-              element_char_img.classList.add('rooms-list-img');
+                const element_char_img = document.createElement('img');
+                element_char_img.setAttribute('src',
+                `${DEFAULT_ICON_URL}race_${RACES[roomData.race].toLowerCase()}_${GENDERS[roomData.gender].toLowerCase()}.jpg`);
+                element_char_img.classList.add('rooms-list-img');
 
-              const element_patch_img = document.createElement('img');
-              element_patch_img.setAttribute('src', `/static/main_app/images/${roomData.game_patch}.png`);
-              element_patch_img.classList.add('rooms-list-img');
-              element_patch_img.textContent = roomData.game_patch;
+                const element_patch_img = document.createElement('img');
+                element_patch_img.setAttribute('src', `/static/main_app/images/${roomData.game_patch}.png`);
+                element_patch_img.classList.add('rooms-list-img');
+                element_patch_img.textContent = roomData.game_patch;
 
-              const element_user_icon = document.createElement('div');
-              element_user_icon.classList.add('fa');
-              roomData.allow_edit ? element_user_icon.classList.add('fa-users') : element_user_icon.classList.add('fa-user');
-              element_user_icon.style.display = 'inline-block';
-              element_user_icon.style.fontSize = '23px';
-              element_user_icon.style.marginRight = '5px';
+                const element_user_icon = document.createElement('div');
+                element_user_icon.classList.add('fa');
+                roomData.allow_edit ? element_user_icon.classList.add('fa-users') : element_user_icon.classList.add('fa-user');
+                element_user_icon.style.display = 'inline-block';
+                element_user_icon.style.fontSize = '23px';
+                element_user_icon.style.marginRight = '5px';
 
-              const element_span = document.createElement('span');
-              element_span.textContent = ' ' + roomData.last_update_time;
-              element_span.style.fontSize = '15px';
+                const element_span = document.createElement('span');
+                element_span.textContent = ' ' + roomData.last_update_time;
+                element_span.style.fontSize = '15px';
 
-              const element_calendar_icon = document.createElement('div');
-              element_calendar_icon.classList.add('fa', 'fa-calendar');
-              element_calendar_icon.style.display = 'inline-block';
-              element_calendar_icon.style.fontSize = '21px';
-              element_calendar_icon.style.position = 'relative';
-              element_calendar_icon.style.bottom = '1px';
-              element_calendar_icon.appendChild(element_span);
+                const element_calendar_icon = document.createElement('div');
+                element_calendar_icon.classList.add('fa', 'fa-calendar');
+                element_calendar_icon.style.display = 'inline-block';
+                element_calendar_icon.style.fontSize = '21px';
+                element_calendar_icon.style.position = 'relative';
+                element_calendar_icon.style.bottom = '1px';
+                element_calendar_icon.appendChild(element_span);
 
-              const element_a = document.createElement('a');
-              // element_a.setAttribute('href', window.location.href.split('/').slice(0, -2).join('/') + '/' + roomData.room_id);
-              element_a.setAttribute('href', window.location.origin + "{% url 'dressing_room' %}" + roomData.room_id);
-              element_a.setAttribute('target', '_BLANK');
-              element_a.classList.add('rooms-list-link');
-              element_a.appendChild(element_char_img);
-              element_a.appendChild(element_patch_img);
-              element_a.appendChild(element_user_icon);
-              element_a.appendChild(element_calendar_icon);
+                const element_a = document.createElement('a');
+                // element_a.setAttribute('href', window.location.href.split('/').slice(0, -2).join('/') + '/' + roomData.room_id);
+                element_a.setAttribute('href', window.location.origin + "{% url 'dressing_room' %}" + roomData.room_id);
+                element_a.setAttribute('target', '_BLANK');
+                element_a.classList.add('rooms-list-link');
+                element_a.appendChild(element_char_img);
+                element_a.appendChild(element_patch_img);
+                element_a.appendChild(element_user_icon);
+                element_a.appendChild(element_calendar_icon);
 
-              my_saved_rooms.appendChild(element_a);
+                my_saved_rooms.appendChild(element_a);
+              };
             };
           };
           generateRoomsListHtml();
