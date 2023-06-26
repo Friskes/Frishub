@@ -7,27 +7,6 @@
 <script id="viewer"></script>
 
 <script>
-  let gamePatch = JSON.parse(localStorage.getItem('game_patch'));
-  if (!gamePatch || gamePatch == 'wrath') { window.GAME_PATCH = 'wrath'; }
-  else if (gamePatch == 'live') {
-    window.GAME_PATCH = gamePatch;
-    $(document).ready(() => $('#change_game_patch')[0].style.backgroundImage = 'url(/static/main_app/images/live.png)');
-  };
-
-  const LOCAL_VIEWER = `/static/main_app/javascript/wow-model-viewer/viewer_${window.GAME_PATCH}.js`;
-  const LOCAL_VIEWER_MIN = `/static/main_app/javascript/wow-model-viewer/viewer_${window.GAME_PATCH}.min.js`;
-  const UNLOCAL_VIEWR_MIN = `https://wow.zamimg.com/modelviewer/${window.GAME_PATCH}/viewer/viewer.min.js`;
-  $('#viewer')[0].src = LOCAL_VIEWER_MIN;
-
-  const WH_TOOLTIP_LIVE = ''; // актуал
-  const WH_TOOLTIP_WOTLK = 'wotlk/';
-  const WH_TOOLTIP_URL = `https://www.wowhead.com/${WH_TOOLTIP_WOTLK}{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}item=`;
-
-  const DEFAULT_ICON_URL = 'https://wow.zamimg.com/images/wow/icons/large/'; // small // medium // large
-  // const DEFAULT_ICON_URL = `https://render-classic-us.worldofwarcraft.com/icons/56/`; // 18 // 36 // 56
-</script>
-
-<script>
   const RACES = {
     1: 'Human',
     2: 'Orc',
@@ -73,28 +52,102 @@
     7: 'heirloom-wow'   // (blizzard blue) фамильные
   };
 
-  // Default model options
-  let model_opts = {
-    "race": 1,
-    "gender": 1,
-    "items": [
-      // 'Head': 1,
-      // 'Shoulder': 3,
-      // 'Cloak': 16,
-      // 'Chest': 5,
-      // 'Shirt': 4,
-      // 'Tabard': 19,
-      // 'Wrist': 9,
-      // 'Hands': 10,
-      // 'Waist': 6,
-      // 'Legs': 7,
-      // 'Feet': 8,
-      // 'Оружия ближнего боя': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
-      // 'все дальнобойные кроме луков': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
-      // 'только луки': 15, 22, 23 (лев. рука)
-    ],
-    sheathMain: -1,
-    sheathOff: -1,
+  let PREV_ITEM_ELEMS = {1:{},3:{},16:{},5:{},4:{},19:{},9:{},10:{},6:{},7:{},8:{},21:{},22:{},23:{}};
+
+
+  function getCharDataFromContext() {
+    let character_data = "{{ character_data }}";
+    if (!character_data) return null;
+
+    character_data = JSON.parse(character_data.replace(/&quot;/g, '"'));
+
+    if (character_data.items === "") {
+      character_data.items = [];
+    } else {
+      const items = character_data.items.split(',');
+      character_data.items = [];
+
+      for (let i=0; i < items.length; i=i+3) {
+        character_data.items.push([parseInt(items[i]), parseInt(items[i+1]), parseInt(items[i+2])]);
+      };
+    };
+
+    character_data.face = character_data.face === ""
+    ? []
+    : character_data.face.split(',').map(x => parseInt(x));
+
+    return character_data;
+  };
+  const charData = getCharDataFromContext();
+
+
+  window.GAME_PATCH = charData.game_patch; // для CONTENT_PATH в model_viewer_utils
+
+  // Actual model and UI parameters
+  window.dressUI = {
+    game_patch: charData.game_patch,
+    room_creator: charData.room_creator,
+    allow_edit: charData.allow_edit,
+    // Default model options
+    model_opts: {
+      race: charData.race,
+      gender: charData.gender,
+      items: charData.items,
+        // 'Head': 1,
+        // 'Shoulder': 3,
+        // 'Cloak': 16,
+        // 'Chest': 5,
+        // 'Shirt': 4,
+        // 'Tabard': 19,
+        // 'Wrist': 9,
+        // 'Hands': 10,
+        // 'Waist': 6,
+        // 'Legs': 7,
+        // 'Feet': 8,
+        // 'Оружия ближнего боя': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
+        // 'все дальнобойные кроме луков': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
+        // 'только луки': 15, 22, 23 (лев. рука)
+      sheathMain: -1,
+      sheathOff: -1
+    },
+    active_cat: 'gear',
+    gear: {
+      items_menu: {
+        slot1:  {name: 'Head',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot3:  {name: 'Shoulder', quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot16: {name: 'Back',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth"]},
+        slot5:  {name: 'Chest',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot4:  {name: 'Shirt',    quality: 4, index: 0, type: 'Miscellaneous', available_types: ["Miscellaneous"]},
+        slot19: {name: 'Tabard',   quality: 4, index: 0, type: 'Miscellaneous', available_types: ["Miscellaneous"]},
+        slot9:  {name: 'Wrist',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot10: {name: 'Hands',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot6:  {name: 'Waist',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot7:  {name: 'Legs',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate"]},
+        slot8:  {name: 'Feet',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
+        slot21: {name: 'MainHand', quality: 4, index: 0, type: 'Axe', available_types: ["Axe", "Sword", "Mace", "Dagger", "Fist Weapon", "Staff", "Polearm", "Fishing Pole", "Exotic", "Miscellaneous"]},
+        slot22: {name: 'OffHand',  quality: 4, index: 0, type: 'Axe', available_types: ["Axe", "Sword", "Mace", "Dagger", "Fist Weapon", "Shield", "Miscellaneous"]},
+        slot23: {name: 'Ranged',   quality: 4, index: 0, type: 'Bow', available_types: ["Bow", "Gun", "Wand", "Crossbow", "Thrown"]}
+      }
+    },
+    char: {
+      race_id: charData.race,
+      gender_id: charData.gender,
+      anim: 0,
+      default_anim: 0,
+      sheath: 0,
+      sheath_opts: [],
+      only_item: false,
+      only_item_data: {type: 1, id: 58187, itemId: 45176, slotId: 21} // меч из пенопласта
+    },
+    face: {
+      id: '#dressing-room-face-settings',
+      key: 'face',
+      fields: [],
+      max_len: [],
+      min_len: [],
+      current: charData.face,
+      have_text_opt: []
+    }
   };
 
 
@@ -116,63 +169,144 @@
 
   function slotIdsIsExists(...slotIds) {
     for (const slotId of slotIds) {
-      for (const i in model_opts.items) {
-        if (model_opts.items[i][0] == slotId) return i;
+      for (const i in window.dressUI.model_opts.items) {
+        if (window.dressUI.model_opts.items[i][0] == slotId) return i;
       };
     };
     return false;
   };
+
   function updateSheathInfo() {
     if (slotIdsIsExists(22, 23) === false) { window.dressUI.char.sheath_opts = [[-1, -1], [1, 1], [2, 1]]; }
     else { window.dressUI.char.sheath_opts = [[-1, -1], [1, 1], [1, 3], [3, 1]]; };
   };
-
-
-  // Actual model and UI parameters
-  window.dressUI = {
-    active_cat: 'gear',
-    gear: {
-      items_menu: {
-        slot1:  {name: 'Head',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot3:  {name: 'Shoulder', quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot16: {name: 'Back',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth"]},
-        slot5:  {name: 'Chest',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot4:  {name: 'Shirt',    quality: 4, index: 0, type: 'Miscellaneous', available_types: ["Miscellaneous"]},
-        slot19: {name: 'Tabard',   quality: 4, index: 0, type: 'Miscellaneous', available_types: ["Miscellaneous"]},
-        slot9:  {name: 'Wrist',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot10: {name: 'Hands',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot6:  {name: 'Waist',    quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot7:  {name: 'Legs',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate"]},
-        slot8:  {name: 'Feet',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
-        slot21: {name: 'MainHand', quality: 4, index: 0, type: 'Axe', available_types: ["Axe", "Sword", "Mace", "Dagger", "Fist Weapon", "Staff", "Polearm", "Fishing Pole", "Exotic", "Miscellaneous"]},
-        slot22: {name: 'OffHand',  quality: 4, index: 0, type: 'Axe', available_types: ["Axe", "Sword", "Mace", "Dagger", "Fist Weapon", "Shield", "Miscellaneous"]},
-        slot23: {name: 'Ranged',   quality: 4, index: 0, type: 'Bow', available_types: ["Bow", "Gun", "Wand", "Crossbow", "Thrown"]}
-      }
-    },
-    char: {
-      race_id: model_opts.race,
-      gender_id: model_opts.gender,
-      anim: 0,
-      default_anim: 0,
-      sheath: 0,
-      sheath_opts: [],
-      only_item: false,
-      only_item_data: {type: 1, id: 58187, itemId: 45176, slotId: 21} // меч из пенопласта
-    },
-    face: {
-      id: '#dressing-room-face-settings',
-      key: 'face',
-      fields: [],
-      max_len: [],
-      min_len: [],
-      current: [],
-      have_text_opt: []
-    },
-  };
-
   updateSheathInfo();
 
-  let PREV_ITEM_ELEMS = {1:{},3:{},16:{},5:{},4:{},19:{},9:{},10:{},6:{},7:{},8:{},21:{},22:{},23:{}};
+
+  const modelIsLoaded = function(func, ignoreUserRights=false) {
+    return function(...args) {
+      // проверяет есть ли у пользователя разрешение на редактирование персонажа
+      if (!ignoreUserRights && !window.dressUI.room_creator && !window.dressUI.allow_edit) {
+        warnMessageHandler(3000, 'Создатель этой комнаты запретил изменение персонажа другими пользователями.');
+        return false;
+      // проверяет, была ли создана модель.
+      } else if (!window.model) {
+        warnMessageHandler(4000, 'Ошибка, модель не была создана.');
+        return false;
+      // проверяет, полностью ли загружена модель.
+      } else if (!window.model.renderer || !window.model.renderer.models[0].modelIsLoaded) {
+      // } else if (!window.model.renderer.viewer.method("isLoaded")) {
+        warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки модели.');
+        return false;
+      } else if (!window.itemsData) {
+        warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки базы данных.');
+        return false;
+      };
+      func.apply(this, args);
+    };
+  };
+
+
+  if (window.dressUI.game_patch === 'live') {
+    $(document).ready(() => $('#change_game_patch')[0].style.backgroundImage = `url(/static/main_app/images/${window.dressUI.game_patch}.png)`);
+  };
+
+  const LOCAL_VIEWER = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.js`;
+  const LOCAL_VIEWER_MIN = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.min.js`;
+  const UNLOCAL_VIEWER_MIN = `https://wow.zamimg.com/modelviewer/${window.dressUI.game_patch}/viewer/viewer.min.js`;
+  document.querySelector('#viewer').src = LOCAL_VIEWER_MIN;
+
+  const WH_TOOLTIP_LIVE = ''; // актуал
+  const WH_TOOLTIP_WOTLK = 'wotlk/';
+  const WH_TOOLTIP_URL = `https://www.wowhead.com/${WH_TOOLTIP_WOTLK}{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}item=`;
+
+  const DEFAULT_ICON_URL = 'https://wow.zamimg.com/images/wow/icons/large/'; // small // medium // large
+  // const DEFAULT_ICON_URL = `https://render-classic-us.worldofwarcraft.com/icons/56/`; // 18 // 36 // 56
+
+
+  const csrftoken = Cookies.get('csrftoken');
+  const sendAjaxRequest = function() {
+    $('.save-char-opts-icon').css('display', 'block');
+
+    const data = {
+      allow_edit: window.dressUI.allow_edit,
+      game_patch: window.dressUI.game_patch,
+      race: window.dressUI.model_opts.race,
+      gender: window.dressUI.model_opts.gender,
+      items: window.dressUI.model_opts.items.join(),
+      face: window.dressUI.face.current.join()
+    };
+
+    $.ajax({
+      type: 'POST',
+      dataType: 'JSON',
+      url: "{% url 'unique_dressing_room' room_id %}", // window.location.pathname
+      data: JSON.stringify(data),
+      headers: {'X-CSRFToken': csrftoken},
+
+      success: function(data, textStatus, jqXHR) {
+        // console.log(data);
+        setTimeout(() => $('.save-char-opts-icon').css('display', 'none'), 500);
+      },
+
+      error: function (jqXHR, textStatus, errorThrown) {
+        $('.save-char-opts-icon').css('display', 'none');
+        warnMessageHandler(4000, `Ой, что-то пошло не так.. status: ${jqXHR.status} ${errorThrown}`);
+      }
+    });
+  };
+  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 100);
+
+
+  const IGNORED_WRAPPED_PROPS = [
+    'gear', 'char'
+  ];
+  const IGNORED_PROPS = [
+    'active_cat', 'sheathMain', 'sheathOff', 'AnimIsPaused', 'saved_rooms', 'show',
+    'game_patch' // игнорирую изменение свойства, вручную отправляю Ajax Request без задержки из хендлера
+  ];
+  // https://learn.javascript.ru/proxy
+  function wrapDressUI(target) {
+    const handler = {
+
+      // get: function(target, property) {
+      //   const value = target[property];
+      //   return typeof value === "object" ? new Proxy(value, handler) : value;
+      // },
+
+      // get: function(target, property) {
+      //   if (typeof target[property] === 'object' && target[property] !== null) {
+      //     return new Proxy(target[property], handler);
+      //   } else {
+      //     return target[property];
+      //   };
+      // },
+
+      get: function(target, property) {
+        if (property === 'isProxy') return true;
+
+        const value = target[property];
+
+        if (typeof value === 'undefined' || value === null) return;
+
+        if (IGNORED_WRAPPED_PROPS.indexOf(property) === -1) {
+          if (!value.isProxy && typeof value === 'object') target[property] = new Proxy(value, handler);
+        };
+        return target[property];
+      },
+
+      set: function(target, property, newValue) {
+        target[property] = newValue;
+
+        if (IGNORED_PROPS.indexOf(property) === -1) {
+          if (window.dressUI.room_creator || window.dressUI.allow_edit) debounce_sendAjaxRequest();
+        };
+        return true;
+      }
+    };
+    return new Proxy(target, handler);
+  };
+  window.dressUI = wrapDressUI(window.dressUI);
 </script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'main_app/css/dressing-room.css' %}">
@@ -539,6 +673,76 @@
   .fa-check-square:before {
     content: "\f14a"
   }
+
+  .fa-user:before {
+    content: "\f007"
+  }
+  .fa-users:before {
+    content: "\f0c0"
+  }
+
+  .fa-external-link:before {
+    content: "\f08e"
+  }
+  .fa-external-link-square:before {
+    content: "\f14c"
+  }
+
+  .fa-calendar:before {
+    content: "\f073"
+  }
+  .fa-calendar-o:before {
+    content: "\f133"
+  }
+
+  .fa-spinner:before {
+    content: "\f110"
+  }
+
+  .fa-list-ul:before {
+    content: "\f0ca"
+  }
+  .fa-list-ol:before {
+    content: "\f0cb"
+  }
+
+  .fa-database:before {
+    content: "\f1c0"
+  }
+  .fa-cloud-upload:before {
+    content: "\f0ee"
+  }
+  .fa-cog:before {
+    content: "\f013"
+  }
+  .fa-refresh:before {
+    content: "\f021"
+  }
+
+  .fa-spin {
+    -webkit-animation: faspin 1s infinite steps(99);
+    animation: faspin 1s infinite steps(99);
+  }
+  @keyframes faspin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  .save-char-opts-icon {
+    display: none;
+    position: absolute;
+    top: -26px;
+    left: 0;
+    right: 0;
+    font-size: 20px;
+    opacity: 0.5;
+  }
 </style>
 
 <style>
@@ -554,7 +758,7 @@
     width: auto;
     margin-left: 3%;
   }
-  .table-responsive {
+  .items-menu-table {
     max-height: 173px;
     display: grid;
   }
@@ -620,13 +824,14 @@
 
   /* Если мы на мобильном */
   @media screen and (max-width: 800px) {
-    .table-responsive {
+    .items-menu-table {
       max-height: 159px;
     }
 
     .items-menu {
       min-width: 318px;
       margin-top: 0px;
+      /* width: 100vw; */
     }
 
     .items-menu-left-up {
@@ -782,18 +987,51 @@
   .dressing-room-character-controls-category[data-category="character"] {
     user-select: none;
   }
+
+  .my-saved-rooms {
+    /* display: grid; */
+    display: none;
+    margin: auto;
+    max-height: 145px;
+    max-width: max-content;
+    position: relative;
+    bottom: 30px;
+  }
+  .rooms-list-link {
+    text-align: left;
+    margin-right: 5px;
+    color: #fff;
+  }
+  .rooms-list-img {
+    display: inline-block;
+    width: 21px;
+    padding-bottom: 8px;
+    margin-right: 5px;
+  }
+  .rooms-list-link:hover {
+    color: #fff;
+    opacity: 0.65;
+  }
+  .rooms-list-link:hover .rooms-list-img {
+    opacity: 0.65;
+  }
 </style>
 {% endblock %}
 
 {% block body %}
 <app-dressing-room _nghost-gox-c37="" style="font-size: 14.5px;">
   <div _ngcontent-gox-c37="" class="page-size bg-check p-2 p-md-5 mb-5" style="overflow: hidden;">
-    <div _ngcontent-gox-c37="" class="m-auto text-center" style="padding-top: 60px; padding-bottom: 60px;">
+    <div _ngcontent-gox-c37="" class="m-auto text-center" style="padding-top: 70px; padding-bottom: 70px;">
       <div _ngcontent-gox-c37="" class="mb-2">
 
         <div id="dressing-room" class="dressing-room" data-loaded="true">
+
+          <div class="table-responsive my-saved-rooms"></div>
+
           <div class="dressing-room-character" data-class="1" data-race="10" data-npc-race="false"
             data-gender="0" data-gender-restriction="no-restriction" data-category="gear">
+
+            <div class="fa fa-refresh fa-spin save-char-opts-icon"></div>
 
             <div class="paperdoll" id="dressing-room-paperdoll" data-icon-size="large" data-separate-shoulders="false">
 
@@ -822,7 +1060,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(1);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -854,7 +1092,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(2);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -886,7 +1124,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(3);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -918,7 +1156,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(16);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -950,7 +1188,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(5);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -982,7 +1220,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(4);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1014,7 +1252,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(19);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1046,7 +1284,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(9);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1081,7 +1319,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(10);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1113,7 +1351,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(6);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1145,7 +1383,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(7);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1177,7 +1415,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(8);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1209,7 +1447,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(11);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1241,7 +1479,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(12);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1273,7 +1511,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(13);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1305,7 +1543,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(14);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1341,7 +1579,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(21);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1374,7 +1612,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(22);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1407,7 +1645,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive"></div>
+                    <div class="table-responsive items-menu-table"></div>
                     <div class="d-block d-md-block mt-2">
                       <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots(23);">{% trans 'Очистить слот' %}</button>
                       <button class="btn-custom btn-close-items-menu-right"
@@ -1496,8 +1734,23 @@
             </div>
 
             <div class="dressing-room-character-controls-general">
-              <button class="btn dress-btn btn-site fa fa-times" id="dr-reset" type="button">Reset</button>
               <button class="btn dress-btn btn-site fa fa-eye-slash" id="dr-toggle-ui" type="button">Hide UI</button>
+              <button class="btn dress-btn btn-site fa fa-pause" id="dr-pause" type="button">Pause</button>
+              <button class="btn dress-btn btn-site fa fa-camera" id="dr-screenshot" type="button">Screenshot</button>
+
+              <a _ngcontent-xpp-c94="" class="info">
+                <button class="btn dress-btn btn-site fa fa-times" id="dr-reset" type="button">Reset</button>
+                <span _ngcontent-xpp-c94="" class="info-text"
+                  style="color: #fff; margin-top: -95px; margin-left: -180px;">{% trans 'Сбросить позицию и анимацию персонажа' %}</span>
+              </a>
+
+              <a _ngcontent-xpp-c94="" class="info">
+                <button class="btn dress-btn btn-site fa fa-random" id="dr-randomize" type="button">Random</button>
+                <span _ngcontent-xpp-c94="" class="info-text"
+                  style="color: #fff; margin-top: -95px; margin-left: -230px;">{% trans 'Сгенерировать случайные настройки персонажа' %}</span>
+              </a>
+
+              <button class="btn dress-btn btn-site fa fa-list-ol" id="dr-my-saved-rooms" type="button">My Rooms</button>
 
               <a _ngcontent-xpp-c94="" class="info">
                 <button class="btn dress-btn btn-site fa fa-link" id="dr-links" type="button"
@@ -1506,49 +1759,104 @@
                   style="color: #fff; margin-top: -95px; margin-left: -75px;">{% trans 'Скопировать ссылку' %}</span>
               </a>
 
-              <button class="btn dress-btn btn-site fa fa-camera" id="dr-screenshot" type="button">Screenshot</button>
-              <button class="btn dress-btn btn-site fa fa-pause" id="dr-pause" type="button">Pause</button>
-              <div>
-                <button class="btn dress-btn btn-site fa fa-random" id="dr-randomize" type="button">Random</button>
-                <!-- <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
-                <button class="btn dress-btn btn-site fa fa-repeat" id="dr-redo" type="button" disabled="">Redo</button> -->
-              </div>
+              <!-- <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
+              <button class="btn dress-btn btn-site fa fa-repeat" id="dr-redo" type="button" disabled="">Redo</button> -->
             </div>
 
           </div>
         </div>
 
         <script>
-          $('#change_game_patch').on('click', function(event) {
-            if (!gamePatch || gamePatch == 'wrath') { gamePatch = 'live'; }
-            else if (gamePatch == 'live') { gamePatch = 'wrath'; };
-            event.target.style.backgroundImage =
-            `url(/static/main_app/images/${gamePatch}.png)`;
-            localStorage.setItem('game_patch', JSON.stringify(gamePatch));
-            warnMessageHandler(6000, `Для изменения на ${gamePatch} патч, пожалуйста, перезагрузите страницу.`);
-            // location.reload();
-            // location.reload(true);
-          });
-        </script>
+          const my_saved_rooms = $('.my-saved-rooms')[0];
 
-        <script>
-          const modelIsLoaded = function(func) {
-            return function(...args) {
-              // проверяет, была ли создана модель.
-              if (!window.model) {
-                warnMessageHandler(4000, 'Ошибка, модель не была создана.');
-                return false;
-              // проверяет, полностью ли загружена модель.
-              } else if (!window.model.renderer || !window.model.renderer.models[0].modelIsLoaded) {
-              // } else if (!window.model.renderer.viewer.method("isLoaded")) {
-                warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки модели.');
-                return false;
-              } else if (!window.itemsData) {
-                warnMessageHandler(2000, 'Пожалуйста, дождитесь полной загрузки базы данных.');
-                return false;
-              };
-              func.apply(this, args);
+          function generateRoomsListHtml() {
+            for (const roomData of charData.my_saved_rooms) {
+
+              const element_char_img = document.createElement('img');
+              element_char_img.setAttribute('src',
+              `${DEFAULT_ICON_URL}race_${RACES[roomData.race].toLowerCase()}_${GENDERS[roomData.gender].toLowerCase()}.jpg`);
+              element_char_img.classList.add('rooms-list-img');
+
+              const element_patch_img = document.createElement('img');
+              element_patch_img.setAttribute('src', `/static/main_app/images/${roomData.game_patch}.png`);
+              element_patch_img.classList.add('rooms-list-img');
+              element_patch_img.textContent = roomData.game_patch;
+
+              const element_user_icon = document.createElement('div');
+              element_user_icon.classList.add('fa');
+              roomData.allow_edit ? element_user_icon.classList.add('fa-users') : element_user_icon.classList.add('fa-user');
+              element_user_icon.style.display = 'inline-block';
+              element_user_icon.style.fontSize = '23px';
+              element_user_icon.style.marginRight = '5px';
+
+              const element_span = document.createElement('span');
+              element_span.textContent = ' ' + roomData.last_update_time;
+              element_span.style.fontSize = '15px';
+
+              const element_calendar_icon = document.createElement('div');
+              element_calendar_icon.classList.add('fa', 'fa-calendar');
+              element_calendar_icon.style.display = 'inline-block';
+              element_calendar_icon.style.fontSize = '21px';
+              element_calendar_icon.style.position = 'relative';
+              element_calendar_icon.style.bottom = '1px';
+              element_calendar_icon.appendChild(element_span);
+
+              const element_a = document.createElement('a');
+              // element_a.setAttribute('href', window.location.href.split('/').slice(0, -2).join('/') + '/' + roomData.room_id);
+              element_a.setAttribute('href', window.location.origin + "{% url 'dressing_room' %}" + roomData.room_id);
+              element_a.setAttribute('target', '_BLANK');
+              element_a.classList.add('rooms-list-link');
+              element_a.appendChild(element_char_img);
+              element_a.appendChild(element_patch_img);
+              element_a.appendChild(element_user_icon);
+              element_a.appendChild(element_calendar_icon);
+
+              my_saved_rooms.appendChild(element_a);
             };
+          };
+          generateRoomsListHtml();
+
+
+          $('#dr-my-saved-rooms').on('click', function(event) {
+            window.dressUI.saved_rooms = !window.dressUI.saved_rooms;
+            my_saved_rooms.style.display = window.dressUI.saved_rooms ? 'grid' : 'none';
+          });
+
+
+          $('#change_game_patch').on('click', modelIsLoaded(function(event) {
+            window.dressUI.game_patch = window.dressUI.game_patch === 'wrath' ? 'live' : 'wrath';
+            event.target.style.backgroundImage = `url(/static/main_app/images/${window.dressUI.game_patch}.png)`;
+            sendAjaxRequest();
+            warnMessageHandler(6000, `Для изменения на ${window.dressUI.game_patch} патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.`);
+          }));
+
+
+          if (window.dressUI.room_creator) {
+            $('.dressing-room-character-controls-general')[0].insertAdjacentHTML('beforeEnd',
+              `<a _ngcontent-xpp-c94="" class="info">
+                <button class="btn dress-btn btn-site fa fa-user" id="dr-allow-edit" type="button">Allow Edit</button>
+                <span _ngcontent-xpp-c94="" class="info-text" style="color: #fff; margin-top: -95px; margin-left: -340px;"></span>
+              </a>`
+            );
+
+            const dr_allow_edit = $('#dr-allow-edit');
+            dr_allow_edit.on('click', function(event) {
+              window.dressUI.allow_edit = !window.dressUI.allow_edit;
+              setAllowEditIcon();
+            });
+
+            function setAllowEditIcon() {
+              if (window.dressUI.allow_edit) {
+                dr_allow_edit[0].classList.remove('fa-user');
+                dr_allow_edit[0].classList.add('fa-users');
+                dr_allow_edit[0].parentElement.children[1].textContent = "{% trans 'Запретить редактирование другим пользователям' %}";
+              } else {
+                dr_allow_edit[0].classList.remove('fa-users');
+                dr_allow_edit[0].classList.add('fa-user');
+                dr_allow_edit[0].parentElement.children[1].textContent = "{% trans 'Разрешить редактирование другим пользователям' %}";
+              };
+            };
+            setAllowEditIcon();
           };
         </script>
 
@@ -1571,6 +1879,7 @@
               }
             );
           };
+          const debounce_warnMessageHandler = debounce(warnMessageHandler, 4);
         </script>
 
         <script>
@@ -1640,7 +1949,7 @@
               return false;
             };
 
-            // console.log('clearItemSlots_before_clearSlots -> model_opts.items:', ...model_opts.items);
+            // console.log('clearItemSlots_before_clearSlots -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
             // console.log('clearItemSlots_before_clearSlots -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
 
             const index = slotIdsIsExists(slotId);
@@ -1650,7 +1959,7 @@
               return false;
             };
             // иначе удаляем итем из items
-            model_opts.items.splice(index, 1);
+            window.dressUI.model_opts.items.splice(index, 1);
 
             clearItemSlotIcon(slotId);
 
@@ -1662,7 +1971,7 @@
 
             if (slotId == 21 || slotId == 22 || slotId == 23) updateSheathInfo();
 
-            // console.log('clearItemSlots_after_clearSlots -> model_opts.items:', ...model_opts.items);
+            // console.log('clearItemSlots_after_clearSlots -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
             // console.log('clearItemSlots_after_clearSlots -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
           };
 
@@ -1679,7 +1988,7 @@
               return false;
             };
 
-            // console.log('setItemSlots_before_setItems -> model_opts.items:', ...model_opts.items);
+            // console.log('setItemSlots_before_setItems -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
             // console.log('setItemSlots_before_setItems -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
 
             if (!window.dressUI.char.only_item) {
@@ -1688,16 +1997,16 @@
               // если текущий slotId уже записан в items тогда
               if (index !== false) {
                 // если текущий displayId равен записаному в items тогда выходим из функции
-                if (model_opts.items[index][1] == displayId) {
+                if (window.dressUI.model_opts.items[index][1] == displayId) {
                   // warnMessageHandler(1500, 'Надетый и выбранный итемы имеют одинаковые модели.');
                   return false;
                 };
                 // иначе обновляем displayId на новый
-                model_opts.items[index][1] = displayId;
-                model_opts.items[index][2] = itemId; // так же обновляем itemId
+                window.dressUI.model_opts.items[index][1] = displayId;
+                window.dressUI.model_opts.items[index][2] = itemId; // так же обновляем itemId
               // иначе добавляем новый итем в items
               } else {
-                model_opts.items.push([slotId, displayId, itemId]);
+                window.dressUI.model_opts.items.push([slotId, displayId, itemId]);
               };
 
               switch (slotId) {
@@ -1746,7 +2055,7 @@
 
               if (slotId == 21 || slotId == 22 || slotId == 23) updateSheathInfo();
 
-              // console.log('setItemSlots_after_setItems -> model_opts.items:', ...model_opts.items);
+              // console.log('setItemSlots_after_setItems -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
               // console.log('setItemSlots_after_setItems -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
             };
           };
@@ -1765,8 +2074,8 @@
 
 
           function slot_switcher(slotId, items_menu) {
-            window.dressUI.gear[`slot${slotId}`] = !window.dressUI.gear[`slot${slotId}`];
-            window.dressUI.gear[`slot${slotId}`] ? $(items_menu).css('display', 'block') : $(items_menu).css('display', 'none');
+            window.dressUI.gear.items_menu[`slot${slotId}`].opened = !window.dressUI.gear.items_menu[`slot${slotId}`].opened;
+            window.dressUI.gear.items_menu[`slot${slotId}`].opened ? $(items_menu).css('display', 'block') : $(items_menu).css('display', 'none');
           };
 
 
@@ -1915,8 +2224,6 @@
             updateSheathText();
             $('#select_animation_btn').find('a')[1].textContent =
             window.dressUI.char.anims_list[window.dressUI.char.anim];
-
-            // updateFaceFields(false);
           };
         </script>
 
@@ -1935,9 +2242,10 @@
               RACES[window.dressUI.char.race_id] === 'Troll'
               ? window.dressUI.char.race_id += 2 : window.dressUI.char.race_id += 1;
             };
-            model_opts.race = window.dressUI.char.race_id;
+            window.dressUI.model_opts.race = window.dressUI.char.race_id;
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.race_id, 11, 1);
             event.target.parentElement.children[1].textContent = RACES[window.dressUI.char.race_id];
+            window.dressUI.face.current = [];
             window.createCharModel();
           }));
 
@@ -1952,9 +2260,10 @@
 
               window.dressUI.char.gender_id += 1;
             };
-            model_opts.gender = window.dressUI.char.gender_id;
+            window.dressUI.model_opts.gender = window.dressUI.char.gender_id;
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.gender_id, 1);
             event.target.parentElement.children[1].textContent = GENDERS[window.dressUI.char.gender_id];
+            window.dressUI.face.current = [];
             window.createCharModel();
           }));
 
@@ -1977,7 +2286,7 @@
             window.dressUI.char.sheath_opts[window.dressUI.char.sheath]);
             updateSheathText();
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.sheath, sheath_opts_len);
-          }));
+          }, true));
 
 
           function updateSheathText() {
@@ -1986,8 +2295,8 @@
             } else {
               $('#select_sheathed_btn').find('a')[1].textContent = `Sheathed-${window.dressUI.char.sheath}`;
             };
-            model_opts.sheathMain = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][0];
-            model_opts.sheathOff = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][1];
+            window.dressUI.model_opts.sheathMain = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][0];
+            window.dressUI.model_opts.sheathOff = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][1];
           };
 
 
@@ -2007,7 +2316,7 @@
             };
             setAnim();
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.anim, anims_list_len);
-          }));
+          }, true));
 
 
           function setAnim() {
@@ -2067,7 +2376,7 @@
 
 
           function findElementByItemId(itemId, slot_btn) {
-            let slotItems = slot_btn.parentElement.getElementsByClassName('table-responsive')[0].getElementsByTagName("A");
+            let slotItems = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].getElementsByTagName("A");
             for (let i=0; i < slotItems.length; i++) {
               if (slotItems[i].href.split('=').pop() == itemId) { return slotItems[i]; };
             };
@@ -2079,13 +2388,13 @@
             if (!flag) {
               for (const slotId of [21, 22, 23]) {
                 const slot_btn = getSlotBtnBySlotId(slotId);
-                const first_element_a = slot_btn.parentElement.getElementsByClassName('table-responsive')[0].children[0];
+                const first_element_a = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].children[0];
                 clearItemSlotIcon(slotId);
                 removeItemUnderline(first_element_a);
               };
             };
 
-            for (const itemData of model_opts.items) {
+            for (const itemData of window.dressUI.model_opts.items) {
               if (flag) {
                 clearItemSlotIcon(itemData[0]); // очищаем иконки слот буттонов от итемов при переключении на режим "Только итемы"
               } else {
@@ -2116,14 +2425,14 @@
           };
 
 
-          function set_gear_image() {
-            const cloth_gear = 'inv_chest_cloth_21';
-            const leather_gear = 'inv_chest_leather_09';
-            const chain_gear = 'inv_chest_chain_05';
-            const plate_gear = 'inv_chest_plate15';
-            $('#gear_button').css('background-image',
-            `url(${DEFAULT_ICON_URL}${plate_gear}.jpg)`);
-          };
+          // function set_gear_image() {
+          //   const cloth_gear = 'inv_chest_cloth_21';
+          //   const leather_gear = 'inv_chest_leather_09';
+          //   const chain_gear = 'inv_chest_chain_05';
+          //   const plate_gear = 'inv_chest_plate15';
+          //   $('#gear_button').css('background-image',
+          //   `url(${DEFAULT_ICON_URL}${plate_gear}.jpg)`);
+          // };
           // set_gear_image();
         </script>
 
@@ -2174,17 +2483,17 @@
 
           function setFaceZoom() {
             let zoom, offSetY;
-            switch (model_opts.race) { //            Female                         Male
-              case 1:  model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Human
-              case 2:  model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 8, offSetY = 0.80); break; // Orc
-              case 3:  model_opts.gender ? (zoom = 9, offSetY = 0.55) : (zoom = 9, offSetY = 0.55); break; // Dwarf
-              case 4:  model_opts.gender ? (zoom = 12.6, offSetY = 0.95) : (zoom = 12.6, offSetY = 1.00); break; // Nightelf
-              case 5:  model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Scourge
-              case 6:  model_opts.gender ? (zoom = 9, offSetY = 0.80) : (zoom = 6, offSetY = 0.65); break; // Tauren
-              case 7:  model_opts.gender ? (zoom = 8, offSetY = 0.25) : (zoom = 7, offSetY = 0.35); break; // Gnome
-              case 8:  model_opts.gender ? (zoom = 12.6, offSetY = 0.90) : (zoom = 11, offSetY = 0.80); break; // Troll
-              case 10: model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Bloodelf
-              case 11: model_opts.gender ? (zoom = 12.6, offSetY = 0.95) : (zoom = 10, offSetY = 0.95); break; // Draenei
+            switch (window.dressUI.model_opts.race) { //            Female                         Male
+              case 1:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Human
+              case 2:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 8, offSetY = 0.80); break; // Orc
+              case 3:  window.dressUI.model_opts.gender ? (zoom = 9, offSetY = 0.55) : (zoom = 9, offSetY = 0.55); break; // Dwarf
+              case 4:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.95) : (zoom = 12.6, offSetY = 1.00); break; // Nightelf
+              case 5:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Scourge
+              case 6:  window.dressUI.model_opts.gender ? (zoom = 9, offSetY = 0.80) : (zoom = 6, offSetY = 0.65); break; // Tauren
+              case 7:  window.dressUI.model_opts.gender ? (zoom = 8, offSetY = 0.25) : (zoom = 7, offSetY = 0.35); break; // Gnome
+              case 8:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.90) : (zoom = 11, offSetY = 0.80); break; // Troll
+              case 10: window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Bloodelf
+              case 11: window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.95) : (zoom = 10, offSetY = 0.95); break; // Draenei
             };
             window.model.renderer.viewer.setZoom(zoom);
             window.model.renderer.viewer.setOffset(0, offSetY);
@@ -2196,9 +2505,10 @@
 
             if (window.dressUI.show) {
               setDisplayState('none', gear_button, face_button, char_button, patch_button,
-              paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings, char_settings);
+              paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings, char_settings, my_saved_rooms);
             } else {
               setDisplayState('block', gear_button, face_button, char_button, patch_button);
+              if (window.dressUI.saved_rooms) my_saved_rooms.style.display = 'grid';
 
               if (window.dressUI.active_cat === 'gear') {
                 setDisplayState('block', paperdoll_left, paperdoll_right, paperdoll_bottom);
@@ -2229,10 +2539,7 @@
 
           window.generateFaceOptionHtml = function(i, optionName) {
             const caret_left = document.createElement('a');
-            caret_left.classList.add('btn');
-            caret_left.classList.add('dress-btn');
-            caret_left.classList.add('fa');
-            caret_left.classList.add('fa-caret-left');
+            caret_left.classList.add('btn', 'dress-btn', 'fa', 'fa-caret-left');
             caret_left.setAttribute('href', 'javascript:');
             caret_left.setAttribute('tabindex', '-1');
 
@@ -2241,15 +2548,12 @@
             imit_sel.setAttribute('data-field-filled', 'true');
             imit_sel.setAttribute('href', 'javascript:');
             imit_sel.setAttribute('tabindex', '-1');
-            window.dressUI.face.have_text_opt[i] // если опция без названий будем использовать просто индексы
-            ? imit_sel.textContent = window.dressUI.face.have_text_opt[i]
-            : imit_sel.textContent = window.dressUI.face.current[i] + 1;
+            imit_sel.textContent = window.dressUI.face.have_text_opt[i] // если опция без названий будем использовать просто индексы
+            ? window.dressUI.face.have_text_opt[i]
+            : window.dressUI.face.current[i] + 1;
 
             const caret_right = document.createElement('a');
-            caret_right.classList.add('btn');
-            caret_right.classList.add('dress-btn');
-            caret_right.classList.add('fa');
-            caret_right.classList.add('fa-caret-right');
+            caret_right.classList.add('btn', 'dress-btn', 'fa', 'fa-caret-right');
             caret_right.setAttribute('href', 'javascript:');
             caret_right.setAttribute('tabindex', '-1');
 
@@ -2276,19 +2580,22 @@
           };
 
 
-          window.generateFaceOptions = function() {
-            // очистка настроек при создании новой модели
-            window.dressUI.face.fields = [];
-            window.dressUI.face.have_text_opt = [];
-            window.dressUI.face.max_len = [];
-            window.dressUI.face.min_len = [];
-            window.dressUI.face.current = [];
-
-            const default_index = 0;
+          const generateFaceOptions = function() {
             const NOT_ALLOWED_CHAR_OPTS = [
               // 'Hair Color', 'Piercings'
             ];
             const race_gender_opts = window.dressUI.face.race_gender_opts;
+
+            // очистка настроек при создании новой модели
+            window.dressUI.face.fields = [];
+            window.dressUI.face.max_len = [];
+            window.dressUI.face.min_len = [];
+            window.dressUI.face.have_text_opt = [];
+
+            if (window.dressUI.face.current.length === 0) {
+              window.dressUI.face.current =
+              ((len, char) => Array.from({ length: len }, () => char))(race_gender_opts.length, 0);
+            };
 
             for (const i in race_gender_opts) {
               const option = race_gender_opts[i];
@@ -2296,16 +2603,15 @@
               if (NOT_ALLOWED_CHAR_OPTS.indexOf(option.Name) !== -1) continue;
 
               const opt_name = option.Name.replace(' ', '_').toLowerCase();
-              const choice_name = option.Choices[default_index].Name;
+              const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
               const max_len = option.Choices.length - 1;
 
               window.dressUI.face.fields.push(opt_name);
-              window.dressUI.face.have_text_opt.push(choice_name);
               window.dressUI.face.max_len.push(max_len);
               window.dressUI.face.min_len.push(0);
-              window.dressUI.face.current.push(default_index);
+              window.dressUI.face.have_text_opt.push(choice_name);
 
-              model_opts[opt_name] = default_index;
+              window.dressUI.model_opts[opt_name] = window.dressUI.face.current[i];
 
               const cat_opt_div = window.generateFaceOptionHtml(i, option.Name);
 
@@ -2323,17 +2629,17 @@
                 ? race_gender_opts[i].Choices[window.dressUI.face.current[i]].Name
                 : window.dressUI.face.current[i] + 1;
 
-                model_opts[opt_name] = window.dressUI.face.current[i];
-                window.model.updateAppearance(model_opts);
+                window.dressUI.model_opts[opt_name] = window.dressUI.face.current[i];
+                window.model.updateAppearance(window.dressUI.model_opts);
               }));
             };
           };
 
 
-          window.generateCharModel = async function() {
+          const generateCharModel = async function() {
 
-            // глубокая копия model_opts для удаления itemId из items для последующей передачи в generateModels
-            let dc_model_opts = JSON.parse(JSON.stringify(model_opts));
+            // глубокая копия window.dressUI.model_opts для удаления itemId из items для последующей передачи в generateModels
+            let dc_model_opts = JSON.parse(JSON.stringify(window.dressUI.model_opts));
             dc_model_opts.items = [...new Set(dc_model_opts.items.map(item => [item[0], item[1]]))];
 
             window.model = await generateModels(
@@ -2346,7 +2652,6 @@
             );
 
             window.model.setModelLoadedCallback(function() {
-            // window.model.renderer.viewer.method("setModelLoadedCallback", function() {
               $('.paperdoll-model').css('background', 'none');
 
               window.model.renderer.viewer.method("setSheath",
@@ -2396,30 +2701,33 @@
 
             $('#dressing-room-face-settings div').each(function(index, option) {
               if (option.classList.contains('dressing-room-character-controls-category-option')) {
-                delete model_opts[option.getAttribute('data-character-customization-type')];
+                delete window.dressUI.model_opts[option.getAttribute('data-character-customization-type')];
                 option.remove();
               };
             });
 
             // Получить все доступные опции для указанной расы и гендера
-            findRaceGenderOptions(model_opts.race, model_opts.gender).then((fullOptions) => {
+            findRaceGenderOptions(window.dressUI.model_opts.race, window.dressUI.model_opts.gender).then((fullOptions) => {
               window.dressUI.face.race_gender_opts = fullOptions.Options;
 
-              window.generateFaceOptions();
+              generateFaceOptions();
 
               refreshAlphaForExtremeButtonPosition(window.dressUI.face);
 
-              window.generateCharModel();
+              generateCharModel();
             });
           };
 
 
           $(document).ready(function() {
 
-            window.createCharModel();
+            // попытка фикса ZamModelViewer не найден
+            setTimeout(function() {
+              window.createCharModel();
+            }, 4);
 
-            //////////////// TEST №1 ////////////////
-            // model_opts.items = [ // items with CORS policy
+            //////////////// TEST №1 Устойчивость к спаму ////////////////
+            // window.dressUI.model_opts.items = [ // items with CORS policy
             //   [1, 64897],
             //   [3, 64896],
             //   [16, 22996],
@@ -2436,13 +2744,13 @@
             // ];
             // window.createCharModel();
             // setInterval(function() { modelIsLoaded(window.createCharModel)(); }, 4);
-            //////////////// TEST №1 ////////////////
+            //////////////// TEST №1 Устойчивость к спаму ////////////////
 
-            //////////////// TEST №2 ////////////////
+            //////////////// TEST №2 Устойчивость к спаму ////////////////
             // window.dressUI.char.only_item = true;
             // window.createItemModel({type: 1, id: 65153});
             // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 65153}); }, 4);
-            //////////////// TEST №2 ////////////////
+            //////////////// TEST №2 Устойчивость к спаму ////////////////
           });
 
 
@@ -2461,7 +2769,6 @@
             );
 
             window.model.setModelLoadedCallback(function() {
-            // window.model.renderer.viewer.method("setModelLoadedCallback", function() {
               $('.paperdoll-model').css('background', 'none');
 
               window.dressUI.AnimIsPaused = false;
@@ -2540,7 +2847,7 @@
 
               if (field_name === 'eye_color' && int_param > 19) continue; // эта настройка выглядит не красиво
 
-              model_opts[field_name] = int_param;
+              window.dressUI.model_opts[field_name] = int_param;
               face_data.current[i] = int_param;
 
               const imit_sel = $(`.dressing-room-character-controls-category-option[data-character-customization-type="${field_name}"]`).find('a')[1];
@@ -2556,7 +2863,7 @@
           $('#dr-randomize').on('click', modelIsLoaded(function(event) {
             if (window.dressUI.char.only_item) return false;
             updateFaceFields();
-            window.model.updateAppearance(model_opts);
+            window.model.updateAppearance(window.dressUI.model_opts);
           }));
 
 
@@ -2584,19 +2891,19 @@
               );
               setAnim();
             };
-          }));
+          }, true));
 
 
           $('#dr-screenshot').on('click', modelIsLoaded(function(event) {
             window.model.makeScreenshot();
-          }));
+          }, true));
 
 
           const dr_pause = $('#dr-pause');
           dr_pause.on('click', modelIsLoaded(function(event) {
             window.dressUI.AnimIsPaused = !window.dressUI.AnimIsPaused;
             updateAnimPaused(true);
-          }));
+          }, true));
 
           function updateAnimPaused(flag) {
             if (window.dressUI.AnimIsPaused) {

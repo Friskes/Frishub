@@ -269,6 +269,38 @@ class TwitchStreamerInfo(models.Model):
 
 #############################################################################
 
+# https://fixmypc.ru/post/ispolzovanie-polei-v-python-django-auto-now-i-auto-now-add-na-primerakh-pri-rabote-s-metkami-vremeni/
+class DressingRoom(models.Model):
+    """#### Модель создающая поля для хранения настроек персонажа на странице Примерочная."""
+
+    room_id = models.CharField(max_length=45, verbose_name='Id комнаты')
+
+    room_creator_id = models.CharField(max_length=40, verbose_name='Id создателя комнаты')
+
+    allow_edit = models.BooleanField(verbose_name='Разрешить редактирование другим пользователям')
+
+    last_update_time = models.DateTimeField(verbose_name='Время изменения')
+
+    game_patch = models.CharField(max_length=5, verbose_name='Название патча')
+
+    race = models.IntegerField(verbose_name='Раса')
+
+    gender = models.IntegerField(verbose_name='Пол')
+
+    items = models.CharField(max_length=255, verbose_name='Экипировка')
+
+    face = models.CharField(max_length=150, verbose_name='Внешность')
+
+    def __str__(self):
+        return 'Комната: ' + self.room_id
+
+
+    class Meta:
+        verbose_name = 'Комната'
+        verbose_name_plural = 'Комнаты'
+
+#############################################################################
+
 class HomeNews(models.Model):
     """#### Модель создающая поля для работы блока новостей на домашней странице.
     - Доступные поля: news, date."""

@@ -8,7 +8,7 @@ from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 # https://django.fun/ru/docs/django/4.0/ref/contrib/messages/
 from django.contrib import messages
-# from django.utils import dateformat
+from django.utils import timezone#, dateformat
 # from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.contrib.contenttypes.models import ContentType
@@ -24,7 +24,7 @@ from django.contrib.auth.views import (
 )
 
 from main_app.utils import DataMixin, RedirectAuthUser
-from main_app.models import CustomUser, HomeNews, Comments, Guides, Category, LikeDislike
+from main_app.models import CustomUser, HomeNews, Comments, Guides, Category, LikeDislike, DressingRoom
 from main_app.parse_twitch_streams import twitch_stream_parser
 from main_app.forms import (
     RegisterForm, LoginForm, PasswordResetCustomForm, PasswordResetConfirmForm,
@@ -39,6 +39,7 @@ import json
 from typing import Union
 from uuid import uuid4
 from urllib.parse import unquote
+from datetime import datetime, timedelta
 
 import logging
 log = logging.getLogger(__name__)
@@ -125,13 +126,6 @@ def server_error(request):
 #         response.set_cookie(key='my_key', value='my_value') # добавление cookies в ответ
 #         # response.delete_cookie(key='my_key') # удаление cookies из ответа
 #         return response
-
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['response'].set_cookie(key='my_key', value='my_value') # добавление cookies в ответ
-#         # context['response'].delete_cookie(key='my_key') # удаление cookies из ответа
-#         return context
 
 #############################################################################
 
@@ -451,6 +445,143 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
     """#### Представление обрабатывающее примерочную страницу."""
 
     template_name = 'main_app/dressing_room.html'
+
+    def time_checking(self):
+        """Обновляет время для текущей комнаты и
+        проверяет все остальные комнаты на предмет устаревания
+        для последующего удаления."""
+
+        current_datetime = timezone.now()
+        self.dressing_room.update(last_update_time=current_datetime)
+
+        dressing_rooms = DressingRoom.objects.all()
+
+        for room in dressing_rooms:
+            if current_datetime - timedelta(days=182) >= room.last_update_time:
+                room.delete()
+
+
+    def get_my_saved_rooms(self, creator_id):
+        """Создание даты для отображения списка созданных комнат у текущего пользователя."""
+
+        dressing_room = DressingRoom.objects.filter(room_creator_id=creator_id)
+        my_saved_rooms = []
+
+        for room in dressing_room:
+            if self.room_id != room.room_id:
+                my_saved_rooms.append({
+                    'room_id': room.room_id,
+                    'game_patch': room.game_patch,
+                    'allow_edit': room.allow_edit,
+                    'race': room.race,
+                    'gender': room.gender,
+                    'last_update_time': room.last_update_time.strftime('%Y-%m-%d %H:%M:%S')
+                })
+        return my_saved_rooms
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        """Создаёт запись в БД с новой страницей и добавляет character_data в контекст шаблона."""
+
+        context = super().get_context_data(**kwargs)
+
+        # self.room_id = str(self.request.resolver_match.kwargs.get('room_id')) # <class 'uuid.UUID'>
+        self.room_id = str(kwargs.get('room_id')) # <class 'uuid.UUID'>
+
+        self.dressing_room = DressingRoom.objects.filter(room_id=self.room_id)
+
+        if self.dressing_room:
+            self.creator_id = self.dressing_room[0].room_creator_id
+            self.is_room_creator = self.creator_id == self.request.COOKIES.get('creator_id')
+
+            self.time_checking()
+
+            character_data = {
+                'room_creator': self.is_room_creator,
+                'allow_edit': self.dressing_room[0].allow_edit,
+                'game_patch': self.dressing_room[0].game_patch,
+                'race': self.dressing_room[0].race,
+                'gender': self.dressing_room[0].gender,
+                'items': self.dressing_room[0].items,
+                'face': self.dressing_room[0].face
+            }
+            if self.is_room_creator:
+                character_data.update({'my_saved_rooms': self.get_my_saved_rooms(self.creator_id)})
+        else:
+            cookie_creator_id = self.request.COOKIES.get('creator_id')
+            my_saved_rooms = self.get_my_saved_rooms(cookie_creator_id)
+
+            if my_saved_rooms:
+                self.creator_id = cookie_creator_id
+            else:
+                self.creator_id = str(uuid4().hex)
+            self.is_room_creator = True
+
+            self.dressing_room.create(
+                room_id=self.room_id,
+                room_creator_id=self.creator_id,
+                allow_edit=False,
+                last_update_time=timezone.now(),
+                game_patch='wrath',
+                race=1,
+                gender=1,
+                items='',
+                face='0,0,0,0,0'
+            )
+            character_data = {
+                'room_creator': self.is_room_creator,
+                'allow_edit': False,
+                'game_patch': 'wrath',
+                'race': 1,
+                'gender': 1,
+                'items': '',
+                'face': '0,0,0,0,0'
+            }
+            character_data.update({'my_saved_rooms': my_saved_rooms})
+
+        context.update({'character_data': json.dumps(character_data)})
+
+        return context
+
+
+    def render_to_response(self, context, **response_kwargs):
+        """Создаёт либо обновляет cookie у создателя комнаты."""
+
+        response = super(UniqueDressingRoomView, self).render_to_response(context, **response_kwargs)
+
+        # https://docs.djangoproject.com/en/4.2/ref/request-response/#django.http.HttpResponse.set_cookie
+        if self.is_room_creator:
+            response.set_cookie(
+                key='creator_id',
+                value=self.creator_id,
+                # max_age=timedelta(days=182),
+                expires=timezone.now() + timedelta(days=182), # datetime.now() + timedelta(days=182)
+                # path=self.request.path
+            )
+
+        return response
+
+
+    def post(self, request: ASGIRequest, *args, **kwargs):
+        """Получает character_data с фронта и на её основе обновляет запись в БД."""
+
+        room_id = str(kwargs.get('room_id'))
+
+        self.dressing_room = DressingRoom.objects.filter(room_id=room_id)
+
+        if not self.dressing_room: raise Http404
+        if ( self.dressing_room[0].room_creator_id != request.COOKIES.get('creator_id')
+        and not self.dressing_room[0].allow_edit ): raise PermissionDenied
+
+        # data = [json.loads(key) for key in request.POST.keys()][0]
+        data = json.loads(request.body)
+
+        if self.dressing_room[0].game_patch != data['game_patch']:
+            data['face'] = ''
+
+        self.dressing_room.update(**data)
+
+        return JsonResponse({'status': 'data was successfully saved'})
 
 #############################################################################
 

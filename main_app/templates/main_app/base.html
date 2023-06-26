@@ -585,21 +585,14 @@
       }
     </style>
 
-    {% block head %}
-    {% endblock %}
-
-  </head>
-
-  <body>
 
     <script>
       // создание задержки перед вызовом функции
-      let debounce = function(func, delay) {
+      const debounce = function(func, delay) {
         let inDebounce;
-        // return function(..._args) {
         return function() {
-          let _this = this;
-          let _args = arguments;
+          const _this = this;
+          const _args = arguments;
           clearTimeout(inDebounce);
           inDebounce = setTimeout(function() {
             func.apply(_this, _args);
@@ -663,6 +656,13 @@
         return Math.floor(Math.random() * (Math.floor(max) - min + 1)) + min;
       };
     </script>
+
+    {% block head %}
+    {% endblock %}
+
+  </head>
+
+  <body>
 
     <script>
       var images = new Array(

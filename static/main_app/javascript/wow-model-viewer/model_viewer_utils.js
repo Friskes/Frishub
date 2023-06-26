@@ -200,8 +200,7 @@ class WowModelViewer extends ZamModelViewer {
     makeScreenshot() {
         const _this = this;
         window.requestAnimationFrame(function() {
-            // баг в яндекс браузере, выдаёт ошибку:
-            // uncaught RangeError: offset is out of bounds at Uint8ClampedArray.set
+
             _this.renderer.makeDataURL = ["image/png", 1];
 
             window.requestAnimationFrame(function() {
