@@ -2529,14 +2529,69 @@
           const copy_text = new CopyText();
         </script>
 
-        <script type="module">
-          import {
-            findRaceGenderOptions,
-            generateModels,
-            optionsFromModel
-          } from "{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}";
+        <script id="viewer-utils"></script>
+        <script>
+          // фикс ошибки: Uncaught ReferenceError: ZamModelViewer is not defined
+          const viewer_utils = document.querySelector('#viewer-utils');
 
+          const waitLibraryIsLoading = function(callback_func, ...args) {
+            window.requestAnimationFrame(callback_func.bind(callback_func, ...args));
+            return;
+          };
 
+          const isLibraryLoaded = function(obj) {
+            return obj !== undefined;
+          };
+
+          const loadingLibraries = function(...args) {
+
+            if (!isLibraryLoaded(window.ZamModelViewer)) {
+              waitLibraryIsLoading(loadingLibraries, ...args);
+              return;
+            };
+
+            if (!viewer_utils.src) viewer_utils.src = "{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}";
+
+            if (!isLibraryLoaded(window.findRaceGenderOptions)) {
+              waitLibraryIsLoading(loadingLibraries, ...args);
+              return;
+            };
+
+            $(document).ready(function() {
+
+              window.createCharModel();
+
+              //////////////// TEST №1 Устойчивость к спаму ////////////////
+              // window.dressUI.model_opts.items = [ // items with CORS policy
+              //   [1, 64897],
+              //   [3, 64896],
+              //   [16, 22996],
+              //   [5, 64859],
+              //   [4, 11977],
+              //   [19, 65733],
+              //   [9, 63901],
+              //   [21, 65153],
+              //   [22, 45146],
+              //   [10, 63910],
+              //   [6, 109302],
+              //   [7, 64246],
+              //   [8, 63825]
+              // ];
+              // window.createCharModel();
+              // setInterval(function() { modelIsLoaded(window.createCharModel)(); }, 4);
+              //////////////// TEST №1 Устойчивость к спаму ////////////////
+
+              //////////////// TEST №2 Устойчивость к спаму ////////////////
+              // window.dressUI.char.only_item = true;
+              // window.createItemModel({type: 1, id: 65153});
+              // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 65153}); }, 4);
+              //////////////// TEST №2 Устойчивость к спаму ////////////////
+            });
+          };
+          loadingLibraries();
+        </script>
+
+        <script>
           window.generateFaceOptionHtml = function(i, optionName) {
             const caret_left = document.createElement('a');
             caret_left.classList.add('btn', 'dress-btn', 'fa', 'fa-caret-left');
@@ -2717,41 +2772,6 @@
               generateCharModel();
             });
           };
-
-
-          $(document).ready(function() {
-
-            // попытка фикса ZamModelViewer не найден
-            setTimeout(function() {
-              window.createCharModel();
-            }, 4);
-
-            //////////////// TEST №1 Устойчивость к спаму ////////////////
-            // window.dressUI.model_opts.items = [ // items with CORS policy
-            //   [1, 64897],
-            //   [3, 64896],
-            //   [16, 22996],
-            //   [5, 64859],
-            //   [4, 11977],
-            //   [19, 65733],
-            //   [9, 63901],
-            //   [21, 65153],
-            //   [22, 45146],
-            //   [10, 63910],
-            //   [6, 109302],
-            //   [7, 64246],
-            //   [8, 63825]
-            // ];
-            // window.createCharModel();
-            // setInterval(function() { modelIsLoaded(window.createCharModel)(); }, 4);
-            //////////////// TEST №1 Устойчивость к спаму ////////////////
-
-            //////////////// TEST №2 Устойчивость к спаму ////////////////
-            // window.dressUI.char.only_item = true;
-            // window.createItemModel({type: 1, id: 65153});
-            // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 65153}); }, 4);
-            //////////////// TEST №2 Устойчивость к спаму ////////////////
-          });
 
 
           window.createItemModel = async function(opts) {

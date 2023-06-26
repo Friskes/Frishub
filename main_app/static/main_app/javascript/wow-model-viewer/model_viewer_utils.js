@@ -6,7 +6,7 @@ const CONTENT_PATH = window.GAME_PATCH
 ? `https://wow.zamimg.com/modelviewer/${window.GAME_PATCH}/`
 : 'https://wow.zamimg.com/modelviewer/wrath/';
 
-const RACES = {
+const _RACES = {
     1: 'human',
     2: 'orc',
     3: 'dwarf',
@@ -350,7 +350,7 @@ async function optionsFromModel(model) {
 
     const retGender = (gender === 1) ? `female` : `male`;
 
-    const raceToModelId = RACES[race] + retGender;
+    const raceToModelId = _RACES[race] + retGender;
 
     const {sheathMain, sheathOff} = model;
 
@@ -420,7 +420,7 @@ function getOptions(character, fullOptions) {
     // Для удобного просмотра поля Name из fullOptions
     // const GENDERS = {0: 'Male', 1: 'Female'};
     // let dct = {};
-    // dct[`${RACES[character.race]}_${GENDERS[character.gender]}`] = [...new Set(fullOptions.Options.map(opt => opt.Name))];
+    // dct[`${_RACES[character.race]}_${GENDERS[character.gender]}`] = [...new Set(fullOptions.Options.map(opt => opt.Name))];
     // console.log(dct);
 
     const ret = [];
@@ -437,11 +437,4 @@ function getOptions(character, fullOptions) {
         ret.push(newOption);
     };
     return ret;
-};
-
-
-export {
-    findRaceGenderOptions,
-    generateModels,
-    optionsFromModel
 };
