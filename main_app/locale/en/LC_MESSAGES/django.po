@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-26 22:51+0300\n"
+"POT-Creation-Date: 2023-06-27 01:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -699,48 +699,60 @@ msgstr "Link"
 msgid "Скопировать ссылку на комнату"
 msgstr "Copy room link"
 
-#: .\main_app\templates\main_app\dressing_room.html:1786
+#: .\main_app\templates\main_app\dressing_room.html:1807
 msgid "У вас нету ни одной сохранённой комнаты."
 msgstr "You don't have any saved rooms."
 
-#: .\main_app\templates\main_app\dressing_room.html:1847
-#: .\main_app\templates\main_app\dressing_room.html:1848
+#: .\main_app\templates\main_app\dressing_room.html:1868
+#: .\main_app\templates\main_app\dressing_room.html:1869
 #, python-format
 msgid ""
 "Для изменения на %%s патч, пожалуйста, перезагрузите страницу.\\nВсе "
 "настройки внешности будут сброшены."
-msgstr "To change to %%s patch, please reload the page.\\nAll appearance settings will be reset."
+msgstr ""
+"To change to %%s patch, please reload the page.\\nAll appearance settings "
+"will be reset."
 
-#: .\main_app\templates\main_app\dressing_room.html:1855
+#: .\main_app\templates\main_app\dressing_room.html:1876
 msgid "Редакт"
 msgstr "Allow Edit"
 
-#: .\main_app\templates\main_app\dressing_room.html:1870
+#: .\main_app\templates\main_app\dressing_room.html:1886
+msgid ""
+"Теперь другие пользователи смогут редактировать персонажа на этой странице."
+msgstr "Now other users will be able to edit the character on this page."
+
+#: .\main_app\templates\main_app\dressing_room.html:1887
+msgid ""
+"Теперь только у вас есть право редактировать персонажа на этой странице."
+msgstr "Now only you have the right to edit the character on this page."
+
+#: .\main_app\templates\main_app\dressing_room.html:1894
 msgid "Запретить редактирование другим пользователям"
 msgstr "Prohibit editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:1874
+#: .\main_app\templates\main_app\dressing_room.html:1898
 msgid "Разрешить редактирование другим пользователям"
 msgstr "Allow editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:1966
+#: .\main_app\templates\main_app\dressing_room.html:1968
 msgid "Отключено в режиме «Только итем»."
 msgstr "Disabled in the «Only item» mode."
 
-#: .\main_app\templates\main_app\dressing_room.html:1976
+#: .\main_app\templates\main_app\dressing_room.html:1978
 msgid "Выбранный слот уже пуст."
 msgstr "The selected slot is already empty."
 
-#: .\main_app\templates\main_app\dressing_room.html:2756
-#: .\main_app\templates\main_app\dressing_room.html:2818
+#: .\main_app\templates\main_app\dressing_room.html:2758
+#: .\main_app\templates\main_app\dressing_room.html:2822
 msgid "К сожалению не удалось загрузить итем."
 msgstr "Unfortunately, it was not possible to download item."
 
-#: .\main_app\templates\main_app\dressing_room.html:2842
+#: .\main_app\templates\main_app\dressing_room.html:2846
 msgid "Теперь вы можете просматривать итемы без персонажа."
 msgstr "Now you can view items without a character."
 
-#: .\main_app\templates\main_app\dressing_room.html:2846
+#: .\main_app\templates\main_app\dressing_room.html:2850
 msgid "Теперь вы можете просматривать итемы на персонаже."
 msgstr "Now you can view and items on the character."
 

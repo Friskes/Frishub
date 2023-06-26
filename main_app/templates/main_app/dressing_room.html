@@ -255,7 +255,7 @@
       }
     });
   };
-  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 100);
+  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 5000);
 
 
   const IGNORED_WRAPPED_PROPS = [
@@ -1778,6 +1778,27 @@
         </div>
 
         <script>
+          const warning_toast_message = $('.warning-toast-message');
+
+          const warnMessageHandler = function(duration, message) {
+            warning_toast_message.stop(true, true);
+
+            warning_toast_message.find('div').text(message);
+            warning_toast_message.css('display', 'block');
+
+            warning_toast_message.animate(
+              { opacity: 0 },
+              { duration: duration, queue: false,
+                complete: function() {
+                  warning_toast_message.css('opacity', '1');
+                  warning_toast_message.css('display', 'none');
+                }
+              }
+            );
+          };
+        </script>
+
+        <script>
           const my_saved_rooms_container = $('.my-saved-rooms-container')[0];
           const my_saved_rooms = $('.my-saved-rooms')[0];
 
@@ -1861,6 +1882,9 @@
             dr_allow_edit.on('click', function(event) {
               window.dressUI.allow_edit = !window.dressUI.allow_edit;
               setAllowEditIcon();
+              window.dressUI.allow_edit
+              ? warnMessageHandler(4000, "{% trans 'Теперь другие пользователи смогут редактировать персонажа на этой странице.' %}")
+              : warnMessageHandler(4000, "{% trans 'Теперь только у вас есть право редактировать персонажа на этой странице.' %}");
             });
 
             function setAllowEditIcon() {
@@ -1876,28 +1900,6 @@
             };
             setAllowEditIcon();
           };
-        </script>
-
-        <script>
-          const warning_toast_message = $('.warning-toast-message');
-
-          function warnMessageHandler(duration, message) {
-            warning_toast_message.stop(true, true);
-
-            warning_toast_message.find('div').text(message);
-            warning_toast_message.css('display', 'block');
-
-            warning_toast_message.animate(
-              { opacity: 0 },
-              { duration: duration, queue: false,
-                complete: function() {
-                  warning_toast_message.css('opacity', '1');
-                  warning_toast_message.css('display', 'none');
-                }
-              }
-            );
-          };
-          const debounce_warnMessageHandler = debounce(warnMessageHandler, 4);
         </script>
 
         <script>
@@ -2778,6 +2780,8 @@
                 option.remove();
               };
             });
+
+            updateItemSlotIcon(false);
 
             // Получить все доступные опции для указанной расы и гендера
             findRaceGenderOptions(window.dressUI.model_opts.race, window.dressUI.model_opts.gender).then((fullOptions) => {
