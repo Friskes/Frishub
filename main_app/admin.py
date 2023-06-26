@@ -6,7 +6,7 @@ from django.db.models import TextField
 
 from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
-    HomeNews, Guides, Comments, Category
+    HomeNews, Guides, Comments, Category, DressingRoom
 )
 
 from modeltranslation.admin import TranslationAdmin
@@ -45,6 +45,64 @@ class ContactMeAdmin(admin.ModelAdmin):
     fields = ('email', 'message', 'date_time')
 
     readonly_fields = ('email', 'message', 'date_time')
+
+#############################################################################
+
+@admin.register(DressingRoom)
+class DressingRoomAdmin(admin.ModelAdmin):
+
+    RACES = {
+        1: 'Человек',
+        2: 'Орк',
+        3: 'Дворф',
+        4: 'Ночной эльф',
+        5: 'Нежить',
+        6: 'Таурен',
+        7: 'Гном',
+        8: 'Тролль',
+        10: 'Эльф крови',
+        11: 'Дреней'
+    }
+
+    GENDERS = {
+        0: 'Мужчина',
+        1: 'Женщина'
+    }
+
+    list_display = ('get_short_room_id', 'get_short_room_creator_id', 'allow_edit',
+                    'game_patch', 'get_race_name', 'get_gender_name', 'last_update_time')
+
+    list_editable = ('allow_edit',)
+
+    search_fields = ('room_id', 'room_creator_id')
+
+    fields = ('room_id', 'room_creator_id', 'allow_edit', 'game_patch',
+              'race', 'gender', 'last_update_time', 'items', 'face')
+
+    def get_short_room_id(self, object):
+        # print(getattr(self, 'GENDERS')) # self.__class__.__getattribute__(self, 'GENDERS')
+        # print(vars(object)) # object.__dict__
+        # print(vars(object._meta))
+        # print(object.__doc__)
+        # self.__class__.get_short_room_id.__setattr__('short_description', object._meta.get_field('room_id').verbose_name)
+        # setattr(self.__class__.get_short_room_id, 'short_description', object._meta.get_field('room_id').verbose_name)
+
+        setattr(type(self).get_short_room_id, 'short_description', object._meta.get_field('room_id').verbose_name)
+        length = len(object.room_id)
+        return f'...{object.room_id[length-7:length]}'
+
+    def get_short_room_creator_id(self, object):
+        setattr(type(self).get_short_room_creator_id, 'short_description', object._meta.get_field('room_creator_id').verbose_name)
+        length = len(object.room_creator_id)
+        return f'...{object.room_creator_id[length-7:length]}'
+
+    def get_race_name(self, object):
+        setattr(type(self).get_race_name, 'short_description', object._meta.get_field('race').verbose_name)
+        return self.RACES[object.race]
+
+    def get_gender_name(self, object):
+        setattr(type(self).get_gender_name, 'short_description', object._meta.get_field('gender').verbose_name)
+        return self.GENDERS[object.gender]
 
 #############################################################################
 
