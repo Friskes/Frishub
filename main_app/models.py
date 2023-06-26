@@ -277,9 +277,9 @@ class DressingRoom(models.Model):
 
     room_creator_id = models.CharField(max_length=40, verbose_name='Id создателя комнаты')
 
-    allow_edit = models.BooleanField(verbose_name='Разрешить редактирование другим пользователям')
+    allow_edit = models.BooleanField(verbose_name='Разрешить редактирование')
 
-    last_update_time = models.DateTimeField(verbose_name='Время изменения')
+    last_update_time = models.DateTimeField(verbose_name='Время последнего изменения')
 
     game_patch = models.CharField(max_length=5, verbose_name='Название патча')
 
@@ -296,8 +296,8 @@ class DressingRoom(models.Model):
 
 
     class Meta:
-        verbose_name = 'Комната'
-        verbose_name_plural = 'Комнаты'
+        verbose_name = 'Комнату'
+        verbose_name_plural = 'Примерочные комнаты'
 
 #############################################################################
 
