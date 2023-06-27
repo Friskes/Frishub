@@ -206,7 +206,7 @@ async function optionsFromModel(model) {
  */
 async function generateModels(containerSelector, model) {
 
-    if (!model.generalOptions || Object.keys(model.generalOptions).length === 0) model.generalOptions = {contentPath: CONTENT_PATH};
+    if (!model.generalOptions) model.generalOptions = {};
 
     const container = jQuery(containerSelector);
     const aspect = container[0].offsetWidth / container[0].offsetHeight;
@@ -218,6 +218,7 @@ async function generateModels(containerSelector, model) {
         container: container,
         aspect: aspect,
         hd: true,
+        contentPath: CONTENT_PATH,
         ...model.generalOptions,
         ...modelOptions
     };

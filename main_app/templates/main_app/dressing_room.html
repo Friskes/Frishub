@@ -151,22 +151,6 @@
   };
 
 
-  // быть в руке/на персонаже MH и OF могут только вместе.
-  // -1 // оружие в руке
-  // 1  // оружие на спине смотрит вниз
-  // 2  // оружие на спине смотрит вверх
-  // 3  // оружие на поясе
-  // для всех оружий
-  // [-1, -1]
-  // [1, 1]
-  // для одноручных оружий
-  // [1, 3]
-  // [3, 1]
-  // для двуручных оружий смотрящих вниз
-  // [1, 2]
-  // для двуручных оружий смотрящих вверх
-  // [2, 1]
-
   function slotIdsIsExists(...slotIds) {
     for (const slotId of slotIds) {
       for (const i in window.dressUI.model_opts.items) {
@@ -176,9 +160,16 @@
     return false;
   };
 
+  // быть в руке/на персонаже MH и OF могут только вместе.
+  // -1 // оружие в руке
+  //  1 // оружие на спине смотрит вниз
+  //  2 // оружие на спине смотрит вверх
+  //  3 // оружие на поясе
+
   function updateSheathInfo() {
-    if (slotIdsIsExists(22, 23) === false) { window.dressUI.char.sheath_opts = [[-1, -1], [1, 1], [2, 1]]; }
-    else { window.dressUI.char.sheath_opts = [[-1, -1], [1, 1], [1, 3], [3, 1]]; };
+    window.dressUI.char.sheath_opts = slotIdsIsExists(22, 23) === false
+    ? [[-1, -1], [1, 1], [2, 2]]
+    : [[-1, -1], [3, 3], [1, 1], [1, 3], [3, 1]];
   };
   updateSheathInfo();
 
@@ -2480,7 +2471,7 @@
               setDisplayState('none', face_settings, char_settings);
               window.dressUI.active_cat = 'gear';
 
-              if (!window.dressUI.char.only_item) { window.model.renderer.viewer.setZoom(-2); window.model.renderer.viewer.setOffset(0, 0); };
+              if (!window.dressUI.char.only_item) { window.model.renderer.viewer.setZoom(-3); window.model.renderer.viewer.setOffset(0, 0); };
 
             } else if (category === 'face') {
               removeAttr('data-active', gear_button, char_button);
@@ -2496,7 +2487,7 @@
               setDisplayState('none', paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings);
               window.dressUI.active_cat = 'character';
 
-              if (!window.dressUI.char.only_item) { window.model.renderer.viewer.setZoom(-2); window.model.renderer.viewer.setOffset(0, 0); };
+              if (!window.dressUI.char.only_item) { window.model.renderer.viewer.setZoom(-3); window.model.renderer.viewer.setOffset(0, 0); };
             };
           });
 
@@ -2726,7 +2717,9 @@
               '#paperdoll-model-dressing-room-paperdoll',
               Object.assign(dc_model_opts, {
                 // generalOptions: {
-                //   background: "background-181818.png"
+                //   background: "background-181818.png",
+                //   // background: "background-classic-181818.png",
+                //   // background: "background-classic-ddd.png",
                 // }
               })
             );
@@ -2755,7 +2748,7 @@
               };
               refreshAlphaForExtremeButtonPosition(char_data);
 
-              window.model.renderer.viewer.setZoom(-2);
+              window.model.renderer.viewer.setZoom(-3);
             });
             // window.model.renderer.viewer.method("setCustomizationsLoadedCallback", function(t) { console.log('setCustomizationsLoadedCallback', t); });
             // window.model.renderer.screenshotCallback = function() { console.log('screenshotCallback'); };
@@ -2810,7 +2803,9 @@
               '#paperdoll-model-dressing-room-paperdoll',
               Object.assign(opts, {
                 // generalOptions: {
-                //   background: "background-181818.png"
+                //   background: "background-181818.png",
+                //   // background: "background-classic-181818.png",
+                //   // background: "background-classic-ddd.png",
                 // }
               })
             );
@@ -2821,7 +2816,7 @@
               window.dressUI.AnimIsPaused = false;
               updateAnimPaused();
 
-              document.documentElement.clientWidth < 800 ? window.model.renderer.viewer.setZoom(-2) : window.model.renderer.viewer.setZoom(-8);
+              document.documentElement.clientWidth < 800 ? window.model.renderer.viewer.setZoom(-3) : window.model.renderer.viewer.setZoom(-8);
             });
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
@@ -2917,9 +2912,9 @@
           $('#dr-reset').on('click', modelIsLoaded(function(event) {
 
             if (document.documentElement.clientWidth < 800) {
-              window.model.renderer.viewer.setZoom(-2); // range(-14.5, 12.6)
+              window.model.renderer.viewer.setZoom(-3); // range(-14.5, 12.6)
             } else {
-              window.dressUI.char.only_item ? window.model.renderer.viewer.setZoom(-8) : window.model.renderer.viewer.setZoom(-2);
+              window.dressUI.char.only_item ? window.model.renderer.viewer.setZoom(-8) : window.model.renderer.viewer.setZoom(-3);
             };
 
             // window.model.renderer.distance = 6;
