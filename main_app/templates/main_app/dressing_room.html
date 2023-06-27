@@ -255,7 +255,7 @@
       }
     });
   };
-  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 5000);
+  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 4000);
 
 
   const IGNORED_WRAPPED_PROPS = [
@@ -1018,10 +1018,10 @@
   }
   .rooms-list-link:hover {
     color: #fff;
-    opacity: 0.65;
+    opacity: 0.7;
   }
   .rooms-list-link:hover .rooms-list-img {
-    opacity: 0.65;
+    opacity: 0.7;
   }
 </style>
 {% endblock %}
@@ -1761,14 +1761,14 @@
                   style="color: #fff; margin-top: -93px; margin-left: -285px;">{% trans 'Сгенерировать случайные настройки персонажа' %}</span>
               </a>
 
-              <button class="btn dress-btn btn-site fa fa-list-ol" id="dr-my-saved-rooms" type="button">{% trans 'Комнаты' %}</button>
-
               <a _ngcontent-xpp-c94="" class="info">
                 <button class="btn dress-btn btn-site fa fa-link" id="dr-links" type="button"
                   onclick="copy_text.copy(document.location.href);">{% trans 'Ссылка' %}</button>
                 <span _ngcontent-xpp-c94="" class="info-text"
                   style="color: #fff; margin-top: -93px; margin-left: -75px;">{% trans 'Скопировать ссылку на комнату' %}</span>
               </a>
+
+              <button class="btn dress-btn btn-site fa fa-list-ol" id="dr-my-saved-rooms" type="button">{% trans 'Комнаты' %}</button>
 
               <!-- <button class="btn dress-btn btn-site fa fa-undo" id="dr-undo" type="button">Undo</button>
               <button class="btn dress-btn btn-site fa fa-repeat" id="dr-redo" type="button" disabled="">Redo</button> -->
@@ -1803,7 +1803,7 @@
           const my_saved_rooms = $('.my-saved-rooms')[0];
 
           function generateRoomsListHtml() {
-            if (!charData.my_saved_rooms) {
+            if (!charData.my_saved_rooms || charData.my_saved_rooms.length === 0) {
               my_saved_rooms.textContent = "{% trans 'У вас нету ни одной сохранённой комнаты.' %}";
             } else {
               for (const roomData of charData.my_saved_rooms) {
@@ -2572,7 +2572,12 @@
 
             if (!viewer_utils.src) viewer_utils.src = "{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}";
 
-            if (!isLibraryLoaded(window.findRaceGenderOptions)) {
+            if (!isLibraryLoaded(window.WowModelViewer)) {
+              waitLibraryIsLoading(loadingLibraries, ...args);
+              return;
+            };
+
+            if (!isLibraryLoaded(window.itemsData)) {
               waitLibraryIsLoading(loadingLibraries, ...args);
               return;
             };

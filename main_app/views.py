@@ -39,7 +39,7 @@ import json
 from typing import Union
 from uuid import uuid4
 from urllib.parse import unquote
-from datetime import datetime, timedelta
+import datetime as dt
 
 import logging
 log = logging.getLogger(__name__)
@@ -457,7 +457,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         dressing_rooms = DressingRoom.objects.all()
 
         for room in dressing_rooms:
-            if current_datetime - timedelta(days=182) >= room.last_update_time:
+            if current_datetime - dt.timedelta(days=182) >= room.last_update_time:
                 room.delete()
 
 
@@ -475,7 +475,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                     'allow_edit': room.allow_edit,
                     'race': room.race,
                     'gender': room.gender,
-                    'last_update_time': room.last_update_time.strftime('%Y-%m-%d %H:%M:%S')
+                    'last_update_time': timezone.localtime(room.last_update_time).strftime('%d-%m-%Y %H:%M:%S')
                 })
         return my_saved_rooms
 
@@ -554,8 +554,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
             response.set_cookie(
                 key='creator_id',
                 value=self.creator_id,
-                # max_age=timedelta(days=182),
-                expires=timezone.now() + timedelta(days=182), # datetime.now() + timedelta(days=182)
+                # max_age=dt.timedelta(days=182),
+                expires=timezone.now() + dt.timedelta(days=182),
                 # path=self.request.path
             )
 

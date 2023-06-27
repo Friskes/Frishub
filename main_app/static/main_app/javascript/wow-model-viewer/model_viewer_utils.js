@@ -86,178 +86,6 @@ const AVAILABLE_CHAR_OPTS = {
 };
 
 
-class WowModelViewer extends ZamModelViewer {
-
-    constructor(...args) {
-        super(...args);
-
-        this.zoom_coeff = 0.05;
-        this.offset_coeff = 0.004;
-
-        this.X_offset = 0;
-        this.Y_offset = 0;
-
-        this.renderer.canvas[0].style.touchAction = 'none';
-
-        this.addEventListeners();
-    };
-
-    onTouchStart(event) {
-        if (event.touches.length === 2) {
-
-            this.X_start = event.touches[0].clientX;
-            this.Y_start = event.touches[0].clientY;
-
-            this.prev_distance = Math.hypot(
-                event.touches[0].pageX - event.touches[1].pageX,
-                event.touches[0].pageY - event.touches[1].pageY
-            );
-            this.twoFingers = true;
-        };
-    };
-
-    onTouchMove(event) {
-        if (!this.twoFingers) return false;
-
-        event.stopPropagation(); // отключаем изменение azimuth/zenith во время движения/кропа модели
-
-        const distance = Math.hypot(
-            event.touches[0].pageX - event.touches[1].pageX,
-            event.touches[0].pageY - event.touches[1].pageY
-        );
-
-        // Если расстояние между пальцами более 85 тогда это возможно кроп
-        if (distance > 85) {
-
-            if (distance > this.prev_distance) { // IN
-                this.renderer.zoom.rateCurrent += this.zoom_coeff; // range(-0.15, 0.15)
-            } else { // OUT
-                this.renderer.zoom.rateCurrent -= this.zoom_coeff;
-            };
-            this.prev_distance = distance;
-
-        // Если расстояние между пальцами менее 85 тогда это возможно мув
-        } else {
-
-            const X_difference = this.X_start - event.touches[0].clientX;
-            const Y_difference = this.Y_start - event.touches[0].clientY;
-
-            if (Math.abs(X_difference) > Math.abs(Y_difference)) { // Horizontal
-                if (X_difference > 0) { // L
-                    if (Y_difference > 0) this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset - this.offset_coeff)); // TL
-                    this.X_offset = Math.max(-1, Math.min(1, this.X_offset - this.offset_coeff));
-                } else { // R
-                    if (Y_difference < 0) this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset + this.offset_coeff)); // BR
-                    this.X_offset = Math.max(-1, Math.min(1, this.X_offset + this.offset_coeff));
-                };
-            } else { // Vertical
-                if (Y_difference > 0) { // T
-                    if (X_difference < 0) this.X_offset = Math.max(-1, Math.min(1, this.X_offset + this.offset_coeff)); // TR
-                    this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset - this.offset_coeff));
-                } else { // B
-                    if (X_difference > 0) this.X_offset = Math.max(-1, Math.min(1, this.X_offset - this.offset_coeff)); // BL
-                    this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset + this.offset_coeff));
-                };
-            };
-            this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
-
-        };
-    };
-
-    onTouchCancel(event) {
-        this.twoFingers = false;
-    };
-
-    onTouchEnd(event) {
-        if (this.twoFingers) this.twoFingers = false;
-    };
-
-    addEventListeners() {
-        this.renderer.canvas[0].addEventListener('touchstart',  this.onTouchStart.bind(this));
-        this.renderer.canvas[0].addEventListener('touchmove',   this.onTouchMove.bind(this));
-        this.renderer.canvas[0].addEventListener('touchcancel', this.onTouchCancel.bind(this));
-        this.renderer.canvas[0].addEventListener('touchend',    this.onTouchEnd.bind(this));
-    };
-
-
-    getListAnimations() {
-        let lock = false;
-        let animNames = [];
-        const anims_len = this.renderer.viewer.method("getNumAnimations");
-
-        for (let i=0; i < anims_len; ++i) {
-          const anim_name = this.renderer.viewer.method("getAnimation", i);
-
-          if (anim_name) animNames.push(anim_name);
-
-          if (!lock && anim_name === 'Stand') { lock = true; var standIndex = i; };
-        };
-        // animNames.sort();
-        return {animNames, standIndex};
-    };
-
-
-    makeScreenshot() {
-        const _this = this;
-        window.requestAnimationFrame(function() {
-
-            _this.renderer.makeDataURL = ["image/png", 1];
-
-            window.requestAnimationFrame(function() {
-
-                let temp_ele = $("<a>");
-                $("body").append(temp_ele);
-                temp_ele[0].download = `${_this.renderer.viewer.options.models.id}_${window.location.hostname}_dressing_room.png`;
-                temp_ele[0].href = _this.renderer.screenshotDataURL;
-                temp_ele[0].click();
-                temp_ele.remove();
-            });
-        });
-    };
-
-
-    async updateAppearance(model) {
-        // Структура которая передаётся в viewer setAppearance
-        // {
-        //   options: [
-        //     {'optionId': айди, 'choiceId': айди},
-        //     {'optionId': айди, 'choiceId': айди}
-        //     ... и т.д.
-        //   ],
-        //   sheathMain: индекс,
-        //   sheathOff: индекс
-        // }
-
-        const _this = this;
-        await optionsFromModel(model).then((modelOptions) => {
-            _this.renderer.viewer.method("setAppearance", modelOptions.charCustomization);
-        });
-    };
-
-
-    setModelLoadedCallback(func) {
-        const _this = this;
-        if (this.renderer) {
-            this.renderer.models[0].ModelLoadedCallbackFunc = func;
-            this.renderer.models[0].e = this.setModelLoadedCallback;
-            return false;
-        };
-        this.ModelLoadedCallbackFunc();
-        setTimeout(function() { _this.modelIsLoaded = true; }, 100);
-    };
-
-    // setModelLoadedCallback(func) {
-    //     this.renderer.models[0].ModelLoadedCallbackFunc = func;
-    //     this.renderer.models[0].e = this._setModelLoadedCallback;
-    // };
-    // _setModelLoadedCallback() {
-    //     const _this = this;
-    //     this.ModelLoadedCallbackFunc();
-    //     setTimeout(function() { _this.modelIsLoaded = true; }, 100);
-    // };
-};
-
-
 /**
  * Возвращает двумерный список, внутренний список содержит в первой позиции - slotId,
  * во второй позиции - displayId [[1,1170], [3,4925]]
@@ -438,3 +266,176 @@ function getOptions(character, fullOptions) {
     };
     return ret;
 };
+
+
+class WowModelViewer extends ZamModelViewer {
+
+    constructor(...args) {
+        super(...args);
+
+        this.zoom_coeff = 0.05;
+        this.offset_coeff = 0.004;
+
+        this.X_offset = 0;
+        this.Y_offset = 0;
+
+        this.renderer.canvas[0].style.touchAction = 'none';
+
+        this.addEventListeners();
+    };
+
+    onTouchStart(event) {
+        if (event.touches.length === 2) {
+
+            this.X_start = event.touches[0].clientX;
+            this.Y_start = event.touches[0].clientY;
+
+            this.prev_distance = Math.hypot(
+                event.touches[0].pageX - event.touches[1].pageX,
+                event.touches[0].pageY - event.touches[1].pageY
+            );
+            this.twoFingers = true;
+        };
+    };
+
+    onTouchMove(event) {
+        if (!this.twoFingers) return false;
+
+        event.stopPropagation(); // отключаем изменение azimuth/zenith во время движения/кропа модели
+
+        const distance = Math.hypot(
+            event.touches[0].pageX - event.touches[1].pageX,
+            event.touches[0].pageY - event.touches[1].pageY
+        );
+
+        // Если расстояние между пальцами более 85 тогда это возможно кроп
+        if (distance > 85) {
+
+            if (distance > this.prev_distance) { // IN
+                this.renderer.zoom.rateCurrent += this.zoom_coeff; // range(-0.15, 0.15)
+            } else { // OUT
+                this.renderer.zoom.rateCurrent -= this.zoom_coeff;
+            };
+            this.prev_distance = distance;
+
+        // Если расстояние между пальцами менее 85 тогда это возможно мув
+        } else {
+
+            const X_difference = this.X_start - event.touches[0].clientX;
+            const Y_difference = this.Y_start - event.touches[0].clientY;
+
+            if (Math.abs(X_difference) > Math.abs(Y_difference)) { // Horizontal
+                if (X_difference > 0) { // L
+                    if (Y_difference > 0) this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset - this.offset_coeff)); // TL
+                    this.X_offset = Math.max(-1, Math.min(1, this.X_offset - this.offset_coeff));
+                } else { // R
+                    if (Y_difference < 0) this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset + this.offset_coeff)); // BR
+                    this.X_offset = Math.max(-1, Math.min(1, this.X_offset + this.offset_coeff));
+                };
+            } else { // Vertical
+                if (Y_difference > 0) { // T
+                    if (X_difference < 0) this.X_offset = Math.max(-1, Math.min(1, this.X_offset + this.offset_coeff)); // TR
+                    this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset - this.offset_coeff));
+                } else { // B
+                    if (X_difference > 0) this.X_offset = Math.max(-1, Math.min(1, this.X_offset - this.offset_coeff)); // BL
+                    this.Y_offset = Math.max(-1, Math.min(1, this.Y_offset + this.offset_coeff));
+                };
+            };
+            this.renderer.viewer.setOffset(this.X_offset, this.Y_offset);
+
+        };
+    };
+
+    onTouchCancel(event) {
+        this.twoFingers = false;
+    };
+
+    onTouchEnd(event) {
+        if (this.twoFingers) this.twoFingers = false;
+    };
+
+    addEventListeners() {
+        this.renderer.canvas[0].addEventListener('touchstart',  this.onTouchStart.bind(this));
+        this.renderer.canvas[0].addEventListener('touchmove',   this.onTouchMove.bind(this));
+        this.renderer.canvas[0].addEventListener('touchcancel', this.onTouchCancel.bind(this));
+        this.renderer.canvas[0].addEventListener('touchend',    this.onTouchEnd.bind(this));
+    };
+
+
+    getListAnimations() {
+        let lock = false;
+        let animNames = [];
+        const anims_len = this.renderer.viewer.method("getNumAnimations");
+
+        for (let i=0; i < anims_len; ++i) {
+          const anim_name = this.renderer.viewer.method("getAnimation", i);
+
+          if (anim_name) animNames.push(anim_name);
+
+          if (!lock && anim_name === 'Stand') { lock = true; var standIndex = i; };
+        };
+        // animNames.sort();
+        return {animNames, standIndex};
+    };
+
+
+    makeScreenshot() {
+        const _this = this;
+        window.requestAnimationFrame(function() {
+
+            _this.renderer.makeDataURL = ["image/png", 1];
+
+            window.requestAnimationFrame(function() {
+
+                let temp_ele = $("<a>");
+                $("body").append(temp_ele);
+                temp_ele[0].download = `${_this.renderer.viewer.options.models.id}_${window.location.hostname}_dressing_room.png`;
+                temp_ele[0].href = _this.renderer.screenshotDataURL;
+                temp_ele[0].click();
+                temp_ele.remove();
+            });
+        });
+    };
+
+
+    async updateAppearance(model) {
+        // Структура которая передаётся в viewer setAppearance
+        // {
+        //   options: [
+        //     {'optionId': айди, 'choiceId': айди},
+        //     {'optionId': айди, 'choiceId': айди}
+        //     ... и т.д.
+        //   ],
+        //   sheathMain: индекс,
+        //   sheathOff: индекс
+        // }
+
+        const _this = this;
+        await optionsFromModel(model).then((modelOptions) => {
+            _this.renderer.viewer.method("setAppearance", modelOptions.charCustomization);
+        });
+    };
+
+
+    setModelLoadedCallback(func) {
+        const _this = this;
+        if (this.renderer) {
+            this.renderer.models[0].ModelLoadedCallbackFunc = func;
+            this.renderer.models[0].e = this.setModelLoadedCallback;
+            return false;
+        };
+        this.ModelLoadedCallbackFunc();
+        setTimeout(function() { _this.modelIsLoaded = true; }, 100);
+    };
+
+    // setModelLoadedCallback(func) {
+    //     this.renderer.models[0].ModelLoadedCallbackFunc = func;
+    //     this.renderer.models[0].e = this._setModelLoadedCallback;
+    // };
+    // _setModelLoadedCallback() {
+    //     const _this = this;
+    //     this.ModelLoadedCallbackFunc();
+    //     setTimeout(function() { _this.modelIsLoaded = true; }, 100);
+    // };
+};
+window.WowModelViewer = WowModelViewer;
