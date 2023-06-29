@@ -262,7 +262,7 @@
       }
     });
   };
-  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 100);
+  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, "{% if debug_mode %}100{% else %}3000{% endif %}");
 
 
   const IGNORED_WRAPPED_PROPS = [
