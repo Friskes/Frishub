@@ -364,19 +364,23 @@ class WowModelViewer extends ZamModelViewer {
 
 
     getListAnimations() {
-        let lock = false;
+        // let animNames = window.GAME_PATCH === 'wrath'
+        // ? [...new Set(this.renderer.models[0].ao.map(e => e.j))]
+        // : [...new Set(this.renderer.models[0].ap.map(e => e.j))];
+        // if (!animNames.includes("DressingRoom")) animNames.push("DressingRoom");
+
         let animNames = [];
         const anims_len = this.renderer.viewer.method("getNumAnimations");
 
         for (let i=0; i < anims_len; ++i) {
-          const anim_name = this.renderer.viewer.method("getAnimation", i);
+            const anim_name = this.renderer.viewer.method("getAnimation", i);
 
-          if (anim_name) animNames.push(anim_name);
-
-          if (!lock && anim_name === 'Stand') { lock = true; var standIndex = i; };
+            if (anim_name && !animNames.includes(anim_name)) animNames.push(anim_name);
         };
-        // animNames.sort();
-        return {animNames, standIndex};
+        animNames.sort();
+        const defaultIndex = animNames.findIndex(i => i === "DressingRoom");
+
+        return {animNames, defaultIndex};
     };
 
 

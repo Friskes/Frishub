@@ -2918,10 +2918,10 @@
 
               updateAnimPaused(true);
 
-              const {animNames, standIndex} = window.model.getListAnimations();
+              const {animNames, defaultIndex} = window.model.getListAnimations();
               window.dressUI.char.anims_list = animNames;
-              window.dressUI.char.default_anim = standIndex;
-              window.dressUI.char.anim = standIndex;
+              window.dressUI.char.default_anim = defaultIndex;
+              window.dressUI.char.anim = defaultIndex;
 
               setDefaultText();
 
