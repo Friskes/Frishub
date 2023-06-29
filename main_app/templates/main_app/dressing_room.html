@@ -266,7 +266,7 @@
 
 
   const IGNORED_WRAPPED_PROPS = [
-    'gear', 'char'
+    'gear', 'char', 'generalOptions'
   ];
   const IGNORED_PROPS = [
     'active_cat', 'sheathMain', 'sheathOff', 'AnimIsPaused', 'saved_rooms', 'show',
@@ -2113,7 +2113,7 @@
               warnMessageHandler(3000, 'IN DEVELOPMENT\nДоступны только слоты с оружием.');
               return false;
             } else if (window.dressUI.char.only_item && visualId !== 0) {
-              warnMessageHandler(3000, 'В режиме «Только итем» зачарование оружия недоступно.');
+              warnMessageHandler(3000, "{% trans 'В режиме «Только итем» зачарование оружия недоступно.' %}");
               return false;
             };
 
@@ -2507,7 +2507,7 @@
             window.dressUI.model_opts.generalOptions.mount.id =
             window.itemsData[0].mounts[window.dressUI.char.mount].displayId;
             _generateCharModel();
-          }));
+          }, true));
         </script>
 
         <script>
@@ -2903,6 +2903,7 @@
 
 
           const _generateCharModel = async function() {
+            if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
             // глубокая копия window.dressUI.model_opts для удаления itemId и visualId из items для последующей передачи в generateModels
             let dc_model_opts = JSON.parse(JSON.stringify(window.dressUI.model_opts));

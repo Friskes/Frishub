@@ -426,7 +426,7 @@ class WowModelViewer extends ZamModelViewer {
             return false;
         };
         this.ModelLoadedCallbackFunc();
-        setTimeout(function() { _this.modelIsLoaded = true; }, 100);
+        setTimeout(function() { _this.modelIsLoaded = true; }, 150);
     };
 
     // setModelLoadedCallback(func) {
@@ -436,7 +436,7 @@ class WowModelViewer extends ZamModelViewer {
     // _setModelLoadedCallback() {
     //     const _this = this;
     //     this.ModelLoadedCallbackFunc();
-    //     setTimeout(function() { _this.modelIsLoaded = true; }, 100);
+    //     setTimeout(function() { _this.modelIsLoaded = true; }, 150);
     // };
 };
 window.WowModelViewer = WowModelViewer;
