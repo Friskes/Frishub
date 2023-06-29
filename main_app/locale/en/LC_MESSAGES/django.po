@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-29 20:40+0300\n"
+"POT-Creation-Date: 2023-06-29 21:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -756,16 +756,20 @@ msgstr "The selected slot is already empty."
 msgid "В режиме «Только итем» зачарование оружия недоступно."
 msgstr "In the «Only item» mode, weapon enchantment is not available."
 
-#: .\main_app\templates\main_app\dressing_room.html:2955
-#: .\main_app\templates\main_app\dressing_room.html:3015
+#: .\main_app\templates\main_app\dressing_room.html:2134
+msgid "Сначала возьмите в руку оружие."
+msgstr "First, take a weapon in your hand."
+
+#: .\main_app\templates\main_app\dressing_room.html:2956
+#: .\main_app\templates\main_app\dressing_room.html:3016
 msgid "К сожалению не удалось загрузить итем."
 msgstr "Unfortunately, it was not possible to download item."
 
-#: .\main_app\templates\main_app\dressing_room.html:3039
+#: .\main_app\templates\main_app\dressing_room.html:3040
 msgid "Теперь вы можете просматривать итемы без персонажа."
 msgstr "Now you can view items without a character."
 
-#: .\main_app\templates\main_app\dressing_room.html:3043
+#: .\main_app\templates\main_app\dressing_room.html:3044
 msgid "Теперь вы можете просматривать итемы на персонаже."
 msgstr "Now you can view and items on the character."
 

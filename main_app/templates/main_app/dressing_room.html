@@ -100,20 +100,14 @@
       race: charData.race,
       gender: charData.gender,
       items: charData.items,
-        // 'Head': 1,
-        // 'Shoulder': 3,
-        // 'Cloak': 16,
-        // 'Chest': 5,
-        // 'Shirt': 4,
-        // 'Tabard': 19,
-        // 'Wrist': 9,
-        // 'Hands': 10,
-        // 'Waist': 6,
-        // 'Legs': 7,
-        // 'Feet': 8,
-        // 'Оружия ближнего боя': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
-        // 'все дальнобойные кроме луков': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
-        // 'только луки': 15, 22, 23 (лев. рука)
+      // 'Оружия ближнего боя':
+      // 15, 22, 23 (лев. рука)
+      // 13, 17, 21, 25, 26 (прав. рука)
+      // 'все дальнобойные кроме луков':
+      // 15, 22, 23 (лев. рука)
+      // 13, 17, 21, 25, 26 (прав. рука)
+      // 'только луки':
+      // 15, 22, 23 (лев. рука)
       sheathMain: -1,
       sheathOff: -1,
       generalOptions: {
@@ -213,10 +207,6 @@
     };
   };
 
-
-  if (window.dressUI.game_patch === 'live') {
-    $(document).ready(() => $('#change_game_patch')[0].style.backgroundImage = `url(/static/main_app/images/${window.dressUI.game_patch}.png)`);
-  };
 
   const LOCAL_VIEWER = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.js`;
   const LOCAL_VIEWER_MIN = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.min.js`;
@@ -1951,6 +1941,11 @@
             warnMessageHandler(6000, interpolate("{% trans 'Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.' %}", [window.dressUI.game_patch.toUpperCase()]));
           }));
 
+          if (window.dressUI.game_patch === 'live') {
+            $('#change_game_patch')[0].style.backgroundImage =
+            `url(/static/main_app/images/${window.dressUI.game_patch}.png)`;
+          };
+
 
           if (window.dressUI.room_creator) {
             $('.dressing-room-character-controls-general')[0].insertAdjacentHTML('beforeEnd',
@@ -1985,19 +1980,16 @@
         </script>
 
         <script>
+          const sortItemsFunc = (a, b) => {
+            if (a.getAttribute('ilvl') == b.getAttribute('ilvl')) return -1;
+          };
+
           function sortItems(items_menu, slot_data, arr=null) {
-
-            const sort_func = (a, b) => {
-              if (a.getAttribute('ilvl') == b.getAttribute('ilvl')) {
-                return -1;
-              };
-            };
-
             if (!arr) {
               const slotItems = items_menu.children[1].getElementsByTagName("A");
               arr = Array.from(slotItems);
             };
-            const sortedSlotItemsArray = arr.sort(sort_func);
+            const sortedSlotItemsArray = arr.sort(sortItemsFunc);
 
             // sortedSlotItemsArray.forEach(element => {
             $(sortedSlotItemsArray).each(function(index, element) {
@@ -2053,7 +2045,6 @@
             };
 
             // console.log('clearItemSlots_before_clearSlots -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
-            // console.log('clearItemSlots_before_clearSlots -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
 
             if (slotId === '021' || slotId === '022') {
               const index = slotIdsIsExists(parseInt(slotId));
@@ -2090,14 +2081,12 @@
 
             // Удалить итем с указанного айди слота
             window.model.renderer.viewer.method("clearSlots", slotId.toString());
-            // удалить несколько итемов по айди слотов (чистит но выдаёт ошибку, хз чё ему не нравится)
-            // передаётся строка в таком формате: "21,22"
-            // window.model.renderer.viewer.method("clearSlots", [21, 22].join());
+            // удалить несколько итемов по айди слотов
+            // передаётся строка в таком формате: "21,22" получается так: [21, 22].join()
 
             if (slotId == 21 || slotId == 22 || slotId == 23) updateSheathInfo();
 
             // console.log('clearItemSlots_after_clearSlots -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
-            // console.log('clearItemSlots_after_clearSlots -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
           };
 
 
@@ -2118,7 +2107,6 @@
             };
 
             // console.log('setItemSlots_before_setItems -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
-            // console.log('setItemSlots_before_setItems -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
 
             let index = slotIdsIsExists(slotId);
 
@@ -2131,7 +2119,7 @@
                 displayId = window.dressUI.model_opts.items[index][1];
                 itemId = window.dressUI.model_opts.items[index][2];
               } else {
-                warnMessageHandler(2000, 'Сначала возьмите в руку оружие.');
+                warnMessageHandler(2000, "{% trans 'Сначала возьмите в руку оружие.' %}");
                 return false;
               };
             };
@@ -2144,7 +2132,7 @@
                   // warnMessageHandler(1500, 'Надетый и выбранный итемы имеют одинаковые модели.');
                   return false;
                 };
-                // иначе обновляем displayId на новый
+                // иначе обновляем displayId, itemId и visualId на новый
                 window.dressUI.model_opts.items[index][1] = displayId;
                 window.dressUI.model_opts.items[index][2] = itemId;
                 if (visualId !== 0) window.dressUI.model_opts.items[index][3] = visualId;
@@ -2191,17 +2179,14 @@
 
               index = slotIdsIsExists(slotId);
 
-              // Установить итемы на модель
+              // Установить итемы на модель (можно устанавливать несколько итемов за раз)
               window.model.renderer.viewer.method("setItems", [[
                 { slot: slotId, display: displayId, visual: window.dressUI.model_opts.items[index][3] },
-                // можно устанавливать несколько итемов за раз
-                // { slot: 3, display: 65286, visual: 0 },
               ]]);
 
               if (slotId == 21 || slotId == 22 || slotId == 23) updateSheathInfo();
 
               // console.log('setItemSlots_after_setItems -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
-              // console.log('setItemSlots_after_setItems -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
             };
           };
 
@@ -2226,9 +2211,7 @@
 
           function removeItemUnderline(target) {
             for (let element of target.parentElement.getElementsByTagName("A")) {
-              if (element.classList.contains('text-uline')) {
-                element.classList.remove('text-uline');
-              };
+              if (element.classList.contains('text-uline')) element.classList.remove('text-uline');
             };
           };
 
@@ -2280,7 +2263,7 @@
 
               elements_list.push(element_a);
             };
-            return elements_list
+            return elements_list;
           };
 
 
@@ -2446,11 +2429,9 @@
 
 
           function updateSheathText() {
-            if (window.dressUI.char.sheath == 0) {
-              $('#select_sheathed_btn').find('a')[1].textContent = 'Unsheathed';
-            } else {
-              $('#select_sheathed_btn').find('a')[1].textContent = `Sheathed-${window.dressUI.char.sheath}`;
-            };
+            $('#select_sheathed_btn').find('a')[1].textContent = window.dressUI.char.sheath == 0
+            ? 'Unsheathed'
+            : `Sheathed-${window.dressUI.char.sheath}`;
             window.dressUI.model_opts.sheathMain = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][0];
             window.dressUI.model_opts.sheathOff = window.dressUI.char.sheath_opts[window.dressUI.char.sheath][1];
           };
@@ -2560,14 +2541,14 @@
           function findElementByItemId(itemId, slot_btn) {
             let slotItems = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].getElementsByTagName("A");
             for (let i=0; i < slotItems.length; i++) {
-              if (slotItems[i].href.split('=').pop() == itemId) { return slotItems[i]; };
+              if (slotItems[i].href.split('=').pop() == itemId) return slotItems[i];
             };
           };
 
           function findElementByVisualId(visualId, slot_btn) {
             let slotItems = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].getElementsByTagName("A");
             for (let i=0; i < slotItems.length; i++) {
-              if (slotItems[i].getAttribute('visualId') == visualId) { return slotItems[i]; };
+              if (slotItems[i].getAttribute('visualId') == visualId) return slotItems[i];
             };
           };
 
@@ -2585,10 +2566,9 @@
 
             for (const itemData of window.dressUI.model_opts.items) {
               if (flag) {
-                clearItemSlotIcon(itemData[0]); // очищаем иконки слот буттонов от итемов при переключении на режим "Только итемы"
-                if (itemData[0] == 21 || itemData[0] == 22) {
-                  clearItemSlotIcon(`0${itemData[0]}`);
-                };
+                // очищаем иконки слот буттонов от итемов при переключении на режим "Только итемы"
+                clearItemSlotIcon(itemData[0]);
+                if (itemData[0] == 21 || itemData[0] == 22) clearItemSlotIcon(`0${itemData[0]}`);
               } else {
                 let slot_btn = getSlotBtnBySlotId(itemData[0]);
                 let element_a = findElementByItemId(itemData[2], slot_btn);
@@ -2628,17 +2608,6 @@
             $('#character_button').css('background-image',
             `url(${DEFAULT_ICON_URL}race_${race}_${gender}.jpg)`);
           };
-
-
-          // function set_gear_image() {
-          //   const cloth_gear = 'inv_chest_cloth_21';
-          //   const leather_gear = 'inv_chest_leather_09';
-          //   const chain_gear = 'inv_chest_chain_05';
-          //   const plate_gear = 'inv_chest_plate15';
-          //   $('#gear_button').css('background-image',
-          //   `url(${DEFAULT_ICON_URL}${plate_gear}.jpg)`);
-          // };
-          // set_gear_image();
         </script>
 
         <script>
@@ -2665,7 +2634,10 @@
               setDisplayState('none', face_settings, char_settings);
               window.dressUI.active_cat = 'gear';
 
-              if (!window.dressUI.char.only_item) { window.model.renderer.viewer.setZoom(-3); window.model.renderer.viewer.setOffset(0, 0); };
+              if (!window.dressUI.char.only_item) {
+                window.model.renderer.viewer.setZoom(-3);
+                window.model.renderer.viewer.setOffset(0, 0);
+              };
 
             } else if (category === 'face') {
               removeAttr('data-active', gear_button, char_button);
@@ -2681,7 +2653,10 @@
               setDisplayState('none', paperdoll_left, paperdoll_right, paperdoll_bottom, face_settings);
               window.dressUI.active_cat = 'character';
 
-              if (!window.dressUI.char.only_item) { window.model.renderer.viewer.setZoom(-3); window.model.renderer.viewer.setOffset(0, 0); };
+              if (!window.dressUI.char.only_item) {
+                window.model.renderer.viewer.setZoom(-3);
+                window.model.renderer.viewer.setOffset(0, 0);
+              };
             };
           });
 
@@ -2814,7 +2789,8 @@
             imit_sel.setAttribute('data-field-filled', 'true');
             imit_sel.setAttribute('href', 'javascript:');
             imit_sel.setAttribute('tabindex', '-1');
-            imit_sel.textContent = window.dressUI.face.have_text_opt[i] // если опция без названий будем использовать просто индексы
+            // если опция без названий будем использовать просто индексы
+            imit_sel.textContent = window.dressUI.face.have_text_opt[i]
             ? window.dressUI.face.have_text_opt[i]
             : window.dressUI.face.current[i] + 1;
 
@@ -2905,9 +2881,20 @@
           const _generateCharModel = async function() {
             if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
-            // глубокая копия window.dressUI.model_opts для удаления itemId и visualId из items для последующей передачи в generateModels
+            // глубокая копия window.dressUI.model_opts для удаления itemId и visualId из items перед генерацией модели
             let dc_model_opts = JSON.parse(JSON.stringify(window.dressUI.model_opts));
-            dc_model_opts.items = [...new Set(dc_model_opts.items.map(item => [item[0], item[1]]))];
+            dc_model_opts.items = [];
+            dc_model_opts.items = dc_model_opts.items.map(item => [item[0], item[1]]);
+
+            // Принудительно удаляю 21, 22, 23 слоты из dc_model_opts для того
+            // чтобы у маунта при загрузке не было оружия в копытах..
+            // после загрузки модели, оружие будет установлено обратно на персонажа.
+            if (dc_model_opts.generalOptions.mount.id !== 0) {
+              for (const slotId of [21, 22, 23]) {
+                const index = slotIdsIsExists(slotId);
+                if (index !== false) dc_model_opts.items.splice(index, 1);
+              };
+            };
 
             window.model = await generateModels(
               '#paperdoll-model-dressing-room-paperdoll',
@@ -2920,12 +2907,12 @@
               window.model.renderer.viewer.method("setSheath",
               window.dressUI.char.sheath_opts[window.dressUI.char.sheath]);
 
-              // Установить визуальный эффект на оружие
+              // Установить оружие и визуальный эффект на оружие после загрузки модели
               const items = window.dressUI.model_opts.items;
               const setItemsData = [];
-              for (const slotId of [21, 22]) {
+              for (const slotId of [21, 22, 23]) {
                 const index = slotIdsIsExists(slotId);
-                if (index) setItemsData.push({slot: items[index][0], display: items[index][1], visual: items[index][3]});
+                if (index !== false) setItemsData.push({slot: items[index][0], display: items[index][1], visual: items[index][3]});
               };
               window.model.renderer.viewer.method("setItems", [setItemsData]);
 
@@ -3010,7 +2997,9 @@
               window.dressUI.AnimIsPaused = false;
               updateAnimPaused();
 
-              document.documentElement.clientWidth < 800 ? window.model.renderer.viewer.setZoom(-3) : window.model.renderer.viewer.setZoom(-8);
+              document.documentElement.clientWidth < 800
+              ? window.model.renderer.viewer.setZoom(-3)
+              : window.model.renderer.viewer.setZoom(-8);
             });
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
@@ -3057,6 +3046,7 @@
             // }))
             .then((data) => {
               window.itemsData = data;
+              // добавляю первый слот пустышку для возможности отключения маунта
               window.itemsData[0].mounts.unshift({"displayId": 0, "name": "None"});
               creatingItemsMenu();
             });
@@ -3109,7 +3099,9 @@
             if (document.documentElement.clientWidth < 800) {
               window.model.renderer.viewer.setZoom(-3); // range(-14.5, 12.6)
             } else {
-              window.dressUI.char.only_item ? window.model.renderer.viewer.setZoom(-8) : window.model.renderer.viewer.setZoom(-3);
+              window.dressUI.char.only_item
+              ? window.model.renderer.viewer.setZoom(-8)
+              : window.model.renderer.viewer.setZoom(-3);
             };
 
             // window.model.renderer.distance = 6;
@@ -3150,7 +3142,9 @@
               dr_pause[0].classList.remove('fa-play');
               dr_pause[0].classList.add('fa-pause');
             };
-            if (flag) setTimeout(() => { window.model.renderer.viewer.method("setAnimPaused", window.dressUI.AnimIsPaused); }, 4);
+            if (flag) setTimeout(() => {
+              window.model.renderer.viewer.method("setAnimPaused", window.dressUI.AnimIsPaused);
+            }, 4);
           };
         </script>
 
