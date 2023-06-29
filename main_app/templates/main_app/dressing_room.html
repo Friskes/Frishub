@@ -39,7 +39,9 @@
     8: 'inventoryslot_feet',
     21: 'inventoryslot_mainhand',
     22: 'inventoryslot_offhand',
-    23: 'inventoryslot_ranged'
+    23: 'inventoryslot_ranged',
+    '021': 'inventoryslot_enchant',
+    '022': 'inventoryslot_enchant'
   };
 
   const ITEM_QUALITIES = {
@@ -67,8 +69,13 @@
       const items = character_data.items.split(',');
       character_data.items = [];
 
-      for (let i=0; i < items.length; i=i+3) {
-        character_data.items.push([parseInt(items[i]), parseInt(items[i+1]), parseInt(items[i+2])]);
+      for (let i=0; i < items.length; i=i+4) {
+        character_data.items.push([
+          parseInt(items[i]),
+          parseInt(items[i+1]),
+          parseInt(items[i+2]),
+          parseInt(items[i+3])
+        ]);
       };
     };
 
@@ -108,7 +115,14 @@
         // 'все дальнобойные кроме луков': 15, 22, 23 (лев. рука) 13, 17, 21, 25, 26 (прав. рука)
         // 'только луки': 15, 22, 23 (лев. рука)
       sheathMain: -1,
-      sheathOff: -1
+      sheathOff: -1,
+      generalOptions: {
+        mount: {type: 8, id: 0},
+        // pet: {type: 8, id: 0, scale: 0.8, offset: [0, -1.15, 0]}, // X, Y, Z
+        // background: "background-181818.png",
+        // background: "background-classic-181818.png",
+        // background: "background-classic-ddd.png"
+      }
     },
     active_cat: 'gear',
     gear: {
@@ -126,7 +140,9 @@
         slot8:  {name: 'Feet',     quality: 4, index: 0, type: 'Cloth', available_types: ["Cloth", "Leather", "Mail", "Plate", "Miscellaneous"]},
         slot21: {name: 'MainHand', quality: 4, index: 0, type: 'Axe', available_types: ["Axe", "Sword", "Mace", "Dagger", "Fist Weapon", "Staff", "Polearm", "Fishing Pole", "Exotic", "Miscellaneous"]},
         slot22: {name: 'OffHand',  quality: 4, index: 0, type: 'Axe', available_types: ["Axe", "Sword", "Mace", "Dagger", "Fist Weapon", "Shield", "Miscellaneous"]},
-        slot23: {name: 'Ranged',   quality: 4, index: 0, type: 'Bow', available_types: ["Bow", "Gun", "Wand", "Crossbow", "Thrown"]}
+        slot23: {name: 'Ranged',   quality: 4, index: 0, type: 'Bow', available_types: ["Bow", "Gun", "Wand", "Crossbow", "Thrown"]},
+        slot021: {name: 'Enchants', quality: 1, index: 0, type: '', available_types: []},
+        slot022: {name: 'Enchants', quality: 1, index: 0, type: '', available_types: []}
       }
     },
     char: {
@@ -134,6 +150,7 @@
       gender_id: charData.gender,
       anim: 0,
       default_anim: 0,
+      mount: 0,
       sheath: 0,
       sheath_opts: [],
       only_item: false,
@@ -149,7 +166,6 @@
       have_text_opt: []
     }
   };
-
 
   function slotIdsIsExists(...slotIds) {
     for (const slotId of slotIds) {
@@ -246,7 +262,7 @@
       }
     });
   };
-  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 4000);
+  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, 100);
 
 
   const IGNORED_WRAPPED_PROPS = [
@@ -457,11 +473,6 @@
   }
   .paperdoll .paperdoll-bottom .paperdoll-enchant {
     transform: scale(0.75);
-    transform-origin: right
-  }
-  .paperdoll .paperdoll-bottom .iconlarge+.paperdoll-enchant,
-  .paperdoll .paperdoll-bottom .iconmedium+.paperdoll-enchant {
-    transform-origin: left
   }
   .paperdoll .paperdoll-model {
     bottom: 47px;
@@ -592,7 +603,7 @@
   }
   .paperdoll-enchant-disabled {
     opacity: 0.2;
-    pointer-events: none
+    pointer-events: none !important
   }
 
   .caret-disabled {
@@ -804,6 +815,10 @@
     left: 123px;
     top: 2px;
   }
+  .items-menu-bottom-left-enchant {
+    left: 67px;
+    top: 9px;
+  }
   .items-menu-bottom-center {
     right: 193px;
     top: 2px;
@@ -811,6 +826,10 @@
   .items-menu-bottom-right {
     right: 124px;
     top: 2px;
+  }
+  .items-menu-bottom-right-enchant {
+    right: 67px;
+    top: 9px;
   }
 
   /* Если мы на мобильном */
@@ -842,15 +861,9 @@
       left: -266px;
     }
 
-    .items-menu-bottom-left {
-      left: -7px;
-      top: 35px;
-    }
-    .items-menu-bottom-center {
-      left: -7px;
-      top: 35px;
-    }
-    .items-menu-bottom-right {
+    .items-menu-bottom-left, .items-menu-bottom-left-enchant,
+    .items-menu-bottom-center, .items-menu-bottom-right,
+    .items-menu-bottom-right-enchant {
       left: -7px;
       top: 35px;
     }
@@ -1556,6 +1569,41 @@
               </div>
 
               <div class="paperdoll-bottom">
+
+                <div class="slot-container" style="display: inline-block;">
+                  <div class="iconlarge paperdoll-enchant" data-env="live" data-tree="live" data-game="wow" data-character-slot="021"
+                    style="display: inline-block; position: relative; z-index: 1; transform-origin: right;">
+                    <ins class="" style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_enchant.jpg&quot;);"></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-bottom-left-enchant">
+                    <div class="d-block d-md-block mb-2" style="display: none !important;">
+                      <div class="dressing-room-character-controls-category-option" data-character-customization-type="item_type"
+                        style="align-items: center; justify-content: center;">
+                        <a class="btn dress-btn fa fa-square first-btn-wow poor-wow" href="javascript:" tabindex="-1" data-quality="0"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow common-wow" href="javascript:" tabindex="-1" data-quality="1"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow uncommon-wow" href="javascript:" tabindex="-1" data-quality="2"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow rare-wow" href="javascript:" tabindex="-1" data-quality="3"></a>
+                        <a class="btn dress-btn fa fa-check-square medium-btn-wow epic-wow" href="javascript:" tabindex="-1" data-quality="4"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow legendary-wow" href="javascript:" tabindex="-1" data-quality="5"></a>
+                        <a class="btn dress-btn fa fa-square last-btn-wow heirloom-wow" href="javascript:" tabindex="-1" data-quality="7"></a>
+                        <div tabindex="0" data-role="control" data-disabled="false" id="select_item_type_btn" style="padding-right: 2px;">
+                          <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                          <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
+                          <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table-responsive items-menu-table"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots('021');">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher('021', this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="slot-container" style="display: inline-block;">
                   <div class="iconlarge" data-env="live" data-tree="live" data-game="wow" data-character-slot="21"
                     style="display: inline-block; position: relative; z-index: 1;">
@@ -1655,6 +1703,41 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="slot-container" style="display: inline-block;">
+                  <div class="iconlarge paperdoll-enchant" data-env="live" data-tree="live" data-game="wow" data-character-slot="022"
+                    style="display: inline-block; position: relative; z-index: 1; transform-origin: left;">
+                    <ins class="" style="background-image: url(&quot;https://wow.zamimg.com/images/wow/icons/large/inventoryslot_enchant.jpg&quot;);"></ins>
+                    <del></del>
+                    <a href="javascript:"></a>
+                  </div>
+                  <div class="items-menu items-menu-bottom-right-enchant">
+                    <div class="d-block d-md-block mb-2" style="display: none !important;">
+                      <div class="dressing-room-character-controls-category-option" data-character-customization-type="item_type"
+                        style="align-items: center; justify-content: center;">
+                        <a class="btn dress-btn fa fa-square first-btn-wow poor-wow" href="javascript:" tabindex="-1" data-quality="0"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow common-wow" href="javascript:" tabindex="-1" data-quality="1"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow uncommon-wow" href="javascript:" tabindex="-1" data-quality="2"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow rare-wow" href="javascript:" tabindex="-1" data-quality="3"></a>
+                        <a class="btn dress-btn fa fa-check-square medium-btn-wow epic-wow" href="javascript:" tabindex="-1" data-quality="4"></a>
+                        <a class="btn dress-btn fa fa-square medium-btn-wow legendary-wow" href="javascript:" tabindex="-1" data-quality="5"></a>
+                        <a class="btn dress-btn fa fa-square last-btn-wow heirloom-wow" href="javascript:" tabindex="-1" data-quality="7"></a>
+                        <div tabindex="0" data-role="control" data-disabled="false" id="select_item_type_btn" style="padding-right: 2px;">
+                          <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                          <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
+                          <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table-responsive items-menu-table"></div>
+                    <div class="d-block d-md-block mt-2">
+                      <button class="btn-custom btn-close-items-menu-left" onclick="clearItemSlots('022');">{% trans 'Очистить слот' %}</button>
+                      <button class="btn-custom btn-close-items-menu-right"
+                        onclick="slot_switcher('022', this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
               <div class="paperdoll-model">
@@ -1720,6 +1803,14 @@
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="animation">
                 <div data-role="label">{% trans 'Анимация' %}</div>
                 <div tabindex="0" data-role="control" data-disabled="false" id="select_animation_btn">
+                  <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
+                  <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
+                </div>
+              </div>
+              <div class="dressing-room-character-controls-category-option" data-character-customization-type="mount">
+                <div data-role="label">{% trans 'Маунт' %}</div>
+                <div tabindex="0" data-role="control" data-disabled="false" id="select_mount_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
                   <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
@@ -1912,7 +2003,8 @@
             $(sortedSlotItemsArray).each(function(index, element) {
 
               if (element.getAttribute('type') == slot_data.type
-              && element.getAttribute('quality') == slot_data.quality) {
+              && element.getAttribute('quality') == slot_data.quality
+              || element.getAttribute('visualId')) {
                 element.style.display = 'block';
               } else {
                 element.style.display = 'none';
@@ -1963,6 +2055,23 @@
             // console.log('clearItemSlots_before_clearSlots -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
             // console.log('clearItemSlots_before_clearSlots -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
 
+            if (slotId === '021' || slotId === '022') {
+              const index = slotIdsIsExists(parseInt(slotId));
+
+              if (index === false || !window.dressUI.model_opts.items[index][3]) {
+                warnMessageHandler(1500, "{% trans 'Выбранный слот уже пуст.' %}");
+              } else {
+                const displayId = window.dressUI.model_opts.items[index][1];
+                window.model.renderer.viewer.method("setItems", [[
+                  { slot: parseInt(slotId), display: displayId, visual: 0 }
+                ]]);
+
+                window.dressUI.model_opts.items[index].splice(3, 1, 0);
+                clearItemSlotIcon(slotId);
+              };
+              return false;
+            };
+
             const index = slotIdsIsExists(slotId);
             // если текущий slotId не записан в items тогда выходим из функции
             if (index === false) {
@@ -1973,6 +2082,11 @@
             window.dressUI.model_opts.items.splice(index, 1);
 
             clearItemSlotIcon(slotId);
+
+            switch (parseInt(slotId)) {
+              case 21: clearItemSlotIcon('021'); break;
+              case 22: clearItemSlotIcon('022'); break;
+            };
 
             // Удалить итем с указанного айди слота
             window.model.renderer.viewer.method("clearSlots", slotId.toString());
@@ -1990,39 +2104,58 @@
           function setItemSlots(element_a) {
             const slot_btn = element_a.parentElement.parentElement.parentElement.children[0];
             let slotId = parseInt(slot_btn.getAttribute('data-character-slot'));
-            const displayId = parseInt(element_a.getAttribute('display-id'));
-            const itemId = parseInt(element_a.href.split('=').pop());
+            let displayId = parseInt(element_a.getAttribute('display-id'));
+            let itemId = parseInt(element_a.href.split('=').pop());
+            let visualId = parseInt(element_a.getAttribute('visualId')) || 0;
 
             // Временная заглушка
             if (window.dressUI.char.only_item && slotId != 21 && slotId != 22 && slotId != 23) {
               warnMessageHandler(3000, 'IN DEVELOPMENT\nДоступны только слоты с оружием.');
+              return false;
+            } else if (window.dressUI.char.only_item && visualId !== 0) {
+              warnMessageHandler(3000, 'В режиме «Только итем» зачарование оружия недоступно.');
               return false;
             };
 
             // console.log('setItemSlots_before_setItems -> window.dressUI.model_opts.items:', ...window.dressUI.model_opts.items);
             // console.log('setItemSlots_before_setItems -> viewer.options.items:', ...window.model.renderer.viewer.options.items);
 
-            if (!window.dressUI.char.only_item) {
+            let index = slotIdsIsExists(slotId);
 
-              const index = slotIdsIsExists(slotId);
+            if (visualId !== 0) {
+              if (index !== false) {
+                if (window.dressUI.model_opts.items[index][3] == visualId) {
+                  // warnMessageHandler(1500, 'Надетый и выбранный итемы имеют одинаковые модели.');
+                  return false;
+                };
+                displayId = window.dressUI.model_opts.items[index][1];
+                itemId = window.dressUI.model_opts.items[index][2];
+              } else {
+                warnMessageHandler(2000, 'Сначала возьмите в руку оружие.');
+                return false;
+              };
+            };
+
+            if (!window.dressUI.char.only_item) {
               // если текущий slotId уже записан в items тогда
               if (index !== false) {
                 // если текущий displayId равен записаному в items тогда выходим из функции
-                if (window.dressUI.model_opts.items[index][1] == displayId) {
+                if (window.dressUI.model_opts.items[index][1] == displayId && visualId === 0) {
                   // warnMessageHandler(1500, 'Надетый и выбранный итемы имеют одинаковые модели.');
                   return false;
                 };
                 // иначе обновляем displayId на новый
                 window.dressUI.model_opts.items[index][1] = displayId;
-                window.dressUI.model_opts.items[index][2] = itemId; // так же обновляем itemId
+                window.dressUI.model_opts.items[index][2] = itemId;
+                if (visualId !== 0) window.dressUI.model_opts.items[index][3] = visualId;
               // иначе добавляем новый итем в items
               } else {
-                window.dressUI.model_opts.items.push([slotId, displayId, itemId]);
+                window.dressUI.model_opts.items.push([slotId, displayId, itemId, visualId]);
               };
 
               switch (slotId) {
                 case 22: if (slotIdsIsExists(23) !== false) clearItemSlots(23); break;
-                case 23: if (slotIdsIsExists(22) !== false) clearItemSlots(22); break;
+                case 23: if (slotIdsIsExists(22) !== false) clearItemSlots(22); clearItemSlotIcon('022'); break;
               };
 
             } else {
@@ -2044,7 +2177,7 @@
                 case 22: clearItemSlotIcon(21); clearItemSlotIcon(23); break;
                 case 23: clearItemSlotIcon(21); clearItemSlotIcon(22); break;
               };
-              window.createItemModel({type: 1, id: displayId});
+              window.generateItemModel({type: 1, id: displayId});
 
             } else {
               if (!PREV_ITEM_ELEMS[slotId].current) {
@@ -2056,10 +2189,11 @@
 
               window.model.renderer.viewer.method("clearSlots", slotId.toString());
 
+              index = slotIdsIsExists(slotId);
+
               // Установить итемы на модель
               window.model.renderer.viewer.method("setItems", [[
-                // slotId, displayId, enchantVisualId
-                { slot: slotId, display: displayId, visual: 0 },
+                { slot: slotId, display: displayId, visual: window.dressUI.model_opts.items[index][3] },
                 // можно устанавливать несколько итемов за раз
                 // { slot: 3, display: 65286, visual: 0 },
               ]]);
@@ -2075,7 +2209,7 @@
           function getSlotBtnBySlotId(slotId) {
             let toReturn;
             $('.iconlarge').each(function(index, slot_btn) {
-              if (slotId == slot_btn.getAttribute('data-character-slot')) {
+              if (slotId.toString() === slot_btn.getAttribute('data-character-slot')) {
                 toReturn = slot_btn;
                 return false;
               };
@@ -2113,6 +2247,8 @@
           function generateItemsMenuHtml(slotId) {
             let elements_list = [];
 
+            if (slotId === '021' || slotId === '022') slotId = 'enchants';
+
             for (const itemData of window.itemsData[0][slotId]) {
 
               const element_ins_icon = document.createElement('ins');
@@ -2129,6 +2265,10 @@
               element_span_text.textContent = itemData.name;
 
               const element_a = document.createElement('a');
+              if (slotId === 'enchants') {
+                element_a.setAttribute('visualId', itemData.visualId);
+                itemData.quality = 1;
+              };
               element_a.classList.add(ITEM_QUALITIES[itemData.quality]);
               element_a.setAttribute('href', `${WH_TOOLTIP_URL}${itemData.itemId}`);
               element_a.setAttribute('display-id', itemData.displayId);
@@ -2232,9 +2372,14 @@
           function setDefaultText() {
             $('#select_race_btn').find('a')[1].textContent = RACES[window.dressUI.char.race_id];
             $('#select_gender_btn').find('a')[1].textContent = GENDERS[window.dressUI.char.gender_id];
+
             updateSheathText();
+
             $('#select_animation_btn').find('a')[1].textContent =
             window.dressUI.char.anims_list[window.dressUI.char.anim];
+
+            $('#select_mount_btn').find('a')[1].textContent =
+            window.itemsData[0].mounts[window.dressUI.char.mount].name;
           };
         </script>
 
@@ -2257,7 +2402,7 @@
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.race_id, 11, 1);
             event.target.parentElement.children[1].textContent = RACES[window.dressUI.char.race_id];
             window.dressUI.face.current = [];
-            window.createCharModel();
+            window.generateCharModel();
           }));
 
 
@@ -2275,7 +2420,7 @@
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.gender_id, 1);
             event.target.parentElement.children[1].textContent = GENDERS[window.dressUI.char.gender_id];
             window.dressUI.face.current = [];
-            window.createCharModel();
+            window.generateCharModel();
           }));
 
 
@@ -2337,6 +2482,32 @@
             // window.model.renderer.viewer.method("resetAnimation"); // Отменить анимацию
             $('#select_animation_btn').find('a')[1].textContent = anim_name;
           };
+
+
+          $('#select_mount_btn a').on('click', modelIsLoaded(function(event) {
+
+            const mounts_list_len = window.itemsData[0].mounts.length - 1;
+
+            if (this.classList.contains('fa-caret-left')
+            && window.dressUI.char.mount > 0) {
+
+              window.dressUI.char.mount -= 1;
+
+            } else if (this.classList.contains('fa-caret-right')
+            && window.dressUI.char.mount < mounts_list_len) {
+
+              window.dressUI.char.mount += 1;
+            };
+
+            $('#select_mount_btn').find('a')[1].textContent =
+            window.itemsData[0].mounts[window.dressUI.char.mount].name;
+
+            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.mount, mounts_list_len);
+
+            window.dressUI.model_opts.generalOptions.mount.id =
+            window.itemsData[0].mounts[window.dressUI.char.mount].displayId;
+            _generateCharModel();
+          }));
         </script>
 
         <script>
@@ -2393,9 +2564,16 @@
             };
           };
 
+          function findElementByVisualId(visualId, slot_btn) {
+            let slotItems = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].getElementsByTagName("A");
+            for (let i=0; i < slotItems.length; i++) {
+              if (slotItems[i].getAttribute('visualId') == visualId) { return slotItems[i]; };
+            };
+          };
+
 
           function updateItemSlotIcon(flag) {
-            // Специальный костыль чтобы убрать подчеркивания и иконки выбранных итемов в режиме "Только итемы"
+            // Специальный костыль чтобы убрать подчеркивания и иконки выбранных итемов при выходе из режима "Только итемы"
             if (!flag) {
               for (const slotId of [21, 22, 23]) {
                 const slot_btn = getSlotBtnBySlotId(slotId);
@@ -2408,14 +2586,30 @@
             for (const itemData of window.dressUI.model_opts.items) {
               if (flag) {
                 clearItemSlotIcon(itemData[0]); // очищаем иконки слот буттонов от итемов при переключении на режим "Только итемы"
+                if (itemData[0] == 21 || itemData[0] == 22) {
+                  clearItemSlotIcon(`0${itemData[0]}`);
+                };
               } else {
-                const slot_btn = getSlotBtnBySlotId(itemData[0]);
+                let slot_btn = getSlotBtnBySlotId(itemData[0]);
                 let element_a = findElementByItemId(itemData[2], slot_btn);
 
                 removeItemUnderline(element_a);
                 element_a.classList.add('text-uline');
 
                 setItemSlotIcon(element_a, slot_btn);
+
+                // Установить иконку для enchant слотов совместно со слотами оружия
+                if (itemData[0] == 21 || itemData[0] == 22) {
+                  slot_btn = getSlotBtnBySlotId(`0${itemData[0]}`);
+                  element_a = findElementByVisualId(itemData[3], slot_btn);
+
+                  if (element_a) {
+                    removeItemUnderline(element_a);
+                    element_a.classList.add('text-uline');
+
+                    setItemSlotIcon(element_a, slot_btn);
+                  };
+                };
               };
             };
 
@@ -2575,35 +2769,36 @@
 
             $(document).ready(function() {
 
-              window.createCharModel();
+              window.generateCharModel();
 
-              //////////////// TEST №1 Устойчивость к спаму ////////////////
+              //////////////// TEST №1 STRESS TEST CHAR MODEL ////////////////
               // window.dressUI.model_opts.items = [ // items with CORS policy
-              //   [1, 64897],
-              //   [3, 64896],
-              //   [16, 22996],
-              //   [5, 64859],
-              //   [4, 11977],
-              //   [19, 65733],
-              //   [9, 63901],
-              //   [21, 65153],
-              //   [22, 45146],
-              //   [10, 63910],
-              //   [6, 109302],
-              //   [7, 64246],
-              //   [8, 63825]
+              //   [1,  64897,  51281, 0],
+              //   [3,  64896,  51284, 0],
+              //   [16, 22996,  54583, 0],
+              //   [5,  64859,  51283, 0],
+              //   [4,  11977,  45280, 0],
+              //   [19, 65733,  52252, 0],
+              //   [9,  63901,  54582, 0],
+              //   [21, 65153,  49623, 155],
+              //   [22, 45146,  32838, 165],
+              //   [10, 63910,  51280, 0],
+              //   [6,  109302, 50702, 0],
+              //   [7,  64246,  51282, 0],
+              //   [8,  63825,  50699, 0]
               // ];
-              // window.createCharModel();
-              // setInterval(function() { modelIsLoaded(window.createCharModel)(); }, 4);
-              //////////////// TEST №1 Устойчивость к спаму ////////////////
+              // window.generateCharModel();
+              // setInterval(function() { modelIsLoaded(window.generateCharModel)(); }, 4);
+              //////////////// TEST №1 STRESS TEST CHAR MODEL ////////////////
 
-              //////////////// TEST №2 Устойчивость к спаму ////////////////
+              //////////////// TEST №2 STRESS TEST ITEM MODEL ////////////////
               // window.dressUI.char.only_item = true;
-              // window.createItemModel({type: 1, id: 65153});
-              // setInterval(function() { modelIsLoaded(window.createItemModel)({type: 1, id: 65153}); }, 4);
-              //////////////// TEST №2 Устойчивость к спаму ////////////////
+              // window.generateItemModel({type: 1, id: 65153});
+              // setInterval(function() { modelIsLoaded(window.generateItemModel)({type: 1, id: 65153}); }, 4);
+              //////////////// TEST №2 STRESS TEST ITEM MODEL ////////////////
             });
           };
+          $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
           loadingLibraries();
         </script>
 
@@ -2707,21 +2902,15 @@
           };
 
 
-          const generateCharModel = async function() {
+          const _generateCharModel = async function() {
 
-            // глубокая копия window.dressUI.model_opts для удаления itemId из items для последующей передачи в generateModels
+            // глубокая копия window.dressUI.model_opts для удаления itemId и visualId из items для последующей передачи в generateModels
             let dc_model_opts = JSON.parse(JSON.stringify(window.dressUI.model_opts));
             dc_model_opts.items = [...new Set(dc_model_opts.items.map(item => [item[0], item[1]]))];
 
             window.model = await generateModels(
               '#paperdoll-model-dressing-room-paperdoll',
-              Object.assign(dc_model_opts, {
-                // generalOptions: {
-                //   background: "background-181818.png",
-                //   // background: "background-classic-181818.png",
-                //   // background: "background-classic-ddd.png",
-                // }
-              })
+              dc_model_opts
             );
 
             window.model.setModelLoadedCallback(function() {
@@ -2729,6 +2918,15 @@
 
               window.model.renderer.viewer.method("setSheath",
               window.dressUI.char.sheath_opts[window.dressUI.char.sheath]);
+
+              // Установить визуальный эффект на оружие
+              const items = window.dressUI.model_opts.items;
+              const setItemsData = [];
+              for (const slotId of [21, 22]) {
+                const index = slotIdsIsExists(slotId);
+                if (index) setItemsData.push({slot: items[index][0], display: items[index][1], visual: items[index][3]});
+              };
+              window.model.renderer.viewer.method("setItems", [setItemsData]);
 
               updateAnimPaused(true);
 
@@ -2742,9 +2940,10 @@
               const char_data = {
                 id: '#dressing-room-character-settings',
                 key: 'char',
-                fields: ['race_id', 'gender_id', 'sheath', 'anim'],
-                max_len: [11, 1, window.dressUI.char.sheath_opts.length - 1, window.dressUI.char.anims_list.length - 1],
-                min_len: [1, 0, 0, 0]
+                fields: ['race_id', 'gender_id', 'sheath', 'anim', 'mount'],
+                max_len: [11, 1, window.dressUI.char.sheath_opts.length - 1,
+                window.dressUI.char.anims_list.length - 1, window.itemsData[0].mounts.length - 1],
+                min_len: [1, 0, 0, 0, 0]
               };
               refreshAlphaForExtremeButtonPosition(char_data);
 
@@ -2767,7 +2966,7 @@
           };
 
 
-          window.createCharModel = function() {
+          window.generateCharModel = function() {
             if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
@@ -2789,25 +2988,19 @@
 
               refreshAlphaForExtremeButtonPosition(window.dressUI.face);
 
-              generateCharModel();
+              _generateCharModel();
             });
           };
 
 
-          window.createItemModel = async function(opts) {
+          window.generateItemModel = async function(opts) {
             if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
 
             window.model = await generateModels(
               '#paperdoll-model-dressing-room-paperdoll',
-              Object.assign(opts, {
-                // generalOptions: {
-                //   background: "background-181818.png",
-                //   // background: "background-classic-181818.png",
-                //   // background: "background-classic-ddd.png",
-                // }
-              })
+              opts
             );
 
             window.model.setModelLoadedCallback(function() {
@@ -2832,9 +3025,9 @@
               const char_data = {
                 id: '#dressing-room-character-settings',
                 key: 'char',
-                fields: ['race_id', 'gender_id', 'sheath', 'anim'],
-                max_len: [1, 0, 0, 0],
-                min_len: [1, 0, 0, 0]
+                fields: ['race_id', 'gender_id', 'sheath', 'anim', 'mount'],
+                max_len: [1, 0, 0, 0, 0],
+                min_len: [1, 0, 0, 0, 0]
               };
               refreshAlphaForExtremeButtonPosition(char_data);
 
@@ -2845,11 +3038,11 @@
 
               warnMessageHandler(4000, "{% trans 'Теперь вы можете просматривать итемы без персонажа.' %}");
               updateItemSlotIcon(true);
-              window.createItemModel(window.dressUI.char.only_item_data);
+              window.generateItemModel(window.dressUI.char.only_item_data);
             } else {
               warnMessageHandler(4000, "{% trans 'Теперь вы можете просматривать итемы на персонаже.' %}");
               updateItemSlotIcon(false);
-              window.createCharModel();
+              window.generateCharModel();
             };
           }));
 
@@ -2863,6 +3056,7 @@
             // }))
             .then((data) => {
               window.itemsData = data;
+              window.itemsData[0].mounts.unshift({"displayId": 0, "name": "None"});
               creatingItemsMenu();
             });
           };
