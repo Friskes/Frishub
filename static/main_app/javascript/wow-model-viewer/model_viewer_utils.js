@@ -395,9 +395,16 @@ class WowModelViewer extends ZamModelViewer {
                 if (anims_len !== 0) {
                     // console.log('getNumAnimations получен');
                     clearInterval(intervalId);
+                    clearTimeout(timeoutId);
                     callback(_this.generateListAnimations(anims_len));
                 };
             }, 300);
+
+            const timeoutId = setTimeout(function() {
+                // console.log('Не удалось загрузить список анимаций');
+                clearInterval(intervalId);
+                callback(_this.generateListAnimations(anims_len));
+            }, 1000);
         };
     };
 
