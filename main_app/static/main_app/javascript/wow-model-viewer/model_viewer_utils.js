@@ -225,11 +225,15 @@ async function generateModels(containerSelector, model) {
 
     window.models = models;
 
-    // для изменения race и gender требуется полное пересоздание модели
-    // Полностью удаляем модель (включая DOM дерево)
+    // для изменения race, gender, mount требуется полное пересоздание модели
     if (window.model) {
+        // полностью удаляем модель маунта если она есть
+        // (подсказываем Garbage Collector что этот объект следовало бы уничтожить)
+        if (typeof window.model.renderer.options.mount.parent !== "undefined") {
+            for (const key in window.model.renderer.models[0]) window.model.renderer.models[0][key] = null;
+        };
+        // полностью удаляем модель персонажа (включая DOM дерево)
         window.model.renderer.viewer.destroy();
-        // window.model.renderer.viewer = null;
     };
 
     return new WowModelViewer(models);
@@ -404,7 +408,7 @@ class WowModelViewer extends ZamModelViewer {
                 // console.log('Не удалось загрузить список анимаций');
                 clearInterval(intervalId);
                 callback(_this.generateListAnimations(anims_len));
-            }, 1000);
+            }, 1300);
         };
     };
 

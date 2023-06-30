@@ -2905,6 +2905,10 @@
               dc_model_opts
             );
 
+            // console.log(window.model.renderer) // class gl
+            // console.log(window.model.renderer.viewer) // class dl
+            // console.log(window.model.renderer.models[0]) // class ul
+
             window.model.setModelLoadedCallback(async function() {
               $('.paperdoll-model').css('background', 'none');
 
