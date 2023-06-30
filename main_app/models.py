@@ -291,6 +291,8 @@ class DressingRoom(models.Model):
 
     face = models.CharField(max_length=150, verbose_name='Внешность')
 
+    mount = models.CharField(max_length=20, verbose_name='Маунт')
+
     def __str__(self):
         return 'Комната: ' + self.room_id
 

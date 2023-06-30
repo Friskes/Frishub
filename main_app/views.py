@@ -503,7 +503,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'race': self.dressing_room[0].race,
                 'gender': self.dressing_room[0].gender,
                 'items': self.dressing_room[0].items,
-                'face': self.dressing_room[0].face
+                'face': self.dressing_room[0].face,
+                'mount': self.dressing_room[0].mount
             }
             if self.is_room_creator:
                 character_data.update({'my_saved_rooms': self.get_my_saved_rooms(self.creator_id)})
@@ -526,7 +527,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 race=1,
                 gender=1,
                 items='',
-                face='0,0,0,0,0'
+                face='0,0,0,0,0',
+                mount='0'
             )
             character_data = {
                 'room_creator': self.is_room_creator,
@@ -535,7 +537,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'race': 1,
                 'gender': 1,
                 'items': '',
-                'face': '0,0,0,0,0'
+                'face': '0,0,0,0,0',
+                'mount': '0'
             }
             character_data.update({'my_saved_rooms': my_saved_rooms})
 

@@ -227,7 +227,10 @@ async function generateModels(containerSelector, model) {
 
     // для изменения race и gender требуется полное пересоздание модели
     // Полностью удаляем модель (включая DOM дерево)
-    if (window.model) window.model.renderer.viewer.destroy();
+    if (window.model) {
+        window.model.renderer.viewer.destroy();
+        // window.model.renderer.viewer = null;
+    };
 
     return new WowModelViewer(models);
 };
@@ -363,15 +366,8 @@ class WowModelViewer extends ZamModelViewer {
     };
 
 
-    getListAnimations() {
-        // let animNames = window.GAME_PATCH === 'wrath'
-        // ? [...new Set(this.renderer.models[0].ao.map(e => e.j))]
-        // : [...new Set(this.renderer.models[0].ap.map(e => e.j))];
-        // if (!animNames.includes("DressingRoom")) animNames.push("DressingRoom");
-
+    generateListAnimations(anims_len) {
         let animNames = [];
-        const anims_len = this.renderer.viewer.method("getNumAnimations");
-
         for (let i=0; i < anims_len; ++i) {
             const anim_name = this.renderer.viewer.method("getAnimation", i);
 
@@ -381,6 +377,28 @@ class WowModelViewer extends ZamModelViewer {
         const defaultIndex = animNames.findIndex(i => i === "DressingRoom");
 
         return {animNames, defaultIndex};
+    };
+
+
+    async getListAnimations(callback) {
+        const _this = this;
+
+        const anims_len = this.renderer.viewer.method("getNumAnimations");
+        if (anims_len !== 0) {
+            callback(this.generateListAnimations(anims_len));
+        } else {
+            const intervalId = setInterval(function() {
+
+                // console.log('Не удалось получить getNumAnimations');
+                const anims_len = _this.renderer.viewer.method("getNumAnimations");
+
+                if (anims_len !== 0) {
+                    // console.log('getNumAnimations получен');
+                    clearInterval(intervalId);
+                    callback(_this.generateListAnimations(anims_len));
+                };
+            }, 300);
+        };
     };
 
 
@@ -422,14 +440,14 @@ class WowModelViewer extends ZamModelViewer {
     };
 
 
-    setModelLoadedCallback(func) {
+    async setModelLoadedCallback(func) {
         const _this = this;
         if (this.renderer) {
             this.renderer.models[0].ModelLoadedCallbackFunc = func;
             this.renderer.models[0].e = this.setModelLoadedCallback;
             return false;
         };
-        this.ModelLoadedCallbackFunc();
+        await this.ModelLoadedCallbackFunc();
         setTimeout(function() { _this.modelIsLoaded = true; }, 150);
     };
 

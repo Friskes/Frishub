@@ -77,7 +77,7 @@ class DressingRoomAdmin(admin.ModelAdmin):
     search_fields = ('room_id', 'room_creator_id')
 
     fields = ('room_id', 'room_creator_id', 'allow_edit', 'game_patch',
-              'race', 'gender', 'last_update_time', 'items', 'face')
+              'race', 'gender', 'last_update_time', 'items', 'face', 'mount')
 
     def get_short_room_id(self, object):
         # print(getattr(self, 'GENDERS')) # self.__class__.__getattribute__(self, 'GENDERS')

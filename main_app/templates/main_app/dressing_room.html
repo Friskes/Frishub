@@ -144,7 +144,7 @@
       gender_id: charData.gender,
       anim: 0,
       default_anim: 0,
-      mount: 0,
+      mount: parseInt(charData.mount),
       sheath: 0,
       sheath_opts: [],
       only_item: false,
@@ -231,7 +231,8 @@
       race: window.dressUI.model_opts.race,
       gender: window.dressUI.model_opts.gender,
       items: window.dressUI.model_opts.items.join(),
-      face: window.dressUI.face.current.join()
+      face: window.dressUI.face.current.join(),
+      mount: window.dressUI.char.mount
     };
 
     $.ajax({
@@ -2465,7 +2466,7 @@
           };
 
 
-          $('#select_mount_btn a').on('click', modelIsLoaded(function(event) {
+          $('#select_mount_btn a').on('click', modelIsLoaded(async function(event) {
 
             const mounts_list_len = window.itemsData[0].mounts.length - 1;
 
@@ -2487,8 +2488,11 @@
 
             window.dressUI.model_opts.generalOptions.mount.id =
             window.itemsData[0].mounts[window.dressUI.char.mount].displayId;
-            _generateCharModel();
-          }, true));
+
+            debounce_sendAjaxRequest();
+
+            await _generateCharModel();
+          }));
         </script>
 
         <script>
@@ -2901,7 +2905,7 @@
               dc_model_opts
             );
 
-            window.model.setModelLoadedCallback(function() {
+            window.model.setModelLoadedCallback(async function() {
               $('.paperdoll-model').css('background', 'none');
 
               window.model.renderer.viewer.method("setSheath",
@@ -2918,27 +2922,31 @@
 
               updateAnimPaused(true);
 
-              const {animNames, defaultIndex} = window.model.getListAnimations();
-              window.dressUI.char.anims_list = animNames;
-              window.dressUI.char.default_anim = defaultIndex;
-              window.dressUI.char.anim = defaultIndex;
-
-              setDefaultText();
-
-              const char_data = {
-                id: '#dressing-room-character-settings',
-                key: 'char',
-                fields: ['race_id', 'gender_id', 'sheath', 'anim', 'mount'],
-                max_len: [11, 1, window.dressUI.char.sheath_opts.length - 1,
-                window.dressUI.char.anims_list.length - 1, window.itemsData[0].mounts.length - 1],
-                min_len: [1, 0, 0, 0, 0]
-              };
-              refreshAlphaForExtremeButtonPosition(char_data);
-
               window.model.renderer.viewer.setZoom(-3);
+
+
+              await window.model.getListAnimations(function({animNames, defaultIndex}) {
+                window.dressUI.char.anims_list = animNames;
+                window.dressUI.char.default_anim = defaultIndex;
+                window.dressUI.char.anim = defaultIndex;
+
+                setDefaultText();
+
+                const char_data = {
+                  id: '#dressing-room-character-settings',
+                  key: 'char',
+                  fields: ['race_id', 'gender_id', 'sheath', 'anim', 'mount'],
+                  max_len: [11, 1, window.dressUI.char.sheath_opts.length - 1,
+                  window.dressUI.char.anims_list.length - 1, window.itemsData[0].mounts.length - 1],
+                  min_len: [1, 0, 0, 0, 0]
+                };
+                refreshAlphaForExtremeButtonPosition(char_data);
+              });
             });
+
             // window.model.renderer.viewer.method("setCustomizationsLoadedCallback", function(t) { console.log('setCustomizationsLoadedCallback', t); });
             // window.model.renderer.screenshotCallback = function() { console.log('screenshotCallback'); };
+
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
 
@@ -2956,6 +2964,9 @@
 
           window.generateCharModel = function() {
             if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
+
+            window.dressUI.model_opts.generalOptions.mount.id =
+            window.itemsData[0].mounts[window.dressUI.char.mount].displayId;
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
 
@@ -3001,6 +3012,7 @@
               ? window.model.renderer.viewer.setZoom(-3)
               : window.model.renderer.viewer.setZoom(-8);
             });
+
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
               if (data.slotId) clearItemSlotIcon(data.slotId);
