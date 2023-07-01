@@ -7,19 +7,6 @@
 <script id="viewer"></script>
 
 <script>
-  const RACES = {
-    1: 'Human',
-    2: 'Orc',
-    3: 'Dwarf',
-    4: 'Nightelf',
-    5: 'Scourge',
-    6: 'Tauren',
-    7: 'Gnome',
-    8: 'Troll',
-    10: 'Bloodelf',
-    11: 'Draenei'
-  };
-
   const GENDERS = {
     0: 'Male',
     1: 'Female'
@@ -52,6 +39,15 @@
     4: 'epic-wow',      // (purple)
     5: 'legendary-wow', // (orange)
     7: 'heirloom-wow'   // (blizzard blue) фамильные
+  };
+
+  const TYPEID_BY_SLOTID = {
+    // slotId: type
+    1: 2,
+    3: 4,
+    21: 1,
+    22: 1,
+    23: 1
   };
 
   let PREV_ITEM_ELEMS = {1:{},3:{},16:{},5:{},4:{},19:{},9:{},10:{},6:{},7:{},8:{},21:{},22:{},23:{}};
@@ -87,8 +83,70 @@
   };
   const charData = getCharDataFromContext();
 
-
   window.GAME_PATCH = charData.game_patch; // для CONTENT_PATH в model_viewer_utils
+
+
+  let RACES = {
+    1: "Human",
+    2: "Orc",
+    3: "Dwarf",
+    4: "Nightelf",
+    5: "Scourge",
+    6: "Tauren",
+    7: "Gnome",
+    8: "Troll",
+    9: "Goblin",
+    10: "Bloodelf",
+    11: "Draenei",
+    12: "Felorc",
+    13: "Naga_",
+    14: "Broken",
+    15: "Skeleton",
+    16: "Vrykul",
+    17: "Tuskarr",
+    18: "Foresttroll",
+    19: "Taunka",
+    20: "Northrendskeleton",
+    21: "Icetroll"
+  };
+  const MAX_WRATH_RACES_LEN = 21;
+
+  if (charData.game_patch === 'live') {
+    RACES = Object.assign(RACES, {
+      // вызывают ошибку на wrath
+      22: "Worgen",
+      23: "Gilnean",
+      24: "Pandaren",
+      25: "Pandarena",
+      26: "Pandarenh",
+      27: "Nightborne",
+      28: "Highmountaintauren",
+      29: "Voidelf",
+      30: "Lightforgeddraenei",
+      31: "Zandalaritroll",
+      32: "Kultiran",
+      33: "Thinhuman",
+      34: "Darkirondwarf",
+      35: "Vulpera",
+      36: "Magharorc",
+      37: "Mechagnome"
+    });
+  }
+  const RACES_LEN = Math.max(...Object.keys(RACES));
+
+  const ONLY_MALE_RACES = [
+    // wrath
+    12, // "Felorc"
+    14, // "Broken"
+    15, // "Skeleton"
+    16, // "Vrykul"
+    17, // "Tuskarr"
+    18, // "Foresttroll"
+    19, // "Taunka"
+    20, // "Northrendskeleton"
+    21  // "Icetroll"
+  ];
+
 
   // Actual model and UI parameters
   window.dressUI = {
@@ -253,7 +311,7 @@
       }
     });
   };
-  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, "{% if debug_mode %}100{% else %}3000{% endif %}");
+  const debounce_sendAjaxRequest = debounce(sendAjaxRequest, "{% if debug_mode %}200{% else %}3000{% endif %}");
 
 
   const IGNORED_WRAPPED_PROPS = [
@@ -305,6 +363,17 @@
     return new Proxy(target, handler);
   };
   window.dressUI = wrapDressUI(window.dressUI);
+</script>
+
+<script>
+  function hasImageBeenUploaded(obj) {
+    return new Promise(function(resolve, reject) {
+      const img = typeof obj === "object" ? obj : new Image();
+      img.onload = function() { resolve(true); };
+      img.onerror = function() { resolve(false); };
+      if (typeof obj !== "object") img.src = obj;
+    });
+  };
 </script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'main_app/css/dressing-room.css' %}">
@@ -1886,6 +1955,10 @@
                 `${DEFAULT_ICON_URL}race_${RACES[roomData.race].toLowerCase()}_${GENDERS[roomData.gender].toLowerCase()}.jpg`);
                 element_char_img.classList.add('rooms-list-img');
 
+                hasImageBeenUploaded(element_char_img).then((isLoaded) => {
+                  if (!isLoaded) element_char_img.setAttribute('src', '/static/main_app/images/close.png');
+                });
+
                 const element_patch_img = document.createElement('img');
                 element_patch_img.setAttribute('src', `/static/main_app/images/${roomData.game_patch}.png`);
                 element_patch_img.classList.add('rooms-list-img');
@@ -1936,6 +2009,11 @@
           $('#change_game_patch').on('click', modelIsLoaded(function(event) {
             window.dressUI.game_patch = window.dressUI.game_patch === 'wrath' ? 'live' : 'wrath';
             event.target.style.backgroundImage = `url(/static/main_app/images/${window.dressUI.game_patch}.png)`;
+
+            if (window.dressUI.game_patch === 'wrath' && window.dressUI.model_opts.race > MAX_WRATH_RACES_LEN) {
+              window.dressUI.model_opts.race = MAX_WRATH_RACES_LEN;
+            };
+
             sendAjaxRequest();
             // warnMessageHandler(6000, interpolate(gettext('Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.'), [window.dressUI.game_patch.toUpperCase()]));
             // warnMessageHandler(6000, interpolate("{% blocktrans %}Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.{% endblocktrans %}", [window.dressUI.game_patch.toUpperCase()]));
@@ -2099,8 +2177,8 @@
             let visualId = parseInt(element_a.getAttribute('visualId')) || 0;
 
             // Временная заглушка
-            if (window.dressUI.char.only_item && slotId != 21 && slotId != 22 && slotId != 23) {
-              warnMessageHandler(3000, 'IN DEVELOPMENT\nДоступны только слоты с оружием.');
+            if (window.dressUI.char.only_item && slotId != 1 && slotId != 3 && slotId != 21 && slotId != 22 && slotId != 23) {
+              warnMessageHandler(3000, "{% trans 'Для просмотра доступны только шлем, наплечье и слоты с оружием.' %}");
               return false;
             } else if (window.dressUI.char.only_item && visualId !== 0) {
               warnMessageHandler(3000, "{% trans 'В режиме «Только итем» зачарование оружия недоступно.' %}");
@@ -2152,7 +2230,8 @@
                 // warnMessageHandler(1500, 'Надетый и выбранный итемы имеют одинаковые модели.');
                 return false;
               };
-              window.dressUI.char.only_item_data = {type: 1, id: displayId, itemId: itemId, slotId: slotId};
+              window.dressUI.char.only_item_data =
+              {type: TYPEID_BY_SLOTID[slotId], id: displayId, itemId: itemId, slotId: slotId};
             };
 
             removeItemUnderline(element_a);
@@ -2166,7 +2245,7 @@
                 case 22: clearItemSlotIcon(21); clearItemSlotIcon(23); break;
                 case 23: clearItemSlotIcon(21); clearItemSlotIcon(22); break;
               };
-              window.generateItemModel({type: 1, id: displayId});
+              window.generateItemModel({type: TYPEID_BY_SLOTID[slotId], id: displayId});
 
             } else {
               if (!PREV_ITEM_ELEMS[slotId].current) {
@@ -2374,16 +2453,13 @@
 
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.race_id > 1) {
 
-              RACES[window.dressUI.char.race_id] === 'Bloodelf'
-              ? window.dressUI.char.race_id -= 2 : window.dressUI.char.race_id -= 1;
+              window.dressUI.char.race_id -= 1;
+            } else if (this.classList.contains('fa-caret-right') && window.dressUI.char.race_id < RACES_LEN) {
 
-            } else if (this.classList.contains('fa-caret-right') && window.dressUI.char.race_id < 11) {
-
-              RACES[window.dressUI.char.race_id] === 'Troll'
-              ? window.dressUI.char.race_id += 2 : window.dressUI.char.race_id += 1;
+              window.dressUI.char.race_id += 1;
             };
             window.dressUI.model_opts.race = window.dressUI.char.race_id;
-            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.race_id, 11, 1);
+            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.race_id, RACES_LEN, 1);
             event.target.parentElement.children[1].textContent = RACES[window.dressUI.char.race_id];
             window.dressUI.face.current = [];
             window.generateCharModel();
@@ -2491,6 +2567,7 @@
 
             debounce_sendAjaxRequest();
 
+            $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
             await _generateCharModel();
           }));
         </script>
@@ -2609,8 +2686,14 @@
           function set_race_gender_image() {
             const race = RACES[window.dressUI.char.race_id].toLowerCase();
             const gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
-            $('#character_button').css('background-image',
-            `url(${DEFAULT_ICON_URL}race_${race}_${gender}.jpg)`);
+
+            const race_gender_img_url = `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
+
+            hasImageBeenUploaded(race_gender_img_url).then((isLoaded) => {
+              if (!isLoaded) $('#character_button').css('background-image', 'url(/static/main_app/images/close.png)');
+            });
+
+            $('#character_button').css('background-image', `url(${race_gender_img_url})`);
           };
         </script>
 
@@ -2666,7 +2749,8 @@
 
 
           function setFaceZoom() {
-            let zoom, offSetY;
+            let zoom = -3;
+            let offSetY = 0;
             switch (window.dressUI.model_opts.race) { //            Female                         Male
               case 1:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Human
               case 2:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 8, offSetY = 0.80); break; // Orc
@@ -2772,8 +2856,8 @@
 
               //////////////// TEST №2 STRESS TEST ITEM MODEL ////////////////
               // window.dressUI.char.only_item = true;
-              // window.generateItemModel({type: 1, id: 65153});
-              // setInterval(function() { modelIsLoaded(window.generateItemModel)({type: 1, id: 65153}); }, 4);
+              // window.generateItemModel({type: 1, id: 65153, itemId: 49623, slotId: 21});
+              // setInterval(function() { modelIsLoaded(window.generateItemModel)({type: 1, id: 65153, itemId: 49623, slotId: 21}); }, 4);
               //////////////// TEST №2 STRESS TEST ITEM MODEL ////////////////
             });
           };
@@ -2888,7 +2972,10 @@
             // глубокая копия window.dressUI.model_opts для удаления itemId и visualId из items перед генерацией модели
             let dc_model_opts = JSON.parse(JSON.stringify(window.dressUI.model_opts));
             dc_model_opts.items = [];
-            dc_model_opts.items = dc_model_opts.items.map(item => [item[0], item[1]]);
+            dc_model_opts.items = window.dressUI.model_opts.items.map(item => [item[0], item[1]]);
+
+            // console.log(...dc_model_opts.items);
+            // console.log(...window.dressUI.model_opts.items);
 
             // Принудительно удаляю 21, 22, 23 слоты из dc_model_opts для того
             // чтобы у маунта при загрузке не было оружия в копытах..
@@ -2940,10 +3027,15 @@
                   id: '#dressing-room-character-settings',
                   key: 'char',
                   fields: ['race_id', 'gender_id', 'sheath', 'anim', 'mount'],
-                  max_len: [11, 1, window.dressUI.char.sheath_opts.length - 1,
+                  max_len: [RACES_LEN, 1, window.dressUI.char.sheath_opts.length - 1,
                   window.dressUI.char.anims_list.length - 1, window.itemsData[0].mounts.length - 1],
                   min_len: [1, 0, 0, 0, 0]
                 };
+
+                if (ONLY_MALE_RACES.indexOf(window.dressUI.model_opts.race) !== -1) {
+                  char_data.max_len[1] = 0;
+                };
+
                 refreshAlphaForExtremeButtonPosition(char_data);
               });
             });
@@ -2980,6 +3072,11 @@
                 option.remove();
               };
             });
+
+            if (ONLY_MALE_RACES.indexOf(window.dressUI.model_opts.race) !== -1) {
+              window.dressUI.model_opts.gender = 0;
+              window.dressUI.char.gender_id = 0;
+            };
 
             updateItemSlotIcon(false);
 
@@ -3062,7 +3159,12 @@
             // }))
             .then((data) => {
               window.itemsData = data;
-              // добавляю первый слот пустышку для возможности отключения маунта
+
+              // по дефолту маунты отсортированы от ванилы к лайву,
+              // но если сейчас активен live патч сортируем их в обратном порядке
+              if (window.dressUI.game_patch === 'live') window.itemsData[0].mounts.reverse();
+
+              // добавляю первый элемент пустышку для возможности отключения маунта
               window.itemsData[0].mounts.unshift({"displayId": 0, "name": "None"});
               creatingItemsMenu();
             });

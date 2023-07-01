@@ -7,82 +7,140 @@ const CONTENT_PATH = window.GAME_PATCH
 : 'https://wow.zamimg.com/modelviewer/wrath/';
 
 const _RACES = {
-    1: 'human',
-    2: 'orc',
-    3: 'dwarf',
-    4: 'nightelf',
-    5: 'scourge',
-    6: 'tauren',
-    7: 'gnome',
-    8: 'troll',
-    10: 'bloodelf',
-    11: 'draenei'
+    // wrath and live
+    1: "human",
+    2: "orc",
+    3: "dwarf",
+    4: "nightelf",
+    5: "scourge",
+    6: "tauren",
+    7: "gnome",
+    8: "troll",
+    9: "goblin",
+    10: "bloodelf",
+    11: "draenei",
+    13: "naga_",
+    // only male races
+    12: "felorc",
+    14: "broken",
+    15: "skeleton",
+    16: "vrykul",
+    17: "tuskarr",
+    18: "foresttroll",
+    19: "taunka",
+    20: "northrendskeleton",
+    21: "icetroll",
+    // live
+    22: "worgen",
+    23: "gilnean",
+    24: "pandaren",
+    25: "pandarena",
+    26: "pandarenh",
+    27: "nightborne",
+    28: "highmountaintauren",
+    29: "voidelf",
+    30: "lightforgeddraenei",
+    31: "zandalaritroll",
+    32: "kultiran",
+    33: "thinhuman",
+    34: "darkirondwarf",
+    35: "vulpera",
+    36: "magharorc",
+    37: "mechagnome"
 };
 
 const AVAILABLE_CHAR_OPTS = {
-    'Jaw Features':     'jaw_features',
-    'Hair Decoration':  'hair_decoration',
-    'Sideburns':        'sideburns',
-    'Beard':            'beard',
-    'Earrings':         'earrings',
-    'Circlet':          'circlet',
-    'Tusks':            'tusks',
-    'Armbands':         'armbands',
-    'Skin Color':       'skin_color',
-    'Markings Color':   'markings_color',
-    'Blindfold':        'blindfold',
-    'Eye Color':        'eye_color',
-    'Body Paint':       'body_paint',
-    'Foremane':         'foremane',
-    'Features':         'features',
-    'Tattoo':           'tattoo',
-    'Headdress':        'headdress',
-    'War Paint':        'war_paint',
-    'Ears':             'ears',
-    'Aquatic Form':     'aquatic_form',
-    'Earring Color':    'earring_color',
-    'Piercing':         'piercing',
-    'Scars':            'scars',
-    'Horns':            'horns',
-    'Upright':          'upright',
-    'Grime':            'grime',
-    'Horn Color':       'horn_color',
-    'Hair Style':       'hair_style',
-    'Markings':         'markings',
-    'Eyebrows':         'eyebrows',
-    'Body Paint Color': 'body_paint_color',
-    'Face Paint':       'face_paint',
-    'Vines':            'vines',
-    'Tail':             'tail',
-    'Facial Hair':      'facial_hair',
-    'Flight Form':      'flight_form',
-    'Face Paint Color': 'face_paint_color',
-    'Makeup':           'makeup',
-    'Face Features':    'face_features',
-    'Cat Form':         'cat_form',
-    'Horn Style':       'horn_style',
-    'Piercings':        'piercings',
-    'Necklace':         'necklace',
-    'Moonkin Form':     'moonkin_form',
-    'Mustache':         'mustache',
-    'Hair Color':       'hair_color',
-    'Flower':           'flower',
-    'Vine Color':       'vine_color',
-    'Tendrils':         'tendrils',
-    'Face':             'face',
-    'Jewelry Color':    'jewelry_color',
-    'Nose Ring':        'nose_ring',
-    'Bear Form':        'bear_form',
-    'Skin Type':        'skin_type',
-    'Travel Form':      'travel_form',
-    'Face Shape':       'face_shape',
-    'Eyesight':         'eyesight',
-    'Tattoo Color':     'tattoo_color',
-    'War Paint Color':  'war_paint_color',
-    'Horn Decoration':  'horn_decoration',
-    'Bracelets':        'bracelets',
-    'Paint Color':      'paint_color',
-    'Hair':             'hair'
+    'Jaw Features':         'jaw_features',
+    'Hair Decoration':      'hair_decoration',
+    'Sideburns':            'sideburns',
+    'Beard':                'beard',
+    'Earrings':             'earrings',
+    'Circlet':              'circlet',
+    'Tusks':                'tusks',
+    'Armbands':             'armbands',
+    'Skin Color':           'skin_color',
+    'Markings Color':       'markings_color',
+    'Blindfold':            'blindfold',
+    'Eye Color':            'eye_color',
+    'Body Paint':           'body_paint',
+    'Foremane':             'foremane',
+    'Features':             'features',
+    'Tattoo':               'tattoo',
+    'Headdress':            'headdress',
+    'War Paint':            'war_paint',
+    'Ears':                 'ears',
+    'Aquatic Form':         'aquatic_form',
+    'Earring Color':        'earring_color',
+    'Piercing':             'piercing',
+    'Scars':                'scars',
+    'Horns':                'horns',
+    'Upright':              'upright',
+    'Grime':                'grime',
+    'Horn Color':           'horn_color',
+    'Hair Style':           'hair_style',
+    'Markings':             'markings',
+    'Eyebrows':             'eyebrows',
+    'Body Paint Color':     'body_paint_color',
+    'Face Paint':           'face_paint',
+    'Vines':                'vines',
+    'Tail':                 'tail',
+    'Facial Hair':          'facial_hair',
+    'Flight Form':          'flight_form',
+    'Face Paint Color':     'face_paint_color',
+    'Makeup':               'makeup',
+    'Face Features':        'face_features',
+    'Cat Form':             'cat_form',
+    'Horn Style':           'horn_style',
+    'Piercings':            'piercings',
+    'Necklace':             'necklace',
+    'Moonkin Form':         'moonkin_form',
+    'Mustache':             'mustache',
+    'Hair Color':           'hair_color',
+    'Flower':               'flower',
+    'Vine Color':           'vine_color',
+    'Tendrils':             'tendrils',
+    'Face':                 'face',
+    'Jewelry Color':        'jewelry_color',
+    'Nose Ring':            'nose_ring',
+    'Bear Form':            'bear_form',
+    'Skin Type':            'skin_type',
+    'Travel Form':          'travel_form',
+    'Face Shape':           'face_shape',
+    'Eyesight':             'eyesight',
+    'Tattoo Color':         'tattoo_color',
+    'War Paint Color':      'war_paint_color',
+    'Horn Decoration':      'horn_decoration',
+    'Bracelets':            'bracelets',
+    'Paint Color':          'paint_color',
+    'Hair':                 'hair',
+    'Feather':              'feather',
+    'Tail Decoration':      'tail_decoration',
+    'Chin':                 'chin',
+    'Secondary Skin Color': 'secondary_skin_color',
+    'Fur Color':            'fur_color',
+    'Hunched':              'hunched',
+    'Nose Piercing':        'nose_piercing',
+    'Snout':                'snout',
+    'Body Tattoo':          'body_tattoo',
+    'Jaw Jewelry':          'jaw_jewelry',
+    'Luminous Hands':       'luminous_hands',
+    'Ear Gauge':            'ear_gauge',
+    'Horn Markings':        'horn_markings',
+    'Paint':                'paint',
+    'Modification':         'modification',
+    'Face Jewelry':         'face_jewelry',
+    'Tentacles':            'tentacles',
+    'Eyes':                 'eyes',
+    'Rune':                 'rune',
+    'Secondary Hair Color': 'secondary_hair_color',
+    'Chin Decoration':      'chin_decoration',
+    'Nose':                 'nose',
+    'Horn Wraps':           'horn_wraps',
+    'Jaw Decoration':       'jaw_decoration',
+    'Pattern':              'pattern',
+    'Face Tattoo':          'face_tattoo',
+    'Arm Upgrade':          'arm_upgrade',
+    'Leg Upgrade':          'leg_upgrade'
 };
 
 
@@ -116,10 +174,29 @@ async function findItemsInEquipments(equipments) {
  * @returns {Promise<Object>}
  */
 async function findRaceGenderOptions(race, gender) {
-    const options = await fetch(`${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
+    try {
+        const options = await fetch(`${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
 
-    if (options.data) return options.data;
-    return options;
+        if (options.data) return options.data;
+        return options;
+    } catch (e) {
+        console.error('[async function findRaceGenderOptions] -> await fetch -> *FAILED*');
+        return {Options: []};
+
+        // const contentPath = CONTENT_PATH.split('/').at(-2) == 'wrath'
+        // ? 'https://wow.zamimg.com/modelviewer/live/'
+        // : 'https://wow.zamimg.com/modelviewer/wrath/';
+
+        // try {
+        //     const options = await fetch(`${contentPath}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
+
+        //     if (options.data) return options.data;
+        //     return options;
+        // } catch (e) {
+        //     console.error('[async function findRaceGenderOptions] -> await fetch -> *FAILED*');
+        //     return {Options: []};
+        // };
+    };
 };
 
 
@@ -229,7 +306,8 @@ async function generateModels(containerSelector, model) {
     if (window.model) {
         // полностью удаляем модель маунта если она есть
         // (подсказываем Garbage Collector что этот объект следовало бы уничтожить)
-        if (typeof window.model.renderer.options.mount.parent !== "undefined") {
+        if (typeof window.model.renderer.options.mount !== "undefined"
+        && typeof window.model.renderer.options.mount.parent !== "undefined") {
             for (const key in window.model.renderer.models[0]) window.model.renderer.models[0][key] = null;
         };
         // полностью удаляем модель персонажа (включая DOM дерево)
@@ -254,10 +332,11 @@ function optionalChaining(choice) {
 function getOptions(character, fullOptions) {
 
     // Для удобного просмотра поля Name из fullOptions
-    // const GENDERS = {0: 'Male', 1: 'Female'};
-    // let dct = {};
-    // dct[`${_RACES[character.race]}_${GENDERS[character.gender]}`] = [...new Set(fullOptions.Options.map(opt => opt.Name))];
-    // console.log(dct);
+    // const _GENDERS = {0: 'Male', 1: 'Female'};
+    // let optNames = {};
+    // optNames[`${_RACES[character.race]}_${_GENDERS[character.gender]}`] =
+    // [...new Set(fullOptions.Options.map(opt => opt.Name))];
+    // console.log(optNames);
 
     const ret = [];
     for (const prop in AVAILABLE_CHAR_OPTS) {

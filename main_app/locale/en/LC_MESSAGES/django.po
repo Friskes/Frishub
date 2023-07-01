@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-29 21:55+0300\n"
+"POT-Creation-Date: 2023-07-01 13:07+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -593,21 +593,21 @@ msgstr "Starting chat"
 msgid "Чат закрыт"
 msgstr "Chat closed"
 
-#: .\main_app\templates\main_app\dressing_room.html:197
+#: .\main_app\templates\main_app\dressing_room.html:200
 msgid ""
 "Создатель этой комнаты запретил изменение персонажа другими пользователями."
 msgstr ""
 "The creator of this room has forbidden other users to change the character."
 
-#: .\main_app\templates\main_app\dressing_room.html:201
+#: .\main_app\templates\main_app\dressing_room.html:204
 msgid "Ошибка, модель не была создана."
 msgstr "Error, the model was not created."
 
-#: .\main_app\templates\main_app\dressing_room.html:206
+#: .\main_app\templates\main_app\dressing_room.html:209
 msgid "Пожалуйста, дождитесь полной загрузки модели."
 msgstr "Please wait until the model is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:209
+#: .\main_app\templates\main_app\dressing_room.html:212
 msgid "Пожалуйста, дождитесь полной загрузки базы данных."
 msgstr "Please wait until the database is fully loaded."
 
@@ -721,55 +721,59 @@ msgstr ""
 "To change to %%s patch, please reload the page.\\nAll appearance settings "
 "will be reset."
 
-#: .\main_app\templates\main_app\dressing_room.html:1958
+#: .\main_app\templates\main_app\dressing_room.html:1963
 msgid "Редакт"
 msgstr "Allow Edit"
 
-#: .\main_app\templates\main_app\dressing_room.html:1968
+#: .\main_app\templates\main_app\dressing_room.html:1973
 msgid ""
 "Теперь другие пользователи смогут редактировать персонажа на этой странице."
 msgstr "Now other users will be able to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:1969
+#: .\main_app\templates\main_app\dressing_room.html:1974
 msgid ""
 "Теперь только у вас есть право редактировать персонажа на этой странице."
 msgstr "Now only you have the right to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:1976
+#: .\main_app\templates\main_app\dressing_room.html:1981
 msgid "Запретить редактирование другим пользователям"
 msgstr "Prohibit editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:1980
+#: .\main_app\templates\main_app\dressing_room.html:1985
 msgid "Разрешить редактирование другим пользователям"
 msgstr "Allow editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:2051
+#: .\main_app\templates\main_app\dressing_room.html:2053
 msgid "Отключено в режиме «Только итем»."
 msgstr "Disabled in the «Only item» mode."
 
-#: .\main_app\templates\main_app\dressing_room.html:2062
-#: .\main_app\templates\main_app\dressing_room.html:2078
+#: .\main_app\templates\main_app\dressing_room.html:2063
+#: .\main_app\templates\main_app\dressing_room.html:2079
 msgid "Выбранный слот уже пуст."
 msgstr "The selected slot is already empty."
 
-#: .\main_app\templates\main_app\dressing_room.html:2116
+#: .\main_app\templates\main_app\dressing_room.html:2112
+msgid "Для просмотра доступны только шлем, наплечье и слоты с оружием."
+msgstr "Only the helmet, shoulder strap and weapon slots are available for viewing."
+
+#: .\main_app\templates\main_app\dressing_room.html:2115
 msgid "В режиме «Только итем» зачарование оружия недоступно."
 msgstr "In the «Only item» mode, weapon enchantment is not available."
 
-#: .\main_app\templates\main_app\dressing_room.html:2134
+#: .\main_app\templates\main_app\dressing_room.html:2132
 msgid "Сначала возьмите в руку оружие."
 msgstr "First, take a weapon in your hand."
 
-#: .\main_app\templates\main_app\dressing_room.html:2956
-#: .\main_app\templates\main_app\dressing_room.html:3016
+#: .\main_app\templates\main_app\dressing_room.html:2969
+#: .\main_app\templates\main_app\dressing_room.html:3035
 msgid "К сожалению не удалось загрузить итем."
 msgstr "Unfortunately, it was not possible to download item."
 
-#: .\main_app\templates\main_app\dressing_room.html:3040
+#: .\main_app\templates\main_app\dressing_room.html:3059
 msgid "Теперь вы можете просматривать итемы без персонажа."
 msgstr "Now you can view items without a character."
 
-#: .\main_app\templates\main_app\dressing_room.html:3044
+#: .\main_app\templates\main_app\dressing_room.html:3063
 msgid "Теперь вы можете просматривать итемы на персонаже."
 msgstr "Now you can view and items on the character."
 
@@ -1000,54 +1004,54 @@ msgstr ""
 "Internal site error, go back to the main page, the error report has already "
 "been sent to the site administration."
 
-#: .\main_app\views.py:661
+#: .\main_app\views.py:664
 msgid ", вы успешно зарегистрированы в системе!"
 msgstr ", you are successfully registered in the system!"
 
-#: .\main_app\views.py:696
+#: .\main_app\views.py:699
 msgid "Добро пожаловать, "
 msgstr "Welcome, "
 
-#: .\main_app\views.py:727
+#: .\main_app\views.py:730
 msgid "Вы уже вышли из аккаунта."
 msgstr "You have already logged out of your account."
 
-#: .\main_app\views.py:737
+#: .\main_app\views.py:740
 msgid "До скорой встречи, "
 msgstr "See you soon, "
 
-#: .\main_app\views.py:753 .\main_app\views.py:784
+#: .\main_app\views.py:756 .\main_app\views.py:787
 msgid "Письмо успешно отправлено."
 msgstr "The email has been sent successfully."
 
-#: .\main_app\views.py:832 .\main_app\views.py:1040
+#: .\main_app\views.py:835 .\main_app\views.py:1043
 msgid "Новый пароль успешно сохранён!"
 msgstr "The new password has been successfully saved!"
 
-#: .\main_app\views.py:860
+#: .\main_app\views.py:863
 msgid "Сообщение успешно отправлено!"
 msgstr "The message has been sent successfully!"
 
-#: .\main_app\views.py:904 .\main_app\views.py:923 .\main_app\views.py:1033
-#: .\main_app\views.py:1055 .\main_app\views.py:1089
+#: .\main_app\views.py:907 .\main_app\views.py:926 .\main_app\views.py:1036
+#: .\main_app\views.py:1058 .\main_app\views.py:1092
 #, fuzzy, python-format
 #| msgid "Для получения доступа к странице %s, войдите в свой аккаунт."
 msgid "Для получения доступа к странице %s,         войдите в свой аккаунт."
 msgstr "To access the %s page, log in to your account."
 
-#: .\main_app\views.py:934
+#: .\main_app\views.py:937
 msgid "Настройки успешно сохранены!"
 msgstr "Settings have been saved successfully!"
 
-#: .\main_app\views.py:1022
+#: .\main_app\views.py:1025
 msgid "Изображение успешно удалено."
 msgstr "The image was successfully deleted."
 
-#: .\main_app\views.py:1062
+#: .\main_app\views.py:1065
 msgid "Новый почтовый адрес успешно сохранён!"
 msgstr "The new email address has been successfully saved!"
 
-#: .\main_app\views.py:1103
+#: .\main_app\views.py:1106
 msgid ", очень жаль что вы от нас уходите. "
 msgstr ", it's a pity that you're leaving us. "
 
