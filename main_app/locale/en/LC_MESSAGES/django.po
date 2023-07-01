@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-01 13:07+0300\n"
+"POT-Creation-Date: 2023-07-01 20:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgid "Женщина"
 msgstr "Woman"
 
 #: .\main_app\models.py:64
-#: .\main_app\templates\main_app\dressing_room.html:1788
+#: .\main_app\templates\main_app\dressing_room.html:1847
 #: .\main_app\templates\main_app\guide.html:452
 #: .\main_app\templates\main_app\guide.html:625
 msgid "Пол"
@@ -201,27 +201,27 @@ msgid "Связь со мной"
 msgstr "Contact with me"
 
 #: .\main_app\templates\account\account.html:108
-#: .\main_app\templates\main_app\dressing_room.html:1082
-#: .\main_app\templates\main_app\dressing_room.html:1114
-#: .\main_app\templates\main_app\dressing_room.html:1146
-#: .\main_app\templates\main_app\dressing_room.html:1178
-#: .\main_app\templates\main_app\dressing_room.html:1210
-#: .\main_app\templates\main_app\dressing_room.html:1242
-#: .\main_app\templates\main_app\dressing_room.html:1274
-#: .\main_app\templates\main_app\dressing_room.html:1306
-#: .\main_app\templates\main_app\dressing_room.html:1341
-#: .\main_app\templates\main_app\dressing_room.html:1373
-#: .\main_app\templates\main_app\dressing_room.html:1405
-#: .\main_app\templates\main_app\dressing_room.html:1437
-#: .\main_app\templates\main_app\dressing_room.html:1469
-#: .\main_app\templates\main_app\dressing_room.html:1501
-#: .\main_app\templates\main_app\dressing_room.html:1533
-#: .\main_app\templates\main_app\dressing_room.html:1565
-#: .\main_app\templates\main_app\dressing_room.html:1602
-#: .\main_app\templates\main_app\dressing_room.html:1636
-#: .\main_app\templates\main_app\dressing_room.html:1669
-#: .\main_app\templates\main_app\dressing_room.html:1702
-#: .\main_app\templates\main_app\dressing_room.html:1736
+#: .\main_app\templates\main_app\dressing_room.html:1141
+#: .\main_app\templates\main_app\dressing_room.html:1173
+#: .\main_app\templates\main_app\dressing_room.html:1205
+#: .\main_app\templates\main_app\dressing_room.html:1237
+#: .\main_app\templates\main_app\dressing_room.html:1269
+#: .\main_app\templates\main_app\dressing_room.html:1301
+#: .\main_app\templates\main_app\dressing_room.html:1333
+#: .\main_app\templates\main_app\dressing_room.html:1365
+#: .\main_app\templates\main_app\dressing_room.html:1400
+#: .\main_app\templates\main_app\dressing_room.html:1432
+#: .\main_app\templates\main_app\dressing_room.html:1464
+#: .\main_app\templates\main_app\dressing_room.html:1496
+#: .\main_app\templates\main_app\dressing_room.html:1528
+#: .\main_app\templates\main_app\dressing_room.html:1560
+#: .\main_app\templates\main_app\dressing_room.html:1592
+#: .\main_app\templates\main_app\dressing_room.html:1624
+#: .\main_app\templates\main_app\dressing_room.html:1661
+#: .\main_app\templates\main_app\dressing_room.html:1695
+#: .\main_app\templates\main_app\dressing_room.html:1728
+#: .\main_app\templates\main_app\dressing_room.html:1761
+#: .\main_app\templates\main_app\dressing_room.html:1795
 #: .\main_app\templates\main_app\guide.html:467
 #: .\main_app\templates\main_app\guide.html:640
 msgid "Закрыть"
@@ -593,126 +593,132 @@ msgstr "Starting chat"
 msgid "Чат закрыт"
 msgstr "Chat closed"
 
-#: .\main_app\templates\main_app\dressing_room.html:200
+#: .\main_app\templates\main_app\dressing_room.html:247
 msgid ""
 "Создатель этой комнаты запретил изменение персонажа другими пользователями."
 msgstr ""
 "The creator of this room has forbidden other users to change the character."
 
-#: .\main_app\templates\main_app\dressing_room.html:204
+#: .\main_app\templates\main_app\dressing_room.html:251
 msgid "Ошибка, модель не была создана."
 msgstr "Error, the model was not created."
 
-#: .\main_app\templates\main_app\dressing_room.html:209
+#: .\main_app\templates\main_app\dressing_room.html:256
 msgid "Пожалуйста, дождитесь полной загрузки модели."
 msgstr "Please wait until the model is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:212
+#: .\main_app\templates\main_app\dressing_room.html:259
 msgid "Пожалуйста, дождитесь полной загрузки базы данных."
 msgstr "Please wait until the database is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:1042
+#: .\main_app\templates\main_app\dressing_room.html:309
+msgid ""
+"Создатель этой комнаты запретил изменение персонажа другими пользователями "
+"во время вашей сессии, любые изменения настроек не будут сохранены."
+msgstr "The creator of this room has prohibited other users from changing the character during your session, any changes to the settings will not be saved."
+
+#: .\main_app\templates\main_app\dressing_room.html:1101
 msgid "Сохранённые комнаты"
 msgstr "Saved rooms"
 
-#: .\main_app\templates\main_app\dressing_room.html:1080
-#: .\main_app\templates\main_app\dressing_room.html:1112
-#: .\main_app\templates\main_app\dressing_room.html:1144
-#: .\main_app\templates\main_app\dressing_room.html:1176
-#: .\main_app\templates\main_app\dressing_room.html:1208
-#: .\main_app\templates\main_app\dressing_room.html:1240
-#: .\main_app\templates\main_app\dressing_room.html:1272
-#: .\main_app\templates\main_app\dressing_room.html:1304
-#: .\main_app\templates\main_app\dressing_room.html:1339
-#: .\main_app\templates\main_app\dressing_room.html:1371
-#: .\main_app\templates\main_app\dressing_room.html:1403
-#: .\main_app\templates\main_app\dressing_room.html:1435
-#: .\main_app\templates\main_app\dressing_room.html:1467
-#: .\main_app\templates\main_app\dressing_room.html:1499
-#: .\main_app\templates\main_app\dressing_room.html:1531
-#: .\main_app\templates\main_app\dressing_room.html:1563
-#: .\main_app\templates\main_app\dressing_room.html:1600
-#: .\main_app\templates\main_app\dressing_room.html:1634
-#: .\main_app\templates\main_app\dressing_room.html:1667
-#: .\main_app\templates\main_app\dressing_room.html:1700
-#: .\main_app\templates\main_app\dressing_room.html:1734
+#: .\main_app\templates\main_app\dressing_room.html:1139
+#: .\main_app\templates\main_app\dressing_room.html:1171
+#: .\main_app\templates\main_app\dressing_room.html:1203
+#: .\main_app\templates\main_app\dressing_room.html:1235
+#: .\main_app\templates\main_app\dressing_room.html:1267
+#: .\main_app\templates\main_app\dressing_room.html:1299
+#: .\main_app\templates\main_app\dressing_room.html:1331
+#: .\main_app\templates\main_app\dressing_room.html:1363
+#: .\main_app\templates\main_app\dressing_room.html:1398
+#: .\main_app\templates\main_app\dressing_room.html:1430
+#: .\main_app\templates\main_app\dressing_room.html:1462
+#: .\main_app\templates\main_app\dressing_room.html:1494
+#: .\main_app\templates\main_app\dressing_room.html:1526
+#: .\main_app\templates\main_app\dressing_room.html:1558
+#: .\main_app\templates\main_app\dressing_room.html:1590
+#: .\main_app\templates\main_app\dressing_room.html:1622
+#: .\main_app\templates\main_app\dressing_room.html:1659
+#: .\main_app\templates\main_app\dressing_room.html:1693
+#: .\main_app\templates\main_app\dressing_room.html:1726
+#: .\main_app\templates\main_app\dressing_room.html:1759
+#: .\main_app\templates\main_app\dressing_room.html:1793
 msgid "Очистить слот"
 msgstr "Clear slot"
 
-#: .\main_app\templates\main_app\dressing_room.html:1774
+#: .\main_app\templates\main_app\dressing_room.html:1833
 msgid "Внешность"
 msgstr "Appearance"
 
-#: .\main_app\templates\main_app\dressing_room.html:1778
+#: .\main_app\templates\main_app\dressing_room.html:1837
 msgid "Персонаж"
 msgstr "Character"
 
-#: .\main_app\templates\main_app\dressing_room.html:1780
+#: .\main_app\templates\main_app\dressing_room.html:1839
 msgid "Раса"
 msgstr "Race"
 
-#: .\main_app\templates\main_app\dressing_room.html:1796
+#: .\main_app\templates\main_app\dressing_room.html:1855
 msgid "Оружие"
 msgstr "Weapon"
 
-#: .\main_app\templates\main_app\dressing_room.html:1804
+#: .\main_app\templates\main_app\dressing_room.html:1863
 msgid "Анимация"
 msgstr "Animation"
 
-#: .\main_app\templates\main_app\dressing_room.html:1812
+#: .\main_app\templates\main_app\dressing_room.html:1871
 msgid "Маунт"
 msgstr "Mount"
 
-#: .\main_app\templates\main_app\dressing_room.html:1821
+#: .\main_app\templates\main_app\dressing_room.html:1880
 msgid "Только итем"
 msgstr "Only item"
 
-#: .\main_app\templates\main_app\dressing_room.html:1830
+#: .\main_app\templates\main_app\dressing_room.html:1889
 msgid "Скрыть"
 msgstr "Hide"
 
-#: .\main_app\templates\main_app\dressing_room.html:1831
+#: .\main_app\templates\main_app\dressing_room.html:1890
 msgid "Пауза"
 msgstr "Pause"
 
-#: .\main_app\templates\main_app\dressing_room.html:1832
+#: .\main_app\templates\main_app\dressing_room.html:1891
 msgid "Скриншот"
 msgstr "Screenshot"
 
-#: .\main_app\templates\main_app\dressing_room.html:1835
+#: .\main_app\templates\main_app\dressing_room.html:1894
 msgid "Сброс"
 msgstr "Reset"
 
-#: .\main_app\templates\main_app\dressing_room.html:1837
+#: .\main_app\templates\main_app\dressing_room.html:1896
 msgid "Сбросить позицию и анимацию персонажа"
 msgstr "Reset the position and animation of the character"
 
-#: .\main_app\templates\main_app\dressing_room.html:1841
+#: .\main_app\templates\main_app\dressing_room.html:1900
 msgid "Рандом"
 msgstr "Random"
 
-#: .\main_app\templates\main_app\dressing_room.html:1843
+#: .\main_app\templates\main_app\dressing_room.html:1902
 msgid "Сгенерировать случайные настройки персонажа"
 msgstr "Generate random character settings"
 
-#: .\main_app\templates\main_app\dressing_room.html:1848
+#: .\main_app\templates\main_app\dressing_room.html:1907
 msgid "Ссылка"
 msgstr "Link"
 
-#: .\main_app\templates\main_app\dressing_room.html:1850
+#: .\main_app\templates\main_app\dressing_room.html:1909
 msgid "Скопировать ссылку на комнату"
 msgstr "Copy room link"
 
-#: .\main_app\templates\main_app\dressing_room.html:1853
+#: .\main_app\templates\main_app\dressing_room.html:1912
 msgid "Комнаты"
 msgstr "Rooms"
 
-#: .\main_app\templates\main_app\dressing_room.html:1889
+#: .\main_app\templates\main_app\dressing_room.html:1948
 msgid "У вас нету ни одной сохранённой комнаты."
 msgstr "You don't have any saved rooms."
 
-#: .\main_app\templates\main_app\dressing_room.html:1950
-#: .\main_app\templates\main_app\dressing_room.html:1951
+#: .\main_app\templates\main_app\dressing_room.html:2018
+#: .\main_app\templates\main_app\dressing_room.html:2019
 #, python-format
 msgid ""
 "Для изменения на %%s патч, пожалуйста, перезагрузите страницу.\\nВсе "
@@ -721,59 +727,60 @@ msgstr ""
 "To change to %%s patch, please reload the page.\\nAll appearance settings "
 "will be reset."
 
-#: .\main_app\templates\main_app\dressing_room.html:1963
+#: .\main_app\templates\main_app\dressing_room.html:2031
 msgid "Редакт"
 msgstr "Allow Edit"
 
-#: .\main_app\templates\main_app\dressing_room.html:1973
+#: .\main_app\templates\main_app\dressing_room.html:2041
 msgid ""
 "Теперь другие пользователи смогут редактировать персонажа на этой странице."
 msgstr "Now other users will be able to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:1974
+#: .\main_app\templates\main_app\dressing_room.html:2042
 msgid ""
 "Теперь только у вас есть право редактировать персонажа на этой странице."
 msgstr "Now only you have the right to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:1981
+#: .\main_app\templates\main_app\dressing_room.html:2049
 msgid "Запретить редактирование другим пользователям"
 msgstr "Prohibit editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:1985
+#: .\main_app\templates\main_app\dressing_room.html:2053
 msgid "Разрешить редактирование другим пользователям"
 msgstr "Allow editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:2053
+#: .\main_app\templates\main_app\dressing_room.html:2121
 msgid "Отключено в режиме «Только итем»."
 msgstr "Disabled in the «Only item» mode."
 
-#: .\main_app\templates\main_app\dressing_room.html:2063
-#: .\main_app\templates\main_app\dressing_room.html:2079
+#: .\main_app\templates\main_app\dressing_room.html:2131
+#: .\main_app\templates\main_app\dressing_room.html:2147
 msgid "Выбранный слот уже пуст."
 msgstr "The selected slot is already empty."
 
-#: .\main_app\templates\main_app\dressing_room.html:2112
+#: .\main_app\templates\main_app\dressing_room.html:2180
 msgid "Для просмотра доступны только шлем, наплечье и слоты с оружием."
-msgstr "Only the helmet, shoulder strap and weapon slots are available for viewing."
+msgstr ""
+"Only the helmet, shoulder strap and weapon slots are available for viewing."
 
-#: .\main_app\templates\main_app\dressing_room.html:2115
+#: .\main_app\templates\main_app\dressing_room.html:2183
 msgid "В режиме «Только итем» зачарование оружия недоступно."
 msgstr "In the «Only item» mode, weapon enchantment is not available."
 
-#: .\main_app\templates\main_app\dressing_room.html:2132
+#: .\main_app\templates\main_app\dressing_room.html:2200
 msgid "Сначала возьмите в руку оружие."
 msgstr "First, take a weapon in your hand."
 
-#: .\main_app\templates\main_app\dressing_room.html:2969
-#: .\main_app\templates\main_app\dressing_room.html:3035
+#: .\main_app\templates\main_app\dressing_room.html:3046
+#: .\main_app\templates\main_app\dressing_room.html:3117
 msgid "К сожалению не удалось загрузить итем."
 msgstr "Unfortunately, it was not possible to download item."
 
-#: .\main_app\templates\main_app\dressing_room.html:3059
+#: .\main_app\templates\main_app\dressing_room.html:3141
 msgid "Теперь вы можете просматривать итемы без персонажа."
 msgstr "Now you can view items without a character."
 
-#: .\main_app\templates\main_app\dressing_room.html:3063
+#: .\main_app\templates\main_app\dressing_room.html:3145
 msgid "Теперь вы можете просматривать итемы на персонаже."
 msgstr "Now you can view and items on the character."
 
