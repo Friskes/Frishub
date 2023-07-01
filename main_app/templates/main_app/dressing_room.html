@@ -7,6 +7,8 @@
 <script id="viewer"></script>
 
 <script>
+  const DEFAULT_MODEL_ZOOM = -3;
+
   const GENDERS = {
     0: 'Male',
     1: 'Female'
@@ -144,7 +146,9 @@
     18, // "Foresttroll"
     19, // "Taunka"
     20, // "Northrendskeleton"
-    21  // "Icetroll"
+    21, // "Icetroll"
+    // live
+    33  // "Thinhuman"
   ];
 
 
@@ -2721,7 +2725,7 @@
               window.dressUI.active_cat = 'gear';
 
               if (!window.dressUI.char.only_item) {
-                window.model.renderer.viewer.setZoom(-3);
+                window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
                 window.model.renderer.viewer.setOffset(0, 0);
               };
 
@@ -2740,7 +2744,7 @@
               window.dressUI.active_cat = 'character';
 
               if (!window.dressUI.char.only_item) {
-                window.model.renderer.viewer.setZoom(-3);
+                window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
                 window.model.renderer.viewer.setOffset(0, 0);
               };
             };
@@ -2748,22 +2752,50 @@
 
 
           function setFaceZoom() {
-            let zoom = -3;
-            let offSetY = 0;
-            switch (window.dressUI.model_opts.race) { //            Female                         Male
-              case 1:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Human
-              case 2:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 8, offSetY = 0.80); break; // Orc
-              case 3:  window.dressUI.model_opts.gender ? (zoom = 9, offSetY = 0.55) : (zoom = 9, offSetY = 0.55); break; // Dwarf
-              case 4:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.95) : (zoom = 12.6, offSetY = 1.00); break; // Nightelf
-              case 5:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Scourge
-              case 6:  window.dressUI.model_opts.gender ? (zoom = 9, offSetY = 0.80) : (zoom = 6, offSetY = 0.65); break; // Tauren
-              case 7:  window.dressUI.model_opts.gender ? (zoom = 8, offSetY = 0.25) : (zoom = 7, offSetY = 0.35); break; // Gnome
-              case 8:  window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.90) : (zoom = 11, offSetY = 0.80); break; // Troll
-              case 10: window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.75) : (zoom = 12.6, offSetY = 0.80); break; // Bloodelf
-              case 11: window.dressUI.model_opts.gender ? (zoom = 12.6, offSetY = 0.95) : (zoom = 10, offSetY = 0.95); break; // Draenei
+            let zoom = DEFAULT_MODEL_ZOOM;
+            let X = 0;
+            let Y = 0;
+            switch (window.dressUI.model_opts.race) { //          Female                      Male
+              case 1:  window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.75) : (zoom = 12.6, Y = 0.80); break; // Human
+              case 2:  window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.75) : (zoom = 8, Y = 0.80); break; // Orc
+              case 3:  window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.55) : (zoom = 9, Y = 0.55); break; // Dwarf
+              case 4:  window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.95) : (zoom = 12.6, Y = 1.00); break; // Nightelf
+              case 5:  window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.75) : (zoom = 12.6, Y = 0.80); break; // Scourge
+              case 6:  window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.80) : (zoom = 6, Y = 0.65); break; // Tauren
+              case 7:  window.dressUI.model_opts.gender ? (zoom = 8, Y = 0.25) : (zoom = 7, Y = 0.35); break; // Gnome
+              case 8:  window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.90) : (zoom = 11, Y = 0.80); break; // Troll
+              case 9:  window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.45) : (zoom = 9, Y = 0.45); break; // Goblin
+              case 10: window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.75) : (zoom = 12.6, Y = 0.80); break; // Bloodelf
+              case 11: window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.95) : (zoom = 10, Y = 0.95); break; // Draenei
+              case 12: (zoom = 9, Y = 0.70); break; // Felorc
+              case 13: window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.60) : (zoom = 8, Y = 0.65); break; // Naga_
+              case 14: (zoom = 8, Y = 0.85); break; // Broken
+              case 15: (zoom = 9, Y = 0.75); break; // Skeleton
+              case 16: (zoom = 8, Y = 1.60); break; // Vrykul
+              case 17: (zoom = 5, Y = 0.75); break; // Tuskarr
+              case 18: (zoom = 6, Y = 0.75); break; // Foresttroll
+              case 19: (zoom = 5, Y = 0.65); break; // Taunka
+              case 20: (zoom = 5, Y = 1.30); break; // Northrendskeleton
+              case 21: (zoom = 6, Y = 0.75); break; // Icetroll
+              case 22: window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.85) : (zoom = 8, Y = 0.75); break; // Worgen
+              case 23: window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.75) : (zoom = 12.6, Y = 0.80); break; // Gilnean
+              case 24: window.dressUI.model_opts.gender ? (zoom = 10, Y = 0.80) : (zoom = 9, Y = 0.85); break; // Pandaren
+              case 25: window.dressUI.model_opts.gender ? (zoom = 10, Y = 0.80) : (zoom = 9, Y = 0.85); break; // Pandarena
+              case 26: window.dressUI.model_opts.gender ? (zoom = 10, Y = 0.80) : (zoom = 9, Y = 0.85); break; // Pandarenh
+              case 27: window.dressUI.model_opts.gender ? (zoom = 12, Y = 0.85) : (zoom = 12, Y = 0.90); break; // Nightborne
+              case 28: window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.95) : (zoom = 6, Y = 0.60); break; // Highmountaintauren
+              case 29: window.dressUI.model_opts.gender ? (zoom = 12.6, X = -0.10, Y = 0.75) : (zoom = 12.6, Y = 0.80); break; // Voidelf
+              case 30: window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.95) : (zoom = 10, Y = 0.95); break; // Lightforgeddraenei
+              case 31: window.dressUI.model_opts.gender ? (zoom = 11, Y = 1.05) : (zoom = 10, Y = 0.95); break; // Zandalaritroll
+              case 32: window.dressUI.model_opts.gender ? (zoom = 11, Y = 0.95) : (zoom = 10, Y = 0.95); break; // Kultiran
+              case 33: (zoom = 13, Y = 0.75); break; // Thinhuman
+              case 34: window.dressUI.model_opts.gender ? (zoom = 9, Y = 0.55) : (zoom = 9, Y = 0.55); break; // Darkirondwarf
+              case 35: window.dressUI.model_opts.gender ? (zoom = 7, Y = 0.35) : (zoom = 8, Y = 0.40); break; // Vulpera
+              case 36: window.dressUI.model_opts.gender ? (zoom = 12.6, Y = 0.75) : (zoom = 8, Y = 0.80); break; // Magharorc
+              case 37: window.dressUI.model_opts.gender ? (zoom = 6, Y = 0.30) : (zoom = 7, Y = 0.35); break; // Mechagnome
             };
             window.model.renderer.viewer.setZoom(zoom);
-            window.model.renderer.viewer.setOffset(0, offSetY);
+            window.model.renderer.viewer.setOffset(X, Y);
           };
 
 
@@ -2911,7 +2943,7 @@
 
           const generateFaceOptions = function() {
             const NOT_ALLOWED_CHAR_OPTS = [
-              // 'Hair Color', 'Piercings'
+              'Eyesight', 'Bear Form', 'Cat Form', 'Moonkin Form', 'Aquatic Form', 'Flight Form', 'Travel Form'
             ];
             const race_gender_opts = window.dressUI.face.race_gender_opts;
 
@@ -3012,7 +3044,7 @@
 
               updateAnimPaused(true);
 
-              window.model.renderer.viewer.setZoom(-3);
+              window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
 
 
               await window.model.getListAnimations(function({animNames, defaultIndex}) {
@@ -3109,7 +3141,7 @@
               updateAnimPaused();
 
               document.documentElement.clientWidth < 800
-              ? window.model.renderer.viewer.setZoom(-3)
+              ? window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM)
               : window.model.renderer.viewer.setZoom(-8);
             });
 
@@ -3173,8 +3205,7 @@
 
         <script>
           function updateFaceFields(random_vals=true) {
-            const NOT_ALLOWED_FACE_FIELDS = [ // эти настройки выглядит не красиво
-              'eyesight'
+            const NOT_ALLOWED_FACE_FIELDS = [
             ];
 
             const face_data = window.dressUI.face;
@@ -3187,9 +3218,10 @@
 
               const max_len = face_data.max_len[i];
 
-              const int_param = random_vals ? get_rand_int(0, max_len) : face_data.current[i];
+              let int_param = random_vals ? get_rand_int(0, max_len) : face_data.current[i];
 
-              if (field_name === 'eye_color' && int_param > 19) continue; // эта настройка выглядит не красиво
+              // эта настройка больше 19 выглядит не красиво
+              if (field_name === 'eye_color' && int_param > 19) int_param = get_rand_int(0, 18);
 
               window.dressUI.model_opts[field_name] = int_param;
               face_data.current[i] = int_param;
@@ -3214,11 +3246,11 @@
           $('#dr-reset').on('click', modelIsLoaded(function(event) {
 
             if (document.documentElement.clientWidth < 800) {
-              window.model.renderer.viewer.setZoom(-3); // range(-14.5, 12.6)
+              window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM); // range(-14.5, 12.6)
             } else {
               window.dressUI.char.only_item
               ? window.model.renderer.viewer.setZoom(-8)
-              : window.model.renderer.viewer.setZoom(-3);
+              : window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
             };
 
             // window.model.renderer.distance = 6;
