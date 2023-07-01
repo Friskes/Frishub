@@ -494,20 +494,50 @@ class WowModelViewer extends ZamModelViewer {
 
     makeScreenshot() {
         const _this = this;
-        window.requestAnimationFrame(function() {
+        const eventName = "fullscreenchange";
+        const canvas = this.renderer.canvas[0];
+        var shotFunc;
 
-            _this.renderer.makeDataURL = ["image/png", 1];
+        let shot = function(flag) {
+            if (flag) document.removeEventListener(eventName, shotFunc, false);
 
             window.requestAnimationFrame(function() {
+                _this.renderer.makeDataURL = ["image/png", 1];
+                window.requestAnimationFrame(function() {
 
-                let temp_ele = $("<a>");
-                $("body").append(temp_ele);
-                temp_ele[0].download = `${_this.renderer.viewer.options.models.id}_${window.location.hostname}_dressing_room.png`;
-                temp_ele[0].href = _this.renderer.screenshotDataURL;
-                temp_ele[0].click();
-                temp_ele.remove();
+                    let temp_ele = $("<a>");
+                    temp_ele[0].download =
+                    `${_this.renderer.viewer.options.models.id}_${window.location.hostname}_dressing_room.png`;
+                    temp_ele[0].href = _this.renderer.screenshotDataURL;
+                    $(document.body).append(temp_ele);
+                    temp_ele[0].click();
+                    temp_ele.remove();
+
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    };
+                });
             });
-        });
+        };
+
+        if (canvas.requestFullscreen) {
+            document.addEventListener(eventName, (shotFunc = shot.bind(this, true)), false);
+            canvas.requestFullscreen();
+        } else if (canvas.webkitRequestFullscreen) {
+            eventName = "webkit" + eventName;
+            document.addEventListener(eventName, (shotFunc = shot.bind(this, true)), false);
+            canvas.webkitRequestFullscreen();
+        } else if (canvas.mozRequestFullScreen) {
+            eventName = "moz" + eventName;
+            document.addEventListener(eventName, (shotFunc = shot.bind(this, true)), false);
+            canvas.mozRequestFullScreen();
+        } else {
+            shot(false);
+        };
     };
 
 
