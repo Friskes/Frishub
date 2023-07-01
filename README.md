@@ -602,7 +602,7 @@ A-запись должна быть равна серверному ip
 
 ```
 server {
-    server_name <ваш_серверный_ip> <ваш_домен> www.<ваш_домен>;
+    server_name <ваш_домен> www.<ваш_домен> <ваш_серверный_ip>;
 
     location /static/ {
         root /home/friskes/project/FriskesSite;
@@ -679,7 +679,7 @@ HTTPS немного сложнее настроить при использов
 
 ```
 server {
-    server_name <ваш_серверный_ip> <ваш_домен> www.<ваш_домен>;
+    server_name <ваш_домен> www.<ваш_домен> <ваш_серверный_ip>;
 
     location /static/ {
         root /home/friskes/project/FriskesSite;
@@ -718,11 +718,27 @@ server {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
-    server_name <ваш_серверный_ip> <ваш_домен> www.<ваш_домен>;
+    server_name <ваш_домен> www.<ваш_домен> <ваш_серверный_ip>;
     listen 80;
     return 404; # managed by Certbot
 }
 ```
+
+Так же для фикса одной неприятной ошибки [тема на stackoverflow](https://stackoverflow.com/a/49817720/19276507) изза которой к вам на почту при подключенном логировании будут приходить бесполезные репорты об ошибках можно добавить в самое начало блока 'location /' этот код:
+```
+if ( $host !~* ^(<ваш_домен>|www.<ваш_домен>|<ваш_серверный_ip>)$ ) {
+    return 444;
+}
+```
+Так же в файле /etc/nginx/proxy_params необходимо заменить строку
+```
+proxy_set_header Host $http_host;
+```
+на строку
+```
+proxy_set_header Host $host;
+```
+[тема на stackoverflow](https://stackoverflow.com/a/22027177/19276507)
 
 ## Обновить `daphne.service`
 Расскажите daphne, как получить доступ к нашему сертификату https.
