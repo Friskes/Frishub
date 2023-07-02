@@ -112,6 +112,7 @@
     21: "Icetroll"
   };
   const MAX_WRATH_RACES_LEN = 21;
+  const MAX_WRATH_MOUNTS_LEN = 290;
 
   if (charData.game_patch === 'live') {
     RACES = Object.assign(RACES, {
@@ -275,7 +276,7 @@
 
   const WH_TOOLTIP_LIVE = ''; // актуал
   const WH_TOOLTIP_WOTLK = 'wotlk/';
-  const WH_TOOLTIP_URL = `https://www.wowhead.com/${WH_TOOLTIP_WOTLK}{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}item=`;
+  const WH_TOOLTIP_URL = `https://www.wowhead.com/${WH_TOOLTIP_WOTLK}{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}`;
 
   const DEFAULT_ICON_URL = 'https://wow.zamimg.com/images/wow/icons/large/'; // small // medium // large
   // const DEFAULT_ICON_URL = `https://render-classic-us.worldofwarcraft.com/icons/56/`; // 18 // 36 // 56
@@ -660,10 +661,6 @@
   .paperdoll[data-icon-size="large"] .paperdoll-controls-left {
     right: calc(50% - -68px)
   }
-  .paperdoll-picker .listview td.none {
-    text-align: center;
-    font-weight: bold
-  }
   .paperdoll-enchant-disabled {
     opacity: 0.2;
     pointer-events: none !important
@@ -826,6 +823,19 @@
   .items-menu-table {
     max-height: 173px;
     display: grid;
+
+    font-size: 15px !important;
+  }
+  .items-menu-table a span, .items-menu-table a span del {
+    width: 28px !important;
+    height: 28px !important;
+    margin: 0 !important;
+  }
+  .items-menu-table a span ins {
+    width: 22px !important;
+    height: 22px !important;
+    top: 3px !important;
+    left: 3px !important;
   }
 
   .paperdoll-left, .paperdoll-right, .paperdoll-bottom {
@@ -1089,6 +1099,92 @@
   }
   .rooms-list-link:hover .rooms-list-img {
     opacity: 0.7;
+  }
+</style>
+
+<style>
+  .mounts-menu {
+    display: none;
+    height: auto !important;
+    pointer-events: all;
+    right: -66px;
+    top: -66px;
+  }
+  .listview-scroller-horizontal {
+    overflow-x: auto;
+    position: relative
+  }
+  .listview-scroller-vertical {
+    overflow: auto;
+    width: 400px;
+    height: 517px;
+  }
+  .listview-mode-tiled {
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  }
+  /* Если мы на смартфоне */
+  @media screen and (max-width: 767px) {
+    .mounts-menu {
+      right: -7px;
+      top: 365px;
+    }
+    .listview-scroller-vertical {
+      width: auto !important;
+      height: 365px;
+    }
+    .listview-mode-tiled {
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+  }
+  .listview-mode-tiled>div {
+    border-radius: 4px;
+    display: block
+  }
+  .listview-mode-tiled>div:hover {
+    background-color: #181818
+  }
+  .listview-mode-tiled.clickable>div {
+    cursor: pointer
+  }
+  .screenshot-cell {
+    cursor: auto;
+    padding: 10px 4px;
+    text-align: center;
+    vertical-align: top;
+  }
+  .screenshot-cell img {
+    border-radius: 3px;
+    margin-bottom: 3px;
+    max-height: 125px;
+    max-width: 125px;
+  }
+  .screenshot-cell a:hover img {
+    filter: brightness(1.35)
+  }
+  .screenshot-caption-wrapper {
+    height: 2em;
+    position: relative;
+  }
+  .screenshot-caption-wrapper:first-child {
+    margin-top: 40.5%
+  }
+  .screenshot-caption {
+    box-sizing: border-box;
+    height: 2em;
+    left: 0;
+    line-height: 18px;
+    overflow: hidden;
+    padding: 1px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0
+  }
+  .screenshot-caption span {
+    font-size: 13px;
+    font-weight: bold
   }
 </style>
 {% endblock %}
@@ -1875,9 +1971,31 @@
                 <div data-role="label">{% trans 'Маунт' %}</div>
                 <div tabindex="0" data-role="control" data-disabled="false" id="select_mount_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1" style="pointer-events: all;"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
+
+                <div class="items-menu mounts-menu">
+                  <div class="listview-scroller-horizontal">
+                    <div class="listview-scroller-vertical">
+                      <div class="listview-mode-tiled clickable" style="font-size: 14px; font-weight: bold;">
+                        <div class="screenshot-cell" index="0">
+                          <div class="screenshot-caption-wrapper" style="margin-top: 65px;">
+                            <div class="screenshot-caption">
+                              <a class="q7">None</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-block d-md-block mt-2" style="line-height: 0px;">
+                    <button class="btn-custom btn-close-items-menu-left" onclick="checkDuplicateMount(0);">{% trans 'Убрать маунта' %}</button>
+                    <button class="btn-custom btn-close-items-menu-right"
+                      onclick="mounts_menu_switcher(this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                  </div>
+                </div>
+
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="only-item">
                 <div data-role="label">
@@ -2016,6 +2134,9 @@
             if (window.dressUI.game_patch === 'wrath' && window.dressUI.model_opts.race > MAX_WRATH_RACES_LEN) {
               window.dressUI.model_opts.race = MAX_WRATH_RACES_LEN;
             };
+            if (window.dressUI.game_patch === 'wrath' && window.dressUI.char.mount > MAX_WRATH_MOUNTS_LEN) {
+              window.dressUI.char.mount = MAX_WRATH_MOUNTS_LEN;
+            };
 
             sendAjaxRequest();
             // warnMessageHandler(6000, interpolate(gettext('Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.'), [window.dressUI.game_patch.toUpperCase()]));
@@ -2105,7 +2226,7 @@
             ins.style.backgroundImage = `url(${DEFAULT_ICON_URL}${icon}.jpg)`;
             slot_btn.children[2].href = 'javascript:';
 
-            removeItemUnderline(slot_btn.parentElement.children[1].children[1].children[0]);
+            removeUnderlineFrom_A(slot_btn.parentElement.children[1].children[1].children[0]);
           };
 
 
@@ -2115,7 +2236,7 @@
             const itemId = element.href.split('=').pop();
 
             ins.style.backgroundImage = `url(${DEFAULT_ICON_URL}${icon}.jpg)`;
-            slot_btn.children[2].href = `${WH_TOOLTIP_URL}${itemId}`;
+            slot_btn.children[2].href = `${WH_TOOLTIP_URL}item=${itemId}`;
           };
 
 
@@ -2237,7 +2358,7 @@
               {type: TYPEID_BY_SLOTID[slotId], id: displayId, itemId: itemId, slotId: slotId};
             };
 
-            removeItemUnderline(element_a);
+            removeUnderlineFrom_A(element_a);
             element_a.classList.add('text-uline');
 
             setItemSlotIcon(element_a, slot_btn);
@@ -2292,7 +2413,7 @@
           };
 
 
-          function removeItemUnderline(target) {
+          function removeUnderlineFrom_A(target) {
             for (let element of target.parentElement.getElementsByTagName("A")) {
               if (element.classList.contains('text-uline')) element.classList.remove('text-uline');
             };
@@ -2323,7 +2444,7 @@
               const element_del_icon = document.createElement('del');
 
               const element_span_icon = document.createElement('span');
-              element_span_icon.classList.add('iconsmall'); // iconsmall // iconmedium // iconlarge
+              element_span_icon.classList.add('iconlarge'); // iconsmall // iconmedium // iconlarge
               element_span_icon.appendChild(element_ins_icon);
               element_span_icon.appendChild(element_del_icon);
 
@@ -2336,7 +2457,7 @@
                 itemData.quality = 1;
               };
               element_a.classList.add(ITEM_QUALITIES[itemData.quality]);
-              element_a.setAttribute('href', `${WH_TOOLTIP_URL}${itemData.itemId}`);
+              element_a.setAttribute('href', `${WH_TOOLTIP_URL}item=${itemData.itemId}`);
               element_a.setAttribute('display-id', itemData.displayId);
               element_a.setAttribute('quality', itemData.quality);
               element_a.setAttribute('type', itemData.type);
@@ -2398,12 +2519,13 @@
 
 
           function creatingItemsMenu() {
-            $('.items-menu').each(function(index, items_menu) {
+            const itemsMenus = document.querySelector('#dressing-room-paperdoll').getElementsByClassName('items-menu');
+            for (const items_menu of itemsMenus) {
               const slotId = items_menu.parentElement.children[0].getAttribute('data-character-slot');
               if (slotId != 2 && slotId != 11 && slotId != 12 && slotId != 13 && slotId != 14) {
                 generateItemsMenu(slotId, items_menu);
               };
-            });
+            };
           };
 
 
@@ -2545,9 +2667,69 @@
           };
 
 
-          $('#select_mount_btn a').on('click', modelIsLoaded(async function(event) {
+          function generateMountsMenuHtml() {
+            const listview_mode_tiled = $('.listview-mode-tiled')[0];
+            const mounts = window.itemsData[0].mounts;
+            const whTooltipUrl = window.dressUI.game_patch === 'wrath'
+            ? "https://www.wowhead.com/wrath/{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}spell="
+            : "https://www.wowhead.com/{% if LANGUAGE_CODE == 'ru' %}ru/{% else %}{% endif %}spell=";
 
-            const mounts_list_len = window.itemsData[0].mounts.length - 1;
+            for (const i in mounts) {
+              if (mounts[i].displayId === 0) continue;
+
+              const hash = mounts[i].displayId & 255; // Побитовая операция
+
+              listview_mode_tiled.insertAdjacentHTML('beforeEnd',
+                `
+                <div class="screenshot-cell" index="${i}">
+                  <img src="https://wow.zamimg.com/modelviewer/${window.dressUI.game_patch}/webthumbs/npc/${hash}/${mounts[i].displayId}.webp">
+                  <div class="screenshot-caption-wrapper">
+                    <div class="screenshot-caption">
+                      <a class="q" href="${whTooltipUrl}${mounts[i].spellId}">${mounts[i].name}</a>
+                    </div>
+                  </div>
+                </div>
+                `
+              );
+            };
+
+            listview_mode_tiled.addEventListener('click', modelIsLoaded(function(event) {
+              event.preventDefault(); // блокирует переход по ссылке но обрабатывает клик и отображает тултип
+
+              if (event.target.classList.contains('screenshot-cell')) {
+                checkDuplicateMount(event.target.getAttribute('index'));
+              } else if (event.target.tagName === 'IMG') {
+                checkDuplicateMount(event.target.parentElement.getAttribute('index'));
+              } else if (event.target.classList.contains('screenshot-caption-wrapper')) {
+                checkDuplicateMount(event.target.parentElement.getAttribute('index'));
+              } else if (event.target.classList.contains('screenshot-caption')) {
+                checkDuplicateMount(event.target.parentElement.parentElement.getAttribute('index'));
+              } else if (event.target.tagName === 'A') {
+                checkDuplicateMount(event.target.parentElement.parentElement.parentElement.getAttribute('index'));
+              };
+            }));
+          };
+
+          function checkDuplicateMount(current_index) {
+            if (window.dressUI.char.mount == current_index) {
+              // warnMessageHandler(1500, 'Текущий и выбранный маунт одинаковые.');
+              return false;
+            };
+            setCurrentMount(current_index);
+          };
+
+
+          function mounts_menu_switcher(mounts_menu) {
+            window.dressUI.char.mounts_menu_opened = !window.dressUI.char.mounts_menu_opened;
+            window.dressUI.char.mounts_menu_opened ? $(mounts_menu).css('display', 'block') : $(mounts_menu).css('display', 'none');
+          };
+
+          $('#select_mount_btn a').on('click', modelIsLoaded(function(event) {
+
+            if (this.classList.contains('imitation-select')) {
+              mounts_menu_switcher(event.target.parentElement.parentElement.children[2]);
+              return false;
+            };
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.mount > 0) {
@@ -2555,15 +2737,30 @@
               window.dressUI.char.mount -= 1;
 
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.char.mount < mounts_list_len) {
+            && window.dressUI.char.mount < window.itemsData[0].mounts.length - 1) {
 
               window.dressUI.char.mount += 1;
             };
 
-            $('#select_mount_btn').find('a')[1].textContent =
-            window.itemsData[0].mounts[window.dressUI.char.mount].name;
+            setCurrentMount(window.dressUI.char.mount);
+          }));
 
-            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.mount, mounts_list_len);
+
+          async function setCurrentMount(current_index) {
+            window.dressUI.char.mount = current_index;
+
+            const current_element_a = $('.listview-mode-tiled')[0].getElementsByTagName("A")[window.dressUI.char.mount];
+            removeUnderlineFrom_A(current_element_a.parentElement.parentElement.parentElement);
+            current_element_a.classList.add('text-uline');
+
+            const caret_element_a = $('#select_mount_btn').find('a')[1];
+            caret_element_a.textContent = window.itemsData[0].mounts[window.dressUI.char.mount].name;
+
+            setAlphaForExtremeButtonPosition(
+              caret_element_a,
+              window.dressUI.char.mount,
+              window.itemsData[0].mounts.length - 1
+            );
 
             window.dressUI.model_opts.generalOptions.mount.id =
             window.itemsData[0].mounts[window.dressUI.char.mount].displayId;
@@ -2572,7 +2769,7 @@
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
             await _generateCharModel();
-          }));
+          };
         </script>
 
         <script>
@@ -2644,8 +2841,11 @@
                 const slot_btn = getSlotBtnBySlotId(slotId);
                 const first_element_a = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].children[0];
                 clearItemSlotIcon(slotId);
-                removeItemUnderline(first_element_a);
+                removeUnderlineFrom_A(first_element_a);
               };
+
+              const current_element_a = $('.listview-mode-tiled')[0].getElementsByTagName("A")[window.dressUI.char.mount];
+              current_element_a.classList.add('text-uline');
             };
 
             for (const itemData of window.dressUI.model_opts.items) {
@@ -2657,7 +2857,7 @@
                 let slot_btn = getSlotBtnBySlotId(itemData[0]);
                 let element_a = findElementByItemId(itemData[2], slot_btn);
 
-                removeItemUnderline(element_a);
+                removeUnderlineFrom_A(element_a);
                 element_a.classList.add('text-uline');
 
                 setItemSlotIcon(element_a, slot_btn);
@@ -2668,7 +2868,7 @@
                   element_a = findElementByVisualId(itemData[3], slot_btn);
 
                   if (element_a) {
-                    removeItemUnderline(element_a);
+                    removeUnderlineFrom_A(element_a);
                     element_a.classList.add('text-uline');
 
                     setItemSlotIcon(element_a, slot_btn);
@@ -3191,13 +3391,17 @@
             .then((data) => {
               window.itemsData = data;
 
+              // только первые 290шт. массива wrath маунты
+              if (window.dressUI.game_patch === 'wrath') window.itemsData[0].mounts = window.itemsData[0].mounts.slice(0, MAX_WRATH_MOUNTS_LEN);
+
               // по дефолту маунты отсортированы от ванилы к лайву,
               // но если сейчас активен live патч сортируем их в обратном порядке
               if (window.dressUI.game_patch === 'live') window.itemsData[0].mounts.reverse();
 
               // добавляю первый элемент пустышку для возможности отключения маунта
-              window.itemsData[0].mounts.unshift({"displayId": 0, "name": "None"});
+              window.itemsData[0].mounts.unshift({"spellId": 0, "displayId": 0, "name": "None"});
               creatingItemsMenu();
+              generateMountsMenuHtml();
             });
           };
           get_items_data_from_database_file();
@@ -3293,7 +3497,7 @@
             };
             if (flag) setTimeout(() => {
               window.model.renderer.viewer.method("setAnimPaused", window.dressUI.AnimIsPaused);
-            }, 4);
+            }, 10);
           };
         </script>
 
