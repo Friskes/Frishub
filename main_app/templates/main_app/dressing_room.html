@@ -2747,7 +2747,7 @@
 
 
           async function setCurrentMount(current_index) {
-            window.dressUI.char.mount = current_index;
+            window.dressUI.char.mount = parseInt(current_index);
 
             const current_element_a = $('.listview-mode-tiled')[0].getElementsByTagName("A")[window.dressUI.char.mount];
             removeUnderlineFrom_A(current_element_a.parentElement.parentElement.parentElement);
