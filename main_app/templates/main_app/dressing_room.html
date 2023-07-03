@@ -7,7 +7,7 @@
 <script id="viewer"></script>
 
 <script>
-  const DEFAULT_MODEL_ZOOM = -3;
+  let CUR_MODEL_ZOOM = -3;
 
   const GENDERS = {
     0: 'Male',
@@ -1186,6 +1186,38 @@
     font-size: 13px;
     font-weight: bold
   }
+  .close-mounts-menu-top-up {
+    width: 100%;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    justify-content: right;
+    pointer-events: none;
+  }
+  .close-mounts-menu-btn {
+    font-size: 17px;
+    pointer-events: all;
+    position: relative;
+    right: 15px;
+    bottom: 8px;
+  }
+</style>
+
+<style>
+  .anims-menu {
+    display: none;
+    height: auto !important;
+    pointer-events: all;
+    right: -66px;
+    top: 181px;
+  }
+  /* Если мы на смартфоне */
+  @media screen and (max-width: 767px) {
+    .anims-menu {
+      right: -7px;
+      top: 538px;
+    }
+  }
 </style>
 {% endblock %}
 
@@ -1963,9 +1995,20 @@
                 <div data-role="label">{% trans 'Анимация' %}</div>
                 <div tabindex="0" data-role="control" data-disabled="false" id="select_animation_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1" style="pointer-events: all;"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
+
+                <div class="items-menu anims-menu">
+                  <div class="table-responsive items-menu-table anims-menu-table"></div>
+                  <div class="d-block d-md-block mt-2" style="line-height: 0px;">
+                    <button class="btn-custom btn-close-items-menu-left"
+                      onclick="checkDuplicateAnim(window.dressUI.char.default_anim);">{% trans 'Сбросить анимацию' %}</button>
+                    <button class="btn-custom btn-close-items-menu-right"
+                      onclick="anims_menu_switcher(this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                  </div>
+                </div>
+
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="mount">
                 <div data-role="label">{% trans 'Маунт' %}</div>
@@ -1976,6 +2019,14 @@
                 </div>
 
                 <div class="items-menu mounts-menu">
+
+                  <div class="close-mounts-menu-top-up">
+                    <button class="btn dress-btn btn-site fa fa-times close-mounts-menu-btn" type="button"
+                      onclick="mounts_menu_switcher(this.parentElement.parentElement);">
+                      <span style="font-size: 14px;">{% trans 'Закрыть' %}</span>
+                    </button>
+                  </div>
+
                   <div class="listview-scroller-horizontal">
                     <div class="listview-scroller-vertical">
                       <div class="listview-mode-tiled clickable" style="font-size: 14px; font-weight: bold;">
@@ -2639,9 +2690,45 @@
           };
 
 
+          function generateAnimsMenuHtml() {
+            const anims_menu = $('.anims-menu')[0].children[0];
+
+            for (const i in window.dressUI.char.anims_list) {
+
+              anims_menu.insertAdjacentHTML('beforeEnd',
+                `
+                <a class="q1" href="javascript:" index="${i}">${window.dressUI.char.anims_list[i]}</a>
+                `
+              );
+            };
+
+            anims_menu.addEventListener('click', modelIsLoaded(function(event) {
+              event.preventDefault(); // блокирует переход по ссылке но обрабатывает клик и отображает тултип
+
+              checkDuplicateAnim(event.target.getAttribute('index'));
+            }, true));
+          };
+
+          function checkDuplicateAnim(current_index) {
+            if (window.dressUI.char.anim == current_index) {
+              // warnMessageHandler(1500, 'Текущая и выбранная анимация одинаковая.');
+              return false;
+            };
+            setAnim(current_index);
+          };
+
+
+          function anims_menu_switcher(anims_menu) {
+            window.dressUI.char.anims_menu_opened = !window.dressUI.char.anims_menu_opened;
+            window.dressUI.char.anims_menu_opened ? $(anims_menu).css('display', 'block') : $(anims_menu).css('display', 'none');
+          };
+
           $('#select_animation_btn a').on('click', modelIsLoaded(function(event) {
 
-            const anims_list_len = window.dressUI.char.anims_list.length - 1;
+            if (this.classList.contains('imitation-select')) {
+              anims_menu_switcher(event.target.parentElement.parentElement.children[2]);
+              return false;
+            };
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.anim > 0) {
@@ -2649,21 +2736,35 @@
               window.dressUI.char.anim -= 1;
 
             } else if (this.classList.contains('fa-caret-right')
-            && window.dressUI.char.anim < anims_list_len) {
+            && window.dressUI.char.anim < window.dressUI.char.anims_list.length - 1) {
 
               window.dressUI.char.anim += 1;
             };
-            setAnim();
-            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.anim, anims_list_len);
+            setAnim(window.dressUI.char.anim);
           }, true));
 
 
-          function setAnim() {
+          function setAnim(current_index) {
+            window.dressUI.char.anim = parseInt(current_index);
+
+            const current_element_a = $('.anims-menu-table')[0].getElementsByTagName("A")[window.dressUI.char.anim];
+            removeUnderlineFrom_A(current_element_a.parentElement);
+            current_element_a.classList.add('text-uline');
+
+            const caret_element_a = $('#select_animation_btn').find('a')[1];
+
             const anim_name = window.dressUI.char.anims_list[window.dressUI.char.anim];
+
+            caret_element_a.textContent = anim_name;
+
+            setAlphaForExtremeButtonPosition(
+              caret_element_a,
+              window.dressUI.char.anim,
+              window.dressUI.char.anims_list.length - 1
+            );
 
             window.model.renderer.viewer.method("setAnimation", anim_name);
             // window.model.renderer.viewer.method("resetAnimation"); // Отменить анимацию
-            $('#select_animation_btn').find('a')[1].textContent = anim_name;
           };
 
 
@@ -2925,7 +3026,7 @@
               window.dressUI.active_cat = 'gear';
 
               if (!window.dressUI.char.only_item) {
-                window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
+                window.model.renderer.viewer.setZoom(CUR_MODEL_ZOOM);
                 window.model.renderer.viewer.setOffset(0, 0);
               };
 
@@ -2944,7 +3045,7 @@
               window.dressUI.active_cat = 'character';
 
               if (!window.dressUI.char.only_item) {
-                window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
+                window.model.renderer.viewer.setZoom(CUR_MODEL_ZOOM);
                 window.model.renderer.viewer.setOffset(0, 0);
               };
             };
@@ -2952,7 +3053,7 @@
 
 
           function setFaceZoom() {
-            let zoom = DEFAULT_MODEL_ZOOM;
+            let zoom = CUR_MODEL_ZOOM;
             let X = 0;
             let Y = 0;
             switch (window.dressUI.model_opts.race) { //          Female                      Male
@@ -3200,6 +3301,8 @@
           const _generateCharModel = async function() {
             if (window.model) window.model.renderer.models[0].modelIsLoaded = false;
 
+            CUR_MODEL_ZOOM = window.dressUI.model_opts.generalOptions.mount.id === 0 ? -3 : 0;
+
             // глубокая копия window.dressUI.model_opts для удаления itemId и visualId из items перед генерацией модели
             let dc_model_opts = JSON.parse(JSON.stringify(window.dressUI.model_opts));
             dc_model_opts.items = [];
@@ -3244,7 +3347,7 @@
 
               updateAnimPaused(true);
 
-              window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
+              window.model.renderer.viewer.setZoom(CUR_MODEL_ZOOM);
 
 
               await window.model.getListAnimations(function({animNames, defaultIndex}) {
@@ -3268,6 +3371,11 @@
                 };
 
                 refreshAlphaForExtremeButtonPosition(char_data);
+
+                generateAnimsMenuHtml();
+
+                const current_element_a = $('.anims-menu-table')[0].getElementsByTagName("A")[window.dressUI.char.anim];
+                current_element_a.classList.add('text-uline');
               });
             });
 
@@ -3341,7 +3449,7 @@
               updateAnimPaused();
 
               document.documentElement.clientWidth < 800
-              ? window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM)
+              ? window.model.renderer.viewer.setZoom(-3)
               : window.model.renderer.viewer.setZoom(-8);
             });
 
@@ -3450,11 +3558,13 @@
           $('#dr-reset').on('click', modelIsLoaded(function(event) {
 
             if (document.documentElement.clientWidth < 800) {
-              window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM); // range(-14.5, 12.6)
+              window.dressUI.char.only_item
+              ? window.model.renderer.viewer.setZoom(-3)
+              : window.model.renderer.viewer.setZoom(CUR_MODEL_ZOOM); // range(-14.5, 12.6)
             } else {
               window.dressUI.char.only_item
               ? window.model.renderer.viewer.setZoom(-8)
-              : window.model.renderer.viewer.setZoom(DEFAULT_MODEL_ZOOM);
+              : window.model.renderer.viewer.setZoom(CUR_MODEL_ZOOM);
             };
 
             // window.model.renderer.distance = 6;
