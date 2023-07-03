@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-03 13:16+0300\n"
+"POT-Creation-Date: 2023-07-03 19:27+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgid "Женщина"
 msgstr "Woman"
 
 #: .\main_app\models.py:64
-#: .\main_app\templates\main_app\dressing_room.html:1979
+#: .\main_app\templates\main_app\dressing_room.html:2015
 #: .\main_app\templates\main_app\guide.html:452
 #: .\main_app\templates\main_app\guide.html:625
 msgid "Пол"
@@ -201,30 +201,31 @@ msgid "Связь со мной"
 msgstr "Contact with me"
 
 #: .\main_app\templates\account\account.html:108
-#: .\main_app\templates\main_app\dressing_room.html:1273
-#: .\main_app\templates\main_app\dressing_room.html:1305
-#: .\main_app\templates\main_app\dressing_room.html:1337
-#: .\main_app\templates\main_app\dressing_room.html:1369
-#: .\main_app\templates\main_app\dressing_room.html:1401
-#: .\main_app\templates\main_app\dressing_room.html:1433
-#: .\main_app\templates\main_app\dressing_room.html:1465
-#: .\main_app\templates\main_app\dressing_room.html:1497
-#: .\main_app\templates\main_app\dressing_room.html:1532
-#: .\main_app\templates\main_app\dressing_room.html:1564
-#: .\main_app\templates\main_app\dressing_room.html:1596
-#: .\main_app\templates\main_app\dressing_room.html:1628
-#: .\main_app\templates\main_app\dressing_room.html:1660
-#: .\main_app\templates\main_app\dressing_room.html:1692
-#: .\main_app\templates\main_app\dressing_room.html:1724
-#: .\main_app\templates\main_app\dressing_room.html:1756
-#: .\main_app\templates\main_app\dressing_room.html:1793
-#: .\main_app\templates\main_app\dressing_room.html:1827
+#: .\main_app\templates\main_app\dressing_room.html:1306
+#: .\main_app\templates\main_app\dressing_room.html:1338
+#: .\main_app\templates\main_app\dressing_room.html:1370
+#: .\main_app\templates\main_app\dressing_room.html:1402
+#: .\main_app\templates\main_app\dressing_room.html:1434
+#: .\main_app\templates\main_app\dressing_room.html:1466
+#: .\main_app\templates\main_app\dressing_room.html:1498
+#: .\main_app\templates\main_app\dressing_room.html:1530
+#: .\main_app\templates\main_app\dressing_room.html:1565
+#: .\main_app\templates\main_app\dressing_room.html:1597
+#: .\main_app\templates\main_app\dressing_room.html:1629
+#: .\main_app\templates\main_app\dressing_room.html:1661
+#: .\main_app\templates\main_app\dressing_room.html:1693
+#: .\main_app\templates\main_app\dressing_room.html:1725
+#: .\main_app\templates\main_app\dressing_room.html:1757
+#: .\main_app\templates\main_app\dressing_room.html:1789
+#: .\main_app\templates\main_app\dressing_room.html:1826
 #: .\main_app\templates\main_app\dressing_room.html:1860
 #: .\main_app\templates\main_app\dressing_room.html:1893
-#: .\main_app\templates\main_app\dressing_room.html:1927
-#: .\main_app\templates\main_app\dressing_room.html:2008
-#: .\main_app\templates\main_app\dressing_room.html:2026
-#: .\main_app\templates\main_app\dressing_room.html:2046
+#: .\main_app\templates\main_app\dressing_room.html:1926
+#: .\main_app\templates\main_app\dressing_room.html:1960
+#: .\main_app\templates\main_app\dressing_room.html:2009
+#: .\main_app\templates\main_app\dressing_room.html:2044
+#: .\main_app\templates\main_app\dressing_room.html:2062
+#: .\main_app\templates\main_app\dressing_room.html:2082
 #: .\main_app\templates\main_app\guide.html:467
 #: .\main_app\templates\main_app\guide.html:640
 msgid "Закрыть"
@@ -505,11 +506,12 @@ msgid "Стримы"
 msgstr "Streams"
 
 #: .\main_app\templates\main_app\base.html:794
+#: .\main_app\templates\main_app\home.html:50
 msgid "Примерочная"
 msgstr "Dressing room"
 
 #: .\main_app\templates\main_app\base.html:797
-#: .\main_app\templates\main_app\home.html:50
+#: .\main_app\templates\main_app\home.html:58
 msgid "Калькулятор апа"
 msgstr "Calculator AP"
 
@@ -596,25 +598,25 @@ msgstr "Starting chat"
 msgid "Чат закрыт"
 msgstr "Chat closed"
 
-#: .\main_app\templates\main_app\dressing_room.html:252
+#: .\main_app\templates\main_app\dressing_room.html:272
 msgid ""
 "Создатель этой комнаты запретил изменение персонажа другими пользователями."
 msgstr ""
 "The creator of this room has forbidden other users to change the character."
 
-#: .\main_app\templates\main_app\dressing_room.html:256
+#: .\main_app\templates\main_app\dressing_room.html:276
 msgid "Ошибка, модель не была создана."
 msgstr "Error, the model was not created."
 
-#: .\main_app\templates\main_app\dressing_room.html:261
+#: .\main_app\templates\main_app\dressing_room.html:281
 msgid "Пожалуйста, дождитесь полной загрузки модели."
 msgstr "Please wait until the model is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:264
+#: .\main_app\templates\main_app\dressing_room.html:284
 msgid "Пожалуйста, дождитесь полной загрузки базы данных."
 msgstr "Please wait until the database is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:314
+#: .\main_app\templates\main_app\dressing_room.html:334
 msgid ""
 "Создатель этой комнаты запретил изменение персонажа другими пользователями "
 "во время вашей сессии, любые изменения настроек не будут сохранены."
@@ -622,116 +624,116 @@ msgstr ""
 "The creator of this room has prohibited other users from changing the "
 "character during your session, any changes to the settings will not be saved."
 
-#: .\main_app\templates\main_app\dressing_room.html:1233
+#: .\main_app\templates\main_app\dressing_room.html:1266
 msgid "Сохранённые комнаты"
 msgstr "Saved rooms"
 
-#: .\main_app\templates\main_app\dressing_room.html:1271
-#: .\main_app\templates\main_app\dressing_room.html:1303
-#: .\main_app\templates\main_app\dressing_room.html:1335
-#: .\main_app\templates\main_app\dressing_room.html:1367
-#: .\main_app\templates\main_app\dressing_room.html:1399
-#: .\main_app\templates\main_app\dressing_room.html:1431
-#: .\main_app\templates\main_app\dressing_room.html:1463
-#: .\main_app\templates\main_app\dressing_room.html:1495
-#: .\main_app\templates\main_app\dressing_room.html:1530
-#: .\main_app\templates\main_app\dressing_room.html:1562
-#: .\main_app\templates\main_app\dressing_room.html:1594
-#: .\main_app\templates\main_app\dressing_room.html:1626
-#: .\main_app\templates\main_app\dressing_room.html:1658
-#: .\main_app\templates\main_app\dressing_room.html:1690
-#: .\main_app\templates\main_app\dressing_room.html:1722
-#: .\main_app\templates\main_app\dressing_room.html:1754
-#: .\main_app\templates\main_app\dressing_room.html:1791
-#: .\main_app\templates\main_app\dressing_room.html:1825
+#: .\main_app\templates\main_app\dressing_room.html:1304
+#: .\main_app\templates\main_app\dressing_room.html:1336
+#: .\main_app\templates\main_app\dressing_room.html:1368
+#: .\main_app\templates\main_app\dressing_room.html:1400
+#: .\main_app\templates\main_app\dressing_room.html:1432
+#: .\main_app\templates\main_app\dressing_room.html:1464
+#: .\main_app\templates\main_app\dressing_room.html:1496
+#: .\main_app\templates\main_app\dressing_room.html:1528
+#: .\main_app\templates\main_app\dressing_room.html:1563
+#: .\main_app\templates\main_app\dressing_room.html:1595
+#: .\main_app\templates\main_app\dressing_room.html:1627
+#: .\main_app\templates\main_app\dressing_room.html:1659
+#: .\main_app\templates\main_app\dressing_room.html:1691
+#: .\main_app\templates\main_app\dressing_room.html:1723
+#: .\main_app\templates\main_app\dressing_room.html:1755
+#: .\main_app\templates\main_app\dressing_room.html:1787
+#: .\main_app\templates\main_app\dressing_room.html:1824
 #: .\main_app\templates\main_app\dressing_room.html:1858
 #: .\main_app\templates\main_app\dressing_room.html:1891
-#: .\main_app\templates\main_app\dressing_room.html:1925
+#: .\main_app\templates\main_app\dressing_room.html:1924
+#: .\main_app\templates\main_app\dressing_room.html:1958
 msgid "Очистить слот"
 msgstr "Clear slot"
 
-#: .\main_app\templates\main_app\dressing_room.html:1965
+#: .\main_app\templates\main_app\dressing_room.html:1992
 msgid "Внешность"
 msgstr "Appearance"
 
-#: .\main_app\templates\main_app\dressing_room.html:1969
+#: .\main_app\templates\main_app\dressing_room.html:1996
 msgid "Персонаж"
 msgstr "Character"
 
-#: .\main_app\templates\main_app\dressing_room.html:1971
+#: .\main_app\templates\main_app\dressing_room.html:1998
 msgid "Раса"
 msgstr "Race"
 
-#: .\main_app\templates\main_app\dressing_room.html:1987
+#: .\main_app\templates\main_app\dressing_room.html:2023
 msgid "Оружие"
 msgstr "Weapon"
 
-#: .\main_app\templates\main_app\dressing_room.html:1995
+#: .\main_app\templates\main_app\dressing_room.html:2031
 msgid "Анимация"
 msgstr "Animation"
 
-#: .\main_app\templates\main_app\dressing_room.html:2006
+#: .\main_app\templates\main_app\dressing_room.html:2042
 msgid "Сбросить анимацию"
 msgstr "Reset animation"
 
-#: .\main_app\templates\main_app\dressing_room.html:2014
+#: .\main_app\templates\main_app\dressing_room.html:2050
 msgid "Маунт"
 msgstr "Mount"
 
-#: .\main_app\templates\main_app\dressing_room.html:2044
+#: .\main_app\templates\main_app\dressing_room.html:2080
 msgid "Убрать маунта"
 msgstr "Remove mount"
 
-#: .\main_app\templates\main_app\dressing_room.html:2053
+#: .\main_app\templates\main_app\dressing_room.html:2089
 msgid "Только итем"
 msgstr "Only item"
 
-#: .\main_app\templates\main_app\dressing_room.html:2062
+#: .\main_app\templates\main_app\dressing_room.html:2098
 msgid "Скрыть"
 msgstr "Hide"
 
-#: .\main_app\templates\main_app\dressing_room.html:2063
+#: .\main_app\templates\main_app\dressing_room.html:2099
 msgid "Пауза"
 msgstr "Pause"
 
-#: .\main_app\templates\main_app\dressing_room.html:2064
+#: .\main_app\templates\main_app\dressing_room.html:2100
 msgid "Скриншот"
 msgstr "Screenshot"
 
-#: .\main_app\templates\main_app\dressing_room.html:2067
+#: .\main_app\templates\main_app\dressing_room.html:2103
 msgid "Сброс"
 msgstr "Reset"
 
-#: .\main_app\templates\main_app\dressing_room.html:2069
+#: .\main_app\templates\main_app\dressing_room.html:2105
 msgid "Сбросить позицию и анимацию персонажа"
 msgstr "Reset the position and animation of the character"
 
-#: .\main_app\templates\main_app\dressing_room.html:2073
+#: .\main_app\templates\main_app\dressing_room.html:2109
 msgid "Рандом"
 msgstr "Random"
 
-#: .\main_app\templates\main_app\dressing_room.html:2075
+#: .\main_app\templates\main_app\dressing_room.html:2111
 msgid "Сгенерировать случайные настройки персонажа"
 msgstr "Generate random character settings"
 
-#: .\main_app\templates\main_app\dressing_room.html:2080
+#: .\main_app\templates\main_app\dressing_room.html:2116
 msgid "Ссылка"
 msgstr "Link"
 
-#: .\main_app\templates\main_app\dressing_room.html:2082
+#: .\main_app\templates\main_app\dressing_room.html:2118
 msgid "Скопировать ссылку на комнату"
 msgstr "Copy room link"
 
-#: .\main_app\templates\main_app\dressing_room.html:2085
+#: .\main_app\templates\main_app\dressing_room.html:2121
 msgid "Комнаты"
 msgstr "Rooms"
 
-#: .\main_app\templates\main_app\dressing_room.html:2121
+#: .\main_app\templates\main_app\dressing_room.html:2157
 msgid "У вас нету ни одной сохранённой комнаты."
 msgstr "You don't have any saved rooms."
 
-#: .\main_app\templates\main_app\dressing_room.html:2194
-#: .\main_app\templates\main_app\dressing_room.html:2195
+#: .\main_app\templates\main_app\dressing_room.html:2232
+#: .\main_app\templates\main_app\dressing_room.html:2233
 #, python-format
 msgid ""
 "Для изменения на %%s патч, пожалуйста, перезагрузите страницу.\\nВсе "
@@ -740,60 +742,60 @@ msgstr ""
 "To change to %%s patch, please reload the page.\\nAll appearance settings "
 "will be reset."
 
-#: .\main_app\templates\main_app\dressing_room.html:2207
+#: .\main_app\templates\main_app\dressing_room.html:2245
 msgid "Редакт"
 msgstr "Allow Edit"
 
-#: .\main_app\templates\main_app\dressing_room.html:2217
+#: .\main_app\templates\main_app\dressing_room.html:2255
 msgid ""
 "Теперь другие пользователи смогут редактировать персонажа на этой странице."
 msgstr "Now other users will be able to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:2218
+#: .\main_app\templates\main_app\dressing_room.html:2256
 msgid ""
 "Теперь только у вас есть право редактировать персонажа на этой странице."
 msgstr "Now only you have the right to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:2225
+#: .\main_app\templates\main_app\dressing_room.html:2263
 msgid "Запретить редактирование другим пользователям"
 msgstr "Prohibit editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:2229
+#: .\main_app\templates\main_app\dressing_room.html:2267
 msgid "Разрешить редактирование другим пользователям"
 msgstr "Allow editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:2297
+#: .\main_app\templates\main_app\dressing_room.html:2335
 msgid "Отключено в режиме «Только итем»."
 msgstr "Disabled in the «Only item» mode."
 
-#: .\main_app\templates\main_app\dressing_room.html:2307
-#: .\main_app\templates\main_app\dressing_room.html:2323
+#: .\main_app\templates\main_app\dressing_room.html:2345
+#: .\main_app\templates\main_app\dressing_room.html:2361
 msgid "Выбранный слот уже пуст."
 msgstr "The selected slot is already empty."
 
-#: .\main_app\templates\main_app\dressing_room.html:2356
+#: .\main_app\templates\main_app\dressing_room.html:2394
 msgid "Для просмотра доступны только шлем, наплечье и слоты с оружием."
 msgstr ""
 "Only the helmet, shoulder strap and weapon slots are available for viewing."
 
-#: .\main_app\templates\main_app\dressing_room.html:2359
+#: .\main_app\templates\main_app\dressing_room.html:2397
 msgid "В режиме «Только итем» зачарование оружия недоступно."
 msgstr "In the «Only item» mode, weapon enchantment is not available."
 
-#: .\main_app\templates\main_app\dressing_room.html:2376
+#: .\main_app\templates\main_app\dressing_room.html:2414
 msgid "Сначала возьмите в руку оружие."
 msgstr "First, take a weapon in your hand."
 
-#: .\main_app\templates\main_app\dressing_room.html:3386
-#: .\main_app\templates\main_app\dressing_room.html:3457
+#: .\main_app\templates\main_app\dressing_room.html:3505
+#: .\main_app\templates\main_app\dressing_room.html:3579
 msgid "К сожалению не удалось загрузить итем."
 msgstr "Unfortunately, it was not possible to download item."
 
-#: .\main_app\templates\main_app\dressing_room.html:3481
+#: .\main_app\templates\main_app\dressing_room.html:3603
 msgid "Теперь вы можете просматривать итемы без персонажа."
 msgstr "Now you can view items without a character."
 
-#: .\main_app\templates\main_app\dressing_room.html:3485
+#: .\main_app\templates\main_app\dressing_room.html:3607
 msgid "Теперь вы можете просматривать итемы на персонаже."
 msgstr "Now you can view and items on the character."
 
@@ -928,13 +930,34 @@ msgstr ""
 
 #: .\main_app\templates\main_app\home.html:51
 msgid ""
+"На странице Примерочная вы сможете создавать своих персонажей из разных "
+"игровых патчей (wrath, live),\n"
+"        применять к ним огромное количество кастомизации, например изменение "
+"расы, пола, внешности, экипировки, маунтов, анимаций и т.д.\n"
+"        <br>Так же доступен режим «Только итем» в котором можно "
+"просматривать итемы без персонажа.\n"
+"        <br>Помимо этого доступен функционал создания скриншотов, и "
+"генерации случайной внешности.\n"
+"        <br>Так же для того чтобы вы могли просматривать персонажей и "
+"делится ими с вашими друзьями,\n"
+"        доступны кнопки «Разрешить редактирование другим пользователям», "
+"«Комнаты» и «Скопировать ссылку на комнату»."
+msgstr "On the Dressing Room page, you can create your characters from different game patches (wrath, live), "
+"apply a huge amount of customization to them, for example, changing race, gender, appearance, equipment, mounts, animations, etc.<br>"
+"The «Item Only» mode is also available in which you can view items without a character.<br>"
+"In addition, the functionality of creating screenshots and generating a random appearance is available.<br>"
+"Also, in order for you to view the characters and share them with your friends, the buttons"
+"«Allow editing to other users», «Rooms» and «Copy the link to the room» are available."
+
+#: .\main_app\templates\main_app\home.html:59
+msgid ""
 "На странице Калькулятор апа вы сможете найти калькулятор который позволяет "
 "рассчитать какое количество очков арены"
 msgstr ""
 "On the Calculator AP page you can find a calculator that allows you to "
 "calculate how many arena points"
 
-#: .\main_app\templates\main_app\home.html:53
+#: .\main_app\templates\main_app\home.html:61
 msgid ""
 "вы сможете получить в конце недели с указанным рейтингом в брекетах 2на2, "
 "3на3, 5на5."
@@ -942,11 +965,24 @@ msgstr ""
 "you will be able to get at the end of the week with the specified rating in "
 "braces 2vs2, 3vs3, 5vs5."
 
-#: .\main_app\templates\main_app\home.html:55
+#: .\main_app\templates\main_app\home.html:64
+msgid ""
+"На странице Dev Chat вы можете создать уникальную комнату в которой возможно "
+"писать код с подсветкой синтаксиса.\n"
+"        <br>Данной комнатой можно поделиться с вашим другом и писать код "
+"совместно, при этом действия собеседника будут отображаться в режиме\n"
+"        реального времени.<br>После написания кода существует возможность "
+"заблокировать комнату и воспользоваться плеером с помощью которого\n"
+"        можно просмотреть любой участок времени написания кода."
+msgstr "On the Dev Chat page, you can create a unique room in which it is possible to write code with syntax highlighting.<br>"
+"You can share this room with your friend and write code together, while the actions of the interlocutor will be displayed in real time.<br>"
+"After writing the code, it is possible to lock the room and use the player with which you can view any part of the time of writing the code."
+
+#: .\main_app\templates\main_app\home.html:69
 msgid "Обо мне"
 msgstr "About me"
 
-#: .\main_app\templates\main_app\home.html:56
+#: .\main_app\templates\main_app\home.html:70
 msgid ""
 "Меня зовут Арсений, я Python веб разработчик с второй половины 2022 года. "
 "Данный сайт был создан мною с целью развития навыков программирования. Вы "
@@ -956,11 +992,11 @@ msgstr ""
 "of 2022. This site was created by me in order to develop programming skills. "
 "You can visit my page at"
 
-#: .\main_app\templates\main_app\home.html:58
+#: .\main_app\templates\main_app\home.html:72
 msgid "где я выкладываю свои проекты, либо страницу на"
 msgstr "where do I post my projects, or a page on"
 
-#: .\main_app\templates\main_app\home.html:60
+#: .\main_app\templates\main_app\home.html:74
 msgid ""
 "где я переодически транслирую игру World of Warcraft в дополнении WotLK."
 msgstr ""
