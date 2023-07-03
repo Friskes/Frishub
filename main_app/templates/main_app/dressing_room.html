@@ -113,29 +113,30 @@
   };
   const WRATH_RACES_LEN = Math.max(...Object.keys(RACES));
 
-  const WRATH_MOUNTS_LEN = 290;
+  const LIVE_RACES = {
+    // вызывают ошибку на wrath
+    22: "Worgen",
+    23: "Gilnean",
+    24: "Pandaren",
+    25: "Pandarena",
+    26: "Pandarenh",
+    27: "Nightborne",
+    28: "Highmountaintauren",
+    29: "Voidelf",
+    30: "Lightforgeddraenei",
+    31: "Zandalaritroll",
+    32: "Kultiran",
+    33: "Thinhuman",
+    34: "Darkirondwarf",
+    35: "Vulpera",
+    36: "Magharorc",
+    37: "Mechagnome"
+  };
 
-  if (charData.game_patch === 'live') {
-    RACES = Object.assign(RACES, {
-      // вызывают ошибку на wrath
-      22: "Worgen",
-      23: "Gilnean",
-      24: "Pandaren",
-      25: "Pandarena",
-      26: "Pandarenh",
-      27: "Nightborne",
-      28: "Highmountaintauren",
-      29: "Voidelf",
-      30: "Lightforgeddraenei",
-      31: "Zandalaritroll",
-      32: "Kultiran",
-      33: "Thinhuman",
-      34: "Darkirondwarf",
-      35: "Vulpera",
-      36: "Magharorc",
-      37: "Mechagnome"
-    });
-  }
+  const ALL_RACES = Object.assign(RACES, LIVE_RACES);
+
+  if (charData.game_patch === 'live') RACES = ALL_RACES;
+
   const RACES_LEN = Math.max(...Object.keys(RACES));
 
   const ONLY_MALE_RACES = [
@@ -171,6 +172,8 @@
     26, // "Pandarenh"
     33  // "Thinhuman"
   ];
+
+  const WRATH_MOUNTS_LEN = 290;
 
 
   // Actual model and UI parameters
@@ -2158,7 +2161,7 @@
             } else {
               for (const roomData of charData.my_saved_rooms) {
 
-                const race = RACES[roomData.race].toLowerCase();
+                const race = ALL_RACES[roomData.race].toLowerCase();
                 const gender = GENDERS[roomData.gender].toLowerCase();
 
                 const race_gender_img_url = RACES_WITHOUT_ICON.indexOf(roomData.race) !== -1
@@ -2307,15 +2310,16 @@
           };
 
 
-          function clearItemSlotIcon(slotId) {
-            let slot_btn = getSlotBtnBySlotId(slotId);
-            let ins = slot_btn.children[0];
-            const icon = DEFAULT_SLOT_ICONS[slotId];
+          function clearItemSlotsIcon(...slotIds) {
+            for (const slotId of slotIds) {
+              let slot_btn = getSlotBtnBySlotId(slotId);
+              let ins = slot_btn.children[0];
 
-            ins.style.backgroundImage = `url(${DEFAULT_ICON_URL}${icon}.jpg)`;
-            slot_btn.children[2].href = 'javascript:';
+              ins.style.backgroundImage = `url(${DEFAULT_ICON_URL}${DEFAULT_SLOT_ICONS[slotId]}.jpg)`;
+              slot_btn.children[2].href = 'javascript:';
 
-            removeUnderlineFrom_A(slot_btn.parentElement.children[1].children[1].children[0]);
+              removeUnderlineFrom_A(slot_btn.parentElement.children[1].children[1].children[0]);
+            };
           };
 
 
@@ -2350,7 +2354,7 @@
                 ]]);
 
                 window.dressUI.model_opts.items[index].splice(3, 1, 0);
-                clearItemSlotIcon(slotId);
+                clearItemSlotsIcon(slotId);
               };
               return false;
             };
@@ -2364,11 +2368,11 @@
             // иначе удаляем итем из items
             window.dressUI.model_opts.items.splice(index, 1);
 
-            clearItemSlotIcon(slotId);
+            clearItemSlotsIcon(slotId);
 
             switch (parseInt(slotId)) {
-              case 21: clearItemSlotIcon('021'); break;
-              case 22: clearItemSlotIcon('022'); break;
+              case 21: clearItemSlotsIcon('021'); break;
+              case 22: clearItemSlotsIcon('022'); break;
             };
 
             // Удалить итем с указанного айди слота
@@ -2435,7 +2439,7 @@
 
               switch (slotId) {
                 case 22: if (slotIdIsExists(23) !== false) clearItemSlots(23); break;
-                case 23: if (slotIdIsExists(22) !== false) clearItemSlots(22); clearItemSlotIcon('022'); break;
+                case 23: if (slotIdIsExists(22) !== false) clearItemSlots(22); clearItemSlotsIcon('022'); break;
               };
 
             } else {
@@ -2454,9 +2458,11 @@
 
             if (window.dressUI.char.only_item) {
               switch (slotId) {
-                case 21: clearItemSlotIcon(22); clearItemSlotIcon(23); break;
-                case 22: clearItemSlotIcon(21); clearItemSlotIcon(23); break;
-                case 23: clearItemSlotIcon(21); clearItemSlotIcon(22); break;
+                case 1: clearItemSlotsIcon(3, 21, 22, 23); break;
+                case 3: clearItemSlotsIcon(1, 21, 22, 23); break;
+                case 21: clearItemSlotsIcon(1, 3, 22, 23); break;
+                case 22: clearItemSlotsIcon(1, 3, 21, 23); break;
+                case 23: clearItemSlotsIcon(1, 3, 21, 22); break;
               };
               window.generateItemModel({type: TYPEID_BY_SLOTID[slotId], id: displayId});
 
@@ -3057,12 +3063,12 @@
 
 
           function updateItemSlotIcon(flag) {
-            // Специальный костыль чтобы убрать подчеркивания и иконки выбранных итемов при выходе из режима "Только итемы"
+            // Убрать подчеркивания и иконки выбранных итемов при выходе из режима "Только итемы"
             if (!flag) {
-              for (const slotId of [21, 22, 23]) {
+              for (const slotId of [1, 3, 21, 22, 23]) {
                 const slot_btn = getSlotBtnBySlotId(slotId);
                 const first_element_a = slot_btn.parentElement.getElementsByClassName('items-menu-table')[0].children[0];
-                clearItemSlotIcon(slotId);
+                clearItemSlotsIcon(slotId);
                 removeUnderlineFrom_A(first_element_a);
               };
 
@@ -3073,8 +3079,8 @@
             for (const itemData of window.dressUI.model_opts.items) {
               if (flag) {
                 // очищаем иконки слот буттонов от итемов при переключении на режим "Только итемы"
-                clearItemSlotIcon(itemData[0]);
-                if (itemData[0] == 21 || itemData[0] == 22) clearItemSlotIcon(`0${itemData[0]}`);
+                clearItemSlotsIcon(itemData[0]);
+                if (itemData[0] == 21 || itemData[0] == 22) clearItemSlotsIcon(`0${itemData[0]}`);
               } else {
                 let slot_btn = getSlotBtnBySlotId(itemData[0]);
                 let element_a = findElementByItemId(itemData[2], slot_btn);
@@ -3577,7 +3583,7 @@
 
             window.errorLoadingItemCallback = function(data) {
               warnMessageHandler(2000, "{% trans 'К сожалению не удалось загрузить итем.' %}");
-              if (data.slotId) clearItemSlotIcon(data.slotId);
+              if (data.slotId) clearItemSlotsIcon(data.slotId);
             };
           };
 
