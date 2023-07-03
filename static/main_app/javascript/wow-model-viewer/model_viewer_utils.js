@@ -457,7 +457,7 @@ class WowModelViewer extends ZamModelViewer {
             if (anim_name && !animNames.includes(anim_name)) animNames.push(anim_name);
         };
         animNames.sort();
-        const defaultIndex = animNames.findIndex(i => i === "DressingRoom");
+        const defaultIndex = Math.max(0, animNames.findIndex(i => i === "DressingRoom"));
 
         return {animNames, defaultIndex};
     };
@@ -465,29 +465,27 @@ class WowModelViewer extends ZamModelViewer {
 
     async getListAnimations(callback) {
         const _this = this;
-
         const anims_len = this.renderer.viewer.method("getNumAnimations");
-        if (anims_len !== 0) {
-            callback(this.generateListAnimations(anims_len));
-        } else {
-            const intervalId = setInterval(function() {
 
-                // console.log('Не удалось получить getNumAnimations');
+        if (typeof anims_len !== "undefined" && anims_len !== 0) {
+            callback(this.generateListAnimations(anims_len));
+
+        } else {
+            this.getListAnimations_intervalId = setInterval(function() {
+
                 const anims_len = _this.renderer.viewer.method("getNumAnimations");
 
-                if (anims_len !== 0) {
-                    // console.log('getNumAnimations получен');
-                    clearInterval(intervalId);
-                    clearTimeout(timeoutId);
+                if (typeof anims_len !== "undefined" && anims_len !== 0) {
+                    clearInterval(_this.getListAnimations_intervalId);
+                    clearTimeout(_this.getListAnimations_timeoutId);
                     callback(_this.generateListAnimations(anims_len));
                 };
             }, 400);
 
-            const timeoutId = setTimeout(function() {
-                // console.log('Не удалось загрузить список анимаций');
-                clearInterval(intervalId);
-                callback(_this.generateListAnimations(anims_len));
-            }, 2500);
+            this.getListAnimations_timeoutId = setTimeout(function() {
+                clearInterval(_this.getListAnimations_intervalId);
+                callback(_this.generateListAnimations(0));
+            }, 2900);
         };
     };
 
