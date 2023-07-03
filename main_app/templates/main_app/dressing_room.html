@@ -111,8 +111,9 @@
     20: "Northrendskeleton",
     21: "Icetroll"
   };
-  const MAX_WRATH_RACES_LEN = 21;
-  const MAX_WRATH_MOUNTS_LEN = 290;
+  const WRATH_RACES_LEN = Math.max(...Object.keys(RACES));
+
+  const WRATH_MOUNTS_LEN = 290;
 
   if (charData.game_patch === 'live') {
     RACES = Object.assign(RACES, {
@@ -149,6 +150,25 @@
     20, // "Northrendskeleton"
     21, // "Icetroll"
     // live
+    33  // "Thinhuman"
+  ];
+
+  const RACES_WITHOUT_ICON = [
+    // wrath
+    12, // "Felorc"
+    13, // "Naga_"
+    14, // "Broken"
+    15, // "Skeleton"
+    16, // "Vrykul"
+    17, // "Tuskarr"
+    18, // "Foresttroll"
+    19, // "Taunka"
+    20, // "Northrendskeleton"
+    21, // "Icetroll"
+    // live
+    23, // "Gilnean"
+    25, // "Pandarena"
+    26, // "Pandarenh"
     33  // "Thinhuman"
   ];
 
@@ -367,17 +387,6 @@
     return new Proxy(target, handler);
   };
   window.dressUI = wrapDressUI(window.dressUI);
-</script>
-
-<script>
-  function hasImageBeenUploaded(obj) {
-    return new Promise(function(resolve, reject) {
-      const img = typeof obj === "object" ? obj : new Image();
-      img.onload = function() { resolve(true); };
-      img.onerror = function() { resolve(false); };
-      if (typeof obj !== "object") img.src = obj;
-    });
-  };
 </script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'main_app/css/dressing-room.css' %}">
@@ -1219,6 +1228,30 @@
     }
   }
 </style>
+
+<style>
+  .races-menu {
+    display: none;
+    height: auto !important;
+    pointer-events: all;
+    right: -66px;
+    top: 69.5px;
+  }
+  /* Если мы на смартфоне */
+  @media screen and (max-width: 767px) {
+    .races-menu {
+      right: -7px;
+      top: 427px;
+    }
+  }
+  .races-menu-img {
+    display: inline-block;
+    width: 21px;
+    margin-right: 5px;
+    position: relative;
+    bottom: 2px;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -1946,12 +1979,6 @@
                 <div class="warning-toast-message-text"></div>
               </div>
 
-              <!-- <div class="paperdoll-controls-left">
-                <div class="paperdoll-mount" style="display: block;">
-                  <a href="javascript:">Choose Mount</a>
-                </div>
-              </div> -->
-
             </div>
 
             <div class="dressing-room-character-controls-category-switchers">
@@ -1971,9 +1998,18 @@
                 <div data-role="label">{% trans 'Раса' %}</div>
                 <div tabindex="0" data-role="control" id="select_race_btn">
                   <a class="btn dress-btn fa fa-caret-left" href="javascript:" tabindex="-1"></a>
-                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1"></a>
+                  <a class="imitation-select" data-field-filled="true" href="javascript:" tabindex="-1" style="pointer-events: all;"></a>
                   <a class="btn dress-btn fa fa-caret-right" href="javascript:" tabindex="-1"></a>
                 </div>
+
+                <div class="items-menu races-menu">
+                  <div class="table-responsive items-menu-table races-menu-table"></div>
+                  <div class="d-block d-md-block mt-2" style="line-height: 0px;">
+                    <button class="btn-custom btn-close-items-menu-right"
+                      onclick="races_menu_switcher(this.parentElement.parentElement);">{% trans 'Закрыть' %}</button>
+                  </div>
+                </div>
+
               </div>
               <div class="dressing-room-character-controls-category-option" data-character-customization-type="gender">
                 <div data-role="label">{% trans 'Пол' %}</div>
@@ -2122,14 +2158,16 @@
             } else {
               for (const roomData of charData.my_saved_rooms) {
 
-                const element_char_img = document.createElement('img');
-                element_char_img.setAttribute('src',
-                `${DEFAULT_ICON_URL}race_${RACES[roomData.race].toLowerCase()}_${GENDERS[roomData.gender].toLowerCase()}.jpg`);
-                element_char_img.classList.add('rooms-list-img');
+                const race = RACES[roomData.race].toLowerCase();
+                const gender = GENDERS[roomData.gender].toLowerCase();
 
-                hasImageBeenUploaded(element_char_img).then((isLoaded) => {
-                  if (!isLoaded) element_char_img.setAttribute('src', '/static/main_app/images/close.png');
-                });
+                const race_gender_img_url = RACES_WITHOUT_ICON.indexOf(roomData.race) !== -1
+                ? '/static/main_app/images/close.png'
+                : `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
+
+                const element_char_img = document.createElement('img');
+                element_char_img.setAttribute('src', race_gender_img_url);
+                element_char_img.classList.add('rooms-list-img');
 
                 const element_patch_img = document.createElement('img');
                 element_patch_img.setAttribute('src', `/static/main_app/images/${roomData.game_patch}.png`);
@@ -2182,11 +2220,11 @@
             window.dressUI.game_patch = window.dressUI.game_patch === 'wrath' ? 'live' : 'wrath';
             event.target.style.backgroundImage = `url(/static/main_app/images/${window.dressUI.game_patch}.png)`;
 
-            if (window.dressUI.game_patch === 'wrath' && window.dressUI.model_opts.race > MAX_WRATH_RACES_LEN) {
-              window.dressUI.model_opts.race = MAX_WRATH_RACES_LEN;
+            if (window.dressUI.game_patch === 'wrath' && window.dressUI.model_opts.race > WRATH_RACES_LEN) {
+              window.dressUI.model_opts.race = WRATH_RACES_LEN;
             };
-            if (window.dressUI.game_patch === 'wrath' && window.dressUI.char.mount > MAX_WRATH_MOUNTS_LEN) {
-              window.dressUI.char.mount = MAX_WRATH_MOUNTS_LEN;
+            if (window.dressUI.game_patch === 'wrath' && window.dressUI.char.mount > WRATH_MOUNTS_LEN) {
+              window.dressUI.char.mount = WRATH_MOUNTS_LEN;
             };
 
             sendAjaxRequest();
@@ -2625,7 +2663,94 @@
         <script>
           // Character HANDLERS
 
+          function generateRacesMenuHtml() {
+            const races_menu = $('.races-menu')[0].children[0];
+
+            for (const race_id in RACES) {
+
+              const race = RACES[race_id].toLowerCase();
+              const gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
+
+              const race_gender_img_url = RACES_WITHOUT_ICON.indexOf(parseInt(race_id)) !== -1
+              ? '/static/main_app/images/close.png'
+              : `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
+
+              const element_char_img = document.createElement('img');
+              element_char_img.setAttribute('src', race_gender_img_url);
+              element_char_img.classList.add('races-menu-img');
+
+              const element_span = document.createElement('span');
+              element_span.textContent = RACES[race_id];
+              element_span.style.fontSize = '15px';
+
+              const element_a = document.createElement('a');
+              element_a.setAttribute('href', 'javascript:');
+              element_a.setAttribute('race_id', race_id);
+              element_a.classList.add('q1');
+              element_a.appendChild(element_char_img);
+              element_a.appendChild(element_span);
+
+              races_menu.appendChild(element_a);
+            };
+
+            races_menu.addEventListener('click', modelIsLoaded(function(event) {
+              event.preventDefault(); // блокирует переход по ссылке но обрабатывает клик и отображает тултип
+
+              if (event.target.tagName === 'A') {
+                checkDuplicateRace(event.target.getAttribute('race_id'));
+              } else if (event.target.tagName === 'IMG' || event.target.tagName === 'SPAN') {
+                checkDuplicateRace(event.target.parentElement.getAttribute('race_id'));
+              };
+            }));
+          };
+          generateRacesMenuHtml();
+
+
+          function checkDuplicateRace(current_index) {
+            if (window.dressUI.model_opts.race == current_index) {
+              // warnMessageHandler(1500, 'Текущая и выбранная раса одинаковая.');
+              return false;
+            };
+            setRace(current_index);
+          };
+
+
+          function setRace(current_index) {
+            window.dressUI.char.race_id = parseInt(current_index);
+            window.dressUI.model_opts.race = window.dressUI.char.race_id;
+
+            const current_element_a = $('.races-menu-table')[0].getElementsByTagName("A")[window.dressUI.model_opts.race - 1];
+            removeUnderlineFrom_A(current_element_a);
+            current_element_a.classList.add('text-uline');
+
+            const caret_element_a = $('#select_race_btn').find('a')[1];
+
+            const anim_name = RACES[window.dressUI.model_opts.race];
+
+            caret_element_a.textContent = anim_name;
+
+            setAlphaForExtremeButtonPosition(
+              caret_element_a,
+              window.dressUI.model_opts.race,
+              RACES_LEN,
+              1
+            );
+            window.dressUI.face.current = [];
+            window.generateCharModel();
+          };
+
+
+          function races_menu_switcher(races_menu) {
+            window.dressUI.char.races_menu_opened = !window.dressUI.char.races_menu_opened;
+            window.dressUI.char.races_menu_opened ? $(races_menu).css('display', 'block') : $(races_menu).css('display', 'none');
+          };
+
           $('#select_race_btn a').on('click', modelIsLoaded(function(event) {
+
+            if (this.classList.contains('imitation-select')) {
+              races_menu_switcher(event.target.parentElement.parentElement.children[2]);
+              return false;
+            };
 
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.race_id > 1) {
 
@@ -2634,11 +2759,7 @@
 
               window.dressUI.char.race_id += 1;
             };
-            window.dressUI.model_opts.race = window.dressUI.char.race_id;
-            setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.race_id, RACES_LEN, 1);
-            event.target.parentElement.children[1].textContent = RACES[window.dressUI.char.race_id];
-            window.dressUI.face.current = [];
-            window.generateCharModel();
+            setRace(window.dressUI.char.race_id);
           }));
 
 
@@ -2991,11 +3112,9 @@
             const race = RACES[window.dressUI.char.race_id].toLowerCase();
             const gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
 
-            const race_gender_img_url = `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
-
-            hasImageBeenUploaded(race_gender_img_url).then((isLoaded) => {
-              if (!isLoaded) $('#character_button').css('background-image', 'url(/static/main_app/images/close.png)');
-            });
+            const race_gender_img_url = RACES_WITHOUT_ICON.indexOf(window.dressUI.char.race_id) !== -1
+            ? '/static/main_app/images/close.png'
+            : `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
 
             $('#character_button').css('background-image', `url(${race_gender_img_url})`);
           };
@@ -3419,6 +3538,9 @@
 
             updateItemSlotIcon(false);
 
+            const current_element_a = $('.races-menu-table')[0].getElementsByTagName("A")[window.dressUI.model_opts.race - 1];
+            current_element_a.classList.add('text-uline');
+
             // Получить все доступные опции для указанной расы и гендера
             findRaceGenderOptions(window.dressUI.model_opts.race, window.dressUI.model_opts.gender).then((fullOptions) => {
               window.dressUI.face.race_gender_opts = fullOptions.Options;
@@ -3500,11 +3622,11 @@
               window.itemsData = data;
 
               // только первые 290шт. массива wrath маунты
-              if (window.dressUI.game_patch === 'wrath') window.itemsData[0].mounts = window.itemsData[0].mounts.slice(0, MAX_WRATH_MOUNTS_LEN);
+              if (window.dressUI.game_patch === 'wrath') window.itemsData[0].mounts = window.itemsData[0].mounts.slice(0, WRATH_MOUNTS_LEN);
 
               // по дефолту маунты отсортированы от ванилы к лайву,
-              // но если сейчас активен live патч сортируем их в обратном порядке
-              if (window.dressUI.game_patch === 'live') window.itemsData[0].mounts.reverse();
+              // сортируем их в обратном порядке
+              window.itemsData[0].mounts.reverse();
 
               // добавляю первый элемент пустышку для возможности отключения маунта
               window.itemsData[0].mounts.unshift({"spellId": 0, "displayId": 0, "name": "None"});
