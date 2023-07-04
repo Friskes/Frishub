@@ -51,69 +51,7 @@ class ContactMeAdmin(admin.ModelAdmin):
 @admin.register(DressingRoom)
 class DressingRoomAdmin(admin.ModelAdmin):
 
-    RACES = {
-        1: "Human",
-        2: "Orc",
-        3: "Dwarf",
-        4: "Nightelf",
-        5: "Scourge",
-        6: "Tauren",
-        7: "Gnome",
-        8: "Troll",
-        9: "Goblin",
-        10: "Bloodelf",
-        11: "Draenei",
-        12: "Felorc",
-        13: "Naga_",
-        14: "Broken",
-        15: "Skeleton",
-        16: "Vrykul",
-        17: "Tuskarr",
-        18: "Foresttroll",
-        19: "Taunka",
-        20: "Northrendskeleton",
-        21: "Icetroll",
-        22: "Worgen",
-        23: "Gilnean",
-        24: "Pandaren",
-        25: "Pandarena",
-        26: "Pandarenh",
-        27: "Nightborne",
-        28: "Highmountaintauren",
-        29: "Voidelf",
-        30: "Lightforgeddraenei",
-        31: "Zandalaritroll",
-        32: "Kultiran",
-        33: "Thinhuman",
-        34: "Darkirondwarf",
-        35: "Vulpera",
-        36: "Magharorc",
-        37: "Mechagnome"
-    }
-
-    RACES_WITHOUT_ICON = [
-        12, # "Felorc"
-        13, # "Naga_"
-        14, # "Broken"
-        15, # "Skeleton"
-        16, # "Vrykul"
-        17, # "Tuskarr"
-        18, # "Foresttroll"
-        19, # "Taunka"
-        20, # "Northrendskeleton"
-        21, # "Icetroll"
-        23, # "Gilnean"
-        25, # "Pandarena"
-        26, # "Pandarenh"
-        33  # "Thinhuman"
-    ]
-
-    GENDERS = {
-        0: 'Male',
-        1: 'Female'
-    }
-
-    DEFAULT_ICON_URL = 'https://wow.zamimg.com/images/wow/icons/large/'
+    model: DressingRoom = DressingRoom
 
     list_display = ('get_short_room_id', 'get_short_room_creator_id', 'allow_edit',
                     'game_patch', 'get_race_name', 'get_gender_name', 'last_update_time')
@@ -146,22 +84,22 @@ class DressingRoomAdmin(admin.ModelAdmin):
 
     def get_race_name(self, object):
         setattr(type(self).get_race_name, 'short_description', object._meta.get_field('race').verbose_name)
-        return self.RACES.get(object.race, 'Раса неизвестна')
+        return self.model.RACES.get(object.race, 'Раса неизвестна')
 
     def get_gender_name(self, object):
         setattr(type(self).get_gender_name, 'short_description', object._meta.get_field('gender').verbose_name)
-        return self.GENDERS.get(object.gender, 'Пол неизвестен')
+        return self.model.GENDERS.get(object.gender, 'Пол неизвестен')
 
     def race_img65x65(self, object):
         setattr(type(self).race_img65x65, 'short_description', '')
 
-        if object.race in self.RACES_WITHOUT_ICON:
+        if object.race in self.model.RACES_WITHOUT_ICON:
             src = '/static/main_app/images/close.png'
         else:
-            race = self.RACES.get(object.race).lower()
-            gender = self.GENDERS.get(object.gender).lower()
+            race = self.model.RACES.get(object.race).lower()
+            gender = self.model.GENDERS.get(object.gender).lower()
 
-            src = f'{self.DEFAULT_ICON_URL}race_{race}_{gender}.jpg'
+            src = f'{self.model.DEFAULT_ICON_URL}race_{race}_{gender}.jpg'
 
         return mark_safe(f'<img src="{src}" width="65">')
 

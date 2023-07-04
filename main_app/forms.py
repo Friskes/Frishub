@@ -220,12 +220,15 @@ class AccountSettingsForm(ModelForm):
         self.fields['twitch_link'].widget.attrs['_ngcontent-gox-c51'] = ""
         self.fields['twitch_link'].widget.attrs['style'] = "font-family: sans-serif; font-size: 17px;"
 
+        self.fields['dress_room_link'].widget.attrs['_ngcontent-gox-c51'] = ""
+        self.fields['dress_room_link'].widget.attrs['style'] = "font-family: sans-serif; font-size: 17px;"
+
 
     class Meta:
         # требуется связь с моделью пользователя
         model = CustomUser
         fields = ('avatar', 'first_name', 'last_name', 'birth_date', 'gender', 'game_class',
-                  'discord_username', 'battlenet_username', 'twitch_link')
+                  'discord_username', 'battlenet_username', 'twitch_link', 'dress_room_link')
 
         widgets = {
             # https://django.fun/ru/articles/tutorials/kak-podklyuchit-vidzhet-vybora-daty-v-django/

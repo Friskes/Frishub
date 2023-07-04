@@ -946,7 +946,8 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
             'first_name': request.user.first_name, 'last_name': request.user.last_name,
             'birth_date': request.user.birth_date, 'gender': request.user.gender,
             'game_class': request.user.game_class, 'discord_username': request.user.discord_username,
-            'battlenet_username': request.user.battlenet_username, 'twitch_link': request.user.twitch_link
+            'battlenet_username': request.user.battlenet_username, 'twitch_link': request.user.twitch_link,
+            'dress_room_link': request.user.dress_room_link
         }
 
         return super().get(request, *args, **kwargs)

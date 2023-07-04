@@ -514,6 +514,13 @@
                       </a>
                     {% endif %}
 
+                    {% if node.author.dress_room_link %}
+                      <a _ngcontent-xpp-c94="" class="info" href="{{ node.author.dress_room_link }}" target="_BLANK">
+                        <img src="{{ node.author.dress_room_link|get_race_img_by_dress_room_url }}" style="border-radius: 50%;" width="22">
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(255, 255, 255); margin-top: 25px; margin-left: -{{ node.author.dress_room_link|slice:'39:'|length|add:76 }}px;">{% get_verbose_name node.author 'dress_room_link' %}</span>
+                      </a>
+                    {% endif %}
+
                   </div>
                 </div>
 
@@ -684,6 +691,13 @@
                       <a _ngcontent-xpp-c94="" class="info" onclick="battlenet_copy_text_{{ node.id }}.copy('{{ node.author.battlenet_username }}');" id="battlenet_icon-{{ node.id }}">
                         <img src="/static/main_app/images/battlenet.png" style="border-radius: 50%; cursor: pointer;" width="17.6">
                         <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 20px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
+                      </a>
+                    {% endif %}
+
+                    {% if node.author.dress_room_link %}
+                      <a _ngcontent-xpp-c94="" class="info" href="{{ node.author.dress_room_link }}" target="_BLANK">
+                        <img src="{{ node.author.dress_room_link|get_race_img_by_dress_room_url }}" style="border-radius: 50%;" width="22">
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(255, 255, 255); margin-top: 25px; margin-left: -{{ node.author.dress_room_link|slice:'39:'|length|add:76 }}px;">{% get_verbose_name node.author 'dress_room_link' %}</span>
                       </a>
                     {% endif %}
 

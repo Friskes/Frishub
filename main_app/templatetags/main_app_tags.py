@@ -2,7 +2,9 @@ from django import template
 from django.contrib.humanize.templatetags.humanize import NaturalTimeFormatter
 from django.db.models.query import QuerySet
 
-from main_app.models import Category, Comments, CustomUser
+from main_app.models import Category, Comments, CustomUser, DressingRoom
+
+from re import findall
 
 
 register = template.Library()
@@ -99,5 +101,33 @@ def child_count(node):
 
     count = Comments.objects.get(pk=node.id).get_descendants(include_self=False)
     return len(count)
+
+#############################################################################
+
+@register.filter
+def get_race_img_by_dress_room_url(url: str) -> str:
+    """Принимает url dressing room комнаты и пытается получить из БД расу привязаную к этой комнате
+    если получается то возвращает url иконки расы, иначе возвращает дефолтную иконку."""
+
+    room_id = findall(r"/dressing-room/([A-Za-z0-9\-]+)", url)
+    if not room_id:
+        return '/static/main_app/images/close.png'
+
+    dressing_room = DressingRoom.objects.filter(room_id=room_id[0])
+    if not dressing_room or dressing_room[0].race in dressing_room.model.RACES_WITHOUT_ICON:
+        return '/static/main_app/images/close.png'
+
+    race = dressing_room.model.RACES.get(dressing_room[0].race).lower()
+    gender = dressing_room.model.GENDERS.get(dressing_room[0].gender).lower()
+
+    return f'{dressing_room.model.DEFAULT_ICON_URL}race_{race}_{gender}.jpg'
+
+#############################################################################
+
+@register.simple_tag
+def get_verbose_name(instance: object, field_name: str) -> str:
+    """Возвращает verbose_name полученный по объекту класса и названию его поля."""
+
+    return type(instance)._meta.get_field(field_name).verbose_name
 
 #############################################################################
