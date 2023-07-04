@@ -174,6 +174,7 @@
   ];
 
   const WRATH_MOUNTS_LEN = 290;
+  const WRATH_ENCHANTS_LEN = 28;
 
 
   // Actual model and UI parameters
@@ -3668,8 +3669,12 @@
             .then((data) => {
               window.itemsData = data;
 
-              // только первые 290шт. массива wrath маунты
-              if (window.dressUI.game_patch === 'wrath') window.itemsData[0].mounts = window.itemsData[0].mounts.slice(0, WRATH_MOUNTS_LEN);
+              if (window.dressUI.game_patch === 'wrath') {
+                // только первые 290шт. массива wrath маунты
+                window.itemsData[0].mounts = window.itemsData[0].mounts.slice(0, WRATH_MOUNTS_LEN);
+                // только первые 28шт. массива wrath чарки
+                window.itemsData[0].enchants = window.itemsData[0].enchants.slice(0, WRATH_ENCHANTS_LEN);
+              };
 
               // по дефолту маунты отсортированы от ванилы к лайву,
               // сортируем их в обратном порядке

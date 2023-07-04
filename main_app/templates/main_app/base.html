@@ -866,7 +866,8 @@
         // скрипт для установки цвета кнопки текущей страницы
         let location_pathname = document.location.pathname;
         $('.navbar-nav li a').each(function(index, element) {
-          if (location_pathname === element.pathname) {
+          if (element.pathname === '/' && element.pathname === location_pathname
+          || element.pathname !== '/' && location_pathname.slice(0, element.pathname.length) === element.pathname) {
             element.classList.add('active');
           };
         });
