@@ -298,10 +298,10 @@ class DressingRoom(models.Model):
         20: "Northrendskeleton",
         21: "Icetroll",
         22: "Worgen",
-        23: "Gilnean",
+        # 23: "Gilnean",
         24: "Pandaren",
-        25: "Pandarena",
-        26: "Pandarenh",
+        # 25: "Pandarena",
+        # 26: "Pandarenh",
         27: "Nightborne",
         28: "Highmountaintauren",
         29: "Voidelf",
@@ -326,9 +326,9 @@ class DressingRoom(models.Model):
         19, # "Taunka"
         20, # "Northrendskeleton"
         21, # "Icetroll"
-        23, # "Gilnean"
-        25, # "Pandarena"
-        26, # "Pandarenh"
+        # 23, # "Gilnean"
+        # 25, # "Pandarena"
+        # 26, # "Pandarenh"
         33  # "Thinhuman"
     )
 
