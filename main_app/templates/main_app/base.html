@@ -617,9 +617,9 @@
 
         // метод copy можно размещать как в теге <a> так и внутри элемента внутри тега <a>
         copy(text) {
-          // this.span = $('элемент_который_надо_передать_в_метод_copy').parent().find("span");
           let element = window.event.target || window.event.srcElement;
-          this.span = $(element).parent().find("span");
+
+          this.span = element.tagName === 'A' ? $(element).find("span") : $(element).parent().find("span");
 
           if (!this.lock) {
             this.lock = true;
