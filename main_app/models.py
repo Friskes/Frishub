@@ -82,7 +82,7 @@ class CustomUser(AbstractUser):
     # CharField для большей гибкости при вводе укороченных адресов
     twitch_link = models.CharField(verbose_name=_('Ссылка на ваш Twitch'), max_length=200, null=True, blank=True)
 
-    dress_room_link = models.CharField(verbose_name=_('Ссылка на вашу модель персонажа'), max_length=200, null=True, blank=True)
+    dress_room_link = models.CharField(verbose_name=_('Ссылка на модель персонажа'), max_length=200, null=True, blank=True)
 
     GAME_CLASSES = (
         (0, _('Воин')), (1, _('Паладин')), (2, _('Охотник')),
