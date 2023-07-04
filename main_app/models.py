@@ -296,6 +296,8 @@ class DressingRoom(models.Model):
     def __str__(self):
         return 'Комната: ' + self.room_id
 
+    def get_absolute_url(self):
+        return reverse('unique_dressing_room', kwargs={'room_id': self.room_id})
 
     class Meta:
         verbose_name = 'Комнату'
