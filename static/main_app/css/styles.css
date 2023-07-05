@@ -223,7 +223,6 @@ button {
 .info {
   position: relative;
   text-decoration: none !important;
-  display: inline-flex;
 }
 .info .info-text {
   visibility: hidden;
