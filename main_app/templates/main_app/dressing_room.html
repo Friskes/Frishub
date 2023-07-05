@@ -2730,20 +2730,36 @@
             setRace(window.dressUI.char.race_id);
           }));
 
+
+          function getImgUrlByRaceId(race_id) {
+            const race = RACES[race_id].toLowerCase();
+            const gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
+
+            const race_gender_img_url = RACES_WITHOUT_ICON.indexOf(parseInt(race_id)) !== -1
+            ? '/static/main_app/images/close.png'
+            : `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
+
+            return race_gender_img_url;
+          };
+
+          function updateGenderImagesInRacesMenu() {
+            const elements_a = races_menu.getElementsByTagName("A");
+
+            for (let i=0; i < elements_a.length; i++) {
+
+              const race_id = elements_a[i].getAttribute('race_id');
+              elements_a[i].children[0].src = getImgUrlByRaceId(race_id);
+            };
+          };
+
+          const races_menu = $('.races-menu')[0].children[0];
+
           function generateRacesMenuHtml() {
-            const races_menu = $('.races-menu')[0].children[0];
 
             for (const race_id in RACES) {
 
-              const race = RACES[race_id].toLowerCase();
-              const gender = GENDERS[window.dressUI.char.gender_id].toLowerCase();
-
-              const race_gender_img_url = RACES_WITHOUT_ICON.indexOf(parseInt(race_id)) !== -1
-              ? '/static/main_app/images/close.png'
-              : `${DEFAULT_ICON_URL}race_${race}_${gender}.jpg`;
-
               const element_char_img = document.createElement('img');
-              element_char_img.setAttribute('src', race_gender_img_url);
+              element_char_img.setAttribute('src', getImgUrlByRaceId(race_id));
               element_char_img.classList.add('races-menu-img');
 
               const element_span = document.createElement('span');
@@ -2827,6 +2843,7 @@
             window.dressUI.model_opts.gender = window.dressUI.char.gender_id;
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.char.gender_id, 1);
             event.target.parentElement.children[1].textContent = GENDERS[window.dressUI.char.gender_id];
+            updateGenderImagesInRacesMenu();
             window.dressUI.face.current = [];
             window.generateCharModel();
           }));
@@ -3053,24 +3070,33 @@
           function setAlphaForExtremeButtonPosition(element_a, cur, max, min=0) {
 
             let caret_left = element_a.parentElement.children[0].classList;
+            let imit_select = element_a.parentElement.children[1].classList;
             let caret_right = element_a.parentElement.children[2].classList;
 
             if (min == max) {
               if (!caret_left.contains('caret-disabled')) caret_left.add('caret-disabled');
+
+              window.dressUI.char.only_item && !imit_select.contains('caret-disabled')
+              ? imit_select.add('caret-disabled')
+              : imit_select.remove('caret-disabled');
+
               if (!caret_right.contains('caret-disabled')) caret_right.add('caret-disabled');
               return false;
             };
 
             if (cur == min) {
               if (!caret_left.contains('caret-disabled')) caret_left.add('caret-disabled');
+              if (imit_select.contains('caret-disabled')) imit_select.remove('caret-disabled');
               if (caret_right.contains('caret-disabled')) caret_right.remove('caret-disabled');
 
             } else if (cur == max) {
-              if (!caret_right.contains('caret-disabled')) caret_right.add('caret-disabled');
               if (caret_left.contains('caret-disabled')) caret_left.remove('caret-disabled');
+              if (imit_select.contains('caret-disabled')) imit_select.remove('caret-disabled');
+              if (!caret_right.contains('caret-disabled')) caret_right.add('caret-disabled');
 
             } else {
               if (caret_left.contains('caret-disabled')) caret_left.remove('caret-disabled');
+              if (imit_select.contains('caret-disabled')) imit_select.remove('caret-disabled');
               if (caret_right.contains('caret-disabled')) caret_right.remove('caret-disabled');
             };
           };
@@ -3597,6 +3623,7 @@
             if (ONLY_MALE_RACES.indexOf(window.dressUI.model_opts.race) !== -1) {
               window.dressUI.model_opts.gender = 0;
               window.dressUI.char.gender_id = 0;
+              updateGenderImagesInRacesMenu();
             };
 
             updateItemSlotIcon(false);
