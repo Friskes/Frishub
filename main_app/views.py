@@ -464,10 +464,10 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
     def get_my_saved_rooms(self, creator_id):
         """Создание даты для отображения списка созданных комнат у текущего пользователя."""
 
-        dressing_room = DressingRoom.objects.filter(room_creator_id=creator_id)
+        dressing_rooms = DressingRoom.objects.filter(room_creator_id=creator_id)
         my_saved_rooms = []
 
-        for room in dressing_room:
+        for room in dressing_rooms:
             if self.room_id != room.room_id:
                 my_saved_rooms.append({
                     'room_id': room.room_id,

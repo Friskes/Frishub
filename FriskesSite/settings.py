@@ -11,12 +11,22 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 # import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Application definition
+
+
+# смысл этих файлов в том что, при необходимости можно
+# включить дебаг режим прямо на продакшене.
+try:
+    from FriskesSite.local_settings import *
+except ImportError:
+    from FriskesSite.prod_settings import *
+
 
 INSTALLED_APPS = [
     'django.contrib.humanize',
@@ -75,6 +85,17 @@ MIDDLEWARE = [
     # и отправки Traceback'a ошибок администраторам на почту
     # 'main_app.middleware.catch_errors.ErrorHandlerMiddleware',
 ]
+
+ENABLE_DEBUGTB = False
+if ENABLE_DEBUGTB:
+    # pip install django-debug-toolbar
+    INSTALLED_APPS.extend(['debug_toolbar'])
+    MIDDLEWARE.extend(['debug_toolbar.middleware.DebugToolbarMiddleware'])
+
+    # Фикс проблемы с отсутствием отображения debug_toolbar
+    INTERNAL_IPS = [config('MY_LOCAL_IPV4_ADDRESS')]
+    # DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda _: True}
+
 
 ROOT_URLCONF = 'FriskesSite.urls'
 
@@ -194,14 +215,6 @@ TINYMCE_DEFAULT_CONFIG = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# смысл этих файлов в том что, при необходимости можно
-# включить дебаг режим прямо на продакшене.
-try:
-    from FriskesSite.local_settings import *
-except ImportError:
-    from FriskesSite.prod_settings import *
 
 
 # https://support.google.com/mail/answer/7126229?visit_id=638015537565678308-2329622254&p=BadCredentials&rd=2#cantsignin&zippy=%2C%D0%BD%D0%B5-%D1%83%D0%B4%D0%B0%D0%B5%D1%82%D1%81%D1%8F-%D0%B2%D0%BE%D0%B9%D1%82%D0%B8-%D0%B2-%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%2C%D1%88%D0%B0%D0%B3-%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D0%B5-imap-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%2C%D1%88%D0%B0%D0%B3-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D0%B5-smtp-%D0%B8-%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%B5-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B-%D0%B2-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D0%B5

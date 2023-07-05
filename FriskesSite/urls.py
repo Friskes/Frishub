@@ -49,5 +49,8 @@ handler404 = 'main_app.views.page_not_found'
 handler500 = 'main_app.views.server_error'
 
 
+if settings.ENABLE_DEBUGTB:
+    urlpatterns = [path('__debug__/', include('debug_toolbar.urls'))] + urlpatterns
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
