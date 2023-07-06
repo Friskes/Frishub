@@ -405,15 +405,15 @@ class CommentsInline(admin.StackedInline):
 class GuidesAdmin(TranslationAdmin):
     model = Guides
 
-    formfield_overrides = {
-        TextField: {
-            'widget': TinyMCE(
-                attrs={'cols': 80, 'rows': 30},
-                # https://www.tiny.cloud/docs/general-configuration-guide/
-                mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark'}
-            )
-        },
-    }
+    # formfield_overrides = {
+    #     TextField: {
+    #         'widget': TinyMCE(
+    #             attrs={'cols': 80, 'rows': 30},
+    #             # https://www.tiny.cloud/docs/general-configuration-guide/
+    #             mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark'}
+    #         )
+    #     },
+    # }
 
     inlines = [CommentsInline]
 
