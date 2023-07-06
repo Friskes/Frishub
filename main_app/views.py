@@ -492,7 +492,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
         if self.dressing_room:
             self.creator_id = self.dressing_room[0].room_creator_id
-            self.is_room_creator = self.creator_id == self.request.COOKIES.get('creator_id')
+            cookie_creator_id = self.request.COOKIES.get('creator_id')
+            self.is_room_creator = self.creator_id == cookie_creator_id
 
             self.time_checking()
 
@@ -506,8 +507,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'face': self.dressing_room[0].face,
                 'mount': self.dressing_room[0].mount
             }
-            # if self.is_room_creator:
-            character_data.update({'my_saved_rooms': self.get_my_saved_rooms(self.creator_id)})
+            character_data.update({'my_saved_rooms': self.get_my_saved_rooms(cookie_creator_id)})
         else:
             cookie_creator_id = self.request.COOKIES.get('creator_id')
             my_saved_rooms = self.get_my_saved_rooms(cookie_creator_id)
