@@ -506,8 +506,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'face': self.dressing_room[0].face,
                 'mount': self.dressing_room[0].mount
             }
-            if self.is_room_creator:
-                character_data.update({'my_saved_rooms': self.get_my_saved_rooms(self.creator_id)})
+            # if self.is_room_creator:
+            character_data.update({'my_saved_rooms': self.get_my_saved_rooms(self.creator_id)})
         else:
             cookie_creator_id = self.request.COOKIES.get('creator_id')
             my_saved_rooms = self.get_my_saved_rooms(cookie_creator_id)
