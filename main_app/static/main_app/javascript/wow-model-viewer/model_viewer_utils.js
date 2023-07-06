@@ -485,7 +485,7 @@ class WowModelViewer extends ZamModelViewer {
             this.getListAnimations_timeoutId = setTimeout(function() {
                 clearInterval(_this.getListAnimations_intervalId);
                 callback(_this.generateListAnimations(0));
-            }, 2900);
+            }, 3700);
         };
     };
 
