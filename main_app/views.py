@@ -490,9 +490,11 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
         self.dressing_room = DressingRoom.objects.filter(room_id=self.room_id)
 
+        cookie_creator_id = self.request.COOKIES.get('creator_id')
+        my_saved_rooms = self.get_my_saved_rooms(cookie_creator_id)
+
         if self.dressing_room:
             self.creator_id = self.dressing_room[0].room_creator_id
-            cookie_creator_id = self.request.COOKIES.get('creator_id')
             self.is_room_creator = self.creator_id == cookie_creator_id
 
             self.time_checking()
@@ -507,11 +509,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'face': self.dressing_room[0].face,
                 'mount': self.dressing_room[0].mount
             }
-            character_data.update({'my_saved_rooms': self.get_my_saved_rooms(cookie_creator_id)})
         else:
-            cookie_creator_id = self.request.COOKIES.get('creator_id')
-            my_saved_rooms = self.get_my_saved_rooms(cookie_creator_id)
-
             if my_saved_rooms:
                 self.creator_id = cookie_creator_id
             else:
@@ -540,7 +538,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'face': '0,0,0,0,0',
                 'mount': '0'
             }
-            character_data.update({'my_saved_rooms': my_saved_rooms})
+
+        character_data.update({'my_saved_rooms': my_saved_rooms})
 
         context.update({'character_data': json.dumps(character_data)})
 
