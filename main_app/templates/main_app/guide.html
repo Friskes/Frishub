@@ -1049,7 +1049,7 @@
   // Перед перезагрузкой страницы записываем в sessionStorage window.scrollX и window.scrollY как scrollX и scrollY
   window.addEventListener('unload', event => coords.forEach(coord => sessionStorage[coord] = window[coord]));
 
-  WH.onLoad(() => {
+  document.addEventListener("DOMContentLoaded", function() {
     setTimeout(() => {
       // Прокручиваем страницу к scrollX и scrollY из данных sessionStorage (либо 0, 0 если там еще ничего нет)
       window.scroll(...coords.map(coord => sessionStorage[coord]));
