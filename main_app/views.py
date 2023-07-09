@@ -10,7 +10,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils import timezone#, dateformat
 # from django.core.files.storage import FileSystemStorage
-from django.core.mail import send_mail
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.handlers.asgi import ASGIRequest
@@ -23,6 +22,7 @@ from django.contrib.auth.views import (
     PasswordResetDoneView, PasswordResetCompleteView
 )
 
+import main_app.tasks as tasks
 from main_app.utils import DataMixin, RedirectAuthUser
 from main_app.models import CustomUser, HomeNews, Comments, Guides, Category, LikeDislike, DressingRoom
 from main_app.parse_twitch_streams import twitch_stream_parser
@@ -873,12 +873,11 @@ class ContactMeView(DataMixin, CreateView):
         message_head = f'Сообщение с формы обратной связи сайта frishub.ru от отправителя: {user_email}'
         message_body = data['message']
 
-        # функция работы с почтой встроенная в django
-        send_mail(
-            subject=message_head, # Тема сообщения
-            message=message_body, # Содержание сообщения
-            from_email=settings.EMAIL_HOST_USER, # Наша серверная почта
-            recipient_list=[settings.EMAIL_HOST_USER], # Список получателей сообщения
+        tasks.contact_me_send_mail_task.delay(
+            message_head,
+            message_body,
+            settings.EMAIL_HOST_USER,
+            [settings.EMAIL_HOST_USER]
         )
         return super(ContactMeView, self).form_valid(form)
 
