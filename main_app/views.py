@@ -15,12 +15,16 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.handlers.asgi import ASGIRequest
 from django.core.cache import cache
 from django.core.exceptions import BadRequest, PermissionDenied
+from django.views.decorators.csrf import csrf_exempt
 # from django.contrib.auth.models import User
 from django.contrib.auth.views import (
     LoginView, LogoutView, PasswordResetView,
     PasswordResetConfirmView, PasswordChangeView,
     PasswordResetDoneView, PasswordResetCompleteView
 )
+
+# pip install django-proxy
+from proxy.views import proxy_view
 
 import main_app.tasks as tasks
 from main_app.utils import DataMixin, RedirectAuthUser
@@ -46,6 +50,17 @@ log = logging.getLogger(__name__)
 
 
 # Create your views here.
+
+#############################################################################
+
+# https://stackoverflow.com/a/75329234/19276507
+@csrf_exempt
+def flower_proxy_view(request: ASGIRequest, path: str):
+    """Представление позволяющее открывать панель flower
+    как обычную страницу django (только для супер пользователя)."""
+
+    if not request.user.is_superuser: raise PermissionDenied
+    return proxy_view(request, f"http://localhost:5555/flower/{path}", {})
 
 #############################################################################
 

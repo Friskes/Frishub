@@ -10,6 +10,8 @@
 1. [Развертывание Django Channels с помощью Daphne & Systemd](#Развертывание-Django-Channels-с-помощью-Daphne-&-Systemd)
 1. [Запуск daphne.service при загрузке сервера](#Запуск-daphne.service-при-загрузке-сервера)
 1. [Настройка домена](#Настройка-домена)
+1. [Установка Celery](#Установка-Celery)
+1. [Установка Celery Beat](#Установка-Celery-Beat)
 1. [Создание суперпользователя](#Создание-суперпользователя)
 1. [FAQ](#FAQ)
 1. [References](#References)
@@ -762,6 +764,123 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 ```
+
+
+# Установка Celery
+
+[официальная документация](https://docs.celeryq.dev/en/latest/userguide/daemonizing.html#usage-systemd)
+
+Обновить установщик apt
+`sudo apt update`
+
+Установить celery
+`sudo apt -y install celery`
+
+Создать файл celery.service
+`/etc/systemd/system/celery.service`
+
+С содержимым:
+```
+[Unit]
+Description=Celery Service
+After=network.target
+
+[Service]
+Type=forking
+User=friskes
+Group=www-data
+EnvironmentFile=/etc/conf.d/celery
+WorkingDirectory=/home/friskes/project/FriskesSite
+ExecStart=/bin/sh -c '${CELERY_BIN} multi start ${CELERYD_NODES} \
+  -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} \
+  --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS}'
+ExecStop=/bin/sh -c '${CELERY_BIN} multi stopwait ${CELERYD_NODES} \
+  --pidfile=${CELERYD_PID_FILE}'
+ExecReload=/bin/sh -c '${CELERY_BIN} multi restart ${CELERYD_NODES} \
+  -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} \
+  --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS}'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Создать директорию conf.d и файл celery внутри
+`/etc/conf.d/celery`
+
+С содержимым:
+```
+CELERYD_NODES="w1"
+
+CELERY_BIN="/home/friskes/project/venv/bin/celery"
+
+CELERY_APP="FriskesSite"
+
+CELERYD_MULTI="multi"
+
+CELERYD_OPTS="--time-limit=300 --concurrency=8"
+
+CELERYD_PID_FILE="/var/run/celery/%n.pid"
+
+CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
+
+CELERYD_LOG_LEVEL="INFO"
+
+CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
+
+CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
+```
+
+Создать файл celery.conf
+`/etc/tmpfiles.d/celery.conf`
+
+С содержимым:
+```
+d /var/run/celery 0755 friskes www-data -
+d /var/log/celery 0755 friskes www-data -
+```
+
+Команды:
+Установить авто запуск celery после каждой перезагрузки сервера
+`systemctl enable celery.service`
+Посмотреть лог celery
+`sudo journalctl -u celery.service`
+Проверить состояние celery
+`sudo systemctl status celery`
+Остальные команды:
+`sudo systemctl start celery`
+`sudo systemctl stop celery`
+`sudo systemctl restart celery`
+
+
+# Установка Celery Beat
+
+Создать файл celerybeat.service
+`/etc/systemd/system/celerybeat.service`
+
+С содержимым:
+```
+[Unit]
+Description=Celery Beat Service
+After=network.target
+
+[Service]
+Type=simple
+User=friskes
+Group=www-data
+EnvironmentFile=/etc/conf.d/celery
+WorkingDirectory=/home/friskes/project/FriskesSite
+ExecStart=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} beat  \
+    --pidfile=${CELERYBEAT_PID_FILE} \
+    --logfile=${CELERYBEAT_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL}'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Команды такие же как и у Celery worker.
+
 
 # Создание суперпользователя
 Перед тестированием сервера необходимо создать суперпользователя.

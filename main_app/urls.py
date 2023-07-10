@@ -10,6 +10,8 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 
 
 urlpatterns = [
+    re_path("flower/(?P<path>.*)", views.flower_proxy_view, name='flower'),
+
     path('favicon.ico/', RedirectView.as_view(url=staticfiles_storage.url('main_app/images/favicon.ico'),
                                               permanent=True), name='favicon'),
 
