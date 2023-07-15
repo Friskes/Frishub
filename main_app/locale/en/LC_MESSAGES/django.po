@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 00:14+0300\n"
+"POT-Creation-Date: 2023-07-15 19:09+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,48 +18,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\main_app\forms.py:53 .\main_app\forms.py:97
+#: .\main_app\forms.py:60 .\main_app\forms.py:104
 #: .\main_app\templates\account\account_settings.html:278
 msgid "Имя пользователя"
 msgstr "Username"
 
-#: .\main_app\forms.py:57 .\main_app\forms.py:101
+#: .\main_app\forms.py:64 .\main_app\forms.py:108
 msgid "Пароль"
 msgstr "Password"
 
-#: .\main_app\forms.py:61 .\main_app\forms.py:141 .\main_app\forms.py:326
+#: .\main_app\forms.py:68 .\main_app\forms.py:180 .\main_app\forms.py:368
 msgid "Подтвердите пароль"
 msgstr "Confirm your password"
 
-#: .\main_app\forms.py:65 .\main_app\forms.py:116 .\main_app\forms.py:173
+#: .\main_app\forms.py:72 .\main_app\forms.py:133 .\main_app\forms.py:212
 #: .\main_app\templates\account\account_settings.html:284
 #: .\main_app\templates\main_app\guide.html:420
 #: .\main_app\templates\main_app\guide.html:600
 msgid "Адрес электронной почты"
 msgstr "Email address"
 
-#: .\main_app\forms.py:80 .\main_app\forms.py:361
+#: .\main_app\forms.py:87 .\main_app\forms.py:403
 msgid "Такой почтовый адрес уже существует."
 msgstr "Such a mailing address already exists."
 
-#: .\main_app\forms.py:129
+#: .\main_app\forms.py:168
 msgid "Такого почтового адреса не существует."
 msgstr "There is no such postal address."
 
-#: .\main_app\forms.py:140 .\main_app\forms.py:324
+#: .\main_app\forms.py:179 .\main_app\forms.py:366
 #: .\main_app\templates\auth\password_reset_confirm.html:56
 msgid "Новый пароль"
 msgstr "New password"
 
-#: .\main_app\forms.py:182
+#: .\main_app\forms.py:221
 msgid "Напишите ваше обращение к администрации сайта"
 msgstr "Write your appeal to the site administration"
 
-#: .\main_app\forms.py:256
+#: .\main_app\forms.py:298
 msgid "Неправильная ссылка."
 msgstr "Incorrect link."
 
-#: .\main_app\forms.py:297
+#: .\main_app\forms.py:339
 #, fuzzy
 #| msgid ""
 #| "Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, ваш "
@@ -71,25 +71,25 @@ msgstr ""
 "The uploaded file must have a resolution of no more than 1920x1920 pixels, "
 "your file has a resolution of"
 
-#: .\main_app\forms.py:298
+#: .\main_app\forms.py:340
 msgid " пикселей"
 msgstr " pixels"
 
-#: .\main_app\forms.py:299
+#: .\main_app\forms.py:341
 msgid "Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём "
 msgstr ""
 "The downloaded file should have a volume of no more than 6MB, your file has "
 "a volume of "
 
-#: .\main_app\forms.py:322
+#: .\main_app\forms.py:364
 msgid "Текущий пароль"
 msgstr "Current password"
 
-#: .\main_app\forms.py:342
+#: .\main_app\forms.py:384
 msgid "Новый почтовый адрес"
 msgstr "New mailing address"
 
-#: .\main_app\forms.py:388
+#: .\main_app\forms.py:430
 msgid "Введите текст комментария"
 msgstr "Enter the comment text"
 
@@ -104,7 +104,7 @@ msgid "Женщина"
 msgstr "Woman"
 
 #: .\main_app\models.py:64
-#: .\main_app\templates\main_app\dressing_room.html:2029
+#: .\main_app\templates\main_app\dressing_room.html:2025
 #: .\main_app\templates\main_app\guide.html:452
 #: .\main_app\templates\main_app\guide.html:632
 msgid "Пол"
@@ -135,47 +135,51 @@ msgstr "Link to your Twitch"
 msgid "Ссылка на модель персонажа"
 msgstr "Link to character model"
 
-#: .\main_app\models.py:88 .\main_app\models.py:216
+#: .\main_app\models.py:87
+msgid "Подписка на новостную рассылку"
+msgstr "Subscribe to the newsletter"
+
+#: .\main_app\models.py:90 .\main_app\models.py:218
 msgid "Воин"
 msgstr "Warrior"
 
-#: .\main_app\models.py:88 .\main_app\models.py:217
+#: .\main_app\models.py:90 .\main_app\models.py:219
 msgid "Паладин"
 msgstr "Paladin"
 
-#: .\main_app\models.py:88 .\main_app\models.py:218
+#: .\main_app\models.py:90 .\main_app\models.py:220
 msgid "Охотник"
 msgstr "Hunter"
 
-#: .\main_app\models.py:89 .\main_app\models.py:219
+#: .\main_app\models.py:91 .\main_app\models.py:221
 msgid "Разбойник"
 msgstr "Rogue"
 
-#: .\main_app\models.py:89 .\main_app\models.py:220
+#: .\main_app\models.py:91 .\main_app\models.py:222
 msgid "Жрец"
 msgstr "Priest"
 
-#: .\main_app\models.py:89 .\main_app\models.py:221
+#: .\main_app\models.py:91 .\main_app\models.py:223
 msgid "Рыцарь Смерти"
 msgstr "Death Knight"
 
-#: .\main_app\models.py:90 .\main_app\models.py:222
+#: .\main_app\models.py:92 .\main_app\models.py:224
 msgid "Шаман"
 msgstr "Shaman"
 
-#: .\main_app\models.py:90 .\main_app\models.py:223
+#: .\main_app\models.py:92 .\main_app\models.py:225
 msgid "Маг"
 msgstr "Mage"
 
-#: .\main_app\models.py:90 .\main_app\models.py:224
+#: .\main_app\models.py:92 .\main_app\models.py:226
 msgid "Чернокнижник"
 msgstr "Warlock"
 
-#: .\main_app\models.py:90 .\main_app\models.py:225
+#: .\main_app\models.py:92 .\main_app\models.py:227
 msgid "Друид"
 msgstr "Druid"
 
-#: .\main_app\models.py:97
+#: .\main_app\models.py:99
 msgid "Игровой класс"
 msgstr "Game class"
 
@@ -199,37 +203,37 @@ msgstr "Change Email"
 
 #: .\main_app\templates\account\account.html:104
 #: .\main_app\templates\account\account.html:117
-#: .\main_app\templates\main_app\base.html:983
-#: .\main_app\templates\main_app\base.html:996
+#: .\main_app\templates\main_app\base.html:1015
+#: .\main_app\templates\main_app\base.html:1028
 msgid "Связь со мной"
 msgstr "Contact with me"
 
 #: .\main_app\templates\account\account.html:108
-#: .\main_app\templates\main_app\dressing_room.html:1320
-#: .\main_app\templates\main_app\dressing_room.html:1352
-#: .\main_app\templates\main_app\dressing_room.html:1384
-#: .\main_app\templates\main_app\dressing_room.html:1416
-#: .\main_app\templates\main_app\dressing_room.html:1448
-#: .\main_app\templates\main_app\dressing_room.html:1480
-#: .\main_app\templates\main_app\dressing_room.html:1512
-#: .\main_app\templates\main_app\dressing_room.html:1544
-#: .\main_app\templates\main_app\dressing_room.html:1579
-#: .\main_app\templates\main_app\dressing_room.html:1611
-#: .\main_app\templates\main_app\dressing_room.html:1643
-#: .\main_app\templates\main_app\dressing_room.html:1675
-#: .\main_app\templates\main_app\dressing_room.html:1707
-#: .\main_app\templates\main_app\dressing_room.html:1739
-#: .\main_app\templates\main_app\dressing_room.html:1771
-#: .\main_app\templates\main_app\dressing_room.html:1803
-#: .\main_app\templates\main_app\dressing_room.html:1840
-#: .\main_app\templates\main_app\dressing_room.html:1874
-#: .\main_app\templates\main_app\dressing_room.html:1907
-#: .\main_app\templates\main_app\dressing_room.html:1940
-#: .\main_app\templates\main_app\dressing_room.html:1974
-#: .\main_app\templates\main_app\dressing_room.html:2023
-#: .\main_app\templates\main_app\dressing_room.html:2058
-#: .\main_app\templates\main_app\dressing_room.html:2076
-#: .\main_app\templates\main_app\dressing_room.html:2096
+#: .\main_app\templates\main_app\dressing_room.html:1316
+#: .\main_app\templates\main_app\dressing_room.html:1348
+#: .\main_app\templates\main_app\dressing_room.html:1380
+#: .\main_app\templates\main_app\dressing_room.html:1412
+#: .\main_app\templates\main_app\dressing_room.html:1444
+#: .\main_app\templates\main_app\dressing_room.html:1476
+#: .\main_app\templates\main_app\dressing_room.html:1508
+#: .\main_app\templates\main_app\dressing_room.html:1540
+#: .\main_app\templates\main_app\dressing_room.html:1575
+#: .\main_app\templates\main_app\dressing_room.html:1607
+#: .\main_app\templates\main_app\dressing_room.html:1639
+#: .\main_app\templates\main_app\dressing_room.html:1671
+#: .\main_app\templates\main_app\dressing_room.html:1703
+#: .\main_app\templates\main_app\dressing_room.html:1735
+#: .\main_app\templates\main_app\dressing_room.html:1767
+#: .\main_app\templates\main_app\dressing_room.html:1799
+#: .\main_app\templates\main_app\dressing_room.html:1836
+#: .\main_app\templates\main_app\dressing_room.html:1870
+#: .\main_app\templates\main_app\dressing_room.html:1903
+#: .\main_app\templates\main_app\dressing_room.html:1936
+#: .\main_app\templates\main_app\dressing_room.html:1970
+#: .\main_app\templates\main_app\dressing_room.html:2019
+#: .\main_app\templates\main_app\dressing_room.html:2054
+#: .\main_app\templates\main_app\dressing_room.html:2072
+#: .\main_app\templates\main_app\dressing_room.html:2092
 #: .\main_app\templates\main_app\guide.html:467
 #: .\main_app\templates\main_app\guide.html:647
 msgid "Закрыть"
@@ -267,7 +271,7 @@ msgstr "Current email address"
 
 #: .\main_app\templates\account\account_email.html:72
 #: .\main_app\templates\account\account_password.html:74
-#: .\main_app\templates\account\account_settings.html:477
+#: .\main_app\templates\account\account_settings.html:484
 #: .\main_app\templates\auth\password_reset_confirm.html:74
 msgid "Сохранить"
 msgstr "Save"
@@ -278,11 +282,11 @@ msgstr "Save"
 msgid "Дата создания учётной записи"
 msgstr "Account creation date"
 
-#: .\main_app\templates\account\account_settings.html:494
+#: .\main_app\templates\account\account_settings.html:501
 msgid "Вы можете выбрать максимум 3 игровых класса."
 msgstr "You can choose a maximum of 3 game classes."
 
-#: .\main_app\templates\account\account_settings.html:513
+#: .\main_app\templates\account\account_settings.html:520
 msgid "Не найдено:"
 msgstr "Not found:"
 
@@ -319,7 +323,7 @@ msgstr "Remember me"
 
 #: .\main_app\templates\auth\login.html:198
 #: .\main_app\templates\auth\password_reset_complete.html:67
-#: .\main_app\templates\main_app\base.html:814
+#: .\main_app\templates\main_app\base.html:846
 msgid "Войти"
 msgstr "Enter"
 
@@ -421,9 +425,33 @@ msgid "Политикой конфиденциальности"
 msgstr "Privacy Policy"
 
 #: .\main_app\templates\auth\register.html:134
-#: .\main_app\templates\main_app\base.html:811
+#: .\main_app\templates\main_app\base.html:843
 msgid "Регистрация"
 msgstr "Register"
+
+#: .\main_app\templates\emails\password_reset_email.html:104
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr ""
+
+#: .\main_app\templates\emails\password_reset_email.html:105
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: .\main_app\templates\emails\password_reset_email.html:121
+msgid "Your username, in case you’ve forgotten:"
+msgstr ""
+
+#: .\main_app\templates\emails\password_reset_email.html:122
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: .\main_app\templates\emails\password_reset_email.html:123
+#, python-format
+msgid "The %(site_name)s team"
+msgstr ""
 
 #: .\main_app\templates\main_app\ap_calculator.html:156
 msgid "Калькулятор очков арены"
@@ -484,62 +512,62 @@ msgstr ""
 msgid "Текст скопирован!"
 msgstr "Text has been copied!"
 
-#: .\main_app\templates\main_app\base.html:749
-#: .\main_app\templates\main_app\base.html:837
+#: .\main_app\templates\main_app\base.html:778
+#: .\main_app\templates\main_app\base.html:869
 msgid "Русский"
 msgstr "Russian"
 
-#: .\main_app\templates\main_app\base.html:780
+#: .\main_app\templates\main_app\base.html:812
 msgid "Главная"
 msgstr "Main"
 
-#: .\main_app\templates\main_app\base.html:783
+#: .\main_app\templates\main_app\base.html:815
 #: .\main_app\templates\main_app\home.html:41
 msgid "Гайды"
 msgstr "Guides"
 
-#: .\main_app\templates\main_app\base.html:786
+#: .\main_app\templates\main_app\base.html:818
 #: .\main_app\templates\main_app\game_chat.html:212
 #: .\main_app\templates\main_app\home.html:44
 msgid "Игровой чат"
 msgstr "Game chat"
 
-#: .\main_app\templates\main_app\base.html:789
+#: .\main_app\templates\main_app\base.html:821
 #: .\main_app\templates\main_app\home.html:47
 msgid "Стримы"
 msgstr "Streams"
 
-#: .\main_app\templates\main_app\base.html:794
+#: .\main_app\templates\main_app\base.html:826
 #: .\main_app\templates\main_app\home.html:50
 msgid "Примерочная"
 msgstr "Dressing room"
 
-#: .\main_app\templates\main_app\base.html:797
+#: .\main_app\templates\main_app\base.html:829
 #: .\main_app\templates\main_app\home.html:58
 msgid "Калькулятор апа"
 msgstr "Calculator AP"
 
-#: .\main_app\templates\main_app\base.html:807
+#: .\main_app\templates\main_app\base.html:839
 msgid "Выйти"
 msgstr "Exit"
 
-#: .\main_app\templates\main_app\base.html:857
+#: .\main_app\templates\main_app\base.html:889
 msgid "пользователей онлайн"
 msgstr "online users"
 
-#: .\main_app\templates\main_app\base.html:923
+#: .\main_app\templates\main_app\base.html:955
 msgid "Если вы цените мою работу, вы можете поддержать меня!"
 msgstr "If you appreciate my work, you can support me!"
 
-#: .\main_app\templates\main_app\base.html:928
+#: .\main_app\templates\main_app\base.html:960
 msgid "Поддержать"
 msgstr "Support"
 
-#: .\main_app\templates\main_app\base.html:932
+#: .\main_app\templates\main_app\base.html:964
 msgid "Позже"
 msgstr "Later"
 
-#: .\main_app\templates\main_app\base.html:945
+#: .\main_app\templates\main_app\base.html:977
 msgid ""
 "Мы используем файлы cookie и другие средства сохранения предпочтений и "
 "анализа действий посетителей сайта. Подробнее об этом в"
@@ -547,20 +575,20 @@ msgstr ""
 "We use cookies and other means of storing preferences and analyzing the "
 "actions of site visitors. Learn more about this in"
 
-#: .\main_app\templates\main_app\base.html:947
+#: .\main_app\templates\main_app\base.html:979
 msgid "Политике конфиденциальности"
 msgstr "Privacy Policy"
 
-#: .\main_app\templates\main_app\base.html:949
+#: .\main_app\templates\main_app\base.html:981
 msgid "Нажмите кнопку «Принять», если даёте согласие на это."
 msgstr "Click the «Accept» button if you agree to this."
 
-#: .\main_app\templates\main_app\base.html:951
+#: .\main_app\templates\main_app\base.html:983
 msgid "Принять"
 msgstr "Accept"
 
-#: .\main_app\templates\main_app\base.html:985
-#: .\main_app\templates\main_app\base.html:1000
+#: .\main_app\templates\main_app\base.html:1017
+#: .\main_app\templates\main_app\base.html:1032
 msgid "Поддержать меня на"
 msgstr "Support me on"
 
@@ -610,134 +638,134 @@ msgstr ""
 "The creator of this room has prohibited other users from changing the "
 "character during your session, any changes to the settings will not be saved."
 
-#: .\main_app\templates\main_app\dressing_room.html:1280
+#: .\main_app\templates\main_app\dressing_room.html:1276
 msgid "Сохранённые комнаты"
 msgstr "Saved rooms"
 
-#: .\main_app\templates\main_app\dressing_room.html:1318
-#: .\main_app\templates\main_app\dressing_room.html:1350
-#: .\main_app\templates\main_app\dressing_room.html:1382
-#: .\main_app\templates\main_app\dressing_room.html:1414
-#: .\main_app\templates\main_app\dressing_room.html:1446
-#: .\main_app\templates\main_app\dressing_room.html:1478
-#: .\main_app\templates\main_app\dressing_room.html:1510
-#: .\main_app\templates\main_app\dressing_room.html:1542
-#: .\main_app\templates\main_app\dressing_room.html:1577
-#: .\main_app\templates\main_app\dressing_room.html:1609
-#: .\main_app\templates\main_app\dressing_room.html:1641
-#: .\main_app\templates\main_app\dressing_room.html:1673
-#: .\main_app\templates\main_app\dressing_room.html:1705
-#: .\main_app\templates\main_app\dressing_room.html:1737
-#: .\main_app\templates\main_app\dressing_room.html:1769
-#: .\main_app\templates\main_app\dressing_room.html:1801
-#: .\main_app\templates\main_app\dressing_room.html:1838
-#: .\main_app\templates\main_app\dressing_room.html:1872
-#: .\main_app\templates\main_app\dressing_room.html:1905
-#: .\main_app\templates\main_app\dressing_room.html:1938
-#: .\main_app\templates\main_app\dressing_room.html:1972
+#: .\main_app\templates\main_app\dressing_room.html:1314
+#: .\main_app\templates\main_app\dressing_room.html:1346
+#: .\main_app\templates\main_app\dressing_room.html:1378
+#: .\main_app\templates\main_app\dressing_room.html:1410
+#: .\main_app\templates\main_app\dressing_room.html:1442
+#: .\main_app\templates\main_app\dressing_room.html:1474
+#: .\main_app\templates\main_app\dressing_room.html:1506
+#: .\main_app\templates\main_app\dressing_room.html:1538
+#: .\main_app\templates\main_app\dressing_room.html:1573
+#: .\main_app\templates\main_app\dressing_room.html:1605
+#: .\main_app\templates\main_app\dressing_room.html:1637
+#: .\main_app\templates\main_app\dressing_room.html:1669
+#: .\main_app\templates\main_app\dressing_room.html:1701
+#: .\main_app\templates\main_app\dressing_room.html:1733
+#: .\main_app\templates\main_app\dressing_room.html:1765
+#: .\main_app\templates\main_app\dressing_room.html:1797
+#: .\main_app\templates\main_app\dressing_room.html:1834
+#: .\main_app\templates\main_app\dressing_room.html:1868
+#: .\main_app\templates\main_app\dressing_room.html:1901
+#: .\main_app\templates\main_app\dressing_room.html:1934
+#: .\main_app\templates\main_app\dressing_room.html:1968
 msgid "Очистить слот"
 msgstr "Clear slot"
 
-#: .\main_app\templates\main_app\dressing_room.html:2006
+#: .\main_app\templates\main_app\dressing_room.html:2002
 msgid "Внешность"
 msgstr "Appearance"
 
-#: .\main_app\templates\main_app\dressing_room.html:2010
+#: .\main_app\templates\main_app\dressing_room.html:2006
 msgid "Персонаж"
 msgstr "Character"
 
-#: .\main_app\templates\main_app\dressing_room.html:2012
+#: .\main_app\templates\main_app\dressing_room.html:2008
 msgid "Раса"
 msgstr "Race"
 
-#: .\main_app\templates\main_app\dressing_room.html:2037
+#: .\main_app\templates\main_app\dressing_room.html:2033
 msgid "Оружие"
 msgstr "Weapon"
 
-#: .\main_app\templates\main_app\dressing_room.html:2045
+#: .\main_app\templates\main_app\dressing_room.html:2041
 msgid "Анимация"
 msgstr "Animation"
 
-#: .\main_app\templates\main_app\dressing_room.html:2056
+#: .\main_app\templates\main_app\dressing_room.html:2052
 msgid "Сбросить анимацию"
 msgstr "Reset animation"
 
-#: .\main_app\templates\main_app\dressing_room.html:2064
+#: .\main_app\templates\main_app\dressing_room.html:2060
 msgid "Маунт"
 msgstr "Mount"
 
-#: .\main_app\templates\main_app\dressing_room.html:2094
+#: .\main_app\templates\main_app\dressing_room.html:2090
 msgid "Убрать маунта"
 msgstr "Remove mount"
 
-#: .\main_app\templates\main_app\dressing_room.html:2103
+#: .\main_app\templates\main_app\dressing_room.html:2099
 msgid "Только итем"
 msgstr "Only item"
 
-#: .\main_app\templates\main_app\dressing_room.html:2112
+#: .\main_app\templates\main_app\dressing_room.html:2108
 msgid "Скрыть"
 msgstr "Hide"
 
-#: .\main_app\templates\main_app\dressing_room.html:2113
+#: .\main_app\templates\main_app\dressing_room.html:2109
 msgid "Пауза"
 msgstr "Pause"
 
-#: .\main_app\templates\main_app\dressing_room.html:2114
+#: .\main_app\templates\main_app\dressing_room.html:2110
 msgid "Скриншот"
 msgstr "Screenshot"
 
-#: .\main_app\templates\main_app\dressing_room.html:2117
+#: .\main_app\templates\main_app\dressing_room.html:2113
 msgid "Сброс"
 msgstr "Reset"
 
-#: .\main_app\templates\main_app\dressing_room.html:2119
+#: .\main_app\templates\main_app\dressing_room.html:2115
 msgid "Сбросить позицию и анимацию персонажа"
 msgstr "Reset the position and animation of the character"
 
-#: .\main_app\templates\main_app\dressing_room.html:2123
+#: .\main_app\templates\main_app\dressing_room.html:2119
 msgid "Рандом"
 msgstr "Random"
 
-#: .\main_app\templates\main_app\dressing_room.html:2125
+#: .\main_app\templates\main_app\dressing_room.html:2121
 msgid "Сгенерировать случайные настройки персонажа"
 msgstr "Generate random character settings"
 
-#: .\main_app\templates\main_app\dressing_room.html:2130
+#: .\main_app\templates\main_app\dressing_room.html:2126
 msgid "Ссылка"
 msgstr "Link"
 
-#: .\main_app\templates\main_app\dressing_room.html:2132
+#: .\main_app\templates\main_app\dressing_room.html:2128
 msgid "Скопировать ссылку на комнату"
 msgstr "Copy room link"
 
-#: .\main_app\templates\main_app\dressing_room.html:2135
+#: .\main_app\templates\main_app\dressing_room.html:2131
 msgid "Комнаты"
 msgstr "Rooms"
 
-#: .\main_app\templates\main_app\dressing_room.html:2149
+#: .\main_app\templates\main_app\dressing_room.html:2145
 msgid ""
 "Создатель этой комнаты запретил изменение персонажа другими пользователями."
 msgstr ""
 "The creator of this room has forbidden other users to change the character."
 
-#: .\main_app\templates\main_app\dressing_room.html:2153
+#: .\main_app\templates\main_app\dressing_room.html:2149
 msgid "Ошибка, модель не была создана."
 msgstr "Error, the model was not created."
 
-#: .\main_app\templates\main_app\dressing_room.html:2158
+#: .\main_app\templates\main_app\dressing_room.html:2154
 msgid "Пожалуйста, дождитесь полной загрузки модели."
 msgstr "Please wait until the model is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:2161
+#: .\main_app\templates\main_app\dressing_room.html:2157
 msgid "Пожалуйста, дождитесь полной загрузки базы данных."
 msgstr "Please wait until the database is fully loaded."
 
-#: .\main_app\templates\main_app\dressing_room.html:2196
+#: .\main_app\templates\main_app\dressing_room.html:2192
 msgid "У вас нету ни одной сохранённой комнаты."
 msgstr "You don't have any saved rooms."
 
-#: .\main_app\templates\main_app\dressing_room.html:2271
-#: .\main_app\templates\main_app\dressing_room.html:2272
+#: .\main_app\templates\main_app\dressing_room.html:2267
+#: .\main_app\templates\main_app\dressing_room.html:2268
 #, python-format
 msgid ""
 "Для изменения на %%s патч, пожалуйста, перезагрузите страницу.\\nВсе "
@@ -746,60 +774,60 @@ msgstr ""
 "To change to %%s patch, please reload the page.\\nAll appearance settings "
 "will be reset."
 
-#: .\main_app\templates\main_app\dressing_room.html:2284
+#: .\main_app\templates\main_app\dressing_room.html:2280
 msgid "Редакт"
 msgstr "Allow Edit"
 
-#: .\main_app\templates\main_app\dressing_room.html:2294
+#: .\main_app\templates\main_app\dressing_room.html:2290
 msgid ""
 "Теперь другие пользователи смогут редактировать персонажа на этой странице."
 msgstr "Now other users will be able to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:2295
+#: .\main_app\templates\main_app\dressing_room.html:2291
 msgid ""
 "Теперь только у вас есть право редактировать персонажа на этой странице."
 msgstr "Now only you have the right to edit the character on this page."
 
-#: .\main_app\templates\main_app\dressing_room.html:2302
+#: .\main_app\templates\main_app\dressing_room.html:2298
 msgid "Запретить редактирование другим пользователям"
 msgstr "Prohibit editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:2306
+#: .\main_app\templates\main_app\dressing_room.html:2302
 msgid "Разрешить редактирование другим пользователям"
 msgstr "Allow editing by other users"
 
-#: .\main_app\templates\main_app\dressing_room.html:2375
+#: .\main_app\templates\main_app\dressing_room.html:2371
 msgid "Отключено в режиме «Только итем»."
 msgstr "Disabled in the «Only item» mode."
 
-#: .\main_app\templates\main_app\dressing_room.html:2385
-#: .\main_app\templates\main_app\dressing_room.html:2401
+#: .\main_app\templates\main_app\dressing_room.html:2381
+#: .\main_app\templates\main_app\dressing_room.html:2397
 msgid "Выбранный слот уже пуст."
 msgstr "The selected slot is already empty."
 
-#: .\main_app\templates\main_app\dressing_room.html:2434
+#: .\main_app\templates\main_app\dressing_room.html:2430
 msgid "Для просмотра доступны только шлем, наплечье и слоты с оружием."
 msgstr ""
 "Only the helmet, shoulder strap and weapon slots are available for viewing."
 
-#: .\main_app\templates\main_app\dressing_room.html:2437
+#: .\main_app\templates\main_app\dressing_room.html:2433
 msgid "В режиме «Только итем» зачарование оружия недоступно."
 msgstr "In the «Only item» mode, weapon enchantment is not available."
 
-#: .\main_app\templates\main_app\dressing_room.html:2454
+#: .\main_app\templates\main_app\dressing_room.html:2450
 msgid "Сначала возьмите в руку оружие."
 msgstr "First, take a weapon in your hand."
 
-#: .\main_app\templates\main_app\dressing_room.html:3568
-#: .\main_app\templates\main_app\dressing_room.html:3642
+#: .\main_app\templates\main_app\dressing_room.html:3595
+#: .\main_app\templates\main_app\dressing_room.html:3670
 msgid "К сожалению не удалось загрузить итем."
 msgstr "Unfortunately, it was not possible to download item."
 
-#: .\main_app\templates\main_app\dressing_room.html:3666
+#: .\main_app\templates\main_app\dressing_room.html:3694
 msgid "Теперь вы можете просматривать итемы без персонажа."
 msgstr "Now you can view items without a character."
 
-#: .\main_app\templates\main_app\dressing_room.html:3670
+#: .\main_app\templates\main_app\dressing_room.html:3698
 msgid "Теперь вы можете просматривать итемы на персонаже."
 msgstr "Now you can view and items on the character."
 
@@ -1027,40 +1055,40 @@ msgstr "Go to Twitch"
 msgid "Игровой опыт"
 msgstr "Gaming experience"
 
-#: .\main_app\utils.py:74
+#: .\main_app\utils.py:78
 msgid "* Поле reCAPTCHA является обязательным для заполнения."
 msgstr "* The reCAPTCHA field is mandatory."
 
-#: .\main_app\views.py:55
+#: .\main_app\views.py:72
 msgid "Сервер не смог понять некорректный запрос."
 msgstr "The server could not understand the incorrect request."
 
-#: .\main_app\views.py:61
+#: .\main_app\views.py:78
 msgid "Неверный запрос."
 msgstr "Bad request."
 
-#: .\main_app\views.py:69
+#: .\main_app\views.py:86
 msgid "Доступ к этой странице запрещён или ограничен по ряду причин."
 msgstr ""
 "Access to this page is prohibited or restricted for a number of reasons."
 
-#: .\main_app\views.py:75
+#: .\main_app\views.py:92
 msgid "Отказано в доступе."
 msgstr "Forbidden."
 
-#: .\main_app\views.py:83
+#: .\main_app\views.py:100
 msgid "К сожалению страница не существует, либо была перемещена."
 msgstr "Unfortunately, the page does not exist or has been moved."
 
-#: .\main_app\views.py:89
+#: .\main_app\views.py:106
 msgid "Страница не найдена."
 msgstr "Page not found."
 
-#: .\main_app\views.py:99
+#: .\main_app\views.py:116
 msgid "Внутренняя ошибка сервера."
 msgstr "Internal server error."
 
-#: .\main_app\views.py:100
+#: .\main_app\views.py:117
 #, fuzzy
 #| msgid ""
 #| "Внутренняя ошибка сайта, вернитесь на главную страницу, отчёт об ошибке "
@@ -1072,54 +1100,54 @@ msgstr ""
 "Internal site error, go back to the main page, the error report has already "
 "been sent to the site administration."
 
-#: .\main_app\views.py:664
+#: .\main_app\views.py:699
 msgid ", вы успешно зарегистрированы в системе!"
 msgstr ", you are successfully registered in the system!"
 
-#: .\main_app\views.py:699
+#: .\main_app\views.py:734
 msgid "Добро пожаловать, "
 msgstr "Welcome, "
 
-#: .\main_app\views.py:730
+#: .\main_app\views.py:765
 msgid "Вы уже вышли из аккаунта."
 msgstr "You have already logged out of your account."
 
-#: .\main_app\views.py:740
+#: .\main_app\views.py:775
 msgid "До скорой встречи, "
 msgstr "See you soon, "
 
-#: .\main_app\views.py:756 .\main_app\views.py:787
+#: .\main_app\views.py:793 .\main_app\views.py:828
 msgid "Письмо успешно отправлено."
 msgstr "The email has been sent successfully."
 
-#: .\main_app\views.py:835 .\main_app\views.py:1044
+#: .\main_app\views.py:876 .\main_app\views.py:1079
 msgid "Новый пароль успешно сохранён!"
 msgstr "The new password has been successfully saved!"
 
-#: .\main_app\views.py:863
+#: .\main_app\views.py:904
 msgid "Сообщение успешно отправлено!"
 msgstr "The message has been sent successfully!"
 
-#: .\main_app\views.py:907 .\main_app\views.py:926 .\main_app\views.py:1037
-#: .\main_app\views.py:1059 .\main_app\views.py:1093
+#: .\main_app\views.py:942 .\main_app\views.py:961 .\main_app\views.py:1072
+#: .\main_app\views.py:1094 .\main_app\views.py:1128
 #, fuzzy, python-format
 #| msgid "Для получения доступа к странице %s, войдите в свой аккаунт."
 msgid "Для получения доступа к странице %s,         войдите в свой аккаунт."
 msgstr "To access the %s page, log in to your account."
 
-#: .\main_app\views.py:937
+#: .\main_app\views.py:972
 msgid "Настройки успешно сохранены!"
 msgstr "Settings have been saved successfully!"
 
-#: .\main_app\views.py:1026
+#: .\main_app\views.py:1061
 msgid "Изображение успешно удалено."
 msgstr "The image was successfully deleted."
 
-#: .\main_app\views.py:1066
+#: .\main_app\views.py:1101
 msgid "Новый почтовый адрес успешно сохранён!"
 msgstr "The new email address has been successfully saved!"
 
-#: .\main_app\views.py:1107
+#: .\main_app\views.py:1142
 msgid ", очень жаль что вы от нас уходите. "
 msgstr ", it's a pity that you're leaving us. "
 

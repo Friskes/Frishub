@@ -84,6 +84,8 @@ class CustomUser(AbstractUser):
 
     dress_room_link = models.CharField(verbose_name=_('Ссылка на модель персонажа'), max_length=200, null=True, blank=True)
 
+    subscribe_newsletter = models.BooleanField(default=True, verbose_name=_('Подписка на новостную рассылку'))
+
     GAME_CLASSES = (
         (0, _('Воин')), (1, _('Паладин')), (2, _('Охотник')),
         (3, _('Разбойник')), (4, _('Жрец')), (5, _('Рыцарь Смерти')),

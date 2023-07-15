@@ -1,4 +1,9 @@
 # from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
+from django.template import loader
+from django.core.mail import EmailMultiAlternatives
+from django.template import loader
 from django.utils.translation import gettext_lazy as _
 from django.core.files.images import get_image_dimensions
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -20,6 +25,8 @@ from mptt.forms import TreeNodeChoiceField
 
 import math
 from datetime import datetime
+
+from FriskesSite.celery import app as celery_app
 
 
 # Поля джанго
@@ -106,6 +113,16 @@ class LoginForm(AuthenticationForm):
 
 #############################################################################
 
+def password_reset_send_mail_override(func):
+    def wrap(*args, **kwargs):
+        args = list(args)
+        args[0] = 'PasswordResetCustomForm'
+        args[3]['username'] = args[3]['user'].get_username()
+        del args[3]['user']
+        func.delay(*args, **kwargs)
+    return wrap
+
+
 class PasswordResetCustomForm(PasswordResetForm):
     """#### Форма для страницы сброса пароля."""
 
@@ -119,6 +136,28 @@ class PasswordResetCustomForm(PasswordResetForm):
 
     class Meta:
         fields = ('email',)
+
+
+    @password_reset_send_mail_override
+    @celery_app.task
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
+        """
+        Send a django.core.mail.EmailMultiAlternatives to `to_email`.
+        """
+        subject = loader.render_to_string(subject_template_name, context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+
+        context.update({'btn_name': subject.rsplit(' ', 2)[0]})
+
+        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+        if html_email_template_name is not None:
+            html_email = loader.render_to_string(html_email_template_name, context)
+            email_message.attach_alternative(html_email, 'text/html')
+
+        email_message.send()
 
 
     def clean_email(self):
@@ -223,12 +262,15 @@ class AccountSettingsForm(ModelForm):
         self.fields['dress_room_link'].widget.attrs['_ngcontent-gox-c51'] = ""
         self.fields['dress_room_link'].widget.attrs['style'] = "font-family: sans-serif; font-size: 17px;"
 
+        self.fields['subscribe_newsletter'].widget.attrs['style'] = "width: 18px; height: 18px;"
+
 
     class Meta:
         # требуется связь с моделью пользователя
         model = CustomUser
-        fields = ('avatar', 'first_name', 'last_name', 'birth_date', 'gender', 'game_class',
-                  'discord_username', 'battlenet_username', 'twitch_link', 'dress_room_link')
+        fields = ('avatar', 'first_name', 'last_name', 'birth_date', 'gender',
+                  'game_class', 'discord_username', 'battlenet_username', 'twitch_link',
+                  'dress_room_link', 'subscribe_newsletter')
 
         widgets = {
             # https://django.fun/ru/articles/tutorials/kak-podklyuchit-vidzhet-vybora-daty-v-django/
