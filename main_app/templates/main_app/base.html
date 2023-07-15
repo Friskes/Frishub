@@ -659,6 +659,35 @@
       };
     </script>
 
+    <script>
+      const getTaskStatusById = function(task_id, success_callback, polling_delay=1000) {
+        if (task_id === "") return false;
+        $.ajax({
+          url: `/tasks/${task_id}/`,
+          method: 'GET'
+        })
+        .done((res) => {
+
+          if (res.task_status === 'SUCCESS') {
+            success_callback(res.task_result);
+            return false;
+          } else if (res.task_status === 'FAILURE')
+            return false;
+
+          setTimeout(function() {
+            getTaskStatusById(task_id, success_callback, polling_delay);
+          }, polling_delay);
+        })
+        .fail((err) => {
+          console.log(err);
+        });
+      };
+
+      getTaskStatusById("{{ twitch_stream_count_task_id }}", function(task_result) {
+        $('#twitch-stream-count').text(task_result.length);
+      });
+    </script>
+
     {% block head %}
     {% endblock %}
 
@@ -790,7 +819,7 @@
               </li>
               <li _ngcontent-gox-c59="" class="nav-item">
                 <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
-                  <span class="badge badge-dark ng-star-inserted">{{ twitch_stream_count }}</span>
+                  <span class="badge badge-dark ng-star-inserted" id="twitch-stream-count">{{ twitch_stream_count }}</span>
                 </a>
               </li>
               <li _ngcontent-gox-c59="" class="nav-item">

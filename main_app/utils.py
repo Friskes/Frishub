@@ -10,7 +10,7 @@ from django.core.handlers.asgi import ASGIRequest
 from django.forms.utils import ErrorDict
 from django.core.cache import cache
 
-from main_app.parse_twitch_streams import twitch_stream_parser
+import main_app.tasks as tasks
 
 from FriskesSite import settings
 
@@ -27,8 +27,9 @@ class DataMixin:
 
     def get_context_data(self, *, object_list=None, **kwargs):
         """Добавляем в контекст шаблонов динамическое время отображения сообщений.
-        Так же при открытии любой страницы, запрашиваем у twitch API актуальный список онлайн стримеров
-        для подсчёта их количества, записи в кэш на 2мин. и передачи в контекст. При дальнейших вызовах
+        Так же при открытии любой страницы, асинхронно с помощью celery task
+        запрашиваем у twitch API актуальный список онлайн стримеров для,
+        записи в кэш на 60сек. и передачи их количества в контекст. При дальнейших вызовах
         значение будет браться из кэша если он ещё существует без вызова twitch API."""
 
         self.request: ASGIRequest
@@ -42,15 +43,18 @@ class DataMixin:
         # сравниваю текущее имя представления с именем представления который указан в urls.py для StreamsView
         # resolve(self.request.path_info).view_name
         if self.request.resolver_match.view_name != 'streams':
-            # обновляем актуальную информацию о количестве стримеров для всех страниц (без учёта фильтрации)
-            if cache.get('twitch_stream_count') is None:
-                twitch_streams = twitch_stream_parser.get_twitch_stream_data()
-                twitch_stream_count = len(twitch_streams)
-                cache.set('twitch_stream_count', twitch_stream_count, 120) # секунды
-            else:
-                twitch_stream_count = cache.get('twitch_stream_count')
 
-            context.update({'twitch_stream_count': twitch_stream_count})
+            twitch_streams = cache.get('twitch_streams')
+            if twitch_streams is None:
+                twitch_stream_count = 0
+                task_id = tasks.twitch_stream_count_task.delay().id
+            else:
+                twitch_stream_count = len(twitch_streams)
+                task_id = ""
+            context.update({
+                'twitch_stream_count': twitch_stream_count,
+                'twitch_stream_count_task_id': task_id
+            })
 
         return context
 

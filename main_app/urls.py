@@ -41,6 +41,8 @@ urlpatterns = [
 
     path('streams/', views.StreamsView.as_view(), name='streams'),
 
+    path('tasks/<uuid:task_id>/', views.get_task_status_view, name='tasks'),
+
     path('dressing-room/', views.DressingRoomView.as_view(), name='dressing_room'),
 
     path('dressing-room/<uuid:room_id>/', views.UniqueDressingRoomView.as_view(), name='unique_dressing_room'),

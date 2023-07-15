@@ -105,7 +105,7 @@ from django.utils.deprecation import MiddlewareMixin
 class OnlineUsersNowMiddleware(MiddlewareMixin):
     """#### Middleware подсчитывающая количество авторизованных + анонимных пользователей."""
 
-    seconds_alive = 60*10 # 10мин.
+    seconds_alive = 60*5 # 5мин.
 
     def process_request(self, request: ASGIRequest):
         """Вызывается до работы View"""

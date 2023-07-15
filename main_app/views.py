@@ -38,6 +38,8 @@ from main_app.forms import (
 
 from FriskesSite import settings
 
+from celery.result import AsyncResult
+
 from math import floor
 import json
 from typing import Union
@@ -379,9 +381,9 @@ class StreamsView(DataMixin, TemplateView):
     template_name = 'main_app/streams.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        """- Запрашиваем у twitch API актуальный список онлайн стримеров,
-        записываем в кэш актуальное количество онлайн стримеров для того
-        чтобы другие страницы могли использовать обновлённые данные,
+        """- Пробуем получить из кэша стримеров если они там есть, иначе
+        запрашиваем у twitch API актуальный список онлайн стримеров.
+        - Записываем стримеров в кэш для того чтобы другие страницы могли использовать обновлённые данные,
         так же передаём актуальное количество стримеров в шаблон.
         - Получаем выбранные пользователем игровые классы из файла куки,
         если у пользователя выбран хотя бы один класс, отправляем эти данные
@@ -389,42 +391,46 @@ class StreamsView(DataMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
 
-        twitch_streams = twitch_stream_parser.get_twitch_stream_data()
-        twitch_stream_count = len(twitch_streams)
-
-        # обновляем актуальную информацию о количестве стримеров для всех страниц (без учёта фильтрации)
-        cache.set('twitch_stream_count', twitch_stream_count, 120) # секунды
+        twitch_streams = cache.get('twitch_streams')
+        if twitch_streams is None:
+            twitch_streams = twitch_stream_parser.get_twitch_stream_data()
+            cache.set('twitch_streams', twitch_streams, 60) # секунды
 
         # получение cookies из запроса
         encoded_text_data: str = self.request.COOKIES.get('game_classes_selected_data')
 
+        game_classes = {}
         if encoded_text_data and len(encoded_text_data) > 2:
             decoded_text_data: str = unquote(encoded_text_data, encoding='utf-8') # .replace('%22','"').replace('%2C',',')
             game_classes = json.loads(decoded_text_data)
 
-            twitch_streams = self.filter_streams(game_classes, twitch_streams)
-
-        context.update({'twitch_stream_count': twitch_stream_count, 'twitch_streams': twitch_streams})
+        context.update({
+            'twitch_streams': twitch_streams if len(game_classes) == 0 else self.filter_streams(game_classes, twitch_streams),
+            'twitch_stream_count': len(twitch_streams)
+        })
 
         return context
 
 
     def post(self, request: ASGIRequest, *args, **kwargs):
         """Получаем выбранные пользователем игровые классы,
-        запрашиваем у twitch API актуальный список онлайн стримеров
-        и передаём эти данные в метод фильтрации если пользователь выбрал
-        хотя бы один класс, либо отдаём список в шаблон без фильтрации."""
+        пробуем получить из кэша стримеров если они там есть, иначе
+        запрашиваем у twitch API актуальный список онлайн стримеров,
+        записываем их в кэш и передаём эти данные в метод фильтрации
+        если пользователь выбрал хотя бы один класс,
+        либо отдаём список в шаблон без фильтрации."""
 
         game_classes = request.POST.keys()
 
-        twitch_streams = twitch_stream_parser.get_twitch_stream_data()
+        twitch_streams = cache.get('twitch_streams')
+        if twitch_streams is None:
+            twitch_streams = twitch_stream_parser.get_twitch_stream_data()
+            cache.set('twitch_streams', twitch_streams, 60) # секунды
 
-        if len(game_classes) == 0:
-            context = {'twitch_streams': twitch_streams}
-        else:
-            filtered_twitch_streams = self.filter_streams(game_classes, twitch_streams)
-
-            context = {'twitch_streams': filtered_twitch_streams}
+        context = {
+            'twitch_streams': twitch_streams if len(game_classes) == 0 else self.filter_streams(game_classes, twitch_streams),
+            'twitch_stream_count': len(twitch_streams)
+        }
 
         # передаём в ответ ajax полностью отрендеренный кусок html кода с новым контекстом и заменяем им старый код
         return render(request, template_name='main_app/streams_container.html', context=context)
@@ -443,6 +449,21 @@ class StreamsView(DataMixin, TemplateView):
                     filtered_twitch_streams.append(stream)
 
         return filtered_twitch_streams
+
+#############################################################################
+
+# https://habr.com/ru/companies/otus/articles/503380/
+@csrf_exempt
+def get_task_status_view(request: ASGIRequest, task_id: str):
+    """Опрашивает celery на предмет наличия результата выполнения задания,
+    возвращает эти данные в json формате."""
+
+    async_result = AsyncResult(task_id)
+    task_data = {
+        "task_status": async_result.status,
+        "task_result": async_result.result
+    }
+    return JsonResponse(task_data, status=200)
 
 #############################################################################
 
@@ -764,6 +785,8 @@ class PasswordResetCustomView1(DataMixin, RedirectAuthUser, PasswordResetView):
 
     form_class = PasswordResetCustomForm
 
+    html_email_template_name = 'emails/password_reset_email.html'
+
     template_name = 'auth/password_reset1.html'
 
     def get_success_url(self):
@@ -794,6 +817,10 @@ class PasswordResetCustomView2(DataMixin, RedirectAuthUser, PasswordResetView):
     """#### Второе представление обрабатывающее сброс пароля."""
 
     redirect_auth_user_url = 'home'
+
+    form_class = PasswordResetCustomForm
+
+    html_email_template_name = 'emails/password_reset_email.html'
 
     template_name = 'auth/password_reset2.html'
 
@@ -883,14 +910,9 @@ class ContactMeView(DataMixin, CreateView):
         отправляем сами себе с серверной почты на серверную почту
         сообщение с содержанием заполненным пользователем."""
 
-        data = form.data
-        user_email = data["email"]
-        message_head = f'Сообщение с формы обратной связи сайта frishub.ru от отправителя: {user_email}'
-        message_body = data['message']
-
         tasks.contact_me_send_mail_task.delay(
-            message_head,
-            message_body,
+            f'Сообщение с формы обратной связи сайта frishub.ru от отправителя: {form.data["email"]}',
+            form.data['message'],
             settings.EMAIL_HOST_USER,
             [settings.EMAIL_HOST_USER]
         )
@@ -960,7 +982,7 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
             'birth_date': request.user.birth_date, 'gender': request.user.gender,
             'game_class': request.user.game_class, 'discord_username': request.user.discord_username,
             'battlenet_username': request.user.battlenet_username, 'twitch_link': request.user.twitch_link,
-            'dress_room_link': request.user.dress_room_link
+            'dress_room_link': request.user.dress_room_link, 'subscribe_newsletter': request.user.subscribe_newsletter
         }
 
         return super().get(request, *args, **kwargs)
