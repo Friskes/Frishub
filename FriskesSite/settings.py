@@ -63,6 +63,15 @@ INSTALLED_APPS = [
 
     # pip install django-mptt
     'mptt',
+
+    # https://docs.celeryq.dev/en/latest/userguide/periodic-tasks.html#using-custom-scheduler-classes
+    # pip install django-celery-beat
+    'django_celery_beat',
+
+    # https://github.com/celery/django-celery-results
+    # https://docs.celeryq.dev/en/latest/django/first-steps-with-django.html#django-celery-results-using-the-django-orm-cache-as-a-result-backend
+    # pip install django-celery-results
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -103,7 +112,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        # django будет искать шаблоны в приложении main_app в каталоге templates
+        # django будет искать шаблоны в приложении main_app в каталоге templates (помогает подменить дефолтные шаблоны)
         # 'DIRS': [BASE_DIR / 'main_app/templates'],
         # django будет искать шаблоны в коревом каталоге проекта в каталоге templates
         # 'DIRS': [BASE_DIR / 'templates'],
@@ -320,11 +329,16 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = None # 'same-origin'
 REDIS_URL = 'redis://127.0.0.1:6379'
 CELERY_BROKER_URL = REDIS_URL
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = REDIS_URL
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BROKER_CONNECTION_RETRY = False
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
+CELERY_CACHE_BACKEND = 'default'
+CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TIMEZONE = TIME_ZONE
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#beat-scheduler
+# Хранить данные beat планировщика в БД django а не в файлах
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

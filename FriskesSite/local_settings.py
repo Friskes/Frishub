@@ -15,7 +15,7 @@ LOCAL_REDIS = True
 if LOCAL_REDIS:
     CHANNEL_LAYERS = {
         'default': {
-            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'BACKEND': 'channels_redis.core.RedisChannelLayer', # pip install redis
             'CONFIG': {
                 "hosts": [('127.0.0.1', 6379)],
                 # "capacity": 1500, # default 100
@@ -24,17 +24,20 @@ if LOCAL_REDIS:
         },
     }
     # https://github.com/tporadowski/redis.git # Releases -> Redis-x64-5.0.14.1.msi
-    # https://stackoverflow.com/a/45431558/19276507
     # https://stackoverflow.com/a/42600466/19276507
     # по дефолту https://redis.io/ redis server запускается автоматически при загрузке windows
-    # проверить работу можно введя в терминале команду 'redis-cli' и затем отправив 'ping' должен вернуться PONG
-    # import subprocess
-    # subprocess.Popen(
-    #     [r"C:\Program Files\Redis\redis-server.exe"],
-    #     stdin=subprocess.PIPE,
-    #     stderr=subprocess.PIPE,
-    #     stdout=subprocess.PIPE # откл. вывода в консоль
-    # )
+    # проверить работу можно введя в терминале команду 'redis-cli' и затем отправив 'ping'
+    # должен вернуться PONG, выйти из терминала можно командой 'exit'
+
+    # https://docs.djangoproject.com/en/4.2/topics/cache/#redis
+    CACHES = {
+        "default": {
+            # https://github.com/jazzband/django-redis
+            "BACKEND": "django_redis.cache.RedisCache", # pip install django-redis
+            # "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379",
+        }
+    }
 else:
     CHANNEL_LAYERS = {
         'default': {

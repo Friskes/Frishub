@@ -12,13 +12,23 @@ ALLOWED_HOSTS = ['45.130.43.188', 'frishub.ru', 'www.frishub.ru']
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer', # pip install redis
         'CONFIG': {
             "hosts": [('127.0.0.1', 6379)],
             # "capacity": 1500, # default 100
             # "expiry": 10, # default 60
         },
     },
+}
+
+# https://docs.djangoproject.com/en/4.2/topics/cache/#redis
+CACHES = {
+    "default": {
+        # https://github.com/jazzband/django-redis
+        "BACKEND": "django_redis.cache.RedisCache", # pip install django-redis
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
 }
 
 DATABASES = {
