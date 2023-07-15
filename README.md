@@ -12,6 +12,7 @@
 1. [Настройка домена](#Настройка-домена)
 1. [Установка Celery](#Установка-Celery)
 1. [Установка Celery Beat](#Установка-Celery-Beat)
+1. [Установка Celery Flower](#Установка-Celery-Flower)
 1. [Создание суперпользователя](#Создание-суперпользователя)
 1. [FAQ](#FAQ)
 1. [References](#References)
@@ -440,6 +441,10 @@ http{
 Логи можно промотать в конец с помощью комбинации клавиш Shift+G
 Листать логи можно с помощью стрелок на клавиатуре
 
+Просмотр лога в режиме реального времени с флагом `-f`:
+`tail -f file_name.log`
+
+
 # Установка и настройка Redis
 Redis используется как своего рода "очередь обмена сообщениями" для Django Channels. Подробнее об этом читайте здесь [https://channels.readthedocs.io/en/stable/topics/channel_layers.html?highlight=redis#redis-channel-layer](https://channels.readthedocs.io/en/stable/topics/channel_layers.html?highlight=redis#redis-channel-layer)
 
@@ -829,6 +834,8 @@ CELERYD_LOG_LEVEL="INFO"
 CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
 
 CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
+
+CELERY_FLOWER_LOG_FILE="/var/log/celery/flower.log"
 ```
 
 Создать файл celery.conf
@@ -840,17 +847,21 @@ d /var/run/celery 0755 friskes www-data -
 d /var/log/celery 0755 friskes www-data -
 ```
 
-Команды:
-Установить авто запуск celery после каждой перезагрузки сервера
-`systemctl enable celery.service`
-Посмотреть лог celery
-`sudo journalctl -u celery.service`
-Проверить состояние celery
-`sudo systemctl status celery`
+Общие команды для Celery, Beat, Flower служб:
+После изменения файла необходимо перезапустить демона
+`sudo systemctl daemon-reload`
+Установить авто запуск после каждой перезагрузки сервера
+`systemctl enable <название_службы>.service`
+Отключить авто запуск после каждой перезагрузки сервера
+`sudo systemctl disable <название_службы>.service`
+Посмотреть лог
+`sudo journalctl -u <название_службы>.service`
+Проверить состояние
+`sudo systemctl status <название_службы>`
 Остальные команды:
-`sudo systemctl start celery`
-`sudo systemctl stop celery`
-`sudo systemctl restart celery`
+`sudo systemctl start <название_службы>`
+`sudo systemctl stop <название_службы>`
+`sudo systemctl restart <название_службы>`
 
 
 # Установка Celery Beat
@@ -870,16 +881,44 @@ User=friskes
 Group=www-data
 EnvironmentFile=/etc/conf.d/celery
 WorkingDirectory=/home/friskes/project/FriskesSite
-ExecStart=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} beat  \
-    --pidfile=${CELERYBEAT_PID_FILE} \
-    --logfile=${CELERYBEAT_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL}'
+ExecStart=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} beat \
+  -s ${CELERYBEAT_SCHEDULE_FILE} \
+  --pidfile=${CELERYBEAT_PID_FILE} \
+  --logfile=${CELERYBEAT_LOG_FILE} \
+  --loglevel=${CELERYD_LOG_LEVEL}'
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-Команды такие же как и у Celery worker.
+
+# Установка Celery Flower
+
+Создать файл celeryflower.service
+`/etc/systemd/system/celeryflower.service`
+
+С содержимым:
+```
+[Unit]
+Description=Flower Celery Service
+After=network.target
+
+[Service]
+User=friskes
+Group=www-data
+EnvironmentFile=/etc/conf.d/celery
+WorkingDirectory=/home/friskes/project/FriskesSite
+ExecStart=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} flower \
+  --url_prefix=${CELERY_FLOWER_URL_PREFIX} --port=${CELERY_FLOWER_PORT} \
+  --address=${CELERY_FLOWER_ADDRESS} \
+  --log-file-prefix=${CELERY_FLOWER_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL}'
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+```
 
 
 # Создание суперпользователя
@@ -939,6 +978,17 @@ WantedBy=multi-user.target
 Если что-либо из этого не сработает, значит, вы сделали что-то не так. Наиболее распространенная проблема заключается в том, что структура каталогов не совпадает. Например, вы могли бы использовать `/home/friskes/project/неправильное_название_проекта/` вместо `/home/friskes/project/FriskesSite/`. Вам нужно очень внимательно изучить структуру ваших каталогов и убедиться, что все названия указаны правильно и соотносятся с `.service` файлами, которые вы создали. 
 
 Когда вы вносите изменения в `.service` файл, **Всегда выполняйте команду `sudo systemctl daemon-reload`**. Или на всякий случай просто перезапустите этот чертов сервер `sudo shutdown -r now`. Перезапуск сервера - это безопасный способ, но и самый медленный.
+
+
+### Получить информацию об оперативной памяти
+Команда: `free -h`
+Вызвать программу диспетчер задач [инструкция](https://zalinux.ru/?p=1811)
+Команда открытия диспетчере: `top` Выйти кнопкой `q`
+Команды `Shift + <` и ` Shift + >` меняют столбец по которому сортируются строки в диспетчере
+
+Покажет использование памяти процессами:
+`ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n`
+
 
 # References
 1. [https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04)
