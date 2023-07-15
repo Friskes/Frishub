@@ -56,14 +56,16 @@ def translate_datetime(dt, language_code='ru'):
                 new_list.append('мин. ')
             elif clean_text in {'hour', 'hours', 'час', 'часа', 'часов'}:
                 new_list.append('ч. ')
-            elif clean_text in {'day', 'days'}:
+            elif clean_text in {'day', 'days', 'день', 'дни', 'дней', 'дня'}:
                 new_list.append('д. ')
-            elif clean_text in {'week', 'weeks'}:
+            elif clean_text in {'week', 'weeks', 'неделя', 'неделю', 'недель'}:
                 new_list.append('н. ')
-            elif clean_text in {'month', 'months'}:
+            elif clean_text in {'month', 'months', 'месяц', 'месяца', 'месяцев'}:
                 new_list.append('мес. ')
-            elif clean_text in {'year', 'years'}:
+            elif clean_text in {'year', 'год'}:
                 new_list.append('г. ')
+            elif clean_text in {'years', 'лет'}:
+                new_list.append('л. ')
             else:
                 new_list.append(text)
         elif language_code == 'en':
