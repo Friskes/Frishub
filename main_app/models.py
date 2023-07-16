@@ -213,7 +213,7 @@ class TwitchStreamerInfo(models.Model):
     - Доступные методы: все игровые классы с андерскором в начале:\n
     >>> _warrior -> (class) SafeString"""
 
-    streamer = models.CharField(verbose_name='Никнейм Стримера', max_length=50)
+    streamer = models.CharField(verbose_name='Никнейм Стримера', max_length=50, unique=True)
 
     warrior = models.CharField(verbose_name=_('Воин'), max_length=4, blank=True)
     paladin = models.CharField(verbose_name=_('Паладин'), max_length=4, blank=True)
