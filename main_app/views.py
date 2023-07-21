@@ -253,7 +253,6 @@ class GuideView(DataMixin, FormView, DetailView):
             recipient=recipient_user,
             verb=f"Ответил на ваш комментарий к гайду: «{guide.title}».<br>\
                 Ответ: «{data['content'][:45]}{'...' if len(data['content']) > 45 else ''}»",
-            actor_avatar=self.request.user.get_avatar(),
             notify_href=f"{reverse('guide', args=(guide.slug,))}#{comment_pk}"
         )
         notify_obj: Notification = notify_obj[0][1][0]
@@ -361,7 +360,6 @@ class VotesView(View):
             self.request.user,
             recipient=comment.author,
             verb=f"{LikeDislike.VOTES[max(0, self.vote_type)][1]} ваш комментарий к гайду: «{comment.guide.title}».",
-            actor_avatar=self.request.user.get_avatar(),
             notify_href=f"{reverse('guide', args=(comment.guide.slug,))}#{comment.pk}"
         )
         notify_obj: Notification = notify_obj[0][1][0]

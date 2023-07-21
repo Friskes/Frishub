@@ -67,7 +67,7 @@ def send_newsletter_by_email_to_all_users_task(*args, **kwargs):
 def send_news_by_notify_to_all_users_task(*args, **kwargs):
     """Отправляет новостное сообщение уведомлением всем пользователям сайта."""
 
-    admin = CustomUser.objects.get(username=settings.ADMINS[0])
+    admin = CustomUser.objects.get(is_superuser=True)
     users = CustomUser.objects.all()
 
     for user in users:
@@ -75,7 +75,6 @@ def send_news_by_notify_to_all_users_task(*args, **kwargs):
             admin,
             recipient=user,
             verb=args[1],
-            actor_avatar=admin.get_avatar(),
             notify_href=args[0]
         )
 

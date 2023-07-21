@@ -702,7 +702,8 @@
       }
       .notifications-table {
         height: auto;
-        max-height: 321px;
+        max-height: 336px;
+        max-width: 100% !important;
       }
       /* Если мы на мобильном */
       @media only screen and (max-width:1200px) {
@@ -757,6 +758,13 @@
       .notify-content {
         text-align: left;
         word-wrap: break-word;
+      }
+      .notify-content br {
+        content: "A" !important;
+        display: block !important;
+        margin-top: 0.25em !important;
+        border-bottom: 1px solid rgba(150, 150, 150, .30);
+        width: 80%;
       }
       .notify-time {
         margin-left: 5px;
@@ -1331,15 +1339,11 @@
             : $('#notify-bell').css('color', '#fff');
 
             notifications.fadeToggle({duration: 'fast', easing: 'linear', queue: false});
-
-            // убрать счётчик на колоколе будто все сообщения стали прочитаны после открытия окна
-            // const notify_counter = $('#notify-counter');
-            // if (notify_counter.css('display') !== 'none') notify_counter.fadeOut('slow');
           };
         });
       </script>
       {% if user.is_authenticated %}
-        {% register_custom_notify_callbacks api_name='all_list' refresh_period=10 callbacks='notification_callback' %}
+        {% register_custom_notify_callbacks api_name='all_list' fetch=99 refresh_period=8 callbacks='notification_callback' %}
       {% endif %}
 
       <script>

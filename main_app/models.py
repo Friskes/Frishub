@@ -564,6 +564,14 @@ class LikeDislike(models.Model):
 
 class Notification(AbstractNotification):
 
+    def save(self, *args, **kwargs):
+
+        # Записываю в словарь data ссылку на изображение аватара пользователя отправившего уведомление
+        self.data['actor_avatar'] = self.actor.get_avatar()
+
+        # Вызываю оригинальный метод save
+        super(Notification, self).save(*args, **kwargs)
+
     class Meta(AbstractNotification.Meta):
         abstract = False
 
