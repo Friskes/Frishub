@@ -264,13 +264,15 @@ class AccountSettingsForm(ModelForm):
 
         self.fields['subscribe_newsletter'].widget.attrs['style'] = "width: 18px; height: 18px;"
 
+        self.fields['subscribe_notify'].widget.attrs['style'] = "width: 18px; height: 18px;"
+
 
     class Meta:
         # требуется связь с моделью пользователя
         model = CustomUser
         fields = ('avatar', 'first_name', 'last_name', 'birth_date', 'gender',
                   'game_class', 'discord_username', 'battlenet_username', 'twitch_link',
-                  'dress_room_link', 'subscribe_newsletter')
+                  'dress_room_link', 'subscribe_newsletter', 'subscribe_notify')
 
         widgets = {
             # https://django.fun/ru/articles/tutorials/kak-podklyuchit-vidzhet-vybora-daty-v-django/

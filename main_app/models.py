@@ -11,6 +11,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from multiselectfield import MultiSelectField
 
+from notifications.base.models import AbstractNotification
+
 from datetime import date
 
 
@@ -84,7 +86,9 @@ class CustomUser(AbstractUser):
 
     dress_room_link = models.CharField(verbose_name=_('Ссылка на модель персонажа'), max_length=200, null=True, blank=True)
 
-    subscribe_newsletter = models.BooleanField(default=True, verbose_name=_('Подписка на новостную рассылку'))
+    subscribe_newsletter = models.BooleanField(default=True, verbose_name=_('Разрешить отправлять новостную рассылку по почте'))
+
+    subscribe_notify = models.BooleanField(default=True, verbose_name=_('Разрешить отправлять уведомления по почте'))
 
     GAME_CLASSES = (
         (0, _('Воин')), (1, _('Паладин')), (2, _('Охотник')),
@@ -555,5 +559,12 @@ class LikeDislike(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     objects = LikeDislikeManager()
+
+#############################################################################
+
+class Notification(AbstractNotification):
+
+    class Meta(AbstractNotification.Meta):
+        abstract = False
 
 #############################################################################

@@ -223,12 +223,11 @@
   .comm-node-author:hover {
     color: #88c9fb;
   }
-
-  .img-avatar[_ngcontent-xpp-c84] {
+  .avatar-light-border[_ngcontent-xpp-c84] {
     border-color: grey;
   }
   .avatar-light-border[_ngcontent-xpp-c84]:hover {
-    border-color: #88c9fb;
+    border-color: #88c9fbb7;
   }
 </style>
 
@@ -275,7 +274,10 @@
     }
     .all-profile-icons {
       position: relative;
-      bottom: 5px;
+      bottom: 10px;
+      max-width: 70px;
+      margin-left: auto;
+      text-align: center;
     }
   }
   @media screen and (min-width: 801px) {
@@ -371,7 +373,7 @@
 
               <div class="d-flex">
                 <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}"
-                  style="width: 50px; height: 50px; position: relative; bottom: 11px; margin-right: 5px; border-radius: 50%;">
+                  style="width: 50px; height: 50px; position: relative; bottom: 11px; margin-right: 5px; border-radius: 50%; border-color: grey;">
                 {{ form.content }}
               </div>
               <hr>
@@ -470,9 +472,7 @@
                       </div>
                   </div>
 
-                  <div style="margin-left: 5px; color: grey;">
-                    {{ node.time_create|translate_datetime:LANGUAGE_CODE }}
-                  </div>
+                  <div style="margin-left: 5px; color: grey;">{{ node.time_create|translate_datetime:LANGUAGE_CODE }}</div>
 
                   <div class="all-profile-icons">
 
@@ -485,7 +485,7 @@
                               style="border: 2px solid rgb({{ class_name_and_color.class_colors }}); border-radius: 50%;" width="21">
 
                             <span _ngcontent-xpp-c94="" class="info-text"
-                              style="color: rgb({{ class_name_and_color.class_colors }}); margin-top: 25px; margin-left: -{{ class_name_and_color.verbose_name|length|add:76 }}px;">
+                              style="color: rgb({{ class_name_and_color.class_colors }}); margin-top: 30px; margin-left: -{{ class_name_and_color.verbose_name|length|add:76 }}px;">
                               {{ class_name_and_color.verbose_name }}
                             </span>
                           {% endif %}
@@ -496,28 +496,28 @@
                     {% if node.author.twitch_link %}
                       <a _ngcontent-xpp-c94="" class="info" href="{{ node.author.twitch_link }}" target="_BLANK">
                         <img src="/static/main_app/images/twitch.png" style="border-radius: 50%;" width="22">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(164, 128, 230); margin-top: 25px; margin-left: -{{ node.author.twitch_link|slice:'22:'|length|add:76 }}px;">{{ node.author.twitch_link|slice:'22:' }}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(164, 128, 230); margin-top: 30px; margin-left: -{{ node.author.twitch_link|slice:'22:'|length|add:76 }}px;">{{ node.author.twitch_link|slice:'22:' }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.discord_username %}
                       <a _ngcontent-xpp-c94="" class="info" onclick="discord_copy_text_{{ node.id }}.copy('{{ node.author.discord_username }}');" id="discord_icon-{{ node.id }}">
                         <img src="/static/main_app/images/discord.png" style="border-radius: 50%; cursor: pointer;" width="22">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: #7289DA; margin-top: 25px; margin-left: -{{ node.author.discord_username|length|add:76 }}px;">{{ node.author.discord_username }}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: #7289DA; margin-top: 30px; margin-left: -{{ node.author.discord_username|length|add:76 }}px;">{{ node.author.discord_username }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.battlenet_username %}
                       <a _ngcontent-xpp-c94="" class="info" onclick="battlenet_copy_text_{{ node.id }}.copy('{{ node.author.battlenet_username }}');" id="battlenet_icon-{{ node.id }}">
                         <img src="/static/main_app/images/battlenet.png" style="border-radius: 50%; cursor: pointer;" width="22">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 25px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 30px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.dress_room_link %}
                       <a _ngcontent-xpp-c94="" class="info" href="{{ node.author.dress_room_link }}" target="_BLANK">
                         <img src="{{ node.author.dress_room_link|get_race_img_by_dress_room_url }}" style="border-radius: 50%;" width="22">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(255, 255, 255); margin-top: 25px; margin-left: -235px;">{% get_verbose_name node.author 'dress_room_link' %}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(255, 255, 255); margin-top: 30px; margin-left: -225px;">{% get_verbose_name node.author 'dress_room_link' %}</span>
                       </a>
                     {% endif %}
 
@@ -554,11 +554,23 @@
                       onclick="myFunction('{{ node.id }}', '{{ node.author }}', '{{ node.level }}')">
                       {% trans 'Ответить' %}
                     </button>
+                    <a _ngcontent-xpp-c94="" class="info">
+                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
+                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
+                      <span _ngcontent-xpp-c94="" class="info-text"
+                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
+                    </a>
                   {% else %}
                     <button class="btn btn-outline-secondary comm-reply-btn"
                       onclick="myFunction('{{ node.id }}', '', '{{ node.level }}')">
                       {% trans 'Ответить' %}
                     </button>
+                    <a _ngcontent-xpp-c94="" class="info">
+                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
+                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
+                      <span _ngcontent-xpp-c94="" class="info-text"
+                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
+                    </a>
                   {% endif %}
                 {% endif %}
 
@@ -650,9 +662,7 @@
                       </div>
                   </div>
 
-                  <div style="margin-left: 5px; color: grey;">
-                    {{ node.time_create|translate_datetime:LANGUAGE_CODE }}
-                  </div>
+                  <div style="margin-left: 5px; color: grey;">{{ node.time_create|translate_datetime:LANGUAGE_CODE }}</div>
 
                   <div class="all-profile-icons">
 
@@ -665,7 +675,7 @@
                               style="border: 2px solid rgb({{ class_name_and_color.class_colors }}); border-radius: 50%;" width="16.8">
 
                             <span _ngcontent-xpp-c94="" class="info-text"
-                              style="color: rgb({{ class_name_and_color.class_colors }}); margin-top: 25px; margin-left: -{{ class_name_and_color.verbose_name|length|add:76 }}px;">
+                              style="color: rgb({{ class_name_and_color.class_colors }}); margin-top: 28px; margin-left: -{{ class_name_and_color.verbose_name|length|add:76 }}px;">
                               {{ class_name_and_color.verbose_name }}
                             </span>
                           {% endif %}
@@ -676,28 +686,28 @@
                     {% if node.author.twitch_link %}
                       <a _ngcontent-xpp-c94="" class="info" href="{{ node.author.twitch_link }}" target="_BLANK">
                         <img src="/static/main_app/images/twitch.png" style="border-radius: 50%;" width="17.6">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(164, 128, 230); margin-top: 20px; margin-left: -{{ node.author.twitch_link|slice:'22:'|length|add:76 }}px;">{{ node.author.twitch_link|slice:'22:' }}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(164, 128, 230); margin-top: 28px; margin-left: -{{ node.author.twitch_link|slice:'22:'|length|add:76 }}px;">{{ node.author.twitch_link|slice:'22:' }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.discord_username %}
                       <a _ngcontent-xpp-c94="" class="info" onclick="discord_copy_text_{{ node.id }}.copy('{{ node.author.discord_username }}');" id="discord_icon-{{ node.id }}">
                         <img src="/static/main_app/images/discord.png" style="border-radius: 50%; cursor: pointer;" width="17.6">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: #7289DA; margin-top: 20px; margin-left: -{{ node.author.discord_username|length|add:76 }}px;">{{ node.author.discord_username }}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: #7289DA; margin-top: 28px; margin-left: -{{ node.author.discord_username|length|add:76 }}px;">{{ node.author.discord_username }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.battlenet_username %}
                       <a _ngcontent-xpp-c94="" class="info" onclick="battlenet_copy_text_{{ node.id }}.copy('{{ node.author.battlenet_username }}');" id="battlenet_icon-{{ node.id }}">
                         <img src="/static/main_app/images/battlenet.png" style="border-radius: 50%; cursor: pointer;" width="17.6">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 20px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(0, 154, 209); margin-top: 28px; margin-left: -{{ node.author.battlenet_username|length|add:76 }}px;">{{ node.author.battlenet_username }}</span>
                       </a>
                     {% endif %}
 
                     {% if node.author.dress_room_link %}
                       <a _ngcontent-xpp-c94="" class="info" href="{{ node.author.dress_room_link }}" target="_BLANK">
                         <img src="{{ node.author.dress_room_link|get_race_img_by_dress_room_url }}" style="border-radius: 50%;" width="17.6">
-                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(255, 255, 255); margin-top: 25px; margin-left: -235px;">{% get_verbose_name node.author 'dress_room_link' %}</span>
+                        <span _ngcontent-xpp-c94="" class="info-text" style="color: rgb(255, 255, 255); margin-top: 28px; margin-left: -225px;">{% get_verbose_name node.author 'dress_room_link' %}</span>
                       </a>
                     {% endif %}
 
@@ -735,11 +745,23 @@
                       onclick="myFunction('{{ node.id }}', '{{ node.author }}', '{{ node.level }}')">
                       {% trans 'Ответить' %}
                     </button>
+                    <a _ngcontent-xpp-c94="" class="info">
+                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
+                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
+                      <span _ngcontent-xpp-c94="" class="info-text"
+                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
+                    </a>
                   {% else %}
                     <button class="btn btn-outline-secondary comm-reply-btn"
                       onclick="myFunction('{{ node.id }}', '', '{{ node.level }}')">
                       {% trans 'Ответить' %}
                     </button>
+                    <a _ngcontent-xpp-c94="" class="info">
+                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
+                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
+                      <span _ngcontent-xpp-c94="" class="info-text"
+                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
+                    </a>
                   {% endif %}
                 {% endif %}
 
@@ -997,7 +1019,7 @@
         </select>
         <div class="d-flex">
           <img _ngcontent-xpp-c84="" class="img-avatar" src="{{ user.get_avatar }}"
-            style="width: 50px; height: 50px; position: relative; bottom: 10px; margin-right: 5px; border-radius: 50%;">
+            style="width: 50px; height: 50px; position: relative; bottom: 10px; margin-right: 5px; border-radius: 50%; border-color: grey;">
           <textarea name="content" cols="40" rows="1" class="reply-textarea" placeholder="{% trans 'Введите ответ' %}" required id="id_content"></textarea>
         </div>
         <hr>
@@ -1045,15 +1067,58 @@
 </script>
 
 <script>
-  let coords = ['scrollX', 'scrollY'];
-  // Перед перезагрузкой страницы записываем в sessionStorage window.scrollX и window.scrollY как scrollX и scrollY
-  window.addEventListener('unload', event => coords.forEach(coord => sessionStorage[coord] = window[coord]));
+  const copy_text = new CopyText();
 
-  document.addEventListener("DOMContentLoaded", function() {
-    setTimeout(() => {
+  const window_coords = ['scrollX', 'scrollY'];
+  // Перед перезагрузкой страницы записываем в sessionStorage window.scrollX и window.scrollY как scrollX и scrollY
+  window.addEventListener('unload', event => window_coords.forEach(coord => sessionStorage[coord] = window[coord]));
+
+
+  function recurse_find_parent_element_by_prefix(prefix, element, max_tries=Infinity, tries_count=0) {
+    tries_count += 1;
+    if (tries_count === max_tries) return;
+    if (element.parentElement === null) return;
+    if (element.parentElement.hasAttribute('id')
+    && element.parentElement.id.split('-')[0] === prefix) return element.parentElement;
+    return recurse_find_parent_element_by_prefix(prefix, element.parentElement, max_tries, tries_count);
+  };
+
+
+  function highlight_comment() {
+    if (document.location.hash === "") {
       // Прокручиваем страницу к scrollX и scrollY из данных sessionStorage (либо 0, 0 если там еще ничего нет)
-      window.scroll(...coords.map(coord => sessionStorage[coord]));
-    }, 500);
+      window.scroll(...window_coords.map(coord => sessionStorage[coord]));
+      return false;
+    };
+
+    const comment = $(`#${document.location.hash.split('#')[1]}`);
+    if (!comment[0]) return false;
+
+    const answers = recurse_find_parent_element_by_prefix('answers', comment[0]);
+    if (answers) {
+      answers.style.display = 'block';
+      answers.previousElementSibling.children[0].textContent = 'expand_less';
+    };
+
+    // Прокручиваем страницу к месту расположения комментария + 380px вверх
+    $('html, body')[0].scrollTop = comment.offset().top - 380;
+
+    let opacity = 1;
+    const highlight_interval_id = setInterval(function() {
+      opacity -= 0.01;
+      comment.css({'box-shadow': `0 0 10px 10px rgba(31, 184, 255, ${opacity})`});
+      if (opacity <= 0) clearInterval(highlight_interval_id);
+    }, 20);
+  };
+
+  // Пришлось прикостылить 500ms delay для ожидания полной загрузки wowhead иконок перед выполнением скролла
+  // Всё это конечно выглядит убого, но как решить по другому не понятно.
+  setTimeout(function() {
+    highlight_comment();
+  }, 500);
+
+  window.addEventListener('hashchange', function(event) {
+    highlight_comment();
   });
 </script>
 {% endblock %}

@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
@@ -23,11 +23,15 @@ from django.views.i18n import JavaScriptCatalog
 from django.conf.urls.static import static
 from FriskesSite import settings
 
+import notifications.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('tinymce/', include('tinymce.urls')),
+
+    # доступные запросы к API можно посмотреть в файле: venv\Lib\site-packages\notifications\urls.py
+    re_path('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
 ]
 
 

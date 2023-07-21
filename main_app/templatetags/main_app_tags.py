@@ -1,8 +1,12 @@
 from django import template
 from django.contrib.humanize.templatetags.humanize import NaturalTimeFormatter
 from django.db.models.query import QuerySet
+from django.urls import reverse
+from django.utils.html import format_html
 
 from main_app.models import Category, Comments, CustomUser, DressingRoom
+
+import humanize
 
 from re import findall
 
@@ -41,59 +45,75 @@ def translate_datetime(dt, language_code='ru'):
     """Возвращает сокращённый текст времени на основе переданного datetime,
     так же учитывает локализацию используя параметр language_code."""
 
-    str_dt: str = NaturalTimeFormatter.string_for(dt)
-    # print(str_dt.split())
+    if language_code == 'ru': _ = humanize.i18n.activate('ru_RU')
+    relative_time = humanize.naturaltime(dt.astimezone().replace(tzinfo=None))
+    time_words = relative_time.split()
 
-    new_list = []
-    for text in str_dt.split():
+    if len(time_words) < 3: return relative_time
 
-        clean_text = text.replace(',', '')
+    if time_words[1][:3] in {'мин', 'мес', 'min', 'mon'}:
+        medium_word = time_words[1][:3]
+    else:
+        medium_word = time_words[1][:1]
 
-        if language_code == 'ru':
-            if clean_text in {'секунд', 'секунды', 'секунду'}:
-                new_list.append('с. ')
-            elif clean_text in {'минут', 'минуту', 'минуты'}:
-                new_list.append('мин. ')
-            elif clean_text in {'hour', 'hours', 'час', 'часа', 'часов'}:
-                new_list.append('ч. ')
-            elif clean_text in {'day', 'days', 'день', 'дни', 'дней', 'дня'}:
-                new_list.append('д. ')
-            elif clean_text in {'week', 'weeks', 'неделя', 'неделю', 'недель'}:
-                new_list.append('н. ')
-            elif clean_text in {'month', 'months', 'месяц', 'месяца', 'месяцев'}:
-                new_list.append('мес. ')
-            elif clean_text in {'year', 'год'}:
-                new_list.append('г. ')
-            elif clean_text in {'years', 'лет'}:
-                new_list.append('л. ')
-            else:
-                new_list.append(text)
-        elif language_code == 'en':
-            if clean_text in {'a'}:
-                new_list.append('1')
-            elif clean_text in {'an'}:
-                new_list.append('1')
-            elif clean_text in {'second', 'seconds'}:
-                new_list.append('s. ')
-            elif clean_text in {'minute', 'minutes'}:
-                new_list.append('min. ')
-            elif clean_text in {'hour', 'hours'}:
-                new_list.append('h. ')
-            elif clean_text in {'day', 'days'}:
-                new_list.append('d. ')
-            elif clean_text in {'week', 'weeks'}:
-                new_list.append('w. ')
-            elif clean_text in {'month', 'months'}:
-                new_list.append('mon. ')
-            elif clean_text in {'year', 'years'}:
-                new_list.append('y. ')
-            else:
-                new_list.append(text)
+    first_word = time_words[0] + ' ' if time_words[0].isalpha() else time_words[0]
 
-    translated_dt = ''.join(new_list)
-    # print(translated_dt)
+    return first_word + medium_word + '. ' + time_words[2]
 
-    return translated_dt
+
+    # str_dt: str = NaturalTimeFormatter.string_for(dt)
+    # # print(str_dt.split())
+
+    # new_list = []
+    # for text in str_dt.split():
+
+    #     clean_text = text.replace(',', '')
+
+    #     if language_code == 'ru':
+    #         if clean_text in {'секунд', 'секунды', 'секунду'}:
+    #             new_list.append('с. ')
+    #         elif clean_text in {'минут', 'минуту', 'минуты'}:
+    #             new_list.append('мин. ')
+    #         elif clean_text in {'hour', 'hours', 'час', 'часа', 'часов'}:
+    #             new_list.append('ч. ')
+    #         elif clean_text in {'day', 'days', 'день', 'дни', 'дней', 'дня'}:
+    #             new_list.append('д. ')
+    #         elif clean_text in {'week', 'weeks', 'неделя', 'неделю', 'недель'}:
+    #             new_list.append('н. ')
+    #         elif clean_text in {'month', 'months', 'месяц', 'месяца', 'месяцев'}:
+    #             new_list.append('мес. ')
+    #         elif clean_text in {'year', 'год'}:
+    #             new_list.append('г. ')
+    #         elif clean_text in {'years', 'лет'}:
+    #             new_list.append('л. ')
+    #         else:
+    #             new_list.append(text)
+    #     elif language_code == 'en':
+    #         if clean_text in {'a'}:
+    #             new_list.append('1')
+    #         elif clean_text in {'an'}:
+    #             new_list.append('1')
+    #         elif clean_text in {'second', 'seconds'}:
+    #             new_list.append('s. ')
+    #         elif clean_text in {'minute', 'minutes'}:
+    #             new_list.append('min. ')
+    #         elif clean_text in {'hour', 'hours'}:
+    #             new_list.append('h. ')
+    #         elif clean_text in {'day', 'days'}:
+    #             new_list.append('d. ')
+    #         elif clean_text in {'week', 'weeks'}:
+    #             new_list.append('w. ')
+    #         elif clean_text in {'month', 'months'}:
+    #             new_list.append('mon. ')
+    #         elif clean_text in {'year', 'years'}:
+    #             new_list.append('y. ')
+    #         else:
+    #             new_list.append(text)
+
+    # translated_dt = ''.join(new_list)
+    # # print(translated_dt)
+
+    # return translated_dt
 
 #############################################################################
 
@@ -131,5 +151,58 @@ def get_verbose_name(instance: object, field_name: str) -> str:
     """Возвращает verbose_name полученный по объекту класса и названию его поля."""
 
     return type(instance)._meta.get_field(field_name).verbose_name
+
+#############################################################################
+
+# Переопределение дефолтного тега для добавления api_name == 'all_list'
+# Requires vanilla-js framework - http://vanilla-js.com/
+@register.simple_tag
+def register_custom_notify_callbacks(badge_class='live_notify_badge',  # pylint: disable=too-many-arguments,missing-docstring
+                                     menu_class='live_notify_list',
+                                     refresh_period=15,
+                                     callbacks='',
+                                     api_name='list',
+                                     fetch=5,
+                                     nonce=None,
+                                     mark_as_read=False
+                                     ):
+    refresh_period = int(refresh_period) * 1000
+
+    if api_name == 'all_list':
+        api_url = reverse('notifications:live_all_notification_list')
+    elif api_name == 'list':
+        api_url = reverse('notifications:live_unread_notification_list')
+    elif api_name == 'count':
+        api_url = reverse('notifications:live_unread_notification_count')
+    else:
+        return ""
+    definitions = """
+        notify_badge_class='{badge_class}';
+        notify_menu_class='{menu_class}';
+        notify_api_url='{api_url}';
+        notify_fetch_count='{fetch_count}';
+        notify_unread_url='{unread_url}';
+        notify_mark_all_unread_url='{mark_all_unread_url}';
+        notify_refresh_period={refresh};
+        notify_mark_as_read={mark_as_read};
+    """.format(
+        badge_class=badge_class,
+        menu_class=menu_class,
+        refresh=refresh_period,
+        api_url=api_url,
+        unread_url=reverse('notifications:unread'),
+        mark_all_unread_url=reverse('notifications:mark_all_as_read'),
+        fetch_count=fetch,
+        mark_as_read=str(mark_as_read).lower()
+    )
+
+    # add a nonce value to the script tag if one is provided
+    nonce_str = ' nonce="{nonce}"'.format(nonce=nonce) if nonce else ""
+
+    script = '<script type="text/javascript"{nonce}>'.format(nonce=nonce_str) + definitions
+    for callback in callbacks.split(','):
+        script += "register_notifier(" + callback + ");"
+    script += "</script>"
+    return format_html(script)
 
 #############################################################################

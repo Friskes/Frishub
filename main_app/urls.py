@@ -33,6 +33,10 @@ urlpatterns = [
     re_path(r'^api/guide/(?P<pk>\d+)/dislike/$',
         login_required(views.VotesView.as_view(model=Guides, vote_type=LikeDislike.DISLIKE)), name='guide_dislike'),
 
+    # /(?P<guide_slug>[^\.]+)/
+    re_path(r'^api/mark-as-read/(?P<notify_pk>\d+)/(?P<actor_object_id>\d+)/(?P<recipient_id>\d+)/(?P<guide_slug>[-\w]+)/(?P<comment_pk>\d+)/$',
+        views.NotifyMarkAsReadView.as_view(), name='api_mark_as_read'),
+
     path('game-chat/', views.GameChatView.as_view(), name='game_chat'),
 
     path('dev-chat/', views.DevChatView.as_view(), name='dev_chat'),

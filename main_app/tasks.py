@@ -10,6 +10,9 @@ from FriskesSite.celery import app
 
 from main_app.models import CustomUser
 from main_app.parse_twitch_streams import twitch_stream_parser
+from main_app.models import Notification
+
+from notifications.signals import notify
 
 from typing import List
 from time import sleep
@@ -51,11 +54,30 @@ def send_newsletter_by_email_to_all_users_task(*args, **kwargs):
         '',
         settings.EMAIL_HOST_USER,
         users_email,
-        html_message=get_template('emails/newsletter_email.html').render(context={
+        html_message=get_template('emails/news_email.html').render(context={
             'btn_href': args[0],
-            'msg_before_btn': args[2]
+            'msg_before_btn': args[2],
+            'btn_text': 'Перейти на страницу',
+            'footer_text': 'Хотите отписаться от новостной рассылки?'
         })
     )
+
+
+@app.task
+def send_news_by_notify_to_all_users_task(*args, **kwargs):
+    """Отправляет новостное сообщение уведомлением всем пользователям сайта."""
+
+    admin = CustomUser.objects.get(username=settings.ADMINS[0])
+    users = CustomUser.objects.all()
+
+    for user in users:
+        notify.send(
+            admin,
+            recipient=user,
+            verb=args[1],
+            actor_avatar=admin.get_avatar(),
+            notify_href=args[0]
+        )
 
 
 @app.task
@@ -66,6 +88,29 @@ def twitch_stream_count_task():
     twitch_streams = twitch_stream_parser.get_twitch_stream_data()
     cache.set('twitch_streams', twitch_streams, 60) # секунды
     return twitch_streams
+
+
+@app.task
+def send_email_if_notify_unread(*args, **kwargs):
+    """Проверяет прочитал ли пользователь уведомление,
+    если нет то отправляет это уведомление ему на почту."""
+
+    notification: Notification = Notification.objects.get(pk=kwargs['pk'])
+
+    # Сообщение всё ещё не прочитано значит отправляем письмо
+    if notification.unread:
+        send_mail(
+            f"frishub.ru Уведомление от пользователя {kwargs['actor_username']}",
+            '',
+            settings.EMAIL_HOST_USER,
+            [kwargs['recipient_email']],
+            html_message=get_template('emails/news_email.html').render(context={
+                'btn_href': kwargs['href'],
+                'msg_before_btn': f"{kwargs['actor_username']} {notification.verb}",
+                'btn_text': 'Перейти к комментарию',
+                'footer_text': 'Хотите отписаться от уведомлений по почте?'
+            })
+        )
 
 #############################################################################
 

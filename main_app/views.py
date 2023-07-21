@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, FormView, ListView, DetailView, View
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse, HttpResponse, Http404
@@ -28,13 +28,18 @@ from proxy.views import proxy_view
 
 import main_app.tasks as tasks
 from main_app.utils import DataMixin, RedirectAuthUser
-from main_app.models import CustomUser, HomeNews, Comments, Guides, Category, LikeDislike, DressingRoom
+from main_app.models import (
+    CustomUser, HomeNews, Comments, Guides,
+    Category, LikeDislike, DressingRoom, Notification
+)
 from main_app.parse_twitch_streams import twitch_stream_parser
 from main_app.forms import (
     RegisterForm, LoginForm, PasswordResetCustomForm, PasswordResetConfirmForm,
     ContactMeForm, AccountSettingsForm, PasswordChangeCustomForm, AccountEmailForm,
     CommentsForm
 )
+
+from notifications.signals import notify
 
 from FriskesSite import settings
 
@@ -230,7 +235,41 @@ class GuideView(DataMixin, FormView, DetailView):
         )
         mptt_comments.save()
 
+        self.send_notify(data, mptt_comments.pk, guide)
+
         return super(GuideView, self).form_valid(form)
+
+
+    def send_notify(self, data, comment_pk, guide: Guides):
+        """Отправляет уведомление пользователю которому ответили на комментарий."""
+
+        if not data['parent']: return
+        # Если это ответ на комментарий тогда отправляем уведомление адресату
+
+        recipient_user = CustomUser.objects.get(username=data['parent'])
+
+        notify_obj = notify.send(
+            self.request.user,
+            recipient=recipient_user,
+            verb=f"Ответил на ваш комментарий к гайду: «{guide.title}».<br>\
+                Текст: «{data['content'][:45]}{'...' if len(data['content']) > 45 else ''}»",
+            actor_avatar=self.request.user.get_avatar(),
+            notify_href=f"{reverse('guide', args=(guide.slug,))}#{comment_pk}"
+        )
+        notify_obj: Notification = notify_obj[0][1][0]
+
+        # Если уведомление не будет прочитано за указанный countdown
+        # тогда отправляем это уведомление пользователю по почте
+        if recipient_user.subscribe_notify:
+            tasks.send_email_if_notify_unread.apply_async(countdown=60,
+                kwargs={
+                    'pk': notify_obj.pk,
+                    'recipient_email': recipient_user.email,
+                    'actor_username': self.request.user.username,
+                    'href': f"""{self.request.META['HTTP_ORIGIN']}{reverse('api_mark_as_read',
+                    args=(notify_obj.pk, notify_obj.actor_object_id, notify_obj.recipient_id, guide.slug, comment_pk))}"""
+                }
+            )
 
 
     def get_success_url(self):
@@ -279,6 +318,8 @@ class VotesView(View):
         """Принимает primary key и получает объект из переданной модели,
         создаёт/обновляет количество оценок и возвращает в ответе количество оценок."""
 
+        self.request = request
+
         # GenericForeignKey не поддерживает метод get_or_create
         obj: Union[Guides, Comments] = self.model.objects.get(pk=pk)
 
@@ -286,7 +327,7 @@ class VotesView(View):
             likedislike: LikeDislike = LikeDislike.objects.get(
                 content_type=ContentType.objects.get_for_model(obj),
                 object_id=obj.id,
-                user=request.user
+                user=self.request.user
             )
             if likedislike.vote is not self.vote_type:
                 likedislike.vote = self.vote_type
@@ -295,7 +336,9 @@ class VotesView(View):
                 likedislike.delete()
 
         except LikeDislike.DoesNotExist:
-            obj.votes.create(user=request.user, vote=self.vote_type)
+            obj.votes.create(user=self.request.user, vote=self.vote_type)
+
+            self.send_notify(obj)
 
         return HttpResponse(
             json.dumps({
@@ -304,6 +347,53 @@ class VotesView(View):
             }),
             content_type="application/json"
         )
+
+
+    def send_notify(self, comment: Comments):
+        """Отправляет уведомление пользователю которому оценили комментарий."""
+
+        if not isinstance(comment, Comments): return
+
+        notify_obj = notify.send(
+            self.request.user,
+            recipient=comment.author,
+            verb=f"{LikeDislike.VOTES[max(0, self.vote_type)][1]} ваш комментарий к гайду: «{comment.guide.title}».<br>\
+                Текст: «{comment.content[:45]}{'...' if len(comment.content) > 45 else ''}»",
+            actor_avatar=self.request.user.get_avatar(),
+            notify_href=f"{reverse('guide', args=(comment.guide.slug,))}#{comment.pk}"
+        )
+        notify_obj: Notification = notify_obj[0][1][0]
+
+        # Если уведомление не будет прочитано за указанный countdown
+        # тогда отправляем это уведомление пользователю по почте
+        if comment.author.subscribe_notify:
+            tasks.send_email_if_notify_unread.apply_async(countdown=60,
+                kwargs={
+                    'pk': notify_obj.pk,
+                    'recipient_email': comment.author.email,
+                    'actor_username': self.request.user.username,
+                    'href': f"""{self.request.META['HTTP_ORIGIN']}{reverse('api_mark_as_read',
+                    args=(notify_obj.pk, notify_obj.actor_object_id, notify_obj.recipient_id, comment.guide.slug, comment.pk))}"""
+                }
+            )
+
+#############################################################################
+
+class NotifyMarkAsReadView(View):
+    """#### Представление помечающее уведомление как прочитанное
+    #### и перенаправляющее к источнику этого уведомления (комментарию)."""
+
+    def get(self, request, *args, **kwargs):
+
+        notify_obj = get_object_or_404(Notification, pk=kwargs['notify_pk'])
+
+        if (int(notify_obj.actor_object_id) != int(kwargs['actor_object_id'])
+        or int(notify_obj.recipient_id) != int(kwargs['recipient_id'])):
+            raise Http404
+
+        notify_obj.mark_as_read()
+
+        return redirect(reverse('guide', args=(kwargs['guide_slug'],)) + f"#{kwargs['comment_pk']}")
 
 #############################################################################
 
@@ -982,7 +1072,8 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
             'birth_date': request.user.birth_date, 'gender': request.user.gender,
             'game_class': request.user.game_class, 'discord_username': request.user.discord_username,
             'battlenet_username': request.user.battlenet_username, 'twitch_link': request.user.twitch_link,
-            'dress_room_link': request.user.dress_room_link, 'subscribe_newsletter': request.user.subscribe_newsletter
+            'dress_room_link': request.user.dress_room_link, 'subscribe_newsletter': request.user.subscribe_newsletter,
+            'subscribe_notify': request.user.subscribe_notify
         }
 
         return super().get(request, *args, **kwargs)

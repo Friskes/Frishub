@@ -72,6 +72,10 @@ INSTALLED_APPS = [
     # https://docs.celeryq.dev/en/latest/django/first-steps-with-django.html#django-celery-results-using-the-django-orm-cache-as-a-result-backend
     # pip install django-celery-results
     'django_celery_results',
+
+    # https://github.com/django-notifications/django-notifications
+    # pip install django-notifications-hq
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -189,8 +193,17 @@ USE_TZ = True
 
 USE_L10N = True
 
+
 # Определяем кастомную модель пользователя
 AUTH_USER_MODEL = 'main_app.CustomUser'
+
+# Определяем кастомную модель уведомлений
+NOTIFICATIONS_NOTIFICATION_MODEL = 'main_app.Notification'
+
+# Теперь любые кастомные именованные аргументы попадут в поле data модели Notification
+DJANGO_NOTIFICATIONS_CONFIG = {'USE_JSONFIELD': True}
+# При вызове API удаления уведомления из БД, вместо удаления просто изменится поле deleted на True
+DJANGO_NOTIFICATIONS_CONFIG['SOFT_DELETE'] = True
 
 
 # Static files (CSS, JavaScript, Images)
