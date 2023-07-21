@@ -252,7 +252,7 @@ class GuideView(DataMixin, FormView, DetailView):
             self.request.user,
             recipient=recipient_user,
             verb=f"Ответил на ваш комментарий к гайду: «{guide.title}».<br>\
-                Текст: «{data['content'][:45]}{'...' if len(data['content']) > 45 else ''}»",
+                Ответ: «{data['content'][:45]}{'...' if len(data['content']) > 45 else ''}»",
             actor_avatar=self.request.user.get_avatar(),
             notify_href=f"{reverse('guide', args=(guide.slug,))}#{comment_pk}"
         )
@@ -278,6 +278,9 @@ class GuideView(DataMixin, FormView, DetailView):
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        # https://stackoverflow.com/a/34460881/19276507
+        self.object = self.get_object()
+
         context = super().get_context_data(**kwargs)
 
         if self.request.user.is_superuser:
@@ -357,8 +360,7 @@ class VotesView(View):
         notify_obj = notify.send(
             self.request.user,
             recipient=comment.author,
-            verb=f"{LikeDislike.VOTES[max(0, self.vote_type)][1]} ваш комментарий к гайду: «{comment.guide.title}».<br>\
-                Текст: «{comment.content[:45]}{'...' if len(comment.content) > 45 else ''}»",
+            verb=f"{LikeDislike.VOTES[max(0, self.vote_type)][1]} ваш комментарий к гайду: «{comment.guide.title}».",
             actor_avatar=self.request.user.get_avatar(),
             notify_href=f"{reverse('guide', args=(comment.guide.slug,))}#{comment.pk}"
         )

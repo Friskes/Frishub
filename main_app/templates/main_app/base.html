@@ -798,8 +798,8 @@
         border-bottom: none;
       }
       #notify-push-popup {
-        /* display: none;
-        opacity: 0; */
+        display: none;
+        opacity: 0;
         position: fixed;
         max-width: 450px;
         height: auto;
@@ -1240,7 +1240,8 @@
             $('.notifications-table')[0].insertAdjacentHTML('afterBegin', notify_html);
 
             if (!notify_first_run) {
-              notify_audio.play(); // сработает только после любого взаимодействия пользователя со страницей, (например клик)
+              // сработает только после любого взаимодействия пользователя со страницей, (например клик)
+              notify_audio.play().catch(error => {});
 
               const notify_push_popup = $('#notify-push-popup');
 
@@ -1259,7 +1260,7 @@
                         notify_push_popup.css('display', 'none');
                       }},
                     );
-                  }, 4000);
+                  }, 7000);
                 }},
               );
             };
