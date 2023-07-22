@@ -248,10 +248,12 @@ class GuideView(DataMixin, FormView, DetailView):
 
         recipient_user = CustomUser.objects.get(username=data['parent'])
 
+        word_ending = 'а' if self.request.user.gender == 'female' else ''
+
         notify_obj = notify.send(
             self.request.user,
             recipient=recipient_user,
-            verb=f"Ответил на ваш комментарий к гайду: «{guide.title}».<br>\
+            verb=f"Ответил{word_ending} на ваш комментарий к гайду: «{guide.title}»<br>\
                 Ответ: «{data['content'][:45]}{'...' if len(data['content']) > 45 else ''}»",
             notify_href=f"{reverse('guide', args=(guide.slug,))}#{comment_pk}"
         )
@@ -359,7 +361,7 @@ class VotesView(View):
         notify_obj = notify.send(
             self.request.user,
             recipient=comment.author,
-            verb=f"{LikeDislike.VOTES[max(0, self.vote_type)][1]} ваш комментарий к гайду: «{comment.guide.title}».",
+            verb=f"{LikeDislike.VOTES[max(0, self.vote_type)][1]} ваш комментарий к гайду: «{comment.guide.title}»",
             notify_href=f"{reverse('guide', args=(comment.guide.slug,))}#{comment.pk}"
         )
         notify_obj: Notification = notify_obj[0][1][0]

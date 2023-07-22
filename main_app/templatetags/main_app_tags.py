@@ -1,5 +1,4 @@
 from django import template
-from django.contrib.humanize.templatetags.humanize import NaturalTimeFormatter
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils.html import format_html
@@ -45,8 +44,10 @@ def translate_datetime(dt, language_code='ru'):
     """Возвращает сокращённый текст времени на основе переданного datetime,
     так же учитывает локализацию используя параметр language_code."""
 
-    if language_code == 'ru': _ = humanize.i18n.activate('ru_RU')
+    _t = humanize.i18n.activate('ru_RU') if language_code == 'ru' else humanize.i18n.deactivate()
+
     relative_time = humanize.naturaltime(dt.astimezone().replace(tzinfo=None))
+
     time_words = relative_time.split()
 
     if len(time_words) < 3: return relative_time
@@ -59,61 +60,6 @@ def translate_datetime(dt, language_code='ru'):
     first_word = time_words[0] + ' ' if time_words[0].isalpha() else time_words[0]
 
     return first_word + medium_word + '. ' + time_words[2]
-
-
-    # str_dt: str = NaturalTimeFormatter.string_for(dt)
-    # # print(str_dt.split())
-
-    # new_list = []
-    # for text in str_dt.split():
-
-    #     clean_text = text.replace(',', '')
-
-    #     if language_code == 'ru':
-    #         if clean_text in {'секунд', 'секунды', 'секунду'}:
-    #             new_list.append('с. ')
-    #         elif clean_text in {'минут', 'минуту', 'минуты'}:
-    #             new_list.append('мин. ')
-    #         elif clean_text in {'hour', 'hours', 'час', 'часа', 'часов'}:
-    #             new_list.append('ч. ')
-    #         elif clean_text in {'day', 'days', 'день', 'дни', 'дней', 'дня'}:
-    #             new_list.append('д. ')
-    #         elif clean_text in {'week', 'weeks', 'неделя', 'неделю', 'недель'}:
-    #             new_list.append('н. ')
-    #         elif clean_text in {'month', 'months', 'месяц', 'месяца', 'месяцев'}:
-    #             new_list.append('мес. ')
-    #         elif clean_text in {'year', 'год'}:
-    #             new_list.append('г. ')
-    #         elif clean_text in {'years', 'лет'}:
-    #             new_list.append('л. ')
-    #         else:
-    #             new_list.append(text)
-    #     elif language_code == 'en':
-    #         if clean_text in {'a'}:
-    #             new_list.append('1')
-    #         elif clean_text in {'an'}:
-    #             new_list.append('1')
-    #         elif clean_text in {'second', 'seconds'}:
-    #             new_list.append('s. ')
-    #         elif clean_text in {'minute', 'minutes'}:
-    #             new_list.append('min. ')
-    #         elif clean_text in {'hour', 'hours'}:
-    #             new_list.append('h. ')
-    #         elif clean_text in {'day', 'days'}:
-    #             new_list.append('d. ')
-    #         elif clean_text in {'week', 'weeks'}:
-    #             new_list.append('w. ')
-    #         elif clean_text in {'month', 'months'}:
-    #             new_list.append('mon. ')
-    #         elif clean_text in {'year', 'years'}:
-    #             new_list.append('y. ')
-    #         else:
-    #             new_list.append(text)
-
-    # translated_dt = ''.join(new_list)
-    # # print(translated_dt)
-
-    # return translated_dt
 
 #############################################################################
 
