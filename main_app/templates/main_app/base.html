@@ -167,16 +167,12 @@
           position: fixed;
           left: 0;
           bottom: 133px;
-          z-index: 2000;
         }
       }
       /* Если мы на мобильном */
       @media screen and (max-width: 800px) {
         .tool-container[_ngcontent-gox-c6] {
           margin-top: 50px;
-        }
-        .toolbar-container[_ngcontent-gox-c6] {
-          z-index: 2000;
         }
       }
       .margin-top-l[_ngcontent-gox-c6] {
@@ -189,7 +185,8 @@
 
     <style>
       .bg-navbar[_ngcontent-gox-c59] {
-        background-color: #000
+        background-color: #000;
+        z-index: 2;
       }
       .navbar-dark[_ngcontent-gox-c59] .navbar-nav[_ngcontent-gox-c59] .nav-link[_ngcontent-gox-c59]:focus {
         color: #fff;
