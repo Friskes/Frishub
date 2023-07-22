@@ -109,8 +109,6 @@
   let go_to_top_btn = document.getElementById("go-to-top-btn");
   let go_to_comments_btn = document.getElementById("go-to-comments-btn");
 
-  window.onscroll = function() {scroll_position()};
-
   function scroll_position() {
     // if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
     //   go_to_top_btn.style.display = "block";
@@ -131,6 +129,8 @@
       go_to_comments_btn.style.display = "none";
     };
   };
+
+  window.onscroll = function() {scroll_position()};
 
   function go_to_top() {
     // document.body.scrollTop = 0;
@@ -1095,21 +1095,45 @@
 
   let highlight_interval_id;
 
-  function highlight_comment() {
+  function highlight_animation(element, vertical_shift) {
+    // Прокручиваем страницу к месту расположения комментария + vertical_shift вверх
+    $('html, body')[0].scrollTop = element.offset().top - vertical_shift;
 
-    if (document.location.hash === "") {
+    let opacity = 1;
+    if (highlight_interval_id) clearInterval(highlight_interval_id);
+    highlight_interval_id = setInterval(function() {
+      opacity -= 0.01;
+      element.css({'box-shadow': `0 0 10px 10px rgba(31, 184, 255, ${opacity})`});
+      if (opacity <= 0) clearInterval(highlight_interval_id);
+    }, 20);
+  };
+
+
+  function highlight_hash_link() {
+
+    const hash = document.location.hash.split('#')[1];
+
+    // Если это загрузка страницы без указания hash в url
+    if (typeof hash === "undefined") {
       // Прокручиваем страницу к scrollX и scrollY из данных sessionStorage (либо 0, 0 если там еще ничего нет)
       window.scroll(...window_coords.map(coord => sessionStorage[coord]));
       return false;
     };
-
-    const comment = $(`#notifying-border-${document.location.hash.split('#')[1]}`);
 
     // Принудительно очищаю хэш после перехода по ссылке для того чтобы
     // при последующей перезагруке страницы не телепортировало к якорю этого хэша
     document.location.hash = "";
     // window.location.hash = "";
     // parent.location.hash = "";
+
+    // если hash содержит символы отличные от цифр,
+    // значит это не ссылка на комментарий, а переход по ссылке в гайде
+    if (isNaN(hash)) {
+      highlight_animation($(`#${hash}`), 15);
+      return false;
+    };
+
+    const comment = $(`#notifying-border-${hash}`);
 
     if (!comment[0]) return false;
 
@@ -1119,27 +1143,18 @@
       answers.previousElementSibling.children[0].textContent = 'expand_less';
     };
 
-    // Прокручиваем страницу к месту расположения комментария + 370px вверх
-    $('html, body')[0].scrollTop = comment.offset().top - 370;
-
-    let opacity = 1;
-    if (highlight_interval_id) clearInterval(highlight_interval_id);
-    highlight_interval_id = setInterval(function() {
-      opacity -= 0.01;
-      comment.css({'box-shadow': `0 0 10px 10px rgba(31, 184, 255, ${opacity})`});
-      if (opacity <= 0) clearInterval(highlight_interval_id);
-    }, 20);
+    highlight_animation(comment, 370);
   };
 
   // Пришлось прикостылить 500ms delay для ожидания полной загрузки wowhead иконок перед выполнением скролла
   // Всё это конечно выглядит убого, но как решить по другому не понятно.
   setTimeout(function() {
-    highlight_comment();
+    highlight_hash_link();
   }, 500);
 
   window.addEventListener('hashchange', function(event) {
     if (document.location.hash === "") return false;
-    highlight_comment();
+    highlight_hash_link();
   });
 </script>
 {% endblock %}
