@@ -6,7 +6,7 @@ from django.db.models import TextField
 
 from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
-    HomeNews, Guides, Comments, Category, DressingRoom
+    HomeNews, Guides, Comments, Category, DressingRoom, Notification
 )
 
 from modeltranslation.admin import TranslationAdmin
@@ -14,6 +14,8 @@ from modeltranslation.admin import TranslationAdmin
 from mptt.admin import DraggableMPTTAdmin#, MPTTModelAdmin
 
 from tinymce.widgets import TinyMCE
+
+from notifications.admin import NotificationAdmin
 
 
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/
@@ -25,6 +27,18 @@ from tinymce.widgets import TinyMCE
 
 admin.site.site_title = 'FRISHUB' # название во вкладке браузера
 admin.site.site_header = 'Администрирование FRISHUB' # название шапки админки
+
+#############################################################################
+
+# Отменяю регистрацию класса NotificationAdmin
+# которая была сделана в файле notifications.admin
+# для регистрация переопределенного класса CustomNotificationAdmin
+admin.site.unregister(Notification)
+
+@admin.register(Notification)
+class CustomNotificationAdmin(NotificationAdmin):
+
+    list_display = ('recipient', 'actor', 'timestamp', 'unread', 'deleted', 'emailed')
 
 #############################################################################
 

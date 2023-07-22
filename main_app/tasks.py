@@ -98,6 +98,9 @@ def send_email_if_notify_unread(*args, **kwargs):
 
     # Сообщение всё ещё не прочитано значит отправляем письмо
     if notification.unread:
+        notification.emailed = True
+        notification.save()
+
         send_mail(
             f"frishub.ru Уведомление от пользователя {kwargs['actor_username']}",
             '',

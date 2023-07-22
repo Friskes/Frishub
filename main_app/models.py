@@ -553,11 +553,11 @@ class LikeDislike(models.Model):
 
     vote = models.SmallIntegerField(choices=VOTES)
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) # ForeignKey == many-to-one
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey()
+    content_object = GenericForeignKey() # GenericForeignKey == many-to-one
     objects = LikeDislikeManager()
 
 #############################################################################
