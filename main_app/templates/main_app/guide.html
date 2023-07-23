@@ -638,33 +638,23 @@
                   {% endif %}
                 </label>
                 <label data-count="dislike"
-                  style="left: 0px;">{{ node.votes.dislikes.count }}</label>
+                  style="left: 0px; padding-right: 12px;">{{ node.votes.dislikes.count }}</label>
 
                 {% if user.is_authenticated %}
                   {% if node.level > 0 %}
-                    <button class="btn btn-outline-secondary comm-reply-btn"
-                      onclick="myFunction('{{ node.id }}', '{{ node.author }}', '{{ node.level }}')">
-                      {% trans 'Ответить' %}
-                    </button>
-                    <a _ngcontent-xpp-c94="" class="info">
-                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
-                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
-                      <span _ngcontent-xpp-c94="" class="info-text"
-                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
-                    </a>
+                    <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px;"
+                      onclick="myFunction('{{ node.id }}', '{{ node.author }}', '{{ node.level }}')">{% trans 'Ответить' %}</button>
                   {% else %}
-                    <button class="btn btn-outline-secondary comm-reply-btn"
-                      onclick="myFunction('{{ node.id }}', '', '{{ node.level }}')">
-                      {% trans 'Ответить' %}
-                    </button>
-                    <a _ngcontent-xpp-c94="" class="info">
-                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
-                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
-                      <span _ngcontent-xpp-c94="" class="info-text"
-                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
-                    </a>
+                    <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px;"
+                      onclick="myFunction('{{ node.id }}', '', '{{ node.level }}')">{% trans 'Ответить' %}</button>
                   {% endif %}
                 {% endif %}
+                <a _ngcontent-xpp-c94="" class="info">
+                  <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
+                    onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
+                  <span _ngcontent-xpp-c94="" class="info-text"
+                    style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
+                </a>
 
                 <div id="form-anchor-{{ node.id }}"></div>
 
@@ -829,33 +819,23 @@
                   {% endif %}
                 </label>
                 <label data-count="dislike"
-                  style="left: 0px;">{{ node.votes.dislikes.count }}</label>
+                  style="left: 0px; padding-right: 12px;">{{ node.votes.dislikes.count }}</label>
 
                 {% if user.is_authenticated %}
                   {% if node.level > 0 %}
-                    <button class="btn btn-outline-secondary comm-reply-btn"
-                      onclick="myFunction('{{ node.id }}', '{{ node.author }}', '{{ node.level }}')">
-                      {% trans 'Ответить' %}
-                    </button>
-                    <a _ngcontent-xpp-c94="" class="info">
-                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
-                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
-                      <span _ngcontent-xpp-c94="" class="info-text"
-                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
-                    </a>
+                    <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px;"
+                      onclick="myFunction('{{ node.id }}', '{{ node.author }}', '{{ node.level }}')">{% trans 'Ответить' %}</button>
                   {% else %}
-                    <button class="btn btn-outline-secondary comm-reply-btn"
-                      onclick="myFunction('{{ node.id }}', '', '{{ node.level }}')">
-                      {% trans 'Ответить' %}
-                    </button>
-                    <a _ngcontent-xpp-c94="" class="info">
-                      <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
-                        onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
-                      <span _ngcontent-xpp-c94="" class="info-text"
-                        style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
-                    </a>
+                    <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px;"
+                      onclick="myFunction('{{ node.id }}', '', '{{ node.level }}')">{% trans 'Ответить' %}</button>
                   {% endif %}
                 {% endif %}
+                <a _ngcontent-xpp-c94="" class="info">
+                  <button class="btn btn-outline-secondary comm-reply-btn" style="padding-left: 0px; padding-right: 0px;"
+                    onclick="copy_text.copy(document.location.origin + document.location.pathname + '#{{ node.id }}');">{% trans 'Поделиться' %}</button>
+                  <span _ngcontent-xpp-c94="" class="info-text"
+                    style="color: #fff; margin-top: -22px; margin-left: -250px;">{% trans 'Скопировать ссылку на комментарий' %}</span>
+                </a>
 
                 <div id="form-anchor-{{ node.id }}"></div>
 

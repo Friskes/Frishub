@@ -16,6 +16,7 @@ from django.core.handlers.asgi import ASGIRequest
 from django.core.cache import cache
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models.query import QuerySet
 # from django.contrib.auth.models import User
 from django.contrib.auth.views import (
     LoginView, LogoutView, PasswordResetView,
@@ -47,7 +48,7 @@ from celery.result import AsyncResult
 
 from math import floor
 import json
-from typing import Union
+from typing import Union, Dict, List, Tuple
 from uuid import uuid4
 from urllib.parse import unquote
 import datetime as dt
@@ -585,14 +586,17 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         dressing_rooms = DressingRoom.objects.all()
 
         for room in dressing_rooms:
-            if current_datetime - dt.timedelta(days=182) >= room.last_update_time:
-                room.delete()
+            if current_datetime - dt.timedelta(days=365) >= room.last_update_time:
+                # Если пользователь не прикреплён к модели удаляем модель
+                if not room.creator:
+                    room.delete()
 
 
-    def get_my_saved_rooms(self, creator_id):
+    def get_my_saved_rooms(self, creator: Dict[str, Union[str, CustomUser]]
+                           ) -> Tuple[List[Dict[str, str]], QuerySet]:
         """Создание даты для отображения списка созданных комнат у текущего пользователя."""
 
-        dressing_rooms = DressingRoom.objects.filter(room_creator_id=creator_id)
+        dressing_rooms = DressingRoom.objects.filter(**creator)
         my_saved_rooms = []
 
         for room in dressing_rooms:
@@ -605,7 +609,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                     'gender': room.gender,
                     'last_update_time': timezone.localtime(room.last_update_time).strftime('%d-%m-%Y %H:%M:%S')
                 })
-        return my_saved_rooms
+        return my_saved_rooms, dressing_rooms
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -619,11 +623,33 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         self.dressing_room = DressingRoom.objects.filter(room_id=self.room_id)
 
         cookie_creator_id = self.request.COOKIES.get('creator_id')
-        my_saved_rooms = self.get_my_saved_rooms(cookie_creator_id)
 
+        # Получаем все комнаты (если они существуют) которые привязаны к текущему Cookie либо пользователю
+        if self.request.user.is_anonymous:
+            my_saved_rooms, dressing_rooms = self.get_my_saved_rooms({'room_creator_id': cookie_creator_id})
+        else:
+            my_saved_rooms, dressing_rooms = self.get_my_saved_rooms({'creator': self.request.user})
+
+        # Если эта комната записана в БД
         if self.dressing_room:
             self.creator_id = self.dressing_room[0].room_creator_id
+
             self.is_room_creator = self.creator_id == cookie_creator_id
+
+            # Если пользователь авторизован
+            if not self.request.user.is_anonymous:
+                # Если в этой комнате не записан создатель
+                if not self.dressing_room[0].creator:
+                    # Если creator_id из БД равен creator_id из Cookie
+                    if self.is_room_creator:
+                        # Записываем текущего пользователя как создателя этой комнаты
+                        # т.к. id из его Cookie равен id записанному в БД
+                        self.dressing_room.update(creator=self.request.user)
+                # Иначе если какой либо пользователь записан в этой комнате
+                # сравниваем его с текущим пользователем который послал GET запрос
+                # и понимаем является ли он создателем этой комнаты
+                else:
+                    self.is_room_creator = self.dressing_room[0].creator == self.request.user
 
             self.time_checking()
 
@@ -639,23 +665,28 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
             }
         else:
             if my_saved_rooms:
-                self.creator_id = cookie_creator_id
+                self.creator_id = dressing_rooms[0].room_creator_id
             else:
                 self.creator_id = str(uuid4().hex)
             self.is_room_creator = True
 
-            self.dressing_room.create(
-                room_id=self.room_id,
-                room_creator_id=self.creator_id,
-                allow_edit=False,
-                last_update_time=timezone.now(),
-                game_patch='wrath',
-                race=1,
-                gender=1,
-                items='',
-                face='0,0,0,0,0',
-                mount='0'
-            )
+            default_create_config = {
+                'room_id': self.room_id,
+                'room_creator_id': self.creator_id,
+                'allow_edit': False,
+                'last_update_time': timezone.now(),
+                'game_patch': 'wrath',
+                'race': 1,
+                'gender': 1,
+                'items': '',
+                'face': '0,0,0,0,0',
+                'mount': '0'
+            }
+            if not self.request.user.is_anonymous:
+                default_create_config['creator'] = self.request.user
+
+            self.dressing_room.create(**default_create_config)
+
             character_data = {
                 'room_creator': self.is_room_creator,
                 'allow_edit': False,
@@ -684,8 +715,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
             response.set_cookie(
                 key='creator_id',
                 value=self.creator_id,
-                # max_age=dt.timedelta(days=182),
-                expires=timezone.now() + dt.timedelta(days=182),
+                # max_age=dt.timedelta(days=365),
+                expires=timezone.now() + dt.timedelta(days=365),
                 # path=self.request.path
             )
 
@@ -700,7 +731,18 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         self.dressing_room = DressingRoom.objects.filter(room_id=room_id)
 
         if not self.dressing_room: raise Http404
-        if ( self.dressing_room[0].room_creator_id != request.COOKIES.get('creator_id')
+
+        creator_id = request.COOKIES.get('creator_id')
+        # Если пользователь авторизован и в этой комнате записан создатель
+        if not request.user.is_anonymous and self.dressing_room[0].creator:
+            # Если создатель этой комнаты равен текущему пользователю
+            if self.dressing_room[0].creator == request.user:
+                # Тогда получаем creator_id из БД вместо Cookie
+                creator_id = DressingRoom.objects.filter(creator=request.user)[0].room_creator_id
+
+        # Если creator_id этой комнаты не равен creator_id текущего пользователя из Cookie либо БД
+        # возбуждаем исключение "Доступ запрещён"
+        if ( self.dressing_room[0].room_creator_id != creator_id
         and not self.dressing_room[0].allow_edit ): raise PermissionDenied
 
         # data = [json.loads(key) for key in request.POST.keys()][0]

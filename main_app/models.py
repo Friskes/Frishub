@@ -350,6 +350,8 @@ class DressingRoom(models.Model):
 
     room_creator_id = models.CharField(max_length=40, verbose_name='Id создателя комнаты')
 
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, verbose_name='Создатель комнаты')
+
     allow_edit = models.BooleanField(verbose_name='Разрешить редактирование')
 
     last_update_time = models.DateTimeField(verbose_name='Время последнего изменения')
