@@ -214,49 +214,13 @@
     right: 2.5px;
   }
 </style>
+
 <button onclick="go_to_top();" id="go-to-top-btn" title="Go to top">
   <span class="material-symbols-outlined go-to-top-icon">pan_tool_alt</span>
 </button>
 <button onclick="go_to_comments();" id="go-to-comments-btn" title="Go to comments">
   <span class="material-symbols-outlined go-to-comments-icon">chat</span>
 </button>
-<script>
-  let go_to_top_btn = document.getElementById("go-to-top-btn");
-  let go_to_comments_btn = document.getElementById("go-to-comments-btn");
-
-  function scroll_position() {
-    // if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    //   go_to_top_btn.style.display = "block";
-    // } else {
-    //   go_to_top_btn.style.display = "none";
-    // };
-    var guide_content_coord = document.querySelector('#guide-content-div').getBoundingClientRect();
-    if (guide_content_coord.y < 0 || guide_content_coord.y > 1) {
-      go_to_top_btn.style.display = "block";
-    } else {
-      go_to_top_btn.style.display = "none";
-    };
-
-    var comments_counter_coord = document.querySelector('#comments-counter').getBoundingClientRect();
-    if (comments_counter_coord.y < 0 || comments_counter_coord.y > 1) {
-      go_to_comments_btn.style.display = "block";
-    } else {
-      go_to_comments_btn.style.display = "none";
-    };
-  };
-
-  window.onscroll = function() {scroll_position()};
-
-  function go_to_top() {
-    // document.body.scrollTop = 0;
-    // document.documentElement.scrollTop = 0;
-    document.querySelector('#guide-content-div').scrollIntoView();
-  };
-
-  function go_to_comments() {
-    document.querySelector('#comments-counter').scrollIntoView();
-  };
-</script>
 
 <style>
   @media screen and (min-width: 600px) {
@@ -417,6 +381,11 @@
   .account-settings-table, .node-content-div {
     word-wrap: break-word;
   }
+  .evaluation-icons {
+    font-size: 28px;
+    position: relative;
+    bottom: 3px;
+  }
 </style>
 
 <div _ngcontent-gox-c51="" class="bg-check page-size py-3 pdng-l-r">
@@ -453,24 +422,24 @@
         <label data-id="{{ guide.id }}" data-type="guide" data-action="like"
           class="img-delete-btn1">
             {% if guide.votes.likes.all|user_in:user %}
-              <span class="material-symbols-outlined vote-lime" style="color: lime; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_up</span>
+              <span class="fa fa-thumbs-up vote-lime evaluation-icons" style="color: lime;"></span>
             {% else %}
-              <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_up</span>
+              <span class="fa fa-thumbs-up vote-white evaluation-icons" style="color: white;"></span>
             {% endif %}
         </label>
         <label data-count="like"
-          style="left: 0px;">{{ guide.votes.likes.count }}</label>
+          style="left: 0px; margin-left: 3px;">{{ guide.votes.likes.count }}</label>
 
         <label data-id="{{ guide.id }}" data-type="guide" data-action="dislike"
           class="img-delete-btn2" style="margin-left: 10px;">
             {% if guide.votes.dislikes.all|user_in:user %}
-              <span class="material-symbols-outlined vote-red" style="color: red; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_down</span>
+              <span class="fa fa-thumbs-down vote-red evaluation-icons" style="color: red;"></span>
             {% else %}
-              <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_down</span>
+              <span class="fa fa-thumbs-down vote-white evaluation-icons" style="color: white;"></span>
             {% endif %}
         </label>
         <label data-count="dislike"
-          style="left: 0px;">{{ guide.votes.dislikes.count }}</label>
+          style="left: 0px; margin-left: 3px;">{{ guide.votes.dislikes.count }}</label>
       </div>
 
     </div>
@@ -927,7 +896,7 @@
               var another_vote_ele = element.next().next();
 
               // отрабатывает при снятии оценки
-              if (element.find('span')[0].classList[1] == 'vote-lime') {
+              if (element.find('span')[0].classList.contains('vote-lime')) {
                 element.find('span')[0].classList.remove('vote-lime');
                 element.find('span')[0].classList.add('vote-white');
                 element.find('span').css("color", "white");
@@ -935,9 +904,9 @@
               };
 
               // отрабатывает при добавлении/смене оценки
-              if (element.find('span')[0].classList[1] == 'vote-white') {
+              if (element.find('span')[0].classList.contains('vote-white')) {
                 element.find('span')[0].classList.remove('vote-white');
-              } else if (element.find('span')[0].classList[1] == 'vote-red') {
+              } else if (element.find('span')[0].classList.contains('vote-red')) {
                 element.find('span')[0].classList.remove('vote-red');
               };
               element.find('span')[0].classList.add('vote-lime');
@@ -947,16 +916,16 @@
               var shift_pixels = "15px";
               var another_vote_ele = element.prev().prev();
 
-              if (element.find('span')[0].classList[1] == 'vote-red') {
+              if (element.find('span')[0].classList.contains('vote-red')) {
                 element.find('span')[0].classList.remove('vote-red');
                 element.find('span')[0].classList.add('vote-white');
                 element.find('span').css("color", "white");
                 return shift_pixels;
               };
 
-              if (element.find('span')[0].classList[1] == 'vote-white') {
+              if (element.find('span')[0].classList.contains('vote-white')) {
                 element.find('span')[0].classList.remove('vote-white');
-              } else if (element.find('span')[0].classList[1] == 'vote-lime') {
+              } else if (element.find('span')[0].classList.contains('vote-lime')) {
                 element.find('span')[0].classList.remove('vote-lime');
               };
               element.find('span')[0].classList.add('vote-red');
@@ -964,9 +933,9 @@
             };
 
             // отрабатывает при добавлении/смене оценки
-            if (another_vote_ele.find('span')[0].classList[1] == 'vote-red') {
+            if (another_vote_ele.find('span')[0].classList.contains('vote-red')) {
               another_vote_ele.find('span')[0].classList.remove('vote-red');
-            } else if (another_vote_ele.find('span')[0].classList[1] == 'vote-lime') {
+            } else if (another_vote_ele.find('span')[0].classList.contains('vote-lime')) {
               another_vote_ele.find('span')[0].classList.remove('vote-lime');
             };
             another_vote_ele.find('span')[0].classList.add('vote-white');
@@ -1094,6 +1063,44 @@
 </div>
 
 <script>
+  let go_to_top_btn = document.getElementById("go-to-top-btn");
+  let go_to_comments_btn = document.getElementById("go-to-comments-btn");
+
+  function scroll_position() {
+    // if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    //   go_to_top_btn.style.display = "block";
+    // } else {
+    //   go_to_top_btn.style.display = "none";
+    // };
+    var guide_content_coord = document.querySelector('#guide-content-div').getBoundingClientRect();
+    if (guide_content_coord.y < 0 || guide_content_coord.y > 1) {
+      go_to_top_btn.style.display = "block";
+    } else {
+      go_to_top_btn.style.display = "none";
+    };
+
+    var comments_counter_coord = document.querySelector('#comments-counter').getBoundingClientRect();
+    if (comments_counter_coord.y < 0 || comments_counter_coord.y > 1) {
+      go_to_comments_btn.style.display = "block";
+    } else {
+      go_to_comments_btn.style.display = "none";
+    };
+  };
+
+  window.onscroll = function() {scroll_position()};
+
+  function go_to_top() {
+    // document.body.scrollTop = 0;
+    // document.documentElement.scrollTop = 0;
+    document.querySelector('#guide-content-div').scrollIntoView();
+  };
+
+  function go_to_comments() {
+    document.querySelector('#comments-counter').scrollIntoView();
+  };
+</script>
+
+<script>
   function fixTextareaSize(textarea) {
     textarea.style.height = 'auto'
     textarea.style.height = textarea.scrollHeight + 2 + "px"
@@ -1213,6 +1220,7 @@
   function highlight_animation(element, vertical_shift) {
     // Прокручиваем страницу к месту расположения комментария + vertical_shift вверх
     $('html, body')[0].scrollTop = element.offset().top - vertical_shift;
+    $('.loader').css('display', 'none');
 
     let opacity = 1;
     if (highlight_interval_id) clearInterval(highlight_interval_id);
@@ -1232,6 +1240,7 @@
     if (typeof hash === "undefined") {
       // Прокручиваем страницу к scrollX и scrollY из данных sessionStorage (либо 0, 0 если там еще ничего нет)
       window.scroll(...window_coords.map(coord => sessionStorage[coord]));
+      $('.loader').css('display', 'none');
       return false;
     };
 
@@ -1261,12 +1270,9 @@
     highlight_animation(comment, 370);
   };
 
-  // Пришлось прикостылить 500ms delay для ожидания полной загрузки wowhead иконок перед выполнением скролла
-  // Всё это конечно выглядит убого, но как решить по другому не понятно.
-  setTimeout(function() {
+  window.WH.Tooltips.tooltipsLoadedCallback = debounce(function() {
     highlight_hash_link();
-    $('.loader').css('display', 'none');
-  }, 500);
+  }, 4);
 
   window.addEventListener('hashchange', function(event) {
     if (document.location.hash === "") return false;

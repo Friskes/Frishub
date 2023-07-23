@@ -42,7 +42,8 @@
       const whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true, iconSize: 'small' };
     </script>
 
-    <script src="https://wow.zamimg.com/widgets/power.js"></script>
+    <!-- <script src="https://wow.zamimg.com/widgets/power.js"></script> -->
+    <script src="{% static 'main_app/javascript/zamimg_power.min.js' %}"></script>
 
     <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
 
@@ -616,6 +617,12 @@
       }
       .fa-bell-o:before {
         content: "\f0a2"
+      }
+      .fa-thumbs-up:before {
+        content: "\f164"
+      }
+      .fa-thumbs-down:before {
+        content: "\f165"
       }
     </style>
 
