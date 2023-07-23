@@ -362,7 +362,7 @@ class DressingRoom(models.Model):
 
     gender = models.IntegerField(verbose_name='Пол')
 
-    items = models.CharField(max_length=300, verbose_name='Экипировка')
+    items = models.CharField(max_length=300, verbose_name='Экипировка', blank=True)
 
     face = models.CharField(max_length=150, verbose_name='Внешность')
 

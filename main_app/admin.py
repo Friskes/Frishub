@@ -67,6 +67,8 @@ class DressingRoomAdmin(admin.ModelAdmin):
 
     model: DressingRoom = DressingRoom
 
+    raw_id_fields = ('creator',)
+
     list_display = ('get_short_room_id', 'get_short_room_creator_id', 'allow_edit',
                     'game_patch', 'get_race_name', 'get_gender_name', 'last_update_time')
 
@@ -76,7 +78,7 @@ class DressingRoomAdmin(admin.ModelAdmin):
 
     readonly_fields = ('race_img65x65', 'game_patch_img65x65')
 
-    fields = ('room_id', 'room_creator_id', 'allow_edit', ('game_patch', 'game_patch_img65x65'),
+    fields = ('room_id', 'room_creator_id', 'creator', 'allow_edit', ('game_patch', 'game_patch_img65x65'),
               ('race', 'race_img65x65'), 'gender', 'last_update_time', 'items', 'face', 'mount')
 
     def get_short_room_id(self, object):
