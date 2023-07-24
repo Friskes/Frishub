@@ -1093,7 +1093,7 @@
   {% else %}
     const chatSocket = new WebSocket(ws_scheme + '://' + window.location.host + ":8001" + '/dev-chat/' + '{{ room_id }}'); // PROD
   {% endif %}
-  $('#chat-path-input')[0].value = window.location.protocol + '//' + window.location.host + '/dev-chat/' + '{{ room_id }}';
+  $('#chat-path-input')[0].value = window.location.href;
 
   chatSocket.onopen = function(event) {
     console.info('Чат-сокет открылся.');
@@ -1452,7 +1452,9 @@
 
   code_editor.session.on('change', function(event) {
     // когда одновременно со мной другой пользователь комнаты пишет в чат
-    // он блокирует этот ивент и я получаю лаги/теряю часть данных
+    // он блокирует этот ивент из функции update_dev_chat_text
+    // и я теряю часть данных здесь которые проходят мимо условия
+
     if (!event_lock) {
       debounce_send_curs_pos_and_message_data(event);
     };

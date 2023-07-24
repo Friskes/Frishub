@@ -331,7 +331,8 @@ class GameChatConsumer(WebsocketConsumer):
 #             # print('USERS_CURS_POS:', users_curs_pos)
 #             # записываю актуальные координаты курсоров пользователей
 #             for user_id in users_curs_pos:
-#                 self.rooms_data[self.room_id]['active_consumers'][user_id]['cur_pos'] = users_curs_pos[user_id]
+#                 if user_id in self.rooms_data[self.room_id]['active_consumers']:
+#                     self.rooms_data[self.room_id]['active_consumers'][user_id]['cur_pos'] = users_curs_pos[user_id]
 
 #             self.save_history()
 
@@ -666,7 +667,8 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
             # print('USERS_CURS_POS:', users_curs_pos)
             # записываю актуальные координаты курсоров пользователей
             for user_id in users_curs_pos:
-                self.rooms_data[self.room_id]['active_consumers'][user_id]['cur_pos'] = users_curs_pos[user_id]
+                if user_id in self.rooms_data[self.room_id]['active_consumers']:
+                    self.rooms_data[self.room_id]['active_consumers'][user_id]['cur_pos'] = users_curs_pos[user_id]
 
             await self.save_history()
 
