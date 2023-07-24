@@ -9,7 +9,7 @@ from FriskesSite import settings
 from FriskesSite.celery import app
 
 from main_app.models import CustomUser
-from main_app.parse_twitch_streams import twitch_stream_parser
+from main_app.services.parse_twitch_streams import twitch_stream_parser
 from main_app.models import Notification
 
 from notifications.signals import notify
@@ -162,48 +162,48 @@ def send_email_if_notify_unread(*args, **kwargs):
 
 #############################################################################
 
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+# @app.task(bind=True)
+# def debug_task(self):
+#     print(f'Request: {self.request!r}')
 
 
-@app.task
-def test_task(a, b):
-    print(f'test_task sleep(3) A({a}) B({b})')
-    sleep(3)
-    return a + b
+# @app.task
+# def test_task(a, b):
+#     print(f'test_task sleep(3) A({a}) B({b})')
+#     sleep(3)
+#     return a + b
 # Вызов асинхронной задачи с повторным самовызовом
 # с первым аргументом результатом выполнения задачи, вторым аргументом значение переданное в link
 # test_task.apply_async(args=(2, 2), link=test_task.s(3))
 
 
 # декоратор shared_task тоже самое что и @app.task просто не привязан к экземпляру класса Celery app
-@shared_task
-def test_shared_task(*args):
-    print(f'test_shared_task sleep(3) {args}')
-    sleep(3)
-    return 'SUCCEEDED test_shared_task'
+# @shared_task
+# def test_shared_task(*args):
+#     print(f'test_shared_task sleep(3) {args}')
+#     sleep(3)
+#     return 'SUCCEEDED test_shared_task'
 # test_shared_task.delay('аргумент')
 
 
 # default_retry_delay означает что задача будет становиться на повтор
 # при возникновении исключения в течении 5мин, далее перестанет
-@app.task(bind=True, default_retry_delay=5*60)
-def test_retry_task(self, a, b):
-    try:
-        print('TRY test_retry_task')
-        c = a + b
-        return f'RESULT A({a}) + B({b}) = C({c})'
-    except TypeError as exc:
-        print('EXCEPT test_retry_task')
-        send_mail(
-            'head message -> test_retry_task',
-            f'body message -> test_retry_task\n\n{exc}',
-            settings.EMAIL_HOST_USER,
-            [settings.EMAIL_HOST_USER]
-        )
-        # countdown означает через какой интервал после возникновения исключения задача будет заного стартовать
-        raise self.retry(exc=exc, countdown=60)
+# @app.task(bind=True, default_retry_delay=5*60)
+# def test_retry_task(self, a, b):
+#     try:
+#         print('TRY test_retry_task')
+#         c = a + b
+#         return f'RESULT A({a}) + B({b}) = C({c})'
+#     except TypeError as exc:
+#         print('EXCEPT test_retry_task')
+#         send_mail(
+#             'head message -> test_retry_task',
+#             f'body message -> test_retry_task\n\n{exc}',
+#             settings.EMAIL_HOST_USER,
+#             [settings.EMAIL_HOST_USER]
+#         )
+#         # countdown означает через какой интервал после возникновения исключения задача будет заного стартовать
+#         raise self.retry(exc=exc, countdown=60)
 # Вызов асинхронной задачи
 # test_retry_task.delay(2, "2")
 # Вызов асинхронной задачи с задержкой перед стартом 60сек.
@@ -212,26 +212,26 @@ def test_retry_task(self, a, b):
 # test_retry_task.apply_async(args=(2, 2), eta=timezone.now() + dt.timedelta(seconds=60))
 
 
-@app.task
-def test_beat_task(*args, **kwargs):
-    send_mail(
-        'head message -> test_beat_task',
-        f'body message -> test_beat_task {args}',
-        settings.EMAIL_HOST_USER,
-        [settings.EMAIL_HOST_USER]
-    )
-    return 'SUCCEEDED test_beat_task'
+# @app.task
+# def test_beat_task(*args, **kwargs):
+#     send_mail(
+#         'head message -> test_beat_task',
+#         f'body message -> test_beat_task {args}',
+#         settings.EMAIL_HOST_USER,
+#         [settings.EMAIL_HOST_USER]
+#     )
+#     return 'SUCCEEDED test_beat_task'
 
 
-@app.task
-def test_cron_task(*args, **kwargs):
-    send_mail(
-        'head message -> test_cron_task',
-        f'body message -> test_cron_task {kwargs}',
-        settings.EMAIL_HOST_USER,
-        [settings.EMAIL_HOST_USER]
-    )
-    return 'SUCCEEDED test_cron_task'
+# @app.task
+# def test_cron_task(*args, **kwargs):
+#     send_mail(
+#         'head message -> test_cron_task',
+#         f'body message -> test_cron_task {kwargs}',
+#         settings.EMAIL_HOST_USER,
+#         [settings.EMAIL_HOST_USER]
+#     )
+#     return 'SUCCEEDED test_cron_task'
 
 #############################################################################
 

@@ -27,6 +27,8 @@ from typing import Union, Dict
 
 import requests
 
+from main_app.services.hcaptcha_bypass import bypass
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -80,7 +82,28 @@ def token_verification() -> Union[str, None]:
             return token
         return service_info[0].discord_token
 
-    token = requests.post(url=REQUEST_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('token')
+    response: dict = requests.post(
+        url=REQUEST_URL,
+        json=PAYLOAD,
+        headers=HEADERS_POST,
+        timeout=5
+    ).json()
+
+    if not response.get('token') and response.get('captcha_sitekey'):
+        try:
+            captcha_key = bypass(response['captcha_sitekey'])
+        except Exception as exc:
+            log.error(f'[file parse_discord_chats.py -> def token_verification]:\n{exc}')
+            return None
+
+        response: dict = requests.post(
+            url=REQUEST_URL,
+            json={**PAYLOAD, 'captcha_key': captcha_key},
+            headers=HEADERS_POST,
+            timeout=5
+        ).json()
+
+    token = response.get('token')
 
     if token and service_info:
         service_info.update(discord_token=token)
@@ -154,15 +177,7 @@ class DiscordChatParser:
         try:
             responce = self.ws.recv()
             if responce:
-
                 try:
-                    # if json.loads(responce).get('t') == 'READY':
-                    #     print('>>> READY:', json.loads(responce).get('d').keys())
-
-                    # if json.loads(responce).get('t') == 'SESSIONS_REPLACE':
-                    #     print('>>> SESSIONS_REPLACE:', json.loads(responce).get('d')[0])
-
-                    # responce = str(responce).strip("'<>() ").replace('\'', '\"')
                     return json.loads(responce)
 
                 # Expecting value: line 1 column 1 (char 0)
@@ -219,7 +234,9 @@ if settings.DISCORD_LOGIN and settings.DISCORD_PASSWORD:
 
 #############################################################################
 
-channel_ids = {
+GUILD_ID = '338966203919892480'
+
+CHANNEL_IDS = {
     'wotlk-x1': '862240989133012992',
     'wotlk_x5_alliance': '862240955108425759',
     'wotlk_x5_horde': '869986269525053521',
@@ -236,12 +253,11 @@ def sorting_chat_message(event_data: dict,
     """#### Функция сортировки сообщений индивидуально для каждого пользователя."""
 
     # print(event_data['d'])
-    guild_id = event_data['d']['guild_id']     # айди сервера
     channel_id = event_data['d']['channel_id'] # айди канала на сервере
     # timestamp = event_data['d']['timestamp']   # дата и время отправки сообщения
     content: str = event_data['d']['content']       # сообщение
 
-    if guild_id == '338966203919892480' and channel_id == channel_ids[server_name]:
+    if channel_id == CHANNEL_IDS[server_name]:
 
         # бывает что в content приходит сразу несколько склеенных сообщений, поэтому их необходимо разделить.
         for message in content.split('\n'):
@@ -295,24 +311,22 @@ def event_trigger(data: dict):
 #############################################################################
 
 class AsyncActionGetGameChatData(threading.Thread):
-    """#### Потоковый класс для вызова запроса на получение данных с discord сервера в бесконечном цикле.
-    >>> Остановить цикл можно вызвав метод stop() у экземпляра класса."""
-
-    def __init__(self):
-        super().__init__()
-
-        self.forbidding_flag = True
-
+    """#### Потоковый класс для вызова метода recieve_json_response у парсера в бесконечном цикле
+    #### для того чтобы не копилась очередь сообщений у вебсокета."""
 
     def run(self):
+        while True:
 
-        while self.forbidding_flag and settings.DISCORD_LOGIN and settings.DISCORD_PASSWORD:
             data = discord_chat_parser.recieve_json_response()
             if data and data.get('t') == 'MESSAGE_CREATE':
-                event_trigger(data)
+
+                if data.get('d').get('guild_id') == GUILD_ID: # айди сервера
+                    event_trigger(data)
 
 
-    def stop(self):
-        self.forbidding_flag = False
+# единоразово создаём экземпляр класса AsyncActionGetGameChatData при загрузке сервера
+if settings.DISCORD_LOGIN and settings.DISCORD_PASSWORD:
+    async_action_get_game_chat_data = AsyncActionGetGameChatData()
+    async_action_get_game_chat_data.start()
 
 #############################################################################

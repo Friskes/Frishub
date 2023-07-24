@@ -276,7 +276,7 @@ class ServiceInfoAdmin(admin.ModelAdmin):
     # 'discord_login', 'discord_password', 'discord_token',
     # 'twitch_login', 'twitch_password', 'twitch_client_id', 'twitch_client_secret', 'twitch_token')
 
-    readonly_fields = ('discord_token', 'twitch_token')
+    # readonly_fields = ('discord_token', 'twitch_token')
 
     add_fieldsets = (
         ('Серверная почта',
@@ -307,6 +307,11 @@ class ServiceInfoAdmin(admin.ModelAdmin):
                 'recaptcha_public_key',
                 'recaptcha_private_key',
         )}),
+        ('Данные сервиса решения капчи',
+            {'description': ('После изменения полей требуется перезагрузка сервера.'),
+             'fields': (
+                'apikey_for_captcha_solution',
+        )}),
     )
     fieldsets = (
         ('Серверная почта',
@@ -336,6 +341,11 @@ class ServiceInfoAdmin(admin.ModelAdmin):
              'fields': (
                 'recaptcha_public_key',
                 'recaptcha_private_key',
+        )}),
+        ('Данные сервиса решения капчи',
+            {'description': ('После изменения полей требуется перезагрузка сервера.'),
+             'fields': (
+                'apikey_for_captcha_solution',
         )}),
     )
 

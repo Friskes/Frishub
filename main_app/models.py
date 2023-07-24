@@ -191,6 +191,9 @@ class ServiceInfo(models.Model):
     recaptcha_private_key = models.CharField(verbose_name='reCAPTCHA - Секретный Ключ',
     help_text='Добывается по адресу: https://www.google.com/recaptcha/about/', max_length=100, blank=True)
 
+    apikey_for_captcha_solution = models.CharField(verbose_name='Ключ от сервиса решения капчи',
+    help_text='Добывается по адресу: https://dash.nocaptchaai.com/home', max_length=100, blank=True)
+
     def __str__(self):
         return 'Сервисная информация'
 

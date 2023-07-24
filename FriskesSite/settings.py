@@ -259,6 +259,7 @@ TWITCH_CLIENT_SECRET = ''
 # https://www.google.com/recaptcha/about/
 RECAPTCHA_PUBLIC_KEY = ''
 RECAPTCHA_PRIVATE_KEY = ''
+APIKEY_FOR_CAPTCHA_SOLUTION = ''
 try:
     service_info = ServiceInfo.objects.all()
     EMAIL_HOST_USER = service_info[0].server_email_login
@@ -276,6 +277,7 @@ try:
     TWITCH_CLIENT_SECRET = service_info[0].twitch_client_secret
     RECAPTCHA_PUBLIC_KEY = service_info[0].recaptcha_public_key
     RECAPTCHA_PRIVATE_KEY = service_info[0].recaptcha_private_key
+    APIKEY_FOR_CAPTCHA_SOLUTION = service_info[0].apikey_for_captcha_solution
 except Exception: pass
 
 

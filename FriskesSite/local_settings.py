@@ -11,24 +11,20 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 ALLOWED_HOSTS += [config('MY_LOCAL_IPV4_ADDRESS')]
 
 
+CHANNEL_LAYERS = {
+    'default': {
+        # для локальной разработки channels websocket можно использовать данный бэкэнд
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 LOCAL_REDIS = True
 if LOCAL_REDIS:
-    CHANNEL_LAYERS = {
-        'default': {
-            'BACKEND': 'channels_redis.core.RedisChannelLayer', # pip install redis
-            'CONFIG': {
-                "hosts": [('127.0.0.1', 6379)],
-                # "capacity": 1500, # default 100
-                # "expiry": 10, # default 60
-            },
-        },
-    }
     # https://github.com/tporadowski/redis.git # Releases -> Redis-x64-5.0.14.1.msi
     # https://stackoverflow.com/a/42600466/19276507
     # по дефолту https://redis.io/ redis server запускается автоматически при загрузке windows
     # проверить работу можно введя в терминале команду 'redis-cli' и затем отправив 'ping'
     # должен вернуться PONG, выйти из терминала можно командой 'exit'
-
     # https://docs.djangoproject.com/en/4.2/topics/cache/#redis
     CACHES = {
         "default": {
@@ -37,13 +33,6 @@ if LOCAL_REDIS:
             # "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": "redis://127.0.0.1:6379",
         }
-    }
-else:
-    CHANNEL_LAYERS = {
-        'default': {
-            # для локальной разработки channels websocket можно использовать данный бэкэнд
-            "BACKEND": "channels.layers.InMemoryChannelLayer",
-        },
     }
 
 

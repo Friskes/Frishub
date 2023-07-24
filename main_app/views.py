@@ -33,7 +33,7 @@ from main_app.models import (
     CustomUser, HomeNews, Comments, Guides,
     Category, LikeDislike, DressingRoom, Notification
 )
-from main_app.parse_twitch_streams import twitch_stream_parser
+from main_app.services.parse_twitch_streams import twitch_stream_parser
 from main_app.forms import (
     RegisterForm, LoginForm, PasswordResetCustomForm, PasswordResetConfirmForm,
     ContactMeForm, AccountSettingsForm, PasswordChangeCustomForm, AccountEmailForm,

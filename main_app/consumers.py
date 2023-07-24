@@ -6,7 +6,7 @@ from channels.layers import InMemoryChannelLayer
 
 from asgiref.sync import async_to_sync
 
-from main_app.parse_discord_chats import AsyncActionGetGameChatData, sorting_chat_message
+from main_app.services.parse_discord_chats import sorting_chat_message
 
 import datetime
 import urllib.parse
@@ -35,16 +35,12 @@ class GameChatConsumer(WebsocketConsumer):
     def __init__(self):
         super().__init__()
 
-        self.async_action_get_game_chat_data = AsyncActionGetGameChatData()
-
         self.server_name = None
         self.player_nickname = False
         self.only_twitch = False
 
 
     def connect(self):
-        """При соединении с вебсокетом запускаем поток для каждого уникального пользователя
-        в котором будем в бесконечном цикле запрашивать актуальные данные у сервера Discord."""
 
         self.room_group_name = "game_chat"
 
@@ -54,19 +50,13 @@ class GameChatConsumer(WebsocketConsumer):
         )
         self.accept()
 
-        self.async_action_get_game_chat_data.start()
-
 
     def disconnect(self, code):
-        """При разрыве соединения с вебсокетом отправляем команду в ранее открытый поток
-        на прекращение выполнения бесконечного цикла тем самым убивая поток."""
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name,
         )
-
-        self.async_action_get_game_chat_data.stop()
 
         # if close_code == 1001:
         #     print('>>> CLOSE_CODE:', close_code, 'Пользователь обновил страницу/долгое время был неактивен.')

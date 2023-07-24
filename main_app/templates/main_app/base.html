@@ -936,7 +936,8 @@
         if (task_id === "") return false;
         $.ajax({
           url: `/tasks/${task_id}/`,
-          method: 'GET'
+          method: 'GET',
+          timeout: 5000
         })
         .done((res) => {
 
