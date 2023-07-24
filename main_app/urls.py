@@ -41,7 +41,10 @@ urlpatterns = [
 
     path('dev-chat/', views.DevChatView.as_view(), name='dev_chat'),
 
-    path('dev-chat/<uuid:room_id>/', views.DevChatRoomView.as_view(), name='dev_chat_room'),
+    # Не добавил в конце слэш тем самым получаю 404 при попытке входа на url со слэшем в конце
+    # т.к. вебсокет routing ни в какую не хочет переваривать слэш в конце url.
+    # выдаёт ошибку: "ValueError: No route found for path"
+    path('dev-chat/<uuid:room_id>', views.DevChatRoomView.as_view(), name='dev_chat_room'),
 
     path('streams/', views.StreamsView.as_view(), name='streams'),
 
