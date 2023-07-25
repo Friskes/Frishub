@@ -1305,8 +1305,10 @@
     };
   };
 
+  const time_delta = 1000*60*60*24*30; // 30 дней
+  const cookie_saved_room_expires = 30; // 30 дней
+
   const current_datetime = Date.now(); // разный синтаксис получения времени +new Date();
-  const time_delta = 1000*60*60*24; // 24 часа
 
   let saved_rooms = localStorage.getItem('saved_rooms');
   if (saved_rooms) {
@@ -1355,7 +1357,20 @@
       'username': username,
       'user_color': user_color
     };
-    Cookies.set('saved_room', cookie_saved_room, { expires: 1, path: "{% url 'dev_chat_room' room_id %}" });
+
+    // Устанавливаю одинаковый файл Cookies сразу на 2 локализации
+    // для того чтобы при переключении языка оставались прежние настройки.
+    const another_lang_path = "{{ LANGUAGE_CODE }}" === 'en'
+    ? "{% url 'dev_chat_room' room_id %}".replace('/en', '', 1)
+    : '/en' + "{% url 'dev_chat_room' room_id %}";
+
+    Cookies.set('dev_chat_saved_room', cookie_saved_room, {
+      expires: cookie_saved_room_expires, path: "{% url 'dev_chat_room' room_id %}"
+    });
+    Cookies.set('dev_chat_saved_room', cookie_saved_room, {
+      expires: cookie_saved_room_expires, path: another_lang_path
+    });
+
 
     let saved_rooms = localStorage.getItem('saved_rooms');
     if (saved_rooms) {

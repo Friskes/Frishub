@@ -214,7 +214,7 @@
           </div>
 
           <script>
-            var game_classes_selected_data = Cookies.getJSON('game_classes_selected_data');
+            var game_classes_selected_data = Cookies.getJSON('streams_selected_classes');
 
             if (!game_classes_selected_data) {
               game_classes_selected_data = {};
@@ -266,7 +266,19 @@
             var csrftoken = Cookies.get('csrftoken');
 
             function send_ajax_request() {
-              Cookies.set('game_classes_selected_data', game_classes_selected_data, { expires: 365, path: "{% url 'streams' %}" });
+
+              // Устанавливаю одинаковый файл Cookies сразу на 2 локализации
+              // для того чтобы при переключении языка оставались прежние настройки.
+              const another_lang_path = "{{ LANGUAGE_CODE }}" === 'en'
+              ? "{% url 'streams' %}".replace('/en', '', 1)
+              : '/en' + "{% url 'streams' %}";
+
+              Cookies.set('streams_selected_classes', game_classes_selected_data, {
+                expires: 365, path: "{% url 'streams' %}"
+              });
+              Cookies.set('streams_selected_classes', game_classes_selected_data, {
+                expires: 365, path: another_lang_path
+              });
 
               // https://api.jquery.com/jquery.ajax/
               $.ajax({

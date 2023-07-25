@@ -490,7 +490,7 @@ class StreamsView(DataMixin, TemplateView):
             cache.set('twitch_streams', twitch_streams, 60) # секунды
 
         # получение cookies из запроса
-        encoded_text_data: str = self.request.COOKIES.get('game_classes_selected_data')
+        encoded_text_data: str = self.request.COOKIES.get('streams_selected_classes')
 
         game_classes = {}
         if encoded_text_data and len(encoded_text_data) > 2:
@@ -622,7 +622,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
         self.dressing_room = DressingRoom.objects.filter(room_id=self.room_id)
 
-        cookie_creator_id = self.request.COOKIES.get('creator_id')
+        cookie_creator_id = self.request.COOKIES.get('dress_room_creator_id')
 
         # Получаем все комнаты (если они существуют) которые привязаны к текущему Cookie либо пользователю
         if self.request.user.is_anonymous:
@@ -713,10 +713,12 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         # https://docs.djangoproject.com/en/4.2/ref/request-response/#django.http.HttpResponse.set_cookie
         if self.is_room_creator:
             response.set_cookie(
-                key='creator_id',
+                key='dress_room_creator_id',
                 value=self.creator_id,
                 # max_age=dt.timedelta(days=365),
                 expires=timezone.now() + dt.timedelta(days=365),
+                # Если устанавливать Cookies без указания конкретного пути
+                # то этот Cookie будет работать на обе локализации одновременно
                 # path=self.request.path
             )
 
@@ -732,7 +734,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
         if not self.dressing_room: raise Http404
 
-        creator_id = request.COOKIES.get('creator_id')
+        creator_id = request.COOKIES.get('dress_room_creator_id')
         # Если пользователь авторизован и в этой комнате записан создатель
         if not request.user.is_anonymous and self.dressing_room[0].creator:
             # Если создатель этой комнаты равен текущему пользователю

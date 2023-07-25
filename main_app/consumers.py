@@ -148,20 +148,20 @@ class GameChatConsumer(WebsocketConsumer):
 #     rooms_data = {}
 #     chat_history = {}
 
-#     time_delta = datetime.timedelta(hours=24)
+#     time_delta = datetime.timedelta(days=30)
 
 #     def get_cookie_data(self):
 #         """Создаёт переменные:
 #         - userid
 #         - username
 #         - user_color\n
-#         из cookie saved_room."""
+#         из cookie dev_chat_saved_room."""
 
 #         self.saved_userid = None
 #         self.saved_username = None
 #         self.saved_user_color = None
 
-#         encoded_saved_room = self.scope['cookies'].get('saved_room')
+#         encoded_saved_room = self.scope['cookies'].get('dev_chat_saved_room')
 #         if encoded_saved_room:
 #             # .replace('%22','"').replace('%2C',',')
 #             decoded_saved_room: str = urllib.parse.unquote(encoded_saved_room, encoding='utf-8')
@@ -484,20 +484,20 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
     rooms_data = {}
     chat_history = {}
 
-    time_delta = datetime.timedelta(hours=24)
+    time_delta = datetime.timedelta(days=30)
 
     async def get_cookie_data(self):
         """Создаёт переменные:
         - userid
         - username
         - user_color\n
-        из cookie saved_room."""
+        из cookie dev_chat_saved_room."""
 
         self.saved_userid = None
         self.saved_username = None
         self.saved_user_color = None
 
-        encoded_saved_room = self.scope['cookies'].get('saved_room')
+        encoded_saved_room = self.scope['cookies'].get('dev_chat_saved_room')
         if encoded_saved_room:
             # .replace('%22','"').replace('%2C',',')
             decoded_saved_room: str = urllib.parse.unquote(encoded_saved_room, encoding='utf-8')
