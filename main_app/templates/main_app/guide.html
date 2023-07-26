@@ -368,7 +368,7 @@
   }
   .notifying-border {
     box-shadow: 0 0 10px 10px rgba(31, 184, 255, 0);
-    border-radius: 15px;
+    border-radius: 12px;
     padding-top: 13px;
     margin-top: 14px;
     margin-bottom: 27px;
@@ -1199,7 +1199,9 @@
 
   function highlight_animation(element, vertical_shift) {
     // Прокручиваем страницу к месту расположения комментария + vertical_shift вверх
-    $('html, body')[0].scrollTop = element.offset().top - vertical_shift;
+    // $('html, body')[0].scrollTop = element.offset().top - vertical_shift;
+    // window.scrollTo(0, element.offset().top - vertical_shift);
+    window.scroll(0, element.offset().top - vertical_shift);
     $('.loader').css('display', 'none');
 
     let opacity = 1;
@@ -1252,7 +1254,7 @@
 
   window.WH.Tooltips.tooltipsLoadedCallback = debounce(function() {
     highlight_hash_link();
-  }, 4);
+  }, 50);
 
   window.addEventListener('hashchange', function(event) {
     if (document.location.hash === "") return false;

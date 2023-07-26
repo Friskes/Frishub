@@ -745,10 +745,16 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         # Если creator_id этой комнаты не равен creator_id текущего пользователя из Cookie либо БД
         # возбуждаем исключение "Доступ запрещён"
         if ( self.dressing_room[0].room_creator_id != creator_id
-        and not self.dressing_room[0].allow_edit ): raise PermissionDenied
+        and not self.dressing_room[0].allow_edit ):
+            raise PermissionDenied
 
         # data = [json.loads(key) for key in request.POST.keys()][0]
         data = json.loads(request.body)
+
+        # Если не создатель комнаты пытается изменить поле allow_edit запрещаем ему доступ
+        if ( self.dressing_room[0].room_creator_id != creator_id
+        and self.dressing_room[0].allow_edit != data['allow_edit'] ):
+            raise PermissionDenied
 
         if self.dressing_room[0].game_patch != data['game_patch']:
             data['face'] = ''

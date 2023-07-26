@@ -191,8 +191,6 @@ TIME_ZONE = 'Europe/Moscow' # UTC+3
 
 USE_TZ = True
 
-USE_L10N = True
-
 
 # Определяем кастомную модель пользователя
 AUTH_USER_MODEL = 'main_app.CustomUser'

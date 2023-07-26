@@ -67,7 +67,7 @@ class UtilsForTest:
             saved_room = {'userid': userid, 'username': username, 'user_color': await self.get_random_hex_color()}
             raw_saved_room = str(saved_room).replace(" ", "").replace("'", "%22").replace(",", "%2C")
             headers = [(b'cookie',
-                        f'saved_room={raw_saved_room}'.encode('ascii')
+                        f'dev_chat_saved_room={raw_saved_room}'.encode('ascii')
                       )]
 
             communicator = WebsocketCommunicator(
@@ -91,14 +91,15 @@ class UtilsForTest:
 
 # https://channels.readthedocs.io/en/latest/topics/testing.html
 
-# pytest -v -s main_app/tests/tests.py::TestDevChat
-# pytest -v -s main_app/tests/tests.py::TestDevChat::test_basic_functionality
+# pytest -v -s main_app/tests/test_dev_chat.py::TestDevChat
+# pytest -v -s main_app/tests/test_dev_chat.py::TestDevChat::test_basic_functionality
+
+# python manage.py test main_app.tests.test_dev_chat.TestDevChat
 
 # для того чтобы добавить что то в headers необходимо использовать ChannelsLiveServerTestCase либо TransactionTestCase
 class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
 
     serve_static = True
-# class TestDevChat(TransactionTestCase, UtilsForTest):
 
     actual_chat_text_data = {"message": ""}
     actual_cur_pos_data = {"users_curs_pos": {}}

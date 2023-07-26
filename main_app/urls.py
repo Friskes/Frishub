@@ -46,7 +46,8 @@ urlpatterns = [
     # вебсокет выдаёт ошибку: "ValueError: No route found for path"
     path('dev-chat/<uuid:room_id>', views.DevChatRoomView.as_view(), name='dev_chat_room'),
     # Костыль делающий редирект url со слэшом на url без слэша
-    path('dev-chat/<uuid:room_id>/', RedirectView.as_view(pattern_name='dev_chat_room', permanent=True)),
+    path('dev-chat/<uuid:room_id>/', RedirectView.as_view(pattern_name='dev_chat_room', permanent=True),
+         name='redirect_dev_chat_room'),
 
     path('streams/', views.StreamsView.as_view(), name='streams'),
 

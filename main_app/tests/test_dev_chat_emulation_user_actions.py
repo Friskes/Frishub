@@ -1,6 +1,7 @@
 from channels.testing import ChannelsLiveServerTestCase
 
 # pip install selenium
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver import ChromeOptions, Chrome
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -14,7 +15,11 @@ from selenium.webdriver.support.ui import Select
 # скачиваем chromedriver и указываем путь к нему в классе Chrome
 # https://sites.google.com/chromium.org/driver/downloads
 
+from django.conf import settings
+
 from time import sleep
+
+# https://channels.readthedocs.io/en/latest/tutorial/part_4.html
 
 
 #############################################################################
@@ -78,9 +83,7 @@ class UtilsForTest:
 
 #############################################################################
 
-# python manage.py test main_app.tests.test_websocket_emulation_user_actions.TestDevChat
-
-# https://channels.readthedocs.io/en/latest/tutorial/part_4.html
+# python manage.py test main_app.tests.test_dev_chat_emulation_user_actions.TestDevChat
 class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
 
     serve_static = True # emulate StaticLiveServerTestCase
@@ -89,11 +92,13 @@ class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
     def setUpClass(cls):
         super().setUpClass()
         try:
+            # https://chromedriver.chromium.org/downloads
+            service = Service(executable_path=settings.BASE_DIR / 'chromedriver.exe')
             options = ChromeOptions()
             # убрать из лога ошибки связанные с USB
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
             cls.driver = Chrome(
-                executable_path=r'C:\Users\79897\Downloads\chromedriver_win32\chromedriver.exe',
+                service=service,
                 options=options
             )
         except:
