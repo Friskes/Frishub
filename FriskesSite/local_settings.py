@@ -7,8 +7,8 @@ SECRET_KEY = 'django-insecure-sgr#a$4v)m2xi#e$(!(%y*4=95*92uu1^$6v@no2y!cfr-b%73
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-ALLOWED_HOSTS += [config('MY_LOCAL_IPV4_ADDRESS')]
+PARENT_DOMAIN = config('MY_LOCAL_IPV4_ADDRESS')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', PARENT_DOMAIN]
 
 
 CHANNEL_LAYERS = {

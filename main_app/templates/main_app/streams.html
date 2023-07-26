@@ -274,10 +274,14 @@
               : '/en' + "{% url 'streams' %}";
 
               Cookies.set('streams_selected_classes', game_classes_selected_data, {
-                expires: 365, path: "{% url 'streams' %}"
+                expires: 365,
+                domain: "{{ PARENT_DOMAIN }}",
+                path: "{% url 'streams' %}"
               });
               Cookies.set('streams_selected_classes', game_classes_selected_data, {
-                expires: 365, path: another_lang_path
+                expires: 365,
+                domain: "{{ PARENT_DOMAIN }}",
+                path: another_lang_path
               });
 
               // https://api.jquery.com/jquery.ajax/

@@ -8,7 +8,9 @@ SECRET_KEY = config('DJANGO_PRODUCTION_SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['45.130.43.188', 'frishub.ru', 'www.frishub.ru']
+PARENT_DOMAIN = 'frishub.ru'
+ALLOWED_HOSTS = ['45.130.43.188', PARENT_DOMAIN, 'www.frishub.ru']
+
 
 CHANNEL_LAYERS = {
     'default': {

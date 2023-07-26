@@ -36,7 +36,7 @@ class DataMixin:
 
         context: dict = super().get_context_data(**kwargs)
 
-        context.update({'debug_mode': settings.DEBUG})
+        context.update({'debug_mode': settings.DEBUG, 'PARENT_DOMAIN': settings.PARENT_DOMAIN})
 
         context.update({'toast_message_time': self.toast_message_time})
 

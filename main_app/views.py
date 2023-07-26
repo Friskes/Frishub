@@ -717,6 +717,11 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 value=self.creator_id,
                 # max_age=dt.timedelta(days=365),
                 expires=timezone.now() + dt.timedelta(days=365),
+                # Если указать домен при установке cookie тогда он
+                # будет расшарен на все субдомены, в том числе 'www'
+                # https://stackoverflow.com/a/69854675/19276507
+                # https://stackoverflow.com/a/23086139/19276507
+                domain=settings.PARENT_DOMAIN,
                 # Если устанавливать Cookies без указания конкретного пути
                 # то этот Cookie будет работать на обе локализации одновременно
                 # path=self.request.path
