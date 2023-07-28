@@ -4,7 +4,10 @@ from django.contrib.auth import login
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, FormView, ListView, DetailView, View
 from django.views.generic.base import TemplateView
-from django.http import JsonResponse, HttpResponse, Http404
+from django.http import (
+    JsonResponse, HttpResponse, Http404,
+    HttpResponseRedirect, HttpResponsePermanentRedirect
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 # https://django.fun/ru/docs/django/4.0/ref/contrib/messages/
 from django.contrib import messages
@@ -229,20 +232,26 @@ class GuideView(DataMixin, FormView, DetailView):
         # print(request.POST.getlist('unpublication')) # возвращает данные в формате списка
         node_id = request.POST.get('unpublication')
 
-        if node_id:
-            if not request.user.is_superuser: raise PermissionDenied
+        if not node_id:
+            return super().post(request, *args, **kwargs)
 
-            mptt_comment: Comments = Comments.objects.get(pk=node_id)
+        if not request.user.is_superuser: raise PermissionDenied
 
-            if not mptt_comment.parent:
-                for children_comment in mptt_comment.get_descendants(include_self=True):
-                    children_comment.is_published = False
-                    children_comment.save()
-            else:
-                mptt_comment.is_published = False
-                mptt_comment.save()
+        mptt_comment: Comments = Comments.objects.get(pk=node_id)
 
-        return super().post(request, *args, **kwargs)
+        if not mptt_comment.parent:
+            for children_comment in mptt_comment.get_descendants(include_self=True):
+                children_comment.is_published = False
+                children_comment.save()
+        else:
+            mptt_comment.is_published = False
+            mptt_comment.save()
+
+        # Пропускаем проверку формы на инвалидность тем самым
+        # при перезагрузке браузера не получаем повторную отправку формы
+        return HttpResponsePermanentRedirect(
+            reverse('guide', kwargs={'guide_slug': kwargs['guide_slug']})
+        )
 
 
     def form_valid(self, form):
