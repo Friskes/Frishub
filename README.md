@@ -378,6 +378,7 @@ WantedBy=multi-user.target
 
 ```
 server {
+    listen 80;
     server_name <ваш_серверный_ip>;
 
     location /static/ {
@@ -609,6 +610,7 @@ A-запись должна быть равна серверному ip
 
 ```
 server {
+    listen 80;
     server_name <ваш_домен> www.<ваш_домен> <ваш_серверный_ip>;
 
     location /static/ {
@@ -686,6 +688,7 @@ HTTPS немного сложнее настроить при использов
 
 ```
 server {
+    listen 80;
     server_name <ваш_домен> www.<ваш_домен> <ваш_серверный_ip>;
 
     location /static/ {
@@ -717,11 +720,11 @@ server {
 }
 
 server {
-    if ($host = www.<ваш_домен>) {
+    if ($host = <ваш_домен>) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
-    if ($host = <ваш_домен>) {
+    if ($host = www.<ваш_домен>) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
@@ -746,6 +749,25 @@ proxy_set_header Host $http_host;
 proxy_set_header Host $host;
 ```
 [тема на stackoverflow](https://stackoverflow.com/a/22027177/19276507)
+
+
+Если вам не нужен `www` поддомен можно добавить в самое начало файла ещё один блок `server`
+с помощью которого будет происходить автоматический редирект на родителький домен без `www`
+К слову для `www` поддомена и родителького домена будут созданы разные localStorage в javascript
+поэтому убрать `www` поддомен такая уж и плохая идея.
+```
+server {
+    listen              80;
+    listen              443 ssl;
+    server_name         www.<ваш_домен>;
+    ssl_certificate     /etc/letsencrypt/live/<ваш_домен>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<ваш_домен>/privkey.pem;
+
+    return 301 $scheme://<ваш_домен>$request_uri;
+}
+```
+[тема на stackoverflow](https://stackoverflow.com/a/11733363/19276507)
+
 
 ## Обновить `daphne.service`
 Расскажите daphne, как получить доступ к нашему сертификату https.

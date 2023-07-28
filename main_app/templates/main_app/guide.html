@@ -386,11 +386,38 @@
     position: relative;
     bottom: 3px;
   }
+
+  .unpublication-btn {
+    color: #ca2626;
+    border: none;
+    background-color: transparent;
+    font-size: 22px;
+    transition: all 0.3s ease;
+  }
+  @media screen and (min-width: 801px) {
+    .unpublication-btn-crutch {
+      position: relative;
+      left: 48px;
+    }
+  }
+  .unpublication-btn:hover {
+    color: red;
+  }
 </style>
 
 <div _ngcontent-gox-c51="" class="bg-check page-size py-3 pdng-l-r">
 
   <div style="margin: 0px 15px 0px 15px;">
+
+    {% if user.is_superuser or user.is_staff %}
+      <div class="fa {% if guide.is_published %}fa-check-square{% else %}fa-window-close{% endif %}"
+        style="font-size: 22px; {% if guide.is_published %}color: lime;{% else %}color: red;{% endif %}">
+        <span style="font-size: 16px; position: relative; bottom: 1.5px; color: white;">
+          {% get_verbose_name guide 'is_published' %}
+        </span>
+      </div>
+    {% endif %}
+
     <br>
     <div class="guide-title-div">
       <h2 class="guide-title-h2">{{ guide.title }}</h2>
@@ -555,8 +582,19 @@
                           </table>
 
                         </span>
-                        <div _ngcontent-gox-c60="" class="d-block d-md-block mt-1">
+                        <div _ngcontent-gox-c60="" class="d-block d-md-block mt-1"
+                          style="display: flex !important;">
+
+                          {% if user.is_superuser %}
+                            <form method="POST">
+                              {% csrf_token %}
+                              <button type="submit" class="fa fa-trash unpublication-btn"
+                                name="unpublication" value="{{ node.id }}"></button>
+                            </form>
+                          {% endif %}
+
                           <button _ngcontent-gox-c60="" class="btn-custom btn-accept-cookie3"
+                            style="margin-left: auto; margin-right: auto;"
                             onclick="show_hide_element('da-btn-bar-{{ node.id }}');">
                             {% trans 'Закрыть' %}
                           </button>
@@ -735,8 +773,19 @@
                           </table>
 
                         </span>
-                        <div _ngcontent-gox-c60="" class="d-block d-md-block mt-1">
+                        <div _ngcontent-gox-c60="" class="d-block d-md-block mt-1"
+                          style="display: flex !important;">
+
+                          {% if user.is_superuser %}
+                            <form method="POST">
+                              {% csrf_token %}
+                              <button type="submit" class="fa fa-trash unpublication-btn unpublication-btn-crutch"
+                                name="unpublication" value="{{ node.id }}"></button>
+                            </form>
+                          {% endif %}
+
                           <button _ngcontent-gox-c60="" class="btn-custom btn-accept-cookie3"
+                            style="margin-left: auto; margin-right: auto;"
                             onclick="show_hide_element('da-btn-bar-{{ node.id }}');">
                             {% trans 'Закрыть' %}
                           </button>
@@ -1252,7 +1301,12 @@
     highlight_animation(comment, 370);
   };
 
+  const tooltipsLoadedCallbackTimeoutId = setTimeout(function() {
+    window.WH.Tooltips.tooltipsLoadedCallback();
+  }, 500);
+
   window.WH.Tooltips.tooltipsLoadedCallback = debounce(function() {
+    clearTimeout(tooltipsLoadedCallbackTimeoutId);
     highlight_hash_link();
   }, 50);
 

@@ -200,10 +200,10 @@ class GuidesListView(DataMixin, ListView):
         # которое является внешним ключём (ForeignKey), он связывает вторичную модель
         # Guides с первичной моделью Category
 
-        if self.request.user.is_superuser:
+        if self.request.user.is_superuser or self.request.user.is_staff:
             return Guides.objects.filter().select_related('category')
-        else:
-            return Guides.objects.filter(is_published=True).select_related('category')
+
+        return Guides.objects.filter(is_published=True).select_related('category')
 
 #############################################################################
 
@@ -220,6 +220,30 @@ class GuideView(DataMixin, FormView, DetailView):
     slug_url_kwarg: str = 'guide_slug' # по дефолту 'slug'
 
     context_object_name = 'guide'
+
+    def post(self, request, *args, **kwargs):
+        """Снимает с публикации переданный комментарий если он не является главным родителем
+        если является тогда снимает с публикации переданный комментарий и всех его детей."""
+
+        # print(dict(request.POST.items())) # возвращает данные в формате словаря
+        # print(request.POST.getlist('unpublication')) # возвращает данные в формате списка
+        node_id = request.POST.get('unpublication')
+
+        if node_id:
+            if not request.user.is_superuser: raise PermissionDenied
+
+            mptt_comment: Comments = Comments.objects.get(pk=node_id)
+
+            if not mptt_comment.parent:
+                for children_comment in mptt_comment.get_descendants(include_self=True):
+                    children_comment.is_published = False
+                    children_comment.save()
+            else:
+                mptt_comment.is_published = False
+                mptt_comment.save()
+
+        return super().post(request, *args, **kwargs)
+
 
     def form_valid(self, form):
         """Сохраняем валидный комментарий пользователя в БД."""
@@ -285,7 +309,7 @@ class GuideView(DataMixin, FormView, DetailView):
 
         context = super().get_context_data(**kwargs)
 
-        if self.request.user.is_superuser:
+        if self.request.user.is_superuser or self.request.user.is_staff:
             guide = Guides.objects.get(slug=self.kwargs['guide_slug'])
         else:
             guide = get_object_or_404(Guides, slug=self.kwargs['guide_slug'], is_published=True)
@@ -1134,13 +1158,6 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
         }
 
         return super().get(request, *args, **kwargs)
-
-
-    # [Оставил метод для примера]
-    # def post(self, request, *args, **kwargs):
-    #     # метод getlist() возвращает данные в формате списка
-    #     print(request.POST.getlist('game_class'))
-    #     return super().post(request, *args, **kwargs)
 
 
     def form_invalid(self, form):

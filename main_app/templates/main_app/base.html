@@ -624,6 +624,39 @@
       .fa-thumbs-down:before {
         content: "\f165"
       }
+      .fa-check-circle:before {
+        content: "\f058"
+      }
+      .fa-check-circle-o:before {
+        content: "\f05d"
+      }
+      .fa-check-square:before {
+        content: "\f14a"
+      }
+      .fa-check-square-o:before {
+        content: "\f046"
+      }
+      .fa-square:before {
+        content: "\f0c8"
+      }
+      .fa-square-o:before {
+        content: "\f096"
+      }
+      .fa-circle:before {
+        content: "\f111"
+      }
+      .fa-circle-o:before {
+        content: "\f10c"
+      }
+      .fa-window-close:before {
+        content: "\f2d3"
+      }
+      .fa-trash:before {
+        content: "\f1f8"
+      }
+      .fa-trash-o:before {
+        content: "\f014"
+      }
     </style>
 
     <style>
@@ -1075,10 +1108,12 @@
 
             <!-- Меню в шапке -->
             <ul _ngcontent-gox-c59="" class="navbar-nav">
-              {% if user.is_superuser %}
-                <li _ngcontent-gox-c59="" class="nav-item">
-                  <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/flower/">flower</a>
-                </li>
+              {% if user.is_staff %}
+                {% if user.is_superuser %}
+                  <li _ngcontent-gox-c59="" class="nav-item">
+                    <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/flower/">flower</a>
+                  </li>
+                {% endif %}
                 <li _ngcontent-gox-c59="" class="nav-item">
                   <a _ngcontent-gox-c59="" class="nav-link" target="_BLANK" href="/admin/">admin</a>
                 </li>

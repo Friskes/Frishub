@@ -414,8 +414,9 @@ class Guides(models.Model):
     content = models.TextField(verbose_name='Текст гайда', max_length=150000,
     help_text="""
     <br>Текст гайда не экранируется, поэтому прямо в текстовом поле можно записывать любые HTML теги.<br><br>
-    WowHead тултипы будут выводится автоматически при использовании тега a<br><br>
-    <⚠️a target="_BLANK" href="https://www.wowhead.com/ru/spell=366489"><⚠️/a>
+    WowHead тултипы будут выводится автоматически при использовании тега &lt;a&gt;<br><br>
+    Внутри тега &lt;a&gt; обязательно необходимо поместить хотя бы один символ текста, для отображения ссылки.<br><br>
+    &lt;a target="_BLANK" href="https://www.wowhead.com/wotlk/ru/spell=52985"&gt;Исповедь&lt;/a&gt;
     """)
 
     main_image = models.ImageField(upload_to="guides", verbose_name='Изображение', blank=True)
@@ -424,7 +425,7 @@ class Guides(models.Model):
 
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
 
-    is_published = models.BooleanField(default=True, verbose_name='Публикация')
+    is_published = models.BooleanField(default=False, verbose_name='Публикация')
 
     # Если класс Category идёт после класса Guides то можно записать название как строку
     # если наоборот то как обычно без кавычек
@@ -433,6 +434,9 @@ class Guides(models.Model):
     # выдаст предупреждение: 'Please select a fix: 1) ... 2) ...'
     # жмём 2) и добавляем в поле category третим аргументом дефолтное значение null=True
     # то есть разрешаем заполнить пустые поля нулами (NULL)
+
+    guide_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+    verbose_name='Создатель гайда', blank=True, null=True)
 
     votes = GenericRelation('LikeDislike')
 
@@ -463,6 +467,9 @@ class Category(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
 
     image_name = models.ImageField(upload_to="categorys", verbose_name='Изображение категории')
+
+    cat_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+    verbose_name='Создатель категории', blank=True, null=True)
 
     def __str__(self):
         return str(self.name)

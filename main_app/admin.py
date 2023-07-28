@@ -3,6 +3,9 @@ from django.contrib import admin
 # from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 from django.db.models import TextField
+from django.core.handlers.asgi import ASGIRequest
+from django.forms import Textarea
+from django.utils.html import format_html
 
 from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
@@ -14,6 +17,8 @@ from modeltranslation.admin import TranslationAdmin
 from mptt.admin import DraggableMPTTAdmin#, MPTTModelAdmin
 
 from tinymce.widgets import TinyMCE
+
+from martor.widgets import AdminMartorWidget
 
 from notifications.admin import NotificationAdmin
 
@@ -431,14 +436,33 @@ class CommentsInline(admin.StackedInline):
 class GuidesAdmin(TranslationAdmin):
     model = Guides
 
-    # formfield_overrides = {
-    #     TextField: {
-    #         'widget': TinyMCE(
+    # https://django-tinymce.readthedocs.io/en/latest/usage.html#the-flatpages-link-list-view
+    # определить виджет для конкретных полей модели
+    # def formfield_for_dbfield(self, db_field, request, **kwargs):
+    #     if db_field.name == 'content':
+    #         return db_field.formfield(widget=TinyMCE(
     #             attrs={'cols': 80, 'rows': 30},
     #             # https://www.tiny.cloud/docs/general-configuration-guide/
-    #             mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark'}
-    #         )
-    #     },
+    #             mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False}
+    #         ))
+    #     # elif db_field.name == 'content_en':
+    #     #     return db_field.formfield(widget=AdminMartorWidget)
+    #     return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
+    # определить виджет для всех TextField полей модели
+    formfield_overrides = {
+        TextField: {
+            'widget': TinyMCE(
+                attrs={'cols': 80, 'rows': 30},
+                # https://www.tiny.cloud/docs/general-configuration-guide/
+                mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False}
+            )
+        },
+    }
+
+    # formfield_overrides = {
+    #     TextField: {'widget': AdminMartorWidget},
     # }
 
     inlines = [CommentsInline]
@@ -460,10 +484,18 @@ class GuidesAdmin(TranslationAdmin):
     readonly_fields = ('get_html_avatar65x65', 'time_create', 'time_update',
                        'get_likes_count', 'get_dislikes_count', 'get_comments_count')
 
+    raw_id_fields = ('guide_creator',)
+
+    # Удобное выпадающее меню с объектами
+    # autocomplete_fields = ('guide_creator',)
+
+    actions = ('set_guides_to_published',)
+
     add_fieldsets = (
         ('Основная информация',
             {'fields': (
                 'is_published',
+                'guide_creator',
                 'category',
                 'title',
                 'slug',
@@ -486,6 +518,7 @@ class GuidesAdmin(TranslationAdmin):
         ('Основная информация',
             {'fields': (
                 'is_published',
+                'guide_creator',
                 'category',
                 'title',
                 'slug',
@@ -504,6 +537,70 @@ class GuidesAdmin(TranslationAdmin):
                 'get_comments_count',
         )}),
     )
+
+
+    # https://docs.djangoproject.com/en/4.2/ref/contrib/admin/
+    # Если пользователь суперпользователь тогда ему разрешено редактировать любые объекты.
+    # Если пользователь ниже рангом чем суперпользователь тогда ему разрешено редактировать
+    # только свой объект.
+    def has_change_permission(self, request: ASGIRequest, obj=None):
+        if ( not obj and not request.user.is_superuser
+        or obj and obj.guide_creator != request.user and not request.user.is_superuser ):
+            return False
+        return True
+
+        # https://youtu.be/wlYaUvfXJDc?t=2482
+        # 'название_приложения.codename_by_content_type_id'
+        # if request.user.has_perm('main_app.change_guides'):
+        #     return True
+        # return False
+
+    # аналогично с has_change
+    def has_delete_permission(self, request: ASGIRequest, obj=None):
+        if ( not obj and not request.user.is_superuser
+        or obj and obj.guide_creator != request.user and not request.user.is_superuser ):
+            return False
+        return True
+
+    # def has_add_permission(self, request: ASGIRequest):
+    #     return False
+
+    # def has_view_permission(self, request: ASGIRequest, obj=None):
+    #     return False
+
+
+    # Добавляет новое действие в список действий
+    def set_guides_to_published(self, request: ASGIRequest, queryset):
+        count = queryset.update(is_published=True)
+        self.message_user(request, f'{count} гайдов были успешно опубликованы.')
+    set_guides_to_published.short_description = 'Публикация выбранных гайдов'
+
+    # Удаляет из списка действий указанные действия
+    def get_actions(self, request: ASGIRequest):
+        actions = super(GuidesAdmin, self).get_actions(request)
+        if not request.user.is_superuser:
+            if 'delete_selected' in actions: del actions['delete_selected']
+            if 'set_guides_to_published' in actions: del actions['set_guides_to_published']
+        return actions
+
+    # Запретить редактировать определенные элементы пользователю с недостаточными правами
+    def get_form(self, request: ASGIRequest, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser:
+            form.base_fields['is_published'].disabled = True
+            form.base_fields['guide_creator'].disabled = True
+        return form
+
+    # Автоматически сохраняет в поле guide_creator пользователя который создаёт гайд
+    def save_model(self, request, obj, form, change):
+        obj.guide_creator = request.user
+        super().save_model(request, obj, form, change)
+
+    # Автоматически заполняет форму поля guide_creator текущим пользователем
+    def get_changeform_initial_data(self, request):
+        get_data = super(GuidesAdmin, self).get_changeform_initial_data(request)
+        get_data['guide_creator'] = request.user.pk
+        return get_data
 
     def get_html_avatar30x30(self, object: Guides):
         if object.main_image:
@@ -538,7 +635,36 @@ class CategoryAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
     readonly_fields = ('get_html_avatar65x65',)
-    fields = ('name', 'slug', ('image_name', 'get_html_avatar65x65'))
+    fields = ('cat_creator', 'name', 'slug', ('image_name', 'get_html_avatar65x65'))
+
+    raw_id_fields = ('cat_creator',)
+
+    def has_change_permission(self, request: ASGIRequest, obj=None):
+        if ( not obj and not request.user.is_superuser
+        or obj and obj.cat_creator != request.user and not request.user.is_superuser ):
+            return False
+        return True
+
+    def has_delete_permission(self, request: ASGIRequest, obj=None):
+        if ( not obj and not request.user.is_superuser
+        or obj and obj.cat_creator != request.user and not request.user.is_superuser ):
+            return False
+        return True
+
+    def get_form(self, request: ASGIRequest, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser:
+            form.base_fields['cat_creator'].disabled = True
+        return form
+
+    def save_model(self, request, obj, form, change):
+        obj.cat_creator = request.user
+        super().save_model(request, obj, form, change)
+
+    def get_changeform_initial_data(self, request):
+        get_data = super(CategoryAdmin, self).get_changeform_initial_data(request)
+        get_data['cat_creator'] = request.user.pk
+        return get_data
 
     def get_html_avatar30x30(self, object: Category):
         if object.image_name:

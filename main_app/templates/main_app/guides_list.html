@@ -37,22 +37,37 @@
   .guide-main_image-p {
     width: 15%;
     margin-right: 15px;
+    margin-bottom: 0px;
   }
   .guide-content-p {
     /* min-width: 64%; */
     max-width: 64%;
   }
-  .guide-all-icons-div {
-    text-align: right;
+  .guide-is-published-icon:before {
+    position: relative;
+    bottom: 5px;
+  }
+  .guide-is-published-text {
+    font-size: 16px;
+    position: relative;
+    bottom: 7px;
+    color: white;
+  }
+  .guide-all-icons-container {
+    display: flex;
+    position: relative;
+    height: 24px;
+    margin-left: auto;
     margin-top: auto;
-    /* margin-left: auto; */
-    margin-left: 750px;
+  }
+  .guide-all-icons-div {
+    display: inline-flex;
+    height: 24px;
+    margin-top: auto;
+    margin-left: auto;
   }
   /* Если мы на мобильном */
   @media screen and (max-width: 800px) {
-    .guide-all-icons-div {
-      margin-left: auto;
-    }
     .pdng-l-r {
       padding-right: 0rem !important;
       padding-left: 0rem !important;
@@ -73,6 +88,7 @@
       width: 100%;
       margin-right: 0px;
       margin-top: 20px;
+      margin-bottom: 7px;
     }
     .guide-content-p {
       max-width: 100%;
@@ -154,26 +170,36 @@
         {% endif %}
 
         <!-- <p class="guide-content-p">{{ guide.content|safe|truncatewords:45 }}</p> -->
-
-        <div class="guide-all-icons-div">
-
-          <label class="img-delete-btn1">
-            <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_up</span>
-          </label>
-          <label style="left: 0px;">{{ guide.votes.likes.count }}</label>
-
-          <label class="img-delete-btn1" style="margin-left: 10px;">
-            <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_down</span>
-          </label>
-          <label style="left: 0px;">{{ guide.votes.dislikes.count }}</label>
-
-          <label class="img-delete-btn1" style="margin-left: 10px;">
-            <span class="material-symbols-outlined" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">chat</span>
-          </label>
-          <label style="left: 0px;">{{ guide.comments.all.count }}</label>
-        </div>
-        
       </div>
+
+        <div class="guide-all-icons-container">
+          <div class="guide-all-icons-div">
+
+            {% if user.is_superuser or user.is_staff %}
+              <div class="guide-is-published-icon fa {% if guide.is_published %}fa-check-square{% else %}fa-window-close{% endif %}"
+                style="font-size: 22px; {% if guide.is_published %}color: lime;{% else %}color: red;{% endif %}">
+                <span class="guide-is-published-text">
+                  {% get_verbose_name guide 'is_published' %}
+                </span>
+              </div>
+            {% endif %}
+
+            <label class="img-delete-btn1" style="margin-left: 10px; bottom: 0px;">
+              <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_up</span>
+            </label>
+            <label style="margin-left: 5px;">{{ guide.votes.likes.count }}</label>
+
+            <label class="img-delete-btn1" style="margin-left: 10px; bottom: 0px;">
+              <span class="material-symbols-outlined vote-white" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">thumb_down</span>
+            </label>
+            <label style="margin-left: 5px;">{{ guide.votes.dislikes.count }}</label>
+
+            <label class="img-delete-btn1" style="margin-left: 10px; bottom: 0px;">
+              <span class="material-symbols-outlined" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">chat</span>
+            </label>
+            <label style="margin-left: 5px;">{{ guide.comments.all.count }}</label>
+          </div>
+        </div>
 
       <hr>
     {% endfor %}

@@ -55,9 +55,18 @@ INSTALLED_APPS = [
     # https://github.com/torchbox/django-recaptcha
     'captcha',
 
+    # https://stackoverflow.com/a/74593816/19276507
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+
     # https://github.com/jazzband/django-tinymce
     # https://django-tinymce.readthedocs.io/en/latest/
     'tinymce', # pip install django-tinymce
+
+    # https://github.com/agusmakmun/django-markdown-editor
+    'martor', # pip install martor
+
+    # https://github.com/django-ckeditor/django-ckeditor
 
     'main_app',
 
@@ -77,6 +86,8 @@ INSTALLED_APPS = [
     # pip install django-notifications-hq
     'notifications',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -217,7 +228,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 TINYMCE_DEFAULT_CONFIG = {
     'branding': False,
-    "height": "600px",
+    "height": "650px",
     "width": "100%",
     "menubar": "file edit view insert format tools table help",
     "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
@@ -229,6 +240,11 @@ TINYMCE_DEFAULT_CONFIG = {
     "a11ycheck ltr rtl | showcomments addcomment code",
     "custom_undo_redo_levels": 10,
 }
+
+try:
+    from FriskesSite.martor_config import *
+except ImportError:
+    pass
 
 
 # Default primary key field type

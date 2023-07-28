@@ -67,8 +67,11 @@ def translate_datetime(dt, language_code='ru'):
 def child_count(node):
     """Возвращает количество дочерних комментариев у комментария."""
 
-    count = Comments.objects.get(pk=node.id).get_descendants(include_self=False)
-    return len(count)
+    count = 0
+    for children_comment in node.get_descendants():
+        if children_comment.is_published:
+            count += 1
+    return count
 
 #############################################################################
 
