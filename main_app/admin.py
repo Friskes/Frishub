@@ -451,15 +451,15 @@ class GuidesAdmin(TranslationAdmin):
 
 
     # определить виджет для всех TextField полей модели
-    # formfield_overrides = {
-    #     TextField: {
-    #         'widget': TinyMCE(
-    #             attrs={'cols': 80, 'rows': 30},
-    #             # https://www.tiny.cloud/docs/general-configuration-guide/
-    #             mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False}
-    #         )
-    #     },
-    # }
+    formfield_overrides = {
+        TextField: {
+            'widget': TinyMCE(
+                attrs={'cols': 80, 'rows': 30},
+                # https://www.tiny.cloud/docs/general-configuration-guide/
+                mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False}
+            )
+        },
+    }
 
     # formfield_overrides = {
     #     TextField: {'widget': AdminMartorWidget},
