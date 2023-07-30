@@ -6,7 +6,7 @@ from django.http.cookie import SimpleCookie
 
 from unittest import TestCase as UnitTestCase
 
-from main_app.models import DressingRoom, CustomUser
+from main_app.models import DressingRoom, CustomUser, Guides, Comments, Category
 
 import json
 
@@ -241,6 +241,120 @@ class TestUniqueDressingRoomView(TestCase):
 
     def assert_post_request(self, client: Client, room_id: str, code: int=200, data=None):
         response = client.post(reverse('unique_dressing_room', args=(room_id,)), data, 'application/json')
+        self.assertEqual(response.status_code, code)
+        return response
+
+#############################################################################
+
+# python manage.py test main_app.tests.test_views.TestGuideView
+class TestGuideView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.superuser1_username = cls.superuser1_password = 'superuser1'
+        cls.user1_username = cls.user1_password = 'user1'
+        cls.superuser1_email, cls.user1_email = 'superuser1@gmail.com', 'user1@gmail.com'
+
+        cls.superuser1 = CustomUser.objects.create_superuser(
+            cls.superuser1_username, cls.superuser1_email, cls.superuser1_password
+        )
+        cls.user1 = CustomUser.objects.create_user(cls.user1_username, cls.user1_email, cls.user1_password)
+
+        cls.comment_3_content = {'content': 'comment_content_3'}
+
+        category = Category(
+            cat_creator=cls.superuser1,
+            name='category_name_1',
+            slug='category_slug_1'
+        )
+        category.save()
+
+        cls.guide_slug_1 = 'guide_slug_1'
+
+        cls.guide_1 = Guides(
+            guide_creator=cls.superuser1,
+            category=category,
+            content='guide_content_1',
+            slug=cls.guide_slug_1,
+            title='guide_title_1',
+            is_published=True
+        )
+        cls.guide_1.save()
+
+
+    def setUp(self):
+        self.client: Client = self.client_class()
+        self.super_client: Client = self.client_class()
+
+        comment_1 = Comments(
+            guide=self.guide_1,
+            author=self.user1,
+            parent=None,
+            content='comment_content_1'
+        )
+        comment_1.save()
+        self.post_data_1 = {'unpublication': comment_1.pk}
+
+        comment_2 = Comments(
+            guide=self.guide_1,
+            author=self.user1,
+            parent=comment_1,
+            content='comment_content_2'
+        )
+        comment_2.save()
+        self.post_data_2 = {'unpublication': comment_2.pk}
+
+
+    def test_permission_denied_for_non_superuser(self):
+        # print(Guides.objects.get(slug=self.guide_slug_1).__dict__)
+
+        # Проверяем что анонимный пользователь не может отменить публикацию комментария
+        self.assert_post_request(self.client, {'guide_slug': self.guide_slug_1}, 403, self.post_data_2)
+
+        # Авторизуемся обычным пользователем
+        self.assertTrue(self.client.login(username=self.user1_username, password=self.user1_password))
+
+        # Проверяем что обычный авторизованный пользователь не может отменить публикацию комментария
+        self.assert_post_request(self.client, {'guide_slug': self.guide_slug_1}, 403, self.post_data_2)
+
+
+    def test_unpublication_child_comment(self):
+        # Авторизуемся супер пользователем
+        self.assertTrue(self.super_client.login(username=self.superuser1_username, password=self.superuser1_password))
+
+        # Проверяем что авторизованный супер пользователь может отменить публикацию комментария
+        self.assert_post_request(self.super_client, {'guide_slug': self.guide_slug_1}, 301, self.post_data_2)
+        self.assertFalse(Comments.objects.get(pk=self.post_data_2['unpublication']).is_published)
+
+
+    def test_unpublication_parent_comment(self):
+        # Авторизуемся супер пользователем
+        self.assertTrue(self.super_client.login(username=self.superuser1_username, password=self.superuser1_password))
+
+        # Проверяем что авторизованный супер пользователь может отменить публикацию комментария
+        self.assert_post_request(self.super_client, {'guide_slug': self.guide_slug_1}, 301, self.post_data_1)
+
+        parent_comment = Comments.objects.get(pk=self.post_data_1['unpublication'])
+        for children_comment in parent_comment.get_descendants(include_self=True):
+            self.assertFalse(children_comment.is_published)
+
+
+    def test_create_comment(self):
+        # Проверяем что анонимный пользователь не может создать комментарий
+        with self.assertRaises(ValueError) as context:
+            self.assert_post_request(self.client, {'guide_slug': self.guide_slug_1},
+                                     403, self.comment_3_content)
+        exception = '"Comments.author" must be a "CustomUser" instance.'
+        self.assertTrue(exception in str(context.exception))
+
+        # Проверяем что авторизованный пользователь может создать комментарий
+        self.assertTrue(self.client.login(username=self.user1_username, password=self.user1_password))
+        self.assert_post_request(self.client, {'guide_slug': self.guide_slug_1},
+                                 302, self.comment_3_content)
+        self.assertEqual(Comments.objects.get(pk=3).content, self.comment_3_content['content'])
+
+
+    def assert_post_request(self, client: Client, kwargs: dict, code: int=200, data=None):
+        response = client.post(reverse('guide', kwargs=kwargs), data)
         self.assertEqual(response.status_code, code)
         return response
 
