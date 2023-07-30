@@ -1,0 +1,30 @@
+{% extends 'main_app/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<style>
+  /* Если мы на десктопе */
+  @media screen and (min-width: 801px) {
+    .privacy-policy-text {
+      width: 75% !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div _ngcontent-gox-c37="" class="page-size bg-check">
+  <div _ngcontent-gox-c37="" class="privacy-policy-text m-auto text-center pt-5 pb-5">
+    <div _ngcontent-gox-c37="" class="mb-2" style="text-align: left;">
+
+      <h2 _ngcontent-gox-c37="">{{ flatpage.title }}</h2>
+      <br>
+
+      {{ flatpage.content }}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

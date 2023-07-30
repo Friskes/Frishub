@@ -1129,7 +1129,7 @@
               </li>
               <li _ngcontent-gox-c59="" class="nav-item">
                 <a _ngcontent-gox-c59="" class="nav-link" href="{% url 'streams' %}">{% trans 'Стримы' %}
-                  <span class="badge badge-dark ng-star-inserted" id="twitch-stream-count">{{ twitch_stream_count }}</span>
+                  <span class="badge badge-dark ng-star-inserted" id="twitch-stream-count">{% if twitch_stream_count %}{{ twitch_stream_count }}{% else %}0{% endif %}</span>
                 </a>
               </li>
               <li _ngcontent-gox-c59="" class="nav-item">

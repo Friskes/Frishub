@@ -7,6 +7,7 @@ from main_app.models import LikeDislike, Comments, Guides
 
 # тоже самое что и "{% static 'путь_к_файлу' %}" в шаблонах
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.contrib.flatpages.views import flatpage
 
 
 urlpatterns = [
@@ -92,4 +93,8 @@ urlpatterns = [
     path('account/email/', views.AccountEmailView.as_view(), name='account_email'),
 
     path('account/delete/', views.AccountDeleteView.as_view(), name='account_delete'),
+
+
+    # для работы локализации
+    path("<path:url>", flatpage, name="django.contrib.flatpages.views.flatpage"),
 ]

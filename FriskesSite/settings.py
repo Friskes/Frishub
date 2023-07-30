@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 
     # https://stackoverflow.com/a/74593816/19276507
     'django.contrib.sites',
+    # https://djangodoc.ru/3.2/ref/contrib/flatpages/
     'django.contrib.flatpages',
 
     # https://github.com/jazzband/django-tinymce
@@ -108,6 +109,8 @@ MIDDLEWARE = [
     # плагин для отлова ошибок которые не были отловлены в бизнес логике приложения
     # и отправки Traceback'a ошибок администраторам на почту
     # 'main_app.middleware.catch_errors.ErrorHandlerMiddleware',
+
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ENABLE_DEBUGTB = False
