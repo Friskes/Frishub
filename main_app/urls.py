@@ -93,8 +93,4 @@ urlpatterns = [
     path('account/email/', views.AccountEmailView.as_view(), name='account_email'),
 
     path('account/delete/', views.AccountDeleteView.as_view(), name='account_delete'),
-
-
-    # для работы локализации
-    path("<path:url>", flatpage, name="django.contrib.flatpages.views.flatpage"),
 ]

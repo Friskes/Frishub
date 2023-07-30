@@ -403,6 +403,14 @@
   .unpublication-btn:hover {
     color: red;
   }
+
+
+  .guide-content details summary {
+    color: green;
+  }
+  .guide-content details img {
+    width: 100%;
+  }
 </style>
 
 <div _ngcontent-gox-c51="" class="bg-check page-size py-3 pdng-l-r">
@@ -441,7 +449,9 @@
 
     <div id="guide-content-div" style="text-align: left;">
 
-      {{ guide.content|safe }}
+      <div class="guide-content">
+        {{ guide.content|safe }}
+      </div>
 
       <br><br><br>
 
