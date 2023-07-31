@@ -1,5 +1,5 @@
 from pathlib import Path
-from decouple import config
+from decouple import config, UndefinedValueError
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -7,8 +7,14 @@ SECRET_KEY = 'django-insecure-sgr#a$4v)m2xi#e$(!(%y*4=95*92uu1^$6v@no2y!cfr-b%73
 
 DEBUG = True
 
-PARENT_DOMAIN = config('MY_LOCAL_IPV4_ADDRESS')
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', PARENT_DOMAIN]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+try:
+    PARENT_DOMAIN = config('MY_LOCAL_IPV4_ADDRESS')
+    ALLOWED_HOSTS += [PARENT_DOMAIN]
+except UndefinedValueError as exc:
+    PARENT_DOMAIN = ALLOWED_HOSTS[0]
+    print(exc)
 
 
 CHANNEL_LAYERS = {
