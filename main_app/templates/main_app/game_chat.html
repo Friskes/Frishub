@@ -259,12 +259,8 @@
           });
 
           // https://learn.javascript.ru/websockets
-          var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-          {% if debug_mode %}
-            const chatSocket = new WebSocket(ws_scheme + '://' + window.location.host + window.location.pathname); // DEV
-          {% else %}
-            const chatSocket = new WebSocket(ws_scheme + '://' + window.location.host + ":8001" + window.location.pathname); // PROD
-          {% endif %}
+          const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+          const chatSocket = new WebSocket(ws_scheme + window.location.host + "/ws/game-chat/");
 
           var first_line = true;
 

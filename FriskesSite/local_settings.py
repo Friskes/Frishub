@@ -1,5 +1,6 @@
 from pathlib import Path
-from decouple import config, UndefinedValueError
+from FriskesSite.env import MY_LOCAL_IPV4_ADDRESS
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,12 +10,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-try:
-    PARENT_DOMAIN = config('MY_LOCAL_IPV4_ADDRESS')
-    ALLOWED_HOSTS += [PARENT_DOMAIN]
-except UndefinedValueError as exc:
+if MY_LOCAL_IPV4_ADDRESS:
+    PARENT_DOMAIN = MY_LOCAL_IPV4_ADDRESS
+    ALLOWED_HOSTS += [MY_LOCAL_IPV4_ADDRESS]
+else:
     PARENT_DOMAIN = ALLOWED_HOSTS[0]
-    print(exc)
 
 
 CHANNEL_LAYERS = {

@@ -164,19 +164,34 @@
 
 `git checkout master`
 
-#### Создайте файл settings.ini в корневом каталоге проекта
+#### Создайте файл .env в корневом каталоге проекта
 ```
-[settings]
-DJANGO_PRODUCTION_SECRET_KEY=<секретый_ключ>
-POSTGRESQL_DATABASE_NAME=<название_БД>
-POSTGRESQL_DATABASE_USER=<никнейм_от_БД>
-POSTGRESQL_DATABASE_PASSWORD=<пароль_от_БД>
+SECRET_KEY=<секретный_ключ>
+
 MY_LOCAL_IPV4_ADDRESS=<ваш_локальный_ip_(не_обязательная_настройка)>
+
+POSTGRES_ENGINE=django.db.backends.postgresql
+POSTGRES_DB=<название бд>
+POSTGRES_USER=<никнейм в бд>
+POSTGRES_PASSWORD=<пароль в бд>
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+CELERY_APP=FriskesSite
+CELERY_FLOWER_URL_PREFIX=flower
+CELERY_FLOWER_ADDRESS=celery-flower
+CELERY_FLOWER_PORT=5555
+
+SERVER_HOST=<хост сервера>
+SERVER_IP=<айпи сервера>
 ```
 
 #### Обновите код в Github после добавления нового файла
 `git add .`
-`git commit -m "add settings.ini"`
+`git commit -m "add .env"`
 `git push origin master`
 `git checkout prod`
 `git merge master`
@@ -754,7 +769,7 @@ proxy_set_header Host $host;
 Если вам не нужен `www` поддомен можно добавить в самое начало файла ещё один блок `server`
 с помощью которого будет происходить автоматический редирект на родителький домен без `www`
 К слову для `www` поддомена и родителького домена будут созданы разные localStorage в javascript
-поэтому убрать `www` поддомен такая уж и плохая идея.
+поэтому убрать `www` поддомен не такая уж и плохая идея.
 ```
 server {
     listen              80;
@@ -837,11 +852,11 @@ WantedBy=multi-user.target
 
 С содержимым:
 ```
-CELERYD_NODES="w1"
+CELERY_APP="FriskesSite"
 
 CELERY_BIN="/home/friskes/project/venv/bin/celery"
 
-CELERY_APP="FriskesSite"
+CELERYD_NODES="w1"
 
 CELERYD_MULTI="multi"
 
@@ -853,11 +868,21 @@ CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
 
 CELERYD_LOG_LEVEL="INFO"
 
+
+CELERYBEAT_SCHEDULE_FILE="/var/run/celery/celerybeat-schedule"
+
 CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
 
 CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
 
+
+CELERY_FLOWER_URL_PREFIX="flower"
+
 CELERY_FLOWER_LOG_FILE="/var/log/celery/flower.log"
+
+CELERY_FLOWER_ADDRESS="127.0.0.1"
+
+CELERY_FLOWER_PORT="5555"
 ```
 
 Создать файл celery.conf

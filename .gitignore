@@ -18,9 +18,11 @@ media/*
 # git не может добавить полностью пустой каталог поэтому добавляем файл пустышку в директорию media
 !*media/.gitkeep
 
-settings.ini
-
 logs/*
+!*logs/.gitkeep
+
+.env
+settings.ini
 
 celerybeat-schedule.bak
 celerybeat-schedule.dat

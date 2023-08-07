@@ -46,6 +46,7 @@ from main_app.forms import (
 from notifications.signals import notify
 
 from FriskesSite import settings
+from FriskesSite.env import CELERY_FLOWER_ADDRESS, CELERY_FLOWER_PORT, CELERY_FLOWER_URL_PREFIX
 
 from celery.result import AsyncResult
 
@@ -71,7 +72,11 @@ def flower_proxy_view(request: ASGIRequest, path: str):
     как обычную страницу django (только для супер пользователя)."""
 
     if not request.user.is_superuser: raise PermissionDenied
-    return proxy_view(request, f"http://localhost:5555/flower/{path}", {})
+    return proxy_view(
+        request,
+        f"http://{CELERY_FLOWER_ADDRESS}:{CELERY_FLOWER_PORT}/{CELERY_FLOWER_URL_PREFIX}/{path}",
+        {}
+    )
 
 #############################################################################
 

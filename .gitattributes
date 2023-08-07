@@ -1,0 +1,16 @@
+* text=auto
+
+# игнорировать все файлы в директории static
+static/** linguist-vendored
+
+*.py text
+*.html text
+*.css text
+.gitattributes text
+
+*.py diff=python
+*.html diff=html
+
+*.png binary
+*.jpg binary
+*.gif binary

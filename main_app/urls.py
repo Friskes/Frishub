@@ -7,11 +7,12 @@ from main_app.models import LikeDislike, Comments, Guides
 
 # тоже самое что и "{% static 'путь_к_файлу' %}" в шаблонах
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.contrib.flatpages.views import flatpage
+
+from FriskesSite.env import CELERY_FLOWER_URL_PREFIX
 
 
 urlpatterns = [
-    re_path("flower/(?P<path>.*)", views.flower_proxy_view, name='flower'),
+    re_path(f"{CELERY_FLOWER_URL_PREFIX}/(?P<path>.*)", views.flower_proxy_view, name=CELERY_FLOWER_URL_PREFIX),
 
     path('favicon.ico/', RedirectView.as_view(url=staticfiles_storage.url('main_app/images/favicon.ico'),
                                               permanent=True), name='favicon'),
@@ -42,13 +43,7 @@ urlpatterns = [
 
     path('dev-chat/', views.DevChatView.as_view(), name='dev_chat'),
 
-    # Не добавил в конце слэш тем самым получаю 404 при попытке входа на url со слэшем в конце
-    # т.к. вебсокет routing ни в какую не хочет переваривать слэш в конце url.
-    # вебсокет выдаёт ошибку: "ValueError: No route found for path"
-    path('dev-chat/<uuid:room_id>', views.DevChatRoomView.as_view(), name='dev_chat_room'),
-    # Костыль делающий редирект url со слэшом на url без слэша
-    path('dev-chat/<uuid:room_id>/', RedirectView.as_view(pattern_name='dev_chat_room', permanent=True),
-         name='redirect_dev_chat_room'),
+    path('dev-chat/<uuid:room_id>/', views.DevChatRoomView.as_view(), name='dev_chat_room'),
 
     path('streams/', views.StreamsView.as_view(), name='streams'),
 

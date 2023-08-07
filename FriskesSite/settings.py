@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+from FriskesSite.env import MY_LOCAL_IPV4_ADDRESS, REDIS_URL
 # import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -120,7 +120,7 @@ if ENABLE_DEBUGTB:
     MIDDLEWARE.extend(['debug_toolbar.middleware.DebugToolbarMiddleware'])
 
     # Фикс проблемы с отсутствием отображения debug_toolbar
-    INTERNAL_IPS = [config('MY_LOCAL_IPV4_ADDRESS')]
+    INTERNAL_IPS = [MY_LOCAL_IPV4_ADDRESS]
     # DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda _: True}
 
 
@@ -358,7 +358,6 @@ LOGGING = {
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None # 'same-origin'
 
 
-REDIS_URL = 'redis://127.0.0.1:6379'
 CELERY_BROKER_URL = REDIS_URL
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_BROKER_CONNECTION_RETRY = False

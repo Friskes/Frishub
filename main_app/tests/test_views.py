@@ -56,9 +56,8 @@ class TestDevChatRoomView(TestCase):
 
     def test_redirect(self):
         room_id = '08db0135-b041-4824-98ff-4461a4105e5b'
-        response = self.client.get(reverse('redirect_dev_chat_room', args=(room_id,)))
-
-        self.assertRedirects(response, reverse('dev_chat_room', args=(room_id,)), status_code=301)
+        response = self.client.get(reverse('dev_chat_room', kwargs={'room_id': room_id}))
+        self.assertEqual(response.status_code, 200)
 
 #############################################################################
 
