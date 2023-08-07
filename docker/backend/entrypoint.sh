@@ -2,7 +2,7 @@
 
 echo ">>> EXECUTION ENTRYPOINT.SH"
 
-./manage.py makemigrations
+./manage.py makemigrations --noinput
 ./manage.py migrate
 
 exec "$@"
