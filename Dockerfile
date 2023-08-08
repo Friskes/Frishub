@@ -8,11 +8,11 @@ FROM ubuntu:22.04
 
 # !!! after ADDED any .sh file, need to run the command !!!
 # https://stackoverflow.com/a/69483712/19276507
-# sudo chmod +x ./manage.py && sudo chmod +x ./docker/backend/entrypoint.sh && sudo chmod +x ./docker/backend/celery-worker-entrypoint.sh && sudo chmod +x ./docker/backend/celery-beat-entrypoint.sh && sudo chmod +x ./docker/backend/celery-flower-entrypoint.sh
+# sudo chmod +x ./manage.py && sudo chmod +x ./docker/backend/celery-worker-entrypoint.sh && sudo chmod +x ./docker/backend/celery-beat-entrypoint.sh && sudo chmod +x ./docker/backend/celery-flower-entrypoint.sh
 
 # !!! after CHANGING any .sh file, need to run the command !!!
 # https://stackoverflow.com/a/29747593/19276507
-# sed -i -e 's/\r$//' ./docker/backend/entrypoint.sh && sed -i -e 's/\r$//' ./docker/backend/celery-worker-entrypoint.sh && sed -i -e 's/\r$//' ./docker/backend/celery-beat-entrypoint.sh && sed -i -e 's/\r$//' ./docker/backend/celery-flower-entrypoint.sh
+# sed -i -e 's/\r$//' ./docker/backend/celery-worker-entrypoint.sh && sed -i -e 's/\r$//' ./docker/backend/celery-beat-entrypoint.sh && sed -i -e 's/\r$//' ./docker/backend/celery-flower-entrypoint.sh
 
 
 # https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
@@ -46,7 +46,3 @@ RUN pip3 install -U 'Twisted[tls,http2]'
 
 COPY . /app
 WORKDIR /app
-
-RUN python manage.py collectstatic --no-input
-
-ENTRYPOINT ["./docker/backend/entrypoint.sh"]

@@ -74,8 +74,12 @@ services:
     wsgiserver:
         container_name: wsgiserver
         build: ./
-        command: gunicorn FriskesSite.wsgi:application --bind 0.0.0.0:8000 --timeout 600 --workers 1 --threads 1
-        #--log-level=debug --error-logfile=/var/log/gunicorn/error.log --access-logfile=/var/log/gunicorn/access.log
+        command: >
+            sh -c "python manage.py collectstatic --no-input &&
+            python manage.py makemigrations --noinput &&
+            python manage.py migrate &&
+            gunicorn FriskesSite.wsgi:application --bind 0.0.0.0:8000 --timeout 600 --workers 1 --threads 1"
+#            --log-level=debug --error-logfile=/var/log/gunicorn/error.log --access-logfile=/var/log/gunicorn/access.log"
         volumes:
             #- /var/log/gunicorn:/var/run/gunicorn
             - static_volume:/app/static
