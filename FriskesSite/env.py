@@ -1,5 +1,8 @@
 from pathlib import Path
 import os
+# pip install python-dotenv
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +21,6 @@ POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')
 
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
-REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
 
 # CELERY_BROKER_URL = 'pyamqp://guest@localhost//' # rabbitmq
 

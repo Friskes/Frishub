@@ -21,6 +21,8 @@ CHANNEL_LAYERS = {
     },
 }
 
+REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+
 # https://docs.djangoproject.com/en/4.2/topics/cache/#redis
 CACHES = {
     "default": {
@@ -54,3 +56,8 @@ DATABASES = {
 }
 
 STATIC_ROOT = BASE_DIR / 'static'
+
+# фикс ошибки: "Ошибка проверки CSRF. Запрос отклонён." https://stackoverflow.com/a/70326426/19276507
+CSRF_TRUSTED_ORIGINS = [f'https://*.{SERVER_HOST}']
+# так же фиксит ошибку: https://stackoverflow.com/a/71482883/19276507
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -5,6 +5,7 @@ version: '3.8'
 # https://github.com/jhnoor/docker-nginx-django-channels.git
 # https://stackoverflow.com/a/45817394/19276507
 # https://stackoverflow.com/a/72792416/19276507
+# https://pentacent.medium.com/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
 
 services:
 
@@ -13,7 +14,13 @@ services:
         image: nginx
         restart: always
         command: [nginx, '-g', 'daemon off;']
+        # nginx не будет автоматически перезагружатся для обновления сертификата изза закомментированной команды
+        # закомментирована она потому что блокирует перенос тимплейта nginx в директорию конфига
+        # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
         volumes:
+            - ./docker/certbot/conf:/etc/letsencrypt
+            - ./docker/certbot/www:/var/www/certbot
+
             - ./docker/nginx/templates/:/etc/nginx/templates
             - static_volume:/app/static
             - media_volume:/app/media
@@ -26,13 +33,25 @@ services:
             ASGI_SERVER_HOST: asgiserver
             ASGI_SERVER_PORT: 8001
         ports:
-            - 80:80
+            - 80:80 # HTTP
+            - 443:443 # HTTPS
         depends_on:
             - wsgiserver
             - asgiserver
         networks:
             - front
             - back
+
+
+    certbot:
+        container_name: certbot
+        image: certbot/certbot
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+        volumes:
+            - ./docker/certbot/conf:/etc/letsencrypt
+            - ./docker/certbot/www:/var/www/certbot
+        depends_on:
+            - nginx
 
 
     postgres:
@@ -75,9 +94,10 @@ services:
         container_name: wsgiserver
         build: ./
         command: >
-            sh -c "python manage.py collectstatic --no-input &&
+            sh -c "echo '>>> EXECUTION wsgiserver command' &&
+            python manage.py collectstatic --noinput &&
             python manage.py makemigrations --noinput &&
-            python manage.py migrate &&
+            python manage.py migrate --noinput &&
             gunicorn FriskesSite.wsgi:application --bind 0.0.0.0:8000 --timeout 600 --workers 1 --threads 1"
 #            --log-level=debug --error-logfile=/var/log/gunicorn/error.log --access-logfile=/var/log/gunicorn/access.log"
         volumes:
@@ -100,7 +120,11 @@ services:
     asgiserver:
         container_name: asgiserver
         build: ./
-        command: daphne FriskesSite.asgi:application -b 0.0.0.0 -p 8001
+        command: >
+            sh -c "echo '>>> EXECUTION asgiserver command' &&
+            daphne -e ssl:443:privateKey=./docker/certbot/conf/live/${SERVER_HOST}/privkey.pem:certKey=./docker/certbot/conf/live/${SERVER_HOST}/fullchain.pem
+            FriskesSite.asgi:application -b 0.0.0.0 -p 8001"
+        #command: daphne FriskesSite.asgi:application -b 0.0.0.0 -p 8001
         #--access-log=/var/log/daphne/access.log
         #volumes:
             #- /var/log/daphne:/var/run/daphne

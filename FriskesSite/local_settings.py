@@ -1,5 +1,5 @@
 from pathlib import Path
-from FriskesSite.env import MY_LOCAL_IPV4_ADDRESS
+from FriskesSite.env import MY_LOCAL_IPV4_ADDRESS, REDIS_PORT
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +23,8 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
+
+REDIS_URL = f'redis://127.0.0.1:{REDIS_PORT}'
 
 LOCAL_REDIS = True
 if LOCAL_REDIS:
