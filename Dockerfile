@@ -6,7 +6,7 @@ FROM ubuntu:22.04
 # netsh int ipv4 set dynamic tcp start=49152 num=16384
 
 
-# !!! BEFORE first launch, must run the command (need REBOOT server) !!!
+# !!! BEFORE first launch on LINUX, must run the command (need REBOOT server) !!!
 # https://github.com/nextcloud/all-in-one/discussions/1731
 # echo "vm.overcommit_memory = 1" | sudo tee /etc/sysctl.d/nextcloud-aio-memory-overcommit.conf
 
@@ -25,6 +25,14 @@ FROM ubuntu:22.04
 # sudo ./docker/certbot/init-letsencrypt.sh
 # docker compose down
 # AFTER success run you need UNcomment SSL part in default.conf.template file
+
+# !!! If you encounter this ERROR after UNcomment SSL part, running the command for HELP you !!!
+# "/etc/letsencrypt/options-ssl-nginx.conf" failed (2: No such file or directory)
+# curl -L https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > ./docker/certbot/conf/options-ssl-nginx.conf
+
+# !!! If you encounter this ERROR after UNcomment SSL part, running the command for HELP you !!!
+# "No such file or directory:calling fopen(/etc/letsencrypt/ssl-dhparams.pem, r)"
+# curl -L https://ssl-config.mozilla.org/ffdhe2048.txt > ./docker/certbot/conf/ssl-dhparams.pem
 
 
 # https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
@@ -51,6 +59,11 @@ COPY requirements.txt .
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
+
+# !!! Installation order is IMPORTANT for websocket LIBS !!!
+# "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
+RUN pip3 uninstall -y websocket websocket-client
+RUN pip3 install websocket && pip3 install websocket-client
 
 # for work websocket
 RUN pip3 install -U 'Twisted[tls,http2]'

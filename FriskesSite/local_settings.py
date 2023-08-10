@@ -1,10 +1,9 @@
+from sys import argv as django_cmd_argv
 from pathlib import Path
-from FriskesSite.env import MY_LOCAL_IPV4_ADDRESS, REDIS_PORT
+from FriskesSite.env import *
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = 'django-insecure-sgr#a$4v)m2xi#e$(!(%y*4=95*92uu1^$6v@no2y!cfr-b%73'
 
 DEBUG = True
 
@@ -17,17 +16,25 @@ else:
     PARENT_DOMAIN = ALLOWED_HOSTS[0]
 
 
-CHANNEL_LAYERS = {
-    'default': {
-        # для локальной разработки channels websocket можно использовать данный бэкэнд
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-    },
-}
+if RUN_DEV_SERVER_WITH_DOCKER:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": [(REDIS_HOST, REDIS_PORT)],
+            },
+        },
+    }
+else:
+    CHANNEL_LAYERS = {
+        'default': {
+            # для локальной разработки channels websocket допустимо использовать данный бэкэнд
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
+    }
 
-REDIS_URL = f'redis://127.0.0.1:{REDIS_PORT}'
 
-LOCAL_REDIS = True
-if LOCAL_REDIS:
+if RUN_DEV_SERVER_WITH_DOCKER or WINDOWS_REDIS_INSTALLED:
     # https://github.com/tporadowski/redis.git # Releases -> Redis-x64-5.0.14.1.msi
     # https://stackoverflow.com/a/42600466/19276507
     # по дефолту https://redis.io/ redis server запускается автоматически при загрузке windows
@@ -36,28 +43,50 @@ if LOCAL_REDIS:
     # https://docs.djangoproject.com/en/4.2/topics/cache/#redis
     CACHES = {
         "default": {
-            # https://github.com/jazzband/django-redis
-            "BACKEND": "django_redis.cache.RedisCache", # pip install django-redis
-            # "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            "LOCATION": "redis://127.0.0.1:6379",
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_URL,
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        "TEST": { # отдельная БД для тестов
-            "NAME": BASE_DIR / "test_db.sqlite3",
-        },
+if RUN_DEV_SERVER_WITH_DOCKER:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': POSTGRES_DB,
+            'USER': POSTGRES_USER,
+            'PASSWORD': POSTGRES_PASSWORD,
+            'HOST': POSTGRES_HOST,
+            'PORT': POSTGRES_PORT,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+            "TEST": { # отдельная БД для тестов
+                "NAME": BASE_DIR / "test_db.sqlite3",
+            },
+        }
+    }
+
 
 # вывод почты в консоль при разработке (при восстановлении пароля по почте - только если такая почта существует в БД)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# для выполнения команды python manage.py collectstatic
-# необходимо временно раскомментировать STATIC_ROOT и закомментировать STATICFILES_DIRS
-# STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+# для выполнения команды python manage.py collectstatic (без докера)
+# необходимо сделать доступным STATIC_ROOT и недоступным STATICFILES_DIRS
+if RUN_DEV_SERVER_WITH_DOCKER:
+    STATIC_ROOT = BASE_DIR / 'static' # если это запуск докера
+else:
+    if django_cmd_argv[1] == 'collectstatic': # если это обычный запуск python manage.py collectstatic
+        STATIC_ROOT = BASE_DIR / 'static'
+    else:
+        STATICFILES_DIRS = [BASE_DIR / 'static'] # если это обычный запуск python manage.py runserver

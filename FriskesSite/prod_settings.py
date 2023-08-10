@@ -6,8 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = False
 
-PARENT_DOMAIN = SERVER_HOST
 ALLOWED_HOSTS = [SERVER_HOST, f'www.{SERVER_HOST}', SERVER_IP]
+
+PARENT_DOMAIN = SERVER_HOST
 
 
 CHANNEL_LAYERS = {
@@ -21,24 +22,23 @@ CHANNEL_LAYERS = {
     },
 }
 
-REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
 
 # https://docs.djangoproject.com/en/4.2/topics/cache/#redis
 CACHES = {
     "default": {
         # https://github.com/jazzband/django-redis
         "BACKEND": "django_redis.cache.RedisCache", # pip install django-redis
-        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": REDIS_URL,
     }
 }
+
 
 DATABASES = {
     'default': {
         # данные необходимые для подключения PostgreSQL
         # для windows: pip install psycopg2
         # для linux: pip install psycopg2-binary
-        'ENGINE': POSTGRES_ENGINE,
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': POSTGRES_DB,
         'USER': POSTGRES_USER,
         'PASSWORD': POSTGRES_PASSWORD,
@@ -47,17 +47,18 @@ DATABASES = {
 
         # данные необходимые для подключения MySQL
         # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'mysql_name',
-        # 'USER': 'mysql_user',
-        # 'PASSWORD': 'mysql_password',
-        # 'HOST': '127.0.0.1',
-        # 'PORT': '3306',
+        # 'NAME': MYSQL_DB,
+        # 'USER': MYSQL_USER,
+        # 'PASSWORD': MYSQL_PASSWORD,
+        # 'HOST': MYSQL_HOST,
+        # 'PORT': MYSQL_PORT, # '3306'
     }
 }
 
-STATIC_ROOT = BASE_DIR / 'static'
 
 # фикс ошибки: "Ошибка проверки CSRF. Запрос отклонён." https://stackoverflow.com/a/70326426/19276507
 CSRF_TRUSTED_ORIGINS = [f'https://*.{SERVER_HOST}']
 # так же фиксит ошибку: https://stackoverflow.com/a/71482883/19276507
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+STATIC_ROOT = BASE_DIR / 'static'

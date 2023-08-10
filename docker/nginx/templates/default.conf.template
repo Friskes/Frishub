@@ -1,18 +1,40 @@
-server {
-    listen ${SERVER_PORT};
+# REDIRECT (www or non-www domain) HTTP TRAFFIC to (www or non-www domain) HTTPS protocol
+#server {
+#    listen 80;
+
+#    server_name www.${SERVER_HOST} ${SERVER_HOST};
+
+#    return 301 https://$host$request_uri;
+#}
+
+# REDIRECT (www domain) HTTPS TRAFFIC to (non-www domain) HTTPS protocol
+#server {
 #    listen 443 ssl;
-    server_name www.${SERVER_HOST};
+
 #    ssl_certificate /etc/letsencrypt/live/${SERVER_HOST}/fullchain.pem;
 #    ssl_certificate_key /etc/letsencrypt/live/${SERVER_HOST}/privkey.pem;
 
-    return 301 $scheme://${SERVER_HOST}$request_uri;
-}
+#    server_name www.${SERVER_HOST};
 
+#    return 301 $scheme://${SERVER_HOST}$request_uri;
+#}
+
+# MAIN (non-www domain) HTTPS protocol HANDLER
 server {
-    listen ${SERVER_PORT};
-    server_name ${SERVER_HOST} ${SERVER_IP};
+#    listen 443 ssl;
+
+#    ssl_certificate /etc/letsencrypt/live/${SERVER_HOST}/fullchain.pem;
+#    ssl_certificate_key /etc/letsencrypt/live/${SERVER_HOST}/privkey.pem;
+#    include /etc/letsencrypt/options-ssl-nginx.conf;
+#    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    server_name ${SERVER_HOST};
 
     client_max_body_size 10M;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
 
     location /static/ {
         alias /app/static/;
@@ -26,20 +48,12 @@ server {
         try_files $uri @proxy_to_wsgi;
     }
     location @proxy_to_wsgi {
-        if ( $host !~* ^(${SERVER_HOST}|${SERVER_IP})$ ) {
-            return 444;
-        }
-
-        # https://stackoverflow.com/a/22027177/19276507
+#        https://stackoverflow.com/a/22027177/19276507
         proxy_set_header Host $host;
-#        proxy_set_header Host $http_host;
 
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-
-#        proxy_set_header X-Forwarded-Host $server_name;
-#        proxy_set_header X-Url-Scheme $scheme;
 
         proxy_pass http://${WSGI_SERVER_HOST}:${WSGI_SERVER_PORT};
     }
@@ -55,24 +69,4 @@ server {
 
         proxy_pass http://${ASGI_SERVER_HOST}:${ASGI_SERVER_PORT};
     }
-
-
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-#    listen 443 ssl;
-#    ssl_certificate /etc/letsencrypt/live/${SERVER_HOST}/fullchain.pem;
-#    ssl_certificate_key /etc/letsencrypt/live/${SERVER_HOST}/privkey.pem;
-#    include /etc/letsencrypt/options-ssl-nginx.conf;
-#    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 }
-
-#server {
-#    if ($host = ${SERVER_HOST}) {
-#        return 301 https://$host$request_uri;
-#    }
-#
-#    listen 80;
-#    return 404;
-#}

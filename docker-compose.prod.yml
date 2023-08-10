@@ -1,6 +1,59 @@
 version: '3.8'
 
+# useful info
+# https://github.com/pplonski/simple-tasks
+# https://github.com/jhnoor/docker-nginx-django-channels.git
+# https://stackoverflow.com/a/45817394/19276507
+# https://stackoverflow.com/a/72792416/19276507
+# https://pentacent.medium.com/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
+
 services:
+
+    nginx:
+        container_name: nginx
+        image: nginx
+        restart: always
+        command: [nginx, '-g', 'daemon off;']
+#        nginx не будет автоматически перезагружатся для обновления сертификата изза закомментированной команды
+#        закомментирована она потому что блокирует перенос тимплейта nginx в директорию конфига
+#        https://github.com/nginxinc/docker-nginx/issues/422#issuecomment-644299743
+#        command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+        volumes:
+            - ./docker/certbot/conf:/etc/letsencrypt
+            - ./docker/certbot/www:/var/www/certbot
+
+            - ./docker/nginx/templates/:/etc/nginx/templates
+            - static_volume:/app/static
+            - media_volume:/app/media
+        environment:
+            SERVER_HOST: ${SERVER_HOST}
+            SERVER_IP: ${SERVER_IP}
+            SERVER_PORT: 80
+            WSGI_SERVER_HOST: wsgiserver
+            WSGI_SERVER_PORT: 8000
+            ASGI_SERVER_HOST: asgiserver
+            ASGI_SERVER_PORT: 8001
+        ports:
+            - 80:80 # HTTP
+            - 443:443 # HTTPS
+        depends_on:
+            - wsgiserver
+            - asgiserver
+        networks:
+            - front
+            - back
+
+
+    certbot:
+        container_name: certbot
+        image: certbot/certbot
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+        volumes:
+            - ./docker/certbot/conf:/etc/letsencrypt
+            - ./docker/certbot/www:/var/www/certbot
+        depends_on:
+            - nginx
+
 
     postgres:
         container_name: postgres
@@ -59,15 +112,40 @@ services:
             python manage.py collectstatic --noinput &&
             python manage.py makemigrations --noinput &&
             python manage.py migrate --noinput &&
-            python manage.py runserver 0.0.0.0:8000"
+            gunicorn FriskesSite.wsgi:application --bind 0.0.0.0:8000 --timeout 600 --workers 1 --threads 1"
+#            --log-level=debug --error-logfile=/var/log/gunicorn/error.log --access-logfile=/var/log/gunicorn/access.log"
         volumes:
+#            - /var/log/gunicorn:/var/run/gunicorn
             - static_volume:/app/static
             - media_volume:/app/media
-            - .:/app # автоматическая перезагрузка wsgiserver при изменении файлов
         env_file:
             - ./.env
-        ports:
-            - 8000:8000
+        expose:
+            - 8000
+        depends_on:
+            - postgres
+            - redis
+#            - rabbitmq
+        networks:
+            - front
+            - back
+
+
+    asgiserver:
+        container_name: asgiserver
+        build: ./
+        command: >
+            sh -c "echo '>>> EXECUTION asgiserver command' &&
+            daphne -e ssl:443:privateKey=./docker/certbot/conf/live/${SERVER_HOST}/privkey.pem:certKey=./docker/certbot/conf/live/${SERVER_HOST}/fullchain.pem
+            FriskesSite.asgi:application -b 0.0.0.0 -p 8001"
+#        command: daphne FriskesSite.asgi:application -b 0.0.0.0 -p 8001
+#        --access-log=/var/log/daphne/access.log
+#        volumes:
+#            - /var/log/daphne:/var/run/daphne
+        env_file:
+            - ./.env
+        expose:
+            - 8001
         depends_on:
             - postgres
             - redis

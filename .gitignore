@@ -30,3 +30,5 @@ celerybeat-schedule.dir
 celerybeat.pid
 
 chromedriver.exe
+
+redis

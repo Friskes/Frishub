@@ -13,18 +13,16 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 # import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Application definition
-
-
-# смысл этих файлов в том что, при необходимости можно
-# включить дебаг режим прямо на продакшене.
 try:
     from FriskesSite.local_settings import *
 except ImportError:
     from FriskesSite.prod_settings import *
+
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Application definition
 
 
 INSTALLED_APPS = [
@@ -357,18 +355,26 @@ LOGGING = {
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None # 'same-origin'
 
 
+CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_RESULT_BACKEND = REDIS_URL
+# CELERY_RESULT_BACKEND = RABBITMQ_URL
+
 CELERY_BROKER_URL = REDIS_URL
+# CELERY_BROKER_URL = RABBITMQ_URL
+
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_BROKER_CONNECTION_RETRY = False
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
-CELERY_CACHE_BACKEND = 'default'
-CELERY_RESULT_BACKEND = 'django-db'
-# CELERY_RESULT_BACKEND = REDIS_URL
+
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['application/json']
+
 CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_CACHE_BACKEND = 'default'
+
 # https://docs.celeryq.dev/en/latest/userguide/configuration.html#beat-scheduler
-# Хранить данные beat планировщика в БД django а не в файлах
+# Хранить данные beat планировщика в БД django а не в файлах celerybeat-schedule
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

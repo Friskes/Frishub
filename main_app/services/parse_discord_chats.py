@@ -7,7 +7,9 @@
 
 # https://instructobit.com/tutorial/101/Reconnect-a-Python-socket-after-it-has-lost-its-connection
 
-# устанавливать в таком порядке:
+# для этих библиотек важен порядок установки т.к. они импортируются одним именем,
+# устанавливать в таком порядке, иначе будет ошибка:
+# "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
 # pip install websocket
 # pip install websocket-client
 import websocket

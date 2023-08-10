@@ -145,11 +145,13 @@
 
 #### Создайте файл .env в корневом каталоге проекта
 ```
+WINDOWS_REDIS_INSTALLED=0
+RUN_DEV_SERVER_WITH_DOCKER=1 # MUST BE TRUE IN PRODUCTION
+
 SECRET_KEY=<секретный_ключ>
 
 MY_LOCAL_IPV4_ADDRESS=<ваш_локальный_ip_(не_обязательная_настройка)>
 
-POSTGRES_ENGINE=django.db.backends.postgresql
 POSTGRES_DB=<название бд>
 POSTGRES_USER=<никнейм в бд>
 POSTGRES_PASSWORD=<пароль в бд>
@@ -385,16 +387,6 @@ server {
 Измените пользователя `user` в самом начале файла `/etc/nginx/nginx.conf` на созданного нами пользователя friskes
 это поможет в обнаружении static/media файлов
 
-Обновите конфигурационный файл Nginx по адресу `/etc/nginx/nginx.conf` таким образом, мы можем загружать большие файлы (изображения)
-
-добавьте в самый конец блока http строку `client_max_body_size 10M;`
-
-```
-http{
-  ...код выше...
-  client_max_body_size 10M;
-}
-```
 
 #### Настройте брандмауэр (Firewall)
 `sudo ln -s /etc/nginx/sites-available/FriskesSite /etc/nginx/sites-enabled`
@@ -673,9 +665,39 @@ HTTPS немного сложнее настроить при использов
 обновите `FriskesSite`
 
 ```
+# REDIRECT (www or non-www domain) HTTP TRAFFIC to (www or non-www domain) HTTPS protocol
 server {
     listen 80;
-    server_name <ваш_домен> www.<ваш_домен> <ваш_серверный_ip>;
+
+    server_name www.<ваш_домен> <ваш_домен>;
+
+    return 301 https://$host$request_uri;
+}
+
+# REDIRECT (www domain) HTTPS TRAFFIC to (non-www domain) HTTPS protocol
+server {
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/<ваш_домен>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<ваш_домен>/privkey.pem;
+
+    server_name www.<ваш_домен>;
+
+    return 301 $scheme://<ваш_домен>$request_uri;
+}
+
+# MAIN (non-www domain) HTTPS protocol HANDLER
+server {
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/<ваш_домен>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<ваш_домен>/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    server_name <ваш_домен>;
+
+    client_max_body_size 10M;
 
     location /static/ {
         root /home/friskes/project/FriskesSite;
@@ -686,7 +708,13 @@ server {
     }
 
     location / {
-        include proxy_params;
+#        https://stackoverflow.com/a/22027177/19276507
+        proxy_set_header Host $host;
+
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
         proxy_pass http://unix:/run/gunicorn.sock;
     }
 
@@ -698,61 +726,8 @@ server {
 
         proxy_pass http://127.0.0.1:8001;
     }
-
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/<ваш_домен>/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/<ваш_домен>/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-}
-
-server {
-    if ($host = <ваш_домен>) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-    if ($host = www.<ваш_домен>) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-    listen 80;
-    return 404; # managed by Certbot
 }
 ```
-
-Так же для фикса одной неприятной ошибки [тема на stackoverflow](https://stackoverflow.com/a/49817720/19276507) изза которой к вам на почту при подключенном логировании будут приходить бесполезные репорты об ошибках можно добавить в самое начало блока 'location /' этот код:
-```
-if ( $host !~* ^(<ваш_домен>|www.<ваш_домен>|<ваш_серверный_ip>)$ ) {
-    return 444;
-}
-```
-Так же в файле /etc/nginx/proxy_params необходимо заменить строку
-```
-proxy_set_header Host $http_host;
-```
-на строку
-```
-proxy_set_header Host $host;
-```
-[тема на stackoverflow](https://stackoverflow.com/a/22027177/19276507)
-
-
-Если вам не нужен `www` поддомен можно добавить в самое начало файла ещё один блок `server`
-с помощью которого будет происходить автоматический редирект на родителький домен без `www`
-К слову для `www` поддомена и родителького домена будут созданы разные localStorage в javascript
-поэтому убрать `www` поддомен не такая уж и плохая идея.
-```
-server {
-    listen              80;
-    listen              443 ssl;
-    server_name         www.<ваш_домен>;
-    ssl_certificate     /etc/letsencrypt/live/<ваш_домен>/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/<ваш_домен>/privkey.pem;
-
-    return 301 $scheme://<ваш_домен>$request_uri;
-}
-```
-[тема на stackoverflow](https://stackoverflow.com/a/11733363/19276507)
 
 
 ## Обновить `daphne.service`
