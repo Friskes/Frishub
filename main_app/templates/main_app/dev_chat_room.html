@@ -1084,7 +1084,11 @@
   // https://learn.javascript.ru/websockets
   const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
   const websocket_pathname = "/ws/dev-chat/" + "{{ room_id }}" + "/";
-  const chatSocket = new WebSocket(ws_scheme + window.location.host + websocket_pathname);
+  {% if debug_mode %}
+    const chatSocket = new WebSocket(ws_scheme + window.location.host + websocket_pathname); // DEV
+  {% else %}
+    const chatSocket = new WebSocket(ws_scheme + window.location.host + ":8001" + websocket_pathname); // PROD
+  {% endif %}
 
   $('#chat-path-input')[0].value = window.location.href;
 

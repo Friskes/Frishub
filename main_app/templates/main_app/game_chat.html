@@ -260,7 +260,11 @@
 
           // https://learn.javascript.ru/websockets
           const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
-          const chatSocket = new WebSocket(ws_scheme + window.location.host + "/ws/game-chat/");
+          {% if debug_mode %}
+            const chatSocket = new WebSocket(ws_scheme + window.location.host + "/ws/game-chat/"); // DEV
+          {% else %}
+            const chatSocket = new WebSocket(ws_scheme + window.location.host + ":8001/ws/game-chat/"); // PROD
+          {% endif %}
 
           var first_line = true;
 
