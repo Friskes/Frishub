@@ -115,6 +115,8 @@ def send_email_if_notify_unread(*args, **kwargs):
         )
 
 #############################################################################
+#################### [Весь код ниже оставил для примера] ####################
+#############################################################################
 
 # https://github.com/celery/django-celery-beat
 # schedule, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.MINUTES)

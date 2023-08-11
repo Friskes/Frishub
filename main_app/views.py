@@ -134,6 +134,7 @@ def server_error(request):
 
 #############################################################################
 
+# [Оставил класс для примера]
 # class TestView(TemplateView):
 
 #     # метод dispatch срабатывает перед отправкой ответа клиенту
@@ -199,19 +200,10 @@ class GuidesListView(DataMixin, ListView):
         для пользователей которые не являются админами.
         - Для админов возвращаем все гайды без сортировки."""
 
-        # Метод select_related служит для того что бы сделать <жадную> (полную) загрузку данных.
-
-        # До указания метода, при запросе бралась лишь часть необходимых данных и в дальнейшем
-        # происходило множество побочных SQL запросов для получения дополнительных данных.
-
-        # параметр 'category' указан потому что category это поле из модели Guides
-        # которое является внешним ключём (ForeignKey), он связывает вторичную модель
-        # Guides с первичной моделью Category
-
         if self.request.user.is_superuser or self.request.user.is_staff:
-            return Guides.objects.filter().select_related('category')
+            return Guides.objects.all()
 
-        return Guides.objects.filter(is_published=True).select_related('category')
+        return Guides.objects.filter(is_published=True)
 
 #############################################################################
 
@@ -307,7 +299,8 @@ class GuideView(DataMixin, FormView, DetailView):
                     'recipient_email': recipient_user.email,
                     'actor_username': self.request.user.username,
                     'href': f"""{self.request.META['HTTP_ORIGIN']}{reverse('api_mark_as_read',
-                    args=(notify_obj.pk, notify_obj.actor_object_id, notify_obj.recipient_id, guide.slug, comment_pk))}"""
+                    args=(notify_obj.pk, notify_obj.actor_object_id,
+                    notify_obj.recipient_id, guide.slug, comment_pk))}"""
                 }
             )
 
@@ -414,7 +407,8 @@ class VotesView(View):
                     'recipient_email': comment.author.email,
                     'actor_username': self.request.user.username,
                     'href': f"""{self.request.META['HTTP_ORIGIN']}{reverse('api_mark_as_read',
-                    args=(notify_obj.pk, notify_obj.actor_object_id, notify_obj.recipient_id, comment.guide.slug, comment.pk))}"""
+                    args=(notify_obj.pk, notify_obj.actor_object_id,
+                    notify_obj.recipient_id, comment.guide.slug, comment.pk))}"""
                 }
             )
 
@@ -475,10 +469,9 @@ class FilteringGuidesView(DataMixin, ListView):
 
         # ключ для kwargs 'category_slug' равен тому что написано в маршруте в urls.py
         if self.request.user.is_superuser:
-            return Guides.objects.filter(category__slug=self.kwargs['category_slug']).select_related('category')
+            return Guides.objects.filter(category__slug=self.kwargs['category_slug'])
 
-        return Guides.objects.filter(category__slug=self.kwargs['category_slug'],
-                                     is_published=True).select_related('category')
+        return Guides.objects.filter(category__slug=self.kwargs['category_slug'], is_published=True)
 
 #############################################################################
 
@@ -532,11 +525,12 @@ class StreamsView(DataMixin, TemplateView):
 
         game_classes = {}
         if encoded_text_data and len(encoded_text_data) > 2:
-            decoded_text_data: str = unquote(encoded_text_data, encoding='utf-8') # .replace('%22','"').replace('%2C',',')
+            decoded_text_data: str = unquote(encoded_text_data, encoding='utf-8')
             game_classes = json.loads(decoded_text_data)
 
         context.update({
-            'twitch_streams': twitch_streams if len(game_classes) == 0 else self.filter_streams(game_classes, twitch_streams),
+            'twitch_streams': twitch_streams if len(game_classes) == 0\
+                else self.filter_streams(game_classes, twitch_streams),
             'twitch_stream_count': len(twitch_streams)
         })
 
@@ -559,7 +553,8 @@ class StreamsView(DataMixin, TemplateView):
             cache.set('twitch_streams', twitch_streams, 60) # секунды
 
         context = {
-            'twitch_streams': twitch_streams if len(game_classes) == 0 else self.filter_streams(game_classes, twitch_streams),
+            'twitch_streams': twitch_streams if len(game_classes) == 0\
+                else self.filter_streams(game_classes, twitch_streams),
             'twitch_stream_count': len(twitch_streams)
         }
 
@@ -621,7 +616,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         current_datetime = timezone.now()
         self.dressing_room.update(last_update_time=current_datetime)
 
-        dressing_rooms = DressingRoom.objects.all()
+        dressing_rooms = DressingRoom.objects.all().only('creator', 'last_update_time')
 
         for room in dressing_rooms:
             if current_datetime - dt.timedelta(days=365) >= room.last_update_time:
@@ -783,7 +778,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
             # Если создатель этой комнаты равен текущему пользователю
             if self.dressing_room[0].creator == request.user:
                 # Тогда получаем creator_id из БД вместо Cookie
-                creator_id = DressingRoom.objects.filter(creator=request.user)[0].room_creator_id
+                creator_id = DressingRoom.objects.filter(creator=request.user)\
+                                    .only('room_creator_id')[0].room_creator_id
 
         # Если creator_id этой комнаты не равен creator_id текущего пользователя из Cookie либо БД
         # возбуждаем исключение "Доступ запрещён"

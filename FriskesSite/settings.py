@@ -61,9 +61,6 @@ INSTALLED_APPS = [
     # https://django-tinymce.readthedocs.io/en/latest/
     'tinymce', # pip install django-tinymce
 
-    # https://github.com/agusmakmun/django-markdown-editor
-    'martor', # pip install martor
-
     # https://github.com/django-ckeditor/django-ckeditor
 
     'main_app',
@@ -102,10 +99,6 @@ MIDDLEWARE = [
 
     # плагин для подсчёта количества пользователей онлайн
     'main_app.middleware.online_users_now.OnlineUsersNowMiddleware',
-
-    # плагин для отлова ошибок которые не были отловлены в бизнес логике приложения
-    # и отправки Traceback'a ошибок администраторам на почту
-    # 'main_app.middleware.catch_errors.ErrorHandlerMiddleware',
 
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
@@ -241,11 +234,6 @@ TINYMCE_DEFAULT_CONFIG = {
     "custom_undo_redo_levels": 10,
 }
 
-try:
-    from FriskesSite.martor_config import *
-except ImportError:
-    pass
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -310,7 +298,11 @@ LOGGING = {
             "style": "{",
         },
         "simple": { # простой
-            "format": "{levelname} {message}",
+            "format": "\n{levelname} {message}\n",
+            "style": "{",
+        },
+        "simple_db": { # простой с пробелами
+            "format": "\n{message}\n",
             "style": "{",
         },
     },
@@ -323,6 +315,12 @@ LOGGING = {
         },
     },
     "handlers": { # словарь с обработчиками логов
+        "console_local_db": {
+            "level": "DEBUG", # все уровни >= указанного уровня будут обработаны этим обработчиком
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple_db",
+        },
         "console_local": {
             "level": "DEBUG", # все уровни >= указанного уровня будут обработаны этим обработчиком
             "filters": ["require_debug_true"],
@@ -348,6 +346,11 @@ LOGGING = {
             "handlers": ["console_local", "console_prod"],
             "level": "INFO", # все уровни >= указанного уровня будут переданы в указанные обработчики
         },
+        # выводить все SQL запросы в консоль
+        # "django.db.backends": {
+        #     "handlers": ["console_local_db"],
+        #     "level": "DEBUG",
+        # },
     },
 }
 

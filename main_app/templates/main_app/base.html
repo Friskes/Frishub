@@ -966,7 +966,7 @@
 
     <script>
       const getTaskStatusById = function(task_id, success_callback,
-      polling_delay=1000, max_retries=5, retries_counter=1) {
+      polling_delay=2000, max_retries=3, retries_counter=1) {
         if (task_id === "") return false;
         $.ajax({
           url: `/tasks/${task_id}/`,
@@ -1387,7 +1387,7 @@
         });
       </script>
       {% if user.is_authenticated %}
-        {% register_custom_notify_callbacks api_name='all_list' fetch=99 refresh_period=8 callbacks='notification_callback' %}
+        {% register_custom_notify_callbacks api_name='all_list' fetch=99 refresh_period=12 callbacks='notification_callback' %}
       {% endif %}
 
       <script>

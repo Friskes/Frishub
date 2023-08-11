@@ -18,8 +18,6 @@ from mptt.admin import DraggableMPTTAdmin#, MPTTModelAdmin
 
 from tinymce.widgets import TinyMCE
 
-from martor.widgets import AdminMartorWidget
-
 from notifications.admin import NotificationAdmin
 
 
@@ -445,8 +443,6 @@ class GuidesAdmin(TranslationAdmin):
     #             # https://www.tiny.cloud/docs/general-configuration-guide/
     #             mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False}
     #         ))
-    #     # elif db_field.name == 'content_en':
-    #     #     return db_field.formfield(widget=AdminMartorWidget)
     #     return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
@@ -461,9 +457,6 @@ class GuidesAdmin(TranslationAdmin):
         },
     }
 
-    # formfield_overrides = {
-    #     TextField: {'widget': AdminMartorWidget},
-    # }
 
     inlines = [CommentsInline]
 

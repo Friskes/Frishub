@@ -113,34 +113,7 @@ class GameChatConsumer(WebsocketConsumer):
 
 #############################################################################
 
-# import os
-# import stat
-# import shutil
-
-
-# def remove_readonly(func, path, _):
-#     '''Clear the readonly bit and reattempt the removal'''
-#     os.chmod(path, stat.S_IWRITE)
-#     func(path)
-
-
-# class DevChatHistory:
-
-#     def save_history(self, room_data):
-#         with open(f'dev_chat_history_{self.room_id}.json', 'w') as file: # , encoding='utf-8')
-#             file.write(room_data)
-
-
-#     def get_history(self):
-#         with open(f'dev_chat_history_{self.room_id}.json', 'r') as file: # , encoding='utf-8')
-#             return file.readlines()
-
-
-#     def delete_history(self):
-#         shutil.rmtree(f'dev_chat_history_{self.room_id}.json', onerror=remove_readonly)
-
-#############################################################################
-
+# [Оставил класс для примера]
 # class DevChatConsumer(JsonWebsocketConsumer):
 
 #     channel_layer: InMemoryChannelLayer

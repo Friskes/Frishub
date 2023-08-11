@@ -29,7 +29,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('tinymce/', include('tinymce.urls')),
-    path('martor/', include('martor.urls')),
 
     # доступные запросы к API можно посмотреть в файле: venv\Lib\site-packages\notifications\urls.py
     re_path('^inbox/notifications/', include(notifications.urls, namespace='notifications')),

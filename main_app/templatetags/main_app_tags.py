@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils.html import format_html
 
-from main_app.models import Category, Comments, CustomUser, DressingRoom
+from main_app.models import Category, CustomUser, DressingRoom
 
 import humanize
 
@@ -31,7 +31,7 @@ def filtered_guides_list(sorter=None, category_selected=0):
 
 @register.filter
 def user_in(objects: QuerySet, user: CustomUser):
-    """Возвращает True если пользователь авторизован, иначе False."""
+    """Возвращает True если пользователь авторизован и уже оставил оценку, иначе False."""
 
     if user.is_authenticated:
         return objects.filter(user=user).exists()
