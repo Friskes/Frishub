@@ -28,7 +28,7 @@ CACHES = {
     "default": {
         # https://github.com/jazzband/django-redis
         "BACKEND": "django_redis.cache.RedisCache", # pip install django-redis
-        "LOCATION": REDIS_URL,
+        "LOCATION": REDIS_URL_DB_1,
     }
 }
 

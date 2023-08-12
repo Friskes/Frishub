@@ -23,6 +23,10 @@ from backports.zoneinfo import ZoneInfo
 
 from celery import shared_task
 
+# https://github.com/steinitzu/celery-singleton
+from celery_singleton import Singleton, clear_locks # pip install celery-singleton
+from celery.signals import worker_ready
+
 # https://tproger.ru/articles/ispolzovanie-django-celery-beat-dlja-sozdanija-periodicheskih-zadach-v-django-proektah/
 from django_celery_beat.models import PeriodicTask, IntervalSchedule, CrontabSchedule
 
@@ -234,6 +238,25 @@ def send_email_if_notify_unread(*args, **kwargs):
 #         [settings.EMAIL_HOST_USER]
 #     )
 #     return 'SUCCEEDED test_cron_task'
+
+#############################################################################
+
+# Снимает блокировку со всех тасок которые были дублированы
+# @worker_ready.connect
+# def unlock_all(**kwargs):
+#     clear_locks(app)
+# unlock_all()
+
+# Singleton позволяет отклонять дублирующие таски если аргументы повторяются
+# @app.task(base=Singleton)
+# def test_task(a, b):
+#     print(f'test_task sleep(3) A({a}) B({b})')
+#     sleep(3)
+#     return a + b
+# test_task.delay(2, 2)
+# test_task.delay(2, 2)
+# test_task.delay(2, 2)
+# test_task.delay(3, 3)
 
 #############################################################################
 

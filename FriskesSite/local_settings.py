@@ -44,7 +44,7 @@ if RUN_DEV_SERVER_WITH_DOCKER or WINDOWS_REDIS_INSTALLED:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_URL,
+            "LOCATION": REDIS_URL_DB_1,
         }
     }
 else:
