@@ -97,6 +97,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    # плагин для установки локализации указанной в cookie файле
+    'main_app.middleware.language_cookie.LanguageCookieMiddleware',
+
     # плагин для подсчёта количества пользователей онлайн
     'main_app.middleware.online_users_now.OnlineUsersNowMiddleware',
 
