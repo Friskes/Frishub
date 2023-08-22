@@ -4,8 +4,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.db.models import TextField
 from django.core.handlers.asgi import ASGIRequest
-from django.forms import Textarea
-from django.utils.html import format_html
+from django.forms import ModelForm
 
 from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
@@ -585,8 +584,16 @@ class GuidesAdmin(TranslationAdmin):
         return form
 
     # Автоматически сохраняет в поле guide_creator пользователя который создаёт гайд
-    def save_model(self, request, obj, form, change):
-        obj.guide_creator = request.user
+    def save_model(self, request: ASGIRequest, obj: Guides, form: ModelForm, change: bool):
+        # сохраняем создателя гайда только при создании гайда
+        if not obj.guide_creator:
+            obj.guide_creator = request.user
+
+        # если поле guide_creator было изменено намеренно тогда принимаем эти изменения
+        elif ( form.cleaned_data.get('guide_creator')
+        and form.cleaned_data.get('guide_creator') != obj.guide_creator ):
+            obj.guide_creator = form.cleaned_data['guide_creator']
+
         super().save_model(request, obj, form, change)
 
     # Автоматически заполняет форму поля guide_creator текущим пользователем
