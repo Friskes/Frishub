@@ -35,6 +35,8 @@ import logging
 log = logging.getLogger(__name__)
 
 
+__all__ = ("sorting_chat_message",)
+
 #############################################################################
 
 REQUEST_URL = 'https://discord.com/api/v9/auth/login'
@@ -47,7 +49,7 @@ PAYLOAD = {
 DISCORD_ENDPOINT_URL = 'https://discord.com/api/users/@me'
 
 
-def check_token(token: str) -> Union[str, None]:
+def _check_token(token: str) -> Union[str, None]:
     """#### Проверяем работоспособность токена.
     >>> Если токен рабочий возвращаем None
     >>> Если токен нерабочий получаем новый и возвращаем его."""
@@ -67,7 +69,7 @@ def check_token(token: str) -> Union[str, None]:
     return None
 
 
-def token_verification() -> Union[str, None]:
+def _token_verification() -> Union[str, None]:
     """Если токен есть в БД проверяем его,
     - Если он рабочий возвращаем его,
     - Если нерабочий нам вернётся новый токен из метода проверки,
@@ -78,7 +80,7 @@ def token_verification() -> Union[str, None]:
 
     if service_info and service_info[0].discord_token:
 
-        token = check_token(service_info[0].discord_token)
+        token = _check_token(service_info[0].discord_token)
         if token:
             service_info.update(discord_token=token)
             return token
@@ -95,7 +97,7 @@ def token_verification() -> Union[str, None]:
         try:
             captcha_key = bypass(response['captcha_sitekey'])
         except Exception as exc:
-            log.error(f'[file parse_discord_chats.py -> def token_verification]:\n{exc}')
+            log.error(f'[file parse_discord_chats.py -> def _token_verification]:\n{exc}')
             return None
 
         response: dict = requests.post(
@@ -128,7 +130,7 @@ class DiscordChatParser:
 
         log.debug(f'[class DiscordChatParser -> def __init__]')
 
-        self.token = token_verification()
+        self.token = _token_verification()
 
         if self.forbidding_flag:
             # websocket.enableTrace(True) # вывод отладочных данных в консоль
@@ -292,7 +294,7 @@ def sorting_chat_message(event_data: dict,
 
 #############################################################################
 
-def event_trigger(data: dict):
+def _event_trigger(data: dict):
     """Отправляем актуальные данные с discord сервера
     в метод send_message_to_frontend класса GameChatConsumer."""
 
@@ -323,7 +325,7 @@ class AsyncActionGetGameChatData(threading.Thread):
             if data and data.get('t') == 'MESSAGE_CREATE':
 
                 if data.get('d').get('guild_id') == GUILD_ID: # айди сервера
-                    event_trigger(data)
+                    _event_trigger(data)
 
 
 # единоразово создаём экземпляр класса AsyncActionGetGameChatData при загрузке сервера

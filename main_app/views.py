@@ -16,7 +16,6 @@ from django.utils import timezone#, dateformat
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.handlers.asgi import ASGIRequest
-from django.core.cache import cache
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models.query import QuerySet
@@ -36,7 +35,8 @@ from main_app.models import (
     CustomUser, HomeNews, Comments, Guides,
     Category, LikeDislike, DressingRoom, Notification
 )
-from main_app.services.parse_twitch_streams import twitch_stream_parser
+from main_app.services.calculate_arena_points import get_arena_points
+from main_app.services.streams_context import get_streams_context, get_game_classes_from_cookie
 from main_app.forms import (
     RegisterForm, LoginForm, PasswordResetCustomForm, PasswordResetConfirmForm,
     ContactMeForm, AccountSettingsForm, PasswordChangeCustomForm, AccountEmailForm,
@@ -50,11 +50,9 @@ from FriskesSite.env import CELERY_FLOWER_ADDRESS, CELERY_FLOWER_PORT, CELERY_FL
 
 from celery.result import AsyncResult
 
-from math import floor
 import json
 from typing import Union, Dict, List, Tuple
 from uuid import uuid4
-from urllib.parse import unquote
 import datetime as dt
 
 import logging
@@ -266,12 +264,12 @@ class GuideView(DataMixin, FormView, DetailView):
         )
         mptt_comments.save()
 
-        self.send_notify(data, mptt_comments.pk, guide)
+        self._send_notify(data, mptt_comments.pk, guide)
 
         return super(GuideView, self).form_valid(form)
 
 
-    def send_notify(self, data, comment_pk, guide: Guides):
+    def _send_notify(self, data, comment_pk, guide: Guides):
         """Отправляет уведомление пользователю которому ответили на комментарий."""
 
         if not data['parent']: return
@@ -374,7 +372,7 @@ class VotesView(View):
         except LikeDislike.DoesNotExist:
             obj.votes.create(user=self.request.user, vote=self.vote_type)
 
-            self.send_notify(obj)
+            self._send_notify(obj)
 
         return HttpResponse(
             json.dumps({
@@ -385,7 +383,7 @@ class VotesView(View):
         )
 
 
-    def send_notify(self, comment: Comments):
+    def _send_notify(self, comment: Comments):
         """Отправляет уведомление пользователю которому оценили комментарий."""
 
         if not isinstance(comment, Comments): return
@@ -515,24 +513,11 @@ class StreamsView(DataMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
 
-        twitch_streams = cache.get('twitch_streams')
-        if twitch_streams is None:
-            twitch_streams = twitch_stream_parser.get_twitch_stream_data()
-            cache.set('twitch_streams', twitch_streams, 60) # секунды
+        encoded_text_data = self.request.COOKIES.get('streams_selected_classes')
+        game_classes = get_game_classes_from_cookie(encoded_text_data)
 
-        # получение cookies из запроса
-        encoded_text_data: str = self.request.COOKIES.get('streams_selected_classes')
-
-        game_classes = {}
-        if encoded_text_data and len(encoded_text_data) > 2:
-            decoded_text_data: str = unquote(encoded_text_data, encoding='utf-8')
-            game_classes = json.loads(decoded_text_data)
-
-        context.update({
-            'twitch_streams': twitch_streams if len(game_classes) == 0\
-                else self.filter_streams(game_classes, twitch_streams),
-            'twitch_stream_count': len(twitch_streams)
-        })
+        streams_context = get_streams_context(game_classes)
+        context.update(streams_context)
 
         return context
 
@@ -546,35 +531,10 @@ class StreamsView(DataMixin, TemplateView):
         либо отдаём список в шаблон без фильтрации."""
 
         game_classes = request.POST.keys()
-
-        twitch_streams = cache.get('twitch_streams')
-        if twitch_streams is None:
-            twitch_streams = twitch_stream_parser.get_twitch_stream_data()
-            cache.set('twitch_streams', twitch_streams, 60) # секунды
-
-        context = {
-            'twitch_streams': twitch_streams if len(game_classes) == 0\
-                else self.filter_streams(game_classes, twitch_streams),
-            'twitch_stream_count': len(twitch_streams)
-        }
+        streams_context = get_streams_context(game_classes)
 
         # передаём в ответ ajax полностью отрендеренный кусок html кода с новым контекстом и заменяем им старый код
-        return render(request, template_name='main_app/streams_container.html', context=context)
-
-
-    def filter_streams(self, game_classes: dict, twitch_streams: dict) -> list:
-        """Отфильтровываем стримеров по их игровому классу"""
-
-        filtered_twitch_streams = []
-
-        for game_class in game_classes:
-
-            for stream in twitch_streams:
-
-                if stream.get('game_classes').get(game_class):
-                    filtered_twitch_streams.append(stream)
-
-        return filtered_twitch_streams
+        return render(request, template_name='main_app/streams_container.html', context=streams_context)
 
 #############################################################################
 
@@ -608,7 +568,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
     template_name = 'main_app/dressing_room.html'
 
-    def time_checking(self):
+    def _time_checking(self):
         """Обновляет время для текущей комнаты и
         проверяет все остальные комнаты на предмет устаревания
         для последующего удаления."""
@@ -625,7 +585,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                     room.delete()
 
 
-    def get_my_saved_rooms(self, creator: Dict[str, Union[str, CustomUser]]
+    def _get_my_saved_rooms(self, creator: Dict[str, Union[str, CustomUser]]
                            ) -> Tuple[List[Dict[str, str]], QuerySet]:
         """Создание даты для отображения списка созданных комнат у текущего пользователя."""
 
@@ -659,9 +619,9 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
         # Получаем все комнаты (если они существуют) которые привязаны к текущему Cookie либо пользователю
         if self.request.user.is_anonymous:
-            my_saved_rooms, dressing_rooms = self.get_my_saved_rooms({'room_creator_id': cookie_creator_id})
+            my_saved_rooms, dressing_rooms = self._get_my_saved_rooms({'room_creator_id': cookie_creator_id})
         else:
-            my_saved_rooms, dressing_rooms = self.get_my_saved_rooms({'creator': self.request.user})
+            my_saved_rooms, dressing_rooms = self._get_my_saved_rooms({'creator': self.request.user})
 
         # Если эта комната записана в БД
         if self.dressing_room:
@@ -684,7 +644,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 else:
                     self.is_room_creator = self.dressing_room[0].creator == self.request.user
 
-            self.time_checking()
+            self._time_checking()
 
             character_data = {
                 'room_creator': self.is_room_creator,
@@ -809,53 +769,18 @@ class ArenaPointCalculatorView(DataMixin, TemplateView):
 
     template_name = 'main_app/ap_calculator.html'
 
-    def calculate_arena_points(self, bracket: str, rating: Union[str, int], server_type: bool) -> int:
-        """Рассчитываем по формуле количество очков арены которое игрок
-        получит за рейтинг в указанном брекете на выбранном сервере."""
-
-        if rating == '0': return 0
-        rating = int(rating)
-
-        if server_type:
-            if rating <= 1500:
-                points = 0.22 * rating + 14
-            elif rating > 1500:
-                points = 1511.26 / (1 + 1639.28 * (2.71828 ** (-0.00412 * rating)))
-        else:
-            if rating >= 150:
-                points = 1022 / (1 + 123 * (2.71828 ** (-0.00412 * rating))) + 580
-            elif rating <= 150:
-                return 0
-
-        if bracket == 'bracket2x2':
-            points *= 0.76
-        elif bracket == 'bracket3x3':
-            points *= 0.88
-
-        if server_type:
-            return floor(points)
-
-        return round(points)
-
-
     def post(self, request: ASGIRequest, *args, **kwargs):
         """- Получаем рейтинг с названием брекета и выбранный сервер
-        от пользователя и передаём в метод расчёта очков арены.
+        от пользователя и передаём в функцию расчёта очков арены.
         - Затем возвращаем результат в шаблон в json формате
         который примет ajax скрипт."""
 
-        data = {}
-        for key, value in request.POST.items():
-            if key == 'server_type':
-                continue
-            server_type = json.loads(request.POST.get('server_type'))
+        bracket_ratings = request.POST.items()
+        server_type = request.POST.get('server_type')
 
-            points = self.calculate_arena_points(bracket=key,
-                                                 rating=value,
-                                                 server_type=server_type)
-            data.update({key: points})
+        bracket_points = get_arena_points(bracket_ratings, server_type)
 
-        return JsonResponse(data)
+        return JsonResponse(bracket_points)
 
 #############################################################################
 ################################ Авторизация ################################

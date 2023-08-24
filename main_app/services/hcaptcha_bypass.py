@@ -4,6 +4,9 @@ import time
 from FriskesSite import settings
 
 
+__all__ = ("bypass",)
+
+
 # https://dash.nocaptchaai.com/home
 # https://docs.nocaptchaai.com/en/token/hCaptcha.html
 

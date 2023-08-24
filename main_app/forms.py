@@ -16,6 +16,8 @@ from django.forms import (
     SelectDateWidget, Textarea, ValidationError, SelectMultiple, TextInput
 )
 
+from main_app.services.services import humanize_size, validate_twitch_link
+
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -23,7 +25,6 @@ from main_app.models import CustomUser, ContactMe, Comments
 
 from mptt.forms import TreeNodeChoiceField
 
-import math
 from datetime import datetime
 
 from FriskesSite.celery import app as celery_app
@@ -287,40 +288,14 @@ class AccountSettingsForm(ModelForm):
         }
 
 
-    def validate_twitch_link(self, url: str) -> str:
-        """Проверяет ссылку на корректность, если ссылка подходящая но в укороченном виде, дополняет её."""
-
-        if url[:22] == 'https://www.twitch.tv/':
-            return url
-        elif url[:14] == 'www.twitch.tv/':
-            return 'https://' + url
-        elif url[:10] == 'twitch.tv/':
-            return 'https://www.' + url
-        else:
-            raise ValidationError(_('Неправильная ссылка.'))
-
-
     # метод clean_<название-поля> возвращает объект который будет сохранён в БД при отсутствии ошибок
     def clean_twitch_link(self):
         twitch_link = self.cleaned_data.get('twitch_link', False)
 
         if twitch_link:
-            full_url = self.validate_twitch_link(twitch_link)
+            full_url = validate_twitch_link(twitch_link)
             if full_url:
                 return full_url
-
-
-    def humanize_size(self, bytes_size: int, decimals: int=1) -> str:
-        """Конвертирует байты в крайний объем информации для переданного объёма байт,
-        и оставляет 1 знак после запятой (по умолчанию),
-        так же добавляет суффикс в конце строки."""
-
-        if bytes_size == 0: return '0'
-        suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-        power = math.floor(math.log(bytes_size, 1024))
-        # return f'{round(bytes_size / math.pow(1024, power), decimals)} {suffixes[power]}'
-        # return f'{bytes_size / math.pow(1024, power):.{decimals}f} {suffixes[power]}'
-        return f'{bytes_size / math.pow(1024, power):.{decimals}f}'.rstrip('0').rstrip('.') + f' {suffixes[power]}'
 
 
     def clean_avatar(self):
@@ -336,7 +311,7 @@ class AccountSettingsForm(ModelForm):
             width, height = get_image_dimensions(avatar)
 
             resolution = str(width) + 'x' + str(height)
-            size = self.humanize_size(avatar.size)
+            size = humanize_size(avatar.size)
 
             resolution_error = _('Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, \
                 ваш файл имеет разрешение ') + resolution + _(' пикселей') + '.'

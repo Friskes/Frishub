@@ -13,6 +13,8 @@ import logging
 log = logging.getLogger(__name__)
 
 
+__all__ = ("twitch_stream_parser",)
+
 #############################################################################
 
 OAUTH2_URL = 'https://id.twitch.tv/oauth2/token'
@@ -24,7 +26,7 @@ PAYLOAD = {
 }
 
 
-def token_verification() -> Union[str, None]:
+def _token_verification() -> Union[str, None]:
     """Возвращаем токен из БД если он там есть,
     иначе вызываем функцию получения токена,
     обновляем новый токен в БД и возвращаем его."""
@@ -44,7 +46,7 @@ def token_verification() -> Union[str, None]:
 
 #############################################################################
 
-def transform_data(stream_data: dict, streamers: dict) -> dict:
+def _transform_data(stream_data: dict, streamers: dict) -> dict:
     """Перерабатываем данные которые пришли от twitch API."""
 
     language = '/static/main_app/images/svg/' + stream_data['language'].upper() + '.svg'
@@ -82,7 +84,7 @@ class TwitchStreamParser:
         if self.forbidding_flag:
             self.forbidding_flag = False
             # Единоразово получаем токен при первом запуске.
-            self.twitch_token = token_verification()
+            self.twitch_token = _token_verification()
 
         # Получить verbose_name у поля модели
         # print(twitch_streamer_info.model._meta.get_field('warrior').verbose_name)
@@ -156,7 +158,7 @@ class TwitchStreamParser:
         twitch_streams = []
 
         for stream_data in data:
-            clean_stream_data = transform_data(stream_data, streamers)
+            clean_stream_data = _transform_data(stream_data, streamers)
             twitch_streams.append(clean_stream_data)
 
         return twitch_streams
