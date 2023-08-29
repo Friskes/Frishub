@@ -755,6 +755,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         and self.dressing_room[0].allow_edit != data['allow_edit'] ):
             raise PermissionDenied
 
+        # Если пользователь изменил патч, обнуляем настройки внешности
         if self.dressing_room[0].game_patch != data['game_patch']:
             data['face'] = ''
 

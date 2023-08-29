@@ -342,7 +342,6 @@
     });
   };
   const debounce_sendAjaxRequest = debounce(sendAjaxRequest, "{% if debug_mode %}300{% else %}3000{% endif %}");
-  const debounce_sendAjaxRequest_300ms = debounce(sendAjaxRequest, 300);
 
 
   const IGNORED_WRAPPED_PROPS = [
@@ -2242,7 +2241,10 @@
               window.dressUI.char.mount = WRATH_MOUNTS_LEN;
             };
 
-            debounce_sendAjaxRequest_300ms();
+            // может возникать проблема при переключении патча и слишком быстрой перезагрузки страницы
+            // изза этого происходит рассинхрон между патчем и количество настроек внешности для персонажа на этом патче
+            sendAjaxRequest();
+
             // warnMessageHandler(6000, interpolate(gettext('Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.'), [window.dressUI.game_patch.toUpperCase()]));
             // warnMessageHandler(6000, interpolate("{% blocktrans %}Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.{% endblocktrans %}", [window.dressUI.game_patch.toUpperCase()]));
             warnMessageHandler(6000, interpolate("{% trans 'Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.' %}", [window.dressUI.game_patch.toUpperCase()]));
@@ -3436,12 +3438,9 @@
             window.dressUI.face.min_len = [];
             window.dressUI.face.have_text_opt = [];
 
-            console.log('window.dressUI.face.current.length =', window.dressUI.face.current.length, 'window.dressUI.face.current = ', window.dressUI.face.current);
             if (window.dressUI.face.current.length === 0) {
-              console.log('race_gender_opts.length INSIDE CONDITION', race_gender_opts.length);
               window.dressUI.face.current =
               ((len, char) => Array.from({ length: len }, () => char))(race_gender_opts.length, 0);
-              console.log('window.dressUI.face.current AFTER GENERATOR =', window.dressUI.face.current);
             };
 
             for (const i in race_gender_opts) {
