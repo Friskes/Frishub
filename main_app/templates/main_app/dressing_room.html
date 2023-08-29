@@ -3436,9 +3436,12 @@
             window.dressUI.face.min_len = [];
             window.dressUI.face.have_text_opt = [];
 
+            console.log('window.dressUI.face.current.length =', window.dressUI.face.current.length, 'window.dressUI.face.current = ', window.dressUI.face.current);
             if (window.dressUI.face.current.length === 0) {
+              console.log('race_gender_opts.length INSIDE CONDITION', race_gender_opts.length);
               window.dressUI.face.current =
               ((len, char) => Array.from({ length: len }, () => char))(race_gender_opts.length, 0);
+              console.log('window.dressUI.face.current AFTER GENERATOR =', window.dressUI.face.current);
             };
 
             for (const i in race_gender_opts) {
@@ -3448,14 +3451,7 @@
 
               const opt_name = option.Name.replace(' ', '_').toLowerCase();
 
-              try {
-                var choice_name = option.Choices[window.dressUI.face.current[i]].Name;
-              } catch (error) {
-                console.log(error);
-                console.log('i =', i, 'window.dressUI.face.current[i] =', window.dressUI.face.current[i], 'option.Choices =', option.Choices);
-                var choice_name = error;
-              };
-              // const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
+              const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
 
               const max_len = option.Choices.length - 1;
 
