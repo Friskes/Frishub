@@ -3447,7 +3447,16 @@
               if (NOT_ALLOWED_CHAR_OPTS.indexOf(option.Name) !== -1) continue;
 
               const opt_name = option.Name.replace(' ', '_').toLowerCase();
-              const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
+
+              try {
+                var choice_name = option.Choices[window.dressUI.face.current[i]].Name;
+              } catch (error) {
+                  console.log(error);
+                  console.log(`i=${i}, window.dressUI.face.current[i]=${window.dressUI.face.current[i]}, option.Choices=${option.Choices}`);
+                  var choice_name = error;
+              };
+              // const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
+
               const max_len = option.Choices.length - 1;
 
               window.dressUI.face.fields.push(opt_name);
