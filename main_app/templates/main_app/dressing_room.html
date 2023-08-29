@@ -3451,9 +3451,9 @@
               try {
                 var choice_name = option.Choices[window.dressUI.face.current[i]].Name;
               } catch (error) {
-                  console.log(error);
-                  console.log(`i=${i}, window.dressUI.face.current[i]=${window.dressUI.face.current[i]}, option.Choices=${option.Choices}`);
-                  var choice_name = error;
+                console.log(error);
+                console.log('i =', i, 'window.dressUI.face.current[i] =', window.dressUI.face.current[i], 'option.Choices =', option.Choices);
+                var choice_name = error;
               };
               // const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
 
