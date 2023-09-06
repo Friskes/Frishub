@@ -459,6 +459,8 @@ class Category(models.Model):
 
     image_name = models.ImageField(upload_to="categorys", verbose_name='Изображение категории')
 
+    is_published = models.BooleanField(default=False, verbose_name='Публикация')
+
     cat_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
     verbose_name='Создатель категории', blank=True, null=True)
 

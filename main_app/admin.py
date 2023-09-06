@@ -585,6 +585,11 @@ class GuidesAdmin(TranslationAdmin):
 
     # Автоматически сохраняет в поле guide_creator пользователя который создаёт гайд
     def save_model(self, request: ASGIRequest, obj: Guides, form: ModelForm, change: bool):
+        # если пользователь не является суперпользователем
+        # тогда всегда снимаем с публикации его гайд после любого изменения
+        if not request.user.is_superuser:
+            obj.is_published = False
+
         # сохраняем создателя гайда только при создании гайда
         if not obj.guide_creator:
             obj.guide_creator = request.user
@@ -654,11 +659,21 @@ class CategoryAdmin(TranslationAdmin):
     def get_form(self, request: ASGIRequest, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
+            form.base_fields['is_published'].disabled = True
             form.base_fields['cat_creator'].disabled = True
         return form
 
-    def save_model(self, request, obj, form, change):
-        obj.cat_creator = request.user
+    def save_model(self, request: ASGIRequest, obj: Category, form: ModelForm, change: bool):
+        if not request.user.is_superuser:
+            obj.is_published = False
+
+        if not obj.cat_creator:
+            obj.cat_creator = request.user
+
+        elif ( form.cleaned_data.get('cat_creator')
+        and form.cleaned_data.get('cat_creator') != obj.cat_creator ):
+            obj.cat_creator = form.cleaned_data['cat_creator']
+
         super().save_model(request, obj, form, change)
 
     def get_changeform_initial_data(self, request):
