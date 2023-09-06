@@ -21,9 +21,9 @@ def filtered_guides_list(sorter=None, category_selected=0):
     """Фильтрует список гайдов если передан параметр sorter, иначе возвращает сразу все."""
 
     if sorter:
-        categorys = Category.objects.order_by(sorter)
+        categorys = Category.objects.filter(is_published=True).order_by(sorter)
     else:
-        categorys = Category.objects.all()
+        categorys = Category.objects.filter(is_published=True)
 
     return {'categorys': categorys, 'category_selected': category_selected}
 

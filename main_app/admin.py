@@ -635,12 +635,15 @@ class GuidesAdmin(TranslationAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(TranslationAdmin):
-    list_display = ('id', 'name', 'slug', 'get_html_avatar30x30')
+    list_display = ('id', 'name', 'slug', 'get_html_avatar30x30', 'is_published')
     list_display_links = ('name',)
+
     prepopulated_fields = {'slug': ('name',)}
 
+    list_editable = ('is_published',)
+
     readonly_fields = ('get_html_avatar65x65',)
-    fields = ('cat_creator', 'name', 'slug', ('image_name', 'get_html_avatar65x65'))
+    fields = ('is_published', 'cat_creator', 'name', 'slug', ('image_name', 'get_html_avatar65x65'))
 
     raw_id_fields = ('cat_creator',)
 
