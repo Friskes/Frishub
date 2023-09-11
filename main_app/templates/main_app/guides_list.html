@@ -197,7 +197,7 @@
             <label class="img-delete-btn1" style="margin-left: 10px; bottom: 0px;">
               <span class="material-symbols-outlined" style="color: white; font-variation-settings: 'FILL' 1, 'GRAD' 200;">chat</span>
             </label>
-            <label style="margin-left: 5px;">{{ guide.comments.all.count }}</label>
+            <label style="margin-left: 5px;">{{ guide|get_all_published_comments }}</label>
           </div>
         </div>
 

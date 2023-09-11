@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils.html import format_html
 
-from main_app.models import Category, CustomUser, DressingRoom
+from main_app.models import Category, CustomUser, DressingRoom, Guides
 
 import humanize
 
@@ -72,6 +72,14 @@ def child_count(node):
         if children_comment.is_published:
             count += 1
     return count
+
+#############################################################################
+
+@register.filter
+def get_all_published_comments(guide: Guides):
+    """Возвращает количество опубликованных комментариев у гайда."""
+
+    return guide.comments.filter(is_published=True).count()
 
 #############################################################################
 
