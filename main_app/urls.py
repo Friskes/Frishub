@@ -19,6 +19,8 @@ urlpatterns = [
 
     path('', views.HomeView.as_view(), name='home'),
 
+    path('api/modelviewer/<path:modelviewer_path>/', views.ZamimgProxyView.as_view(), name='zamimg_proxy'),
+
     path('guides/', views.GuidesListView.as_view(), name='guides'),
 
     path('category/<slug:category_slug>/', views.FilteringGuidesView.as_view(), name='category'),

@@ -7707,11 +7707,10 @@
       }
     };
     const Lo = class {
-      constructor(tt, e) {
-        var _this = this;
-        if (((_this.d = null), (_this.e = !1), 0 == e))
+      constructor(t, e) {
+        if (((this.d = null), (this.e = !1), 0 == e))
           return void console.log("Texture file is 0");
-        (_this.b = tt), (_this.c = tt.l.contentPath + "textures/" + e + ".png");
+        (this.b = t), (this.c = t.l.contentPath + "textures/" + e + ".png");
         !(function (t) {
           (t.a = new Image()),
             (t.a.crossOrigin = ""),
@@ -7719,31 +7718,10 @@
               t.h();
             }),
             (t.a.onerror = function () {
-              ///////////////////////////// friskes /////////////////////////////
-              let contentPath = tt.l.contentPath.split('/').at(-2) == 'wrath'
-              ? 'https://wow.zamimg.com/modelviewer/live/'
-              : 'https://wow.zamimg.com/modelviewer/wrath/';
-              _this.c = contentPath + "textures/" + e + ".png";
-              !(function (t) {
-                (t.a = new Image()),
-                  (t.a.crossOrigin = ""),
-                  (t.a.onload = function () {
-                    t.h();
-                  }),
-                  (t.a.onerror = function () {
-                    t.a = null;
-
-                    window.errorLoadingItemCallback
-                    ? window.errorLoadingItemCallback({displayId: tt.l.items[0][1], slotId: tt.l.items[0][0], type: null})
-                    : undefined;
-                  }),
-                  (t.a.src = t.c);
-              })(_this);
-              ///////////////////////////// friskes /////////////////////////////
-              // t.a = null;
+              t.a = null;
             }),
             (t.a.src = t.c);
-        })(_this);
+        })(this);
       }
       f() {
         return this.e;
@@ -8243,39 +8221,15 @@
           19 != i &&
           20 != i) ||
           (e = "meta/armor/" + i + "/");
-        ///////////////////////////// friskes /////////////////////////////
-        let contentPath = t.a.l.contentPath;
-        let try_again_with_another_patch = function() {
-          let content_path = contentPath.split('/').at(-2) == 'wrath'
-          ? 'https://wow.zamimg.com/modelviewer/live/'
-          : 'https://wow.zamimg.com/modelviewer/wrath/';
-
-          let r = content_path + e + t.t + ".json";
-          $.getJSON(r)
-            .done(function (e) {
-              t.A(e);
-            })
-            .fail(function (e, i, r) {
-              let n = i + ", " + r;
-              WH.debug("Error loading item metadata", t.t, n), (t.o = !0);
-
-              window.errorLoadingItemCallback
-              ? window.errorLoadingItemCallback({displayId: t.t, slotId: t.b, type: null})
-              : undefined;
-            });
-        };
-
         let r = t.a.l.contentPath + e + t.t + ".json";
         $.getJSON(r)
           .done(function (e) {
             t.A(e);
           })
           .fail(function (e, i, r) {
-            try_again_with_another_patch();
-            // let n = i + ", " + r;
-            // WH.debug("Error loading item metadata", t.t, n), (t.o = !0);
+            let n = i + ", " + r;
+            WH.debug("Error loading item metadata", t.t, n), (t.o = !0);
           });
-        ///////////////////////////// friskes /////////////////////////////
       }
       A(t) {
         if (!this.a)
@@ -11773,7 +11727,6 @@
         this.a && this.a.type && this.a.id && this.bW(this.a.type, this.a.id);
       }
       bW(t, e) {
-        let iii;
         let i,
           r = this;
         t == nr.ITEM
@@ -11790,35 +11743,15 @@
           ? (i = "meta/character/")
           : t == nr.ITEMVISUAL && (i = "meta/itemvisual/"),
           i
-            ? ((iii = this.l.contentPath + i + e + ".json"),
+            ? ((i = this.l.contentPath + i + e + ".json"),
               (function (t) {
-                $.getJSON(iii)
+                $.getJSON(i)
                   .done(function (e) {
                     r.bY(e, t);
                   })
-                  .fail(function (tt, ee, ii) {
-                    ///////////////////////////// friskes /////////////////////////////
-                    let contentPath = r.l.contentPath.split('/').at(-2) == 'wrath'
-                    ? 'https://wow.zamimg.com/modelviewer/live/'
-                    : 'https://wow.zamimg.com/modelviewer/wrath/';
-                    iii = contentPath + i + e + ".json";
-                    (function (t) {
-                      $.getJSON(iii)
-                        .done(function (e) {
-                          r.bU(e, t);
-                        })
-                        .fail(function (tt, ee, ii) {
-                        let r = ee + ", " + ii;
-                        console.log("Model:_load Error loading metadata: " + r);
-
-                        window.errorLoadingItemCallback
-                        ? window.errorLoadingItemCallback({displayId: e, slotId: null, type: t})
-                        : undefined;
-                      });
-                    })(t);
-                    ///////////////////////////// friskes /////////////////////////////
-                    // let r = ee + ", " + ii;
-                    // console.log("Model:_load Error loading metadata: " + r);
+                  .fail(function (t, e, i) {
+                    let r = e + ", " + i;
+                    console.log("Model:_load Error loading metadata: " + r);
                   });
               })(t))
             : t == nr.PATH &&
@@ -12003,7 +11936,8 @@
             }
           }
           if (t.Model)
-            n.bW(nr.PATH, t.Model), e == nr.NPC && n.l.items && n.bQ(n.l.items);
+            n.bW(nr.PATH, t.Model),
+              e == nr.NPC && n.l.items && !n.w && n.bQ(n.l.items);
           else if (t.Race > 0) {
             const e = t.Race + "_" + t.Gender;
             (n.o = t.Race), (n.p = t.Gender), n.bW(nr.CHARACTER, e);
@@ -12613,7 +12547,7 @@
           this.addedCss ||
             ((this.addedCss = !0),
             $("head").append(
-              `<link rel="stylesheet" href="${e.viewer.options.contentPath}viewer/viewer.css" type="text/css" />` // friskes
+              '<link rel="stylesheet" href="//wow.zamimg.com/modelviewer/live/viewer/viewer.css" type="text/css" />'
             ));
       }
       updateProgress() {

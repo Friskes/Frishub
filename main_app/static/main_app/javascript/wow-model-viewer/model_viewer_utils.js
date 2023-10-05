@@ -2,9 +2,13 @@ window.WH.debug = function(...args) {
     // console.log(args);
 };
 
+// const CONTENT_PATH = window.GAME_PATCH
+// ? `https://wow.zamimg.com/modelviewer/${window.GAME_PATCH}/`
+// : 'https://wow.zamimg.com/modelviewer/wrath/';
+
 const CONTENT_PATH = window.GAME_PATCH
-? `https://wow.zamimg.com/modelviewer/${window.GAME_PATCH}/`
-: 'https://wow.zamimg.com/modelviewer/wrath/';
+? `/api/modelviewer/${window.GAME_PATCH}/`
+: '/api/modelviewer/wrath/';
 
 const _RACES = {
     // wrath and live
@@ -174,29 +178,12 @@ async function findItemsInEquipments(equipments) {
  * @returns {Promise<Object>}
  */
 async function findRaceGenderOptions(race, gender) {
-    try {
-        const options = await fetch(`${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
+    const options = await fetch(
+        `${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`
+    ).then((response) => response.json());
 
-        if (options.data) return options.data;
-        return options;
-    } catch (e) {
-        console.error('[async function findRaceGenderOptions] -> await fetch -> *FAILED*');
-        return {Options: []};
-
-        // const contentPath = CONTENT_PATH.split('/').at(-2) == 'wrath'
-        // ? 'https://wow.zamimg.com/modelviewer/live/'
-        // : 'https://wow.zamimg.com/modelviewer/wrath/';
-
-        // try {
-        //     const options = await fetch(`${contentPath}meta/charactercustomization2/${race}_${gender}.json`).then((response) => response.json());
-
-        //     if (options.data) return options.data;
-        //     return options;
-        // } catch (e) {
-        //     console.error('[async function findRaceGenderOptions] -> await fetch -> *FAILED*');
-        //     return {Options: []};
-        // };
-    };
+    if (options.data) return options.data;
+    return options;
 };
 
 
@@ -212,23 +199,11 @@ async function getDisplaySlot(item, slot, displayId) {
     if (typeof slot !== `number`) throw new Error(`slot must be a number`);
     if (typeof displayId !== `number`) throw new Error(`displayId must be a number`);
 
-    try {
-        await fetch(`${CONTENT_PATH}meta/armor/${slot}/${displayId}.json`).then(response => response.json());
+    await fetch(
+        `${CONTENT_PATH}meta/armor/${slot}/${displayId}.json`
+    ).then(response => response.json());
 
-        return {displaySlot: slot, displayId: displayId};
-    } catch (e) {
-        const contentPath = CONTENT_PATH.split('/').at(-2) == 'wrath'
-        ? 'https://wow.zamimg.com/modelviewer/live/'
-        : 'https://wow.zamimg.com/modelviewer/wrath/';
-
-        try {
-            await fetch(`${contentPath}meta/armor/${slot}/${displayId}.json`).then(response => response.json());
-
-            return {displaySlot: slot, displayId: displayId};
-        } catch (e) {
-            console.error('[async function getDisplaySlot] -> await fetch -> *FAILED*');
-        };
-    };
+    return {displaySlot: slot, displayId: displayId};
 };
 
 

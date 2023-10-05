@@ -7481,12 +7481,12 @@
       }
     };
     const mo = class {
-      constructor(tt, e, i) {
+      constructor(t, e, i) {
         var r = this;
-        tt.aT.context;
+        t.aT.context;
         0 == i && console.log("Texture file is 0"),
-          (r.b = tt),
-          (r.c = tt.l.contentPath + "textures/" + i + ".png"),
+          (r.b = t),
+          (r.c = t.l.contentPath + "textures/" + i + ".png"),
           (r.d = null),
           (r.f = !1),
           (function (t, e) {
@@ -7496,28 +7496,7 @@
                 t.i();
               }),
               (t.a.onerror = function () {
-                ///////////////////////////// friskes /////////////////////////////
-                let contentPath = tt.l.contentPath.split('/').at(-2) == 'wrath'
-                ? 'https://wow.zamimg.com/modelviewer/live/'
-                : 'https://wow.zamimg.com/modelviewer/wrath/';
-                r.c = contentPath + "textures/" + i + ".png";
-                (function (t, e) {
-                  (t.a = new Image()),
-                    (t.a.crossOrigin = ""),
-                    (t.a.onload = function () {
-                      t.i();
-                    }),
-                    (t.a.onerror = function () {
-                      t.a = null;
-
-                      window.errorLoadingItemCallback
-                      ? window.errorLoadingItemCallback({displayId: tt.l.items[0][1], slotId: tt.l.items[0][0], type: null})
-                      : undefined;
-                    }),
-                    (t.a.src = t.c);
-                })(r);
-                ///////////////////////////// friskes /////////////////////////////
-                // t.a = null;
+                t.a = null;
               }),
               (t.a.src = t.c);
           })(r);
@@ -8017,39 +7996,15 @@
           i != Bi &&
           i != Ni) ||
           (e = "meta/armor/" + i + "/");
-        ///////////////////////////// friskes /////////////////////////////
-        let contentPath = t.a.l.contentPath;
-        let try_again_with_another_patch = function() {
-          let content_path = contentPath.split('/').at(-2) == 'wrath'
-          ? 'https://wow.zamimg.com/modelviewer/live/'
-          : 'https://wow.zamimg.com/modelviewer/wrath/';
-
-          let r = content_path + e + t.s + ".json";
-          $.getJSON(r)
-            .done(function (e) {
-              t.z(e);
-            })
-            .fail(function (e, i, r) {
-              let n = i + ", " + r;
-              WH.debug("Error loading item metadata", t.s, n), (t.n = !0);
-
-              window.errorLoadingItemCallback
-              ? window.errorLoadingItemCallback({displayId: t.s, slotId: t.b, type: null})
-              : undefined;
-            });
-        };
-
         let r = t.a.l.contentPath + e + t.s + ".json";
         $.getJSON(r)
           .done(function (e) {
             t.z(e);
           })
           .fail(function (e, i, r) {
-            try_again_with_another_patch();
-            // let n = i + ", " + r;
-            // WH.debug("Error loading item metadata", t.s, n), (t.n = !0);
+            let n = i + ", " + r;
+            WH.debug("Error loading item metadata", t.s, n), (t.n = !0);
           });
-        ///////////////////////////// friskes /////////////////////////////
       }
       z(t) {
         if (!this.a)
@@ -11387,7 +11342,6 @@
         this.a && this.a.type && this.a.id && this.bS(this.a.type, this.a.id);
       }
       bS(t, e) {
-        let iii;
         let i,
           r = this;
         t == di.ITEM
@@ -11404,35 +11358,15 @@
           ? (i = "meta/character/")
           : t == di.ITEMVISUAL && (i = "meta/itemvisual/"),
           i
-            ? ((iii = this.l.contentPath + i + e + ".json"),
+            ? ((i = this.l.contentPath + i + e + ".json"),
               (function (t) {
-                $.getJSON(iii)
+                $.getJSON(i)
                   .done(function (e) {
                     r.bU(e, t);
                   })
-                  .fail(function (tt, ee, ii) {
-                    ///////////////////////////// friskes /////////////////////////////
-                    let contentPath = r.l.contentPath.split('/').at(-2) == 'wrath'
-                    ? 'https://wow.zamimg.com/modelviewer/live/'
-                    : 'https://wow.zamimg.com/modelviewer/wrath/';
-                    iii = contentPath + i + e + ".json";
-                    (function (t) {
-                      $.getJSON(iii)
-                        .done(function (e) {
-                          r.bU(e, t);
-                        })
-                        .fail(function (tt, ee, ii) {
-                        let r = ee + ", " + ii;
-                        console.log("Model:_load Error loading metadata: " + r);
-
-                        window.errorLoadingItemCallback
-                        ? window.errorLoadingItemCallback({displayId: e, slotId: null, type: t})
-                        : undefined;
-                      });
-                    })(t);
-                    ///////////////////////////// friskes /////////////////////////////
-                    // let r = ee + ", " + ii;
-                    // console.log("Model:_load Error loading metadata: " + r);
+                  .fail(function (t, e, i) {
+                    let r = e + ", " + i;
+                    console.log("Model:_load Error loading metadata: " + r);
                   });
               })(t))
             : t == di.PATH &&
@@ -12218,7 +12152,7 @@
           this.addedCss ||
             ((this.addedCss = !0),
             $("head").append(
-              `<link rel="stylesheet" href="${e.viewer.options.contentPath}viewer/viewer.css" type="text/css" />` // friskes
+              '<link rel="stylesheet" href="//wow.zamimg.com/modelviewer/live/viewer/viewer.css" type="text/css" />'
             ));
       }
       updateProgress() {
