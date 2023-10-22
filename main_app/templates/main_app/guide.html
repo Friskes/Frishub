@@ -405,6 +405,9 @@
   }
 
 
+  .guide-content {
+    word-break: break-all;
+  }
   .guide-content details summary {
     color: green;
   }
@@ -999,6 +1002,7 @@
             );
           };
 
+          const lang_prefix = "{{ LANGUAGE_CODE }}" === "ru" ? "" : "/en";
           var csrftoken = Cookies.get('csrftoken');
           function like()
           {
@@ -1010,7 +1014,7 @@
               animateIcon(like, true)
 
               $.ajax({
-                  url : "/api/" + type + "/" + pk + "/" + action + "/",
+                  url : lang_prefix + "/api/" + type + "/" + pk + "/" + action + "/",
                   type : 'POST',
                   data : { 'obj' : pk },
                   headers: {'X-CSRFToken': csrftoken},
@@ -1034,7 +1038,7 @@
               animateIcon(dislike, false)
           
               $.ajax({
-                  url : "/api/" + type + "/" + pk + "/" + action + "/",
+                  url : lang_prefix + "/api/" + type + "/" + pk + "/" + action + "/",
                   type : 'POST',
                   data : { 'obj' : pk },
                   headers: {'X-CSRFToken': csrftoken},

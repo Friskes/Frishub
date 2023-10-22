@@ -681,7 +681,7 @@
 
   .caret-disabled {
     opacity: 0.5;
-    pointer-events: none !important;
+    /* pointer-events: none !important; */
   }
 </style>
 
@@ -2585,6 +2585,8 @@
 
             items_menu.children[0].addEventListener('click', modelIsLoaded(function(event) {
 
+              if (event.target.classList.contains('caret-disabled')) return;
+
               if (event.target.classList.contains('fa-caret-left') && slot_data.index > 0) {
 
                 updateItemsMenuHandler(true, slot_data, event.target.parentElement.children[1]);
@@ -2680,6 +2682,8 @@
               races_menu_switcher(event.target.parentElement.parentElement.children[2]);
               return false;
             };
+
+            if (event.target.classList.contains('caret-disabled')) return;
 
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.race_id > 1) {
 
@@ -2801,6 +2805,8 @@
 
           $('#select_gender_btn a').on('click', modelIsLoaded(function(event) {
 
+            if (event.target.classList.contains('caret-disabled')) return;
+
             if (this.classList.contains('fa-caret-left') && window.dressUI.char.gender_id === 1) {
 
               window.dressUI.char.gender_id -= 1;
@@ -2820,6 +2826,8 @@
 
 
           $('#select_sheathed_btn a').on('click', modelIsLoaded(function(event) {
+
+            if (event.target.classList.contains('caret-disabled')) return;
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.sheath > 0) {
@@ -2860,6 +2868,8 @@
               anims_menu_switcher(event.target.parentElement.parentElement.children[2]);
               return false;
             };
+
+            if (event.target.classList.contains('caret-disabled')) return;
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.anim > 0) {
@@ -2938,6 +2948,8 @@
               mounts_menu_switcher(event.target.parentElement.parentElement.children[2]);
               return false;
             };
+
+            if (event.target.classList.contains('caret-disabled')) return;
 
             if (this.classList.contains('fa-caret-left')
             && window.dressUI.char.mount > 0) {
@@ -3189,7 +3201,7 @@
           const face_settings = $('#dressing-room-face-settings')[0];
           const char_settings = $('#dressing-room-character-settings')[0];
 
-          $('.dressing-room-character-controls-category-switchers a').on('click', function(event) {
+          $('.dressing-room-character-controls-category-switchers a').on('click', modelIsLoaded(function(event) {
 
             const category = event.target.getAttribute('data-category');
             event.target.setAttribute('data-active', 'true');
@@ -3224,7 +3236,7 @@
                 window.model.renderer.viewer.setOffset(0, 0);
               };
             };
-          });
+          }));
 
 
           function setFaceZoom() {
@@ -3342,7 +3354,7 @@
               window.generateCharModel();
 
               //////////////// TEST №1 STRESS TEST CHAR MODEL ////////////////
-              // window.dressUI.model_opts.items = [ // items with CORS policy
+              // window.dressUI.model_opts.items = [
               //   [1,  64897,  51281, 0],
               //   [3,  64896,  51284, 0],
               //   [16, 22996,  54583, 0],
@@ -3456,6 +3468,8 @@
 
 
               cat_opt_div.addEventListener('click', modelIsLoaded(function(event) {
+
+                if (event.target.classList.contains('caret-disabled')) return;
 
                 if (event.target.classList.contains('fa-caret-left') && window.dressUI.face.current[i] > 0) {
                   window.dressUI.face.current[i] -= 1;

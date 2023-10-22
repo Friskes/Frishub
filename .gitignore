@@ -32,3 +32,8 @@ celerybeat.pid
 chromedriver.exe
 
 redis
+
+**/json/modelviewer/
+
+static
+!**/main_app/static

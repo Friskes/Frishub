@@ -55,6 +55,8 @@ from typing import Union, Dict, List, Tuple
 from uuid import uuid4
 import datetime as dt
 import requests
+from os.path import exists, isfile
+from pathlib import Path
 
 import logging
 log = logging.getLogger(__name__)
@@ -180,17 +182,33 @@ class ZamimgProxyView(View):
         """Проксирует запрос к zamimg API через этот сервер,
         т.к. zamimg сервер не установил Cross-Origin Resource Sharing заголовки,
         для возможности отправки запроса со стороны клиента используя JavaScript.
-        https://developer.mozilla.org/ru/docs/Web/HTTP/CORS"""
+        https://developer.mozilla.org/ru/docs/Web/HTTP/CORS
+        И кэширует файлы локально для уменьшения трассы запроса и ускорения работы."""
 
-        headers_get = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
-                AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36'
-        }
-        url = 'https://wow.zamimg.com/modelviewer/' + kwargs.get('modelviewer_path')
+        STATIC_ROOT = settings.BASE_DIR / 'static'
+        full_path = f'{STATIC_ROOT}/main_app/json/modelviewer/{kwargs.get("modelviewer_path")}'
 
-        response = requests.get(url, headers=headers_get, timeout=5)
+        # if not isfile(full_path):
+        if not exists(full_path):
 
-        return HttpResponse(response.content)
+            headers_get = {
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
+                    AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36'
+            }
+            zamimg_url = f'https://wow.zamimg.com/modelviewer/{kwargs.get("modelviewer_path")}'
+
+            response = requests.get(zamimg_url, headers=headers_get, timeout=5)
+
+            path_to_file, file_name = full_path.rsplit('/', maxsplit=1)
+            path_obj = Path(path_to_file)
+            path_obj.mkdir(parents=True, exist_ok=True)
+
+            with open(f'{path_to_file}/{file_name}', 'wb+') as file:
+                file.write(response.content)
+            return HttpResponse(response.content)
+
+        with open(full_path, 'rb') as file:
+            return HttpResponse(file.read())
 
 #############################################################################
 
