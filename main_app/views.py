@@ -606,18 +606,20 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
     template_name = 'main_app/dressing_room.html'
 
+    time_delta = dt.timedelta(days=365)
+
     def _time_checking(self):
         """Обновляет время для текущей комнаты и
         проверяет все остальные комнаты на предмет устаревания
         для последующего удаления."""
 
-        current_datetime = timezone.now()
+        current_datetime = self.timezone_now
         self.dressing_room.update(last_update_time=current_datetime)
 
         dressing_rooms = DressingRoom.objects.all().only('creator', 'last_update_time')
 
         for room in dressing_rooms:
-            if current_datetime - dt.timedelta(days=365) >= room.last_update_time:
+            if current_datetime - self.time_delta >= room.last_update_time:
                 # Если пользователь не прикреплён к модели удаляем модель
                 if not room.creator:
                     room.delete()
@@ -631,15 +633,30 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         my_saved_rooms = []
 
         for room in dressing_rooms:
-            if self.room_id != room.room_id:
-                my_saved_rooms.append({
-                    'room_id': room.room_id,
-                    'game_patch': room.game_patch,
-                    'allow_edit': room.allow_edit,
-                    'race': room.race,
-                    'gender': room.gender,
-                    'last_update_time': timezone.localtime(room.last_update_time).strftime('%d-%m-%Y %H:%M:%S')
-                })
+            # if self.room_id != room.room_id: # исключить текущую комнату из списка
+            my_saved_rooms.append({
+                'room_id': room.room_id,
+                'game_patch': room.game_patch,
+                'allow_edit': room.allow_edit,
+                'race': room.race,
+                'gender': room.gender,
+                'last_update_time': timezone.localtime(room.last_update_time).strftime('%d-%m-%Y %H:%M:%S')
+            })
+
+        if not self.dressing_room:
+            my_saved_rooms.append({
+                'room_id': self.room_id,
+                'game_patch': 'wrath',
+                'allow_edit': False,
+                'race': 1,
+                'gender': 1,
+                'last_update_time': timezone.localtime(self.timezone_now).strftime('%d-%m-%Y %H:%M:%S')
+            })
+
+        my_saved_rooms.sort(
+            key=lambda room: dt.datetime.strptime(room['last_update_time'], '%d-%m-%Y %H:%M:%S'),
+            reverse=True
+        )
         return my_saved_rooms, dressing_rooms
 
 
@@ -647,6 +664,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         """Создаёт запись в БД с новой страницей и добавляет character_data в контекст шаблона."""
 
         context = super().get_context_data(**kwargs)
+
+        self.timezone_now = timezone.now()
 
         # self.room_id = str(self.request.resolver_match.kwargs.get('room_id')) # <class 'uuid.UUID'>
         self.room_id = str(kwargs.get('room_id')) # <class 'uuid.UUID'>
@@ -695,7 +714,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'mount': self.dressing_room[0].mount
             }
         else:
-            if my_saved_rooms:
+            if len(my_saved_rooms) > 1:
                 self.creator_id = dressing_rooms[0].room_creator_id
             else:
                 self.creator_id = str(uuid4().hex)
@@ -705,7 +724,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 'room_id': self.room_id,
                 'room_creator_id': self.creator_id,
                 'allow_edit': False,
-                'last_update_time': timezone.now(),
+                'last_update_time': self.timezone_now,
                 'game_patch': 'wrath',
                 'race': 1,
                 'gender': 1,
@@ -746,8 +765,8 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
             response.set_cookie(
                 key='dress_room_creator_id',
                 value=self.creator_id,
-                # max_age=dt.timedelta(days=365),
-                expires=timezone.now() + dt.timedelta(days=365),
+                # max_age=self.time_delta,
+                expires=self.timezone_now + self.time_delta,
                 # Если указать домен при установке cookie тогда он
                 # будет расшарен на все субдомены, в том числе 'www'
                 # https://stackoverflow.com/a/69854675/19276507
@@ -779,14 +798,23 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
                 creator_id = DressingRoom.objects.filter(creator=request.user)\
                                     .only('room_creator_id')[0].room_creator_id
 
+        # print(f'room_creator_id: {self.dressing_room[0].room_creator_id}',
+        #       f'creator_id: {creator_id}',
+        #       f'allow_edit: {self.dressing_room[0].allow_edit}', sep='\n')
+
         # Если creator_id этой комнаты не равен creator_id текущего пользователя из Cookie либо БД
         # возбуждаем исключение "Доступ запрещён"
         if ( self.dressing_room[0].room_creator_id != creator_id
         and not self.dressing_room[0].allow_edit ):
             raise PermissionDenied
 
-        # data = [json.loads(key) for key in request.POST.keys()][0]
-        data = json.loads(request.body)
+        # data: dict = [json.loads(key) for key in request.POST.keys()][0]
+        data: dict = json.loads(request.body)
+
+        if data.get('delete_room'):
+            dressing_room = DressingRoom.objects.get(room_id=data['delete_room'])
+            dressing_room.delete()
+            return JsonResponse({'status': 'data was successfully deleted'})
 
         # Если не создатель комнаты пытается изменить поле allow_edit запрещаем ему доступ
         if ( self.dressing_room[0].room_creator_id != creator_id

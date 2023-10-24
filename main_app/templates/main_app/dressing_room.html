@@ -306,11 +306,8 @@
   // const DEFAULT_ICON_URL = `https://render-classic-us.worldofwarcraft.com/icons/56/`; // 18 // 36 // 56
 
 
-  const csrftoken = Cookies.get('csrftoken');
-  const sendAjaxRequest = function() {
-    $('.save-char-opts-icon').css('display', 'block');
-
-    const data = {
+  const get_actual_dressUI = () => {
+    return {
       allow_edit: window.dressUI.allow_edit,
       game_patch: window.dressUI.game_patch,
       race: window.dressUI.model_opts.race,
@@ -319,6 +316,12 @@
       face: window.dressUI.face.current.join(),
       mount: window.dressUI.char.mount
     };
+  };
+
+
+  const csrftoken = Cookies.get('csrftoken');
+  const sendAjaxRequest = function(data) {
+    $('.save-char-opts-icon').css('display', 'block');
 
     $.ajax({
       type: 'POST',
@@ -383,7 +386,7 @@
         target[property] = newValue;
 
         if (IGNORED_PROPS.indexOf(property) === -1) {
-          if (window.dressUI.room_creator || window.dressUI.allow_edit) debounce_sendAjaxRequest();
+          if (window.dressUI.room_creator || window.dressUI.allow_edit) debounce_sendAjaxRequest(get_actual_dressUI());
         };
         return true;
       }
@@ -1084,7 +1087,6 @@
   }
   .rooms-list-link {
     text-align: left;
-    margin-right: 5px;
     color: #fff;
   }
   .rooms-list-img {
@@ -1099,6 +1101,17 @@
   }
   .rooms-list-link:hover .rooms-list-img {
     opacity: 0.7;
+  }
+  .rooms-list-delete-img {
+    display: inline-block;
+    width: 18px;
+    padding-bottom: 8px;
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+  .rooms-list-delete-img:hover {
+    opacity: 0.7;
+    cursor: pointer;
   }
 </style>
 
@@ -2214,8 +2227,22 @@
                 element_a.appendChild(element_patch_img);
                 element_a.appendChild(element_user_icon);
                 element_a.appendChild(element_calendar_icon);
+                if (roomData.room_id === window.location.pathname.split('/')[2]) element_a.style.color = 'lime';
 
-                my_saved_rooms.appendChild(element_a);
+                const delete_room_img = document.createElement('img');
+                delete_room_img.setAttribute('src', `/static/main_app/images/close.png`);
+                delete_room_img.classList.add('rooms-list-delete-img');
+
+                const element_div = document.createElement('div');
+                element_div.appendChild(element_a);
+                element_div.appendChild(delete_room_img);
+
+                my_saved_rooms.appendChild(element_div);
+
+                delete_room_img.addEventListener('click', function(event) {
+                  sendAjaxRequest({'delete_room': event.target.previousElementSibling.href.split('/').at(-1)});
+                  event.target.parentElement.remove();
+                });
               };
             };
           };
@@ -2241,7 +2268,7 @@
 
             // может возникать проблема при переключении патча и слишком быстрой перезагрузки страницы
             // изза этого происходит рассинхрон между патчем и количество настроек внешности для персонажа на этом патче
-            sendAjaxRequest();
+            sendAjaxRequest(get_actual_dressUI());
 
             // warnMessageHandler(6000, interpolate(gettext('Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.'), [window.dressUI.game_patch.toUpperCase()]));
             // warnMessageHandler(6000, interpolate("{% blocktrans %}Для изменения на %s патч, пожалуйста, перезагрузите страницу.\nВсе настройки внешности будут сброшены.{% endblocktrans %}", [window.dressUI.game_patch.toUpperCase()]));
@@ -3035,7 +3062,7 @@
             window.dressUI.model_opts.generalOptions.mount.id =
             window.gameData[0].mounts[window.dressUI.char.mount].displayId;
 
-            debounce_sendAjaxRequest();
+            debounce_sendAjaxRequest(get_actual_dressUI());
 
             $('.paperdoll-model').css('background', 'url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat');
             await _generateCharModel();
