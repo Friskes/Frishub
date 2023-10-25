@@ -1,5 +1,92 @@
 > ## Увидеть проект вживую `->` [frishub](https://frishub.ru)
 
+### Запуск проекта локально без докера
+
+Необходим установленный и запущенный REDIS сервер на пк, загруженный с данного репозитория:
+`https://github.com/tporadowski/redis`
+
+Загрузите репозиторий с помощью команды:
+`git clone https://github.com/Friskes/Frishub.git`
+
+Создайте виртуальное окружение (необходим Python==3.8 на пк):
+`py -3.8 -m venv venv`
+
+Обновите установщик pip:
+`python.exe -m pip install --upgrade pip`
+
+Установите зависимости необходимые для работы проекта:
+`pip install -r requirements.txt`
+
+Сгенерируйте статические файлы:
+`python manage.py collectstatic`
+
+Создайте миграции:
+`python manage.py makemigrations`
+
+Выполните миграцию:
+`python manage.py migrate`
+
+Создайте супер пользователя:
+`python manage.py createsuperuser`
+
+Для запуска проекта, в первой консоли, выполните команду:
+`python manage.py runserver`
+
+Для запуска CELERY необходимого для полноценной работы проекта, во второй консоли, выполните команду:
+`python manage.py runcelery`
+
+Откройте в браузере проект по адресу:
+`http://127.0.0.1:8000/`
+
+Для остановки программы нажмите сочетание клавиш CTRL+C в обеих консолях.
+
+### Запуск проекта локально с докером
+
+Загрузите репозиторий с помощью команды:
+`git clone https://github.com/Friskes/Frishub.git`
+
+Необходимо создать файл `.env` в корне проекта с содержимым:
+
+```
+# IF DEPLOY OR DEV WITH DOCKER MUST BE TRUE ELSE FALSE
+RUN_DEV_SERVER_WITH_DOCKER=1
+
+POSTGRES_DB=db
+POSTGRES_USER=db
+POSTGRES_PASSWORD=db
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+CELERY_APP=FriskesSite
+CELERY_FLOWER_URL_PREFIX=flower
+CELERY_FLOWER_ADDRESS=celery-flower
+CELERY_FLOWER_PORT=5555
+
+SERVER_HOST=0
+SERVER_IP=0
+```
+
+Запустите Docker Desktop на пк.
+
+Создайте образ:
+`docker compose build`
+
+Создайте супер пользователя:
+`docker compose run wsgiserver python manage.py createsuperuser`
+
+Запустите контейнеры:
+`docker compose up`
+
+Откройте в браузере проект по адресу:
+`http://127.0.0.1:8000/`
+
+Для остановки программы нажмите сочетание клавиш CTRL+C
+
+> # Развёртывание проекта на удаленном сервере:
+
 1. [О чём говорится в этом документе](#О-чём-говорится-в-этом-документе)
 1. [Создание SSH ключа](#Создание-SSH-ключа)
 1. [Установка серверных зависимостей](#Установка-серверных-зависимостей)
