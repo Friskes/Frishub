@@ -71,13 +71,13 @@ SERVER_IP=0
 
 Запустите Docker Desktop на пк.
 
-Создайте образ:
-`docker compose build`
+Создайте образ и запустите контейнер:
+`docker compose up --build`
 
-Создайте супер пользователя:
+Создайте супер пользователя (для этого остановите контейнер):
 `docker compose run wsgiserver python manage.py createsuperuser`
 
-Запустите контейнеры:
+Снова запустите контейнер:
 `docker compose up`
 
 Откройте в браузере проект по адресу:
@@ -240,6 +240,7 @@ RUN_DEV_SERVER_WITH_DOCKER=1
 
 SECRET_KEY=<секретный_ключ>
 
+# IF LOCAL IP EXISTS THEN START LOCAL SERVER ONLY WITH IT
 MY_LOCAL_IPV4_ADDRESS=<ваш_локальный_ip_(не_обязательная_настройка)>
 
 POSTGRES_DB=<название бд>

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login
@@ -51,7 +53,7 @@ from FriskesSite.env import CELERY_FLOWER_ADDRESS, CELERY_FLOWER_PORT, CELERY_FL
 from celery.result import AsyncResult
 
 import json
-from typing import Union, Dict, List, Tuple
+from typing import Any, Union, Dict, List, Tuple
 from uuid import uuid4
 import datetime as dt
 import requests
@@ -633,31 +635,35 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
         my_saved_rooms = []
 
         for room in dressing_rooms:
-            # if self.room_id != room.room_id: # исключить текущую комнату из списка
-            my_saved_rooms.append({
-                'room_id': room.room_id,
-                'game_patch': room.game_patch,
-                'allow_edit': room.allow_edit,
-                'race': room.race,
-                'gender': room.gender,
-                'last_update_time': timezone.localtime(room.last_update_time).strftime('%d-%m-%Y %H:%M:%S')
-            })
+            my_saved_rooms.append(self.create_my_saved_rooms(
+                room.last_update_time, room.room_id, room.game_patch,
+                room.allow_edit, room.race, room.gender
+            ))
 
         if not self.dressing_room:
-            my_saved_rooms.append({
-                'room_id': self.room_id,
-                'game_patch': 'wrath',
-                'allow_edit': False,
-                'race': 1,
-                'gender': 1,
-                'last_update_time': timezone.localtime(self.timezone_now).strftime('%d-%m-%Y %H:%M:%S')
-            })
+            my_saved_rooms.append(self.create_my_saved_rooms(self.timezone_now, self.room_id))
 
         my_saved_rooms.sort(
             key=lambda room: dt.datetime.strptime(room['last_update_time'], '%d-%m-%Y %H:%M:%S'),
             reverse=True
         )
         return my_saved_rooms, dressing_rooms
+
+
+    def create_my_saved_rooms(self, last_update_time: dt.datetime, room_id: str, game_patch: str = 'wrath', 
+                              allow_edit: bool = False, race: int = 1, gender: int = 1) -> dict[str, Any]:
+        return {
+            'room_id': room_id, 'game_patch': game_patch, 'allow_edit': allow_edit, 'race': race, 'gender': gender,
+            'last_update_time': timezone.localtime(last_update_time).strftime('%d-%m-%Y %H:%M:%S')
+        }
+
+
+    def create_character_data(self, allow_edit: bool = False, game_patch: str = 'wrath', race: int = 1, 
+            gender: int = 1, items: str = '', face: str = '0,0,0,0,0', mount: str = '0') -> dict[str, Any]:
+        return {
+            'room_creator': self.is_room_creator, 'allow_edit': allow_edit, 'game_patch': game_patch,
+            'race': race, 'gender': gender, 'items': items, 'face': face, 'mount': mount
+        }
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -703,16 +709,11 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
             self._time_checking()
 
-            character_data = {
-                'room_creator': self.is_room_creator,
-                'allow_edit': self.dressing_room[0].allow_edit,
-                'game_patch': self.dressing_room[0].game_patch,
-                'race': self.dressing_room[0].race,
-                'gender': self.dressing_room[0].gender,
-                'items': self.dressing_room[0].items,
-                'face': self.dressing_room[0].face,
-                'mount': self.dressing_room[0].mount
-            }
+            character_data = self.create_character_data(
+                self.dressing_room[0].allow_edit, self.dressing_room[0].game_patch,
+                self.dressing_room[0].race, self.dressing_room[0].gender,
+                self.dressing_room[0].items, self.dressing_room[0].face, self.dressing_room[0].mount
+            )
         else:
             if len(my_saved_rooms) > 1:
                 self.creator_id = dressing_rooms[0].room_creator_id
@@ -737,16 +738,7 @@ class UniqueDressingRoomView(DataMixin, TemplateView):
 
             self.dressing_room.create(**default_create_config)
 
-            character_data = {
-                'room_creator': self.is_room_creator,
-                'allow_edit': False,
-                'game_patch': 'wrath',
-                'race': 1,
-                'gender': 1,
-                'items': '',
-                'face': '0,0,0,0,0',
-                'mount': '0'
-            }
+            character_data = self.create_character_data()
 
         character_data.update({'my_saved_rooms': my_saved_rooms})
 
