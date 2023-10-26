@@ -1,9 +1,8 @@
-<h1 align="center">-> <a href="https://frishub.ru">frishub</a> <-</h1>
+<h1 align="center">-> <a href="https://frishub.ru" target="_BLANK">frishub</a> <-</h1>
 
 ## Запуск проекта локально без докера
 
-#### 1) Необходим установленный и запущенный REDIS сервер на пк, загруженный с данного репозитория:
-https://github.com/tporadowski/redis
+#### 1) Необходим установленный и запущенный <a href="https://github.com/tporadowski/redis" target="_BLANK">REDIS</a> сервер на пк.
 
 #### 2) Загрузите репозиторий с помощью команды:
     git clone https://github.com/Friskes/Frishub.git
