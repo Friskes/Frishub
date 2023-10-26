@@ -1,51 +1,51 @@
-> ## Увидеть проект вживую `->` [frishub](https://frishub.ru)
+<h1 align="center">-> <a href="https://frishub.ru">frishub</a> <-</h1>
 
-### Запуск проекта локально без докера
+## Запуск проекта локально без докера
 
-Необходим установленный и запущенный REDIS сервер на пк, загруженный с данного репозитория:
-`https://github.com/tporadowski/redis`
+#### 1) Необходим установленный и запущенный REDIS сервер на пк, загруженный с данного репозитория:
+https://github.com/tporadowski/redis
 
-Загрузите репозиторий с помощью команды:
-`git clone https://github.com/Friskes/Frishub.git`
+#### 2) Загрузите репозиторий с помощью команды:
+    git clone https://github.com/Friskes/Frishub.git
 
-Создайте виртуальное окружение (необходим Python==3.8 на пк):
-`py -3.8 -m venv venv`
+#### 3) Создайте виртуальное окружение (необходим Python==3.8 на пк):
+    py -3.8 -m venv venv
 
-Обновите установщик pip:
-`python.exe -m pip install --upgrade pip`
+#### 4) Обновите установщик pip:
+    python.exe -m pip install --upgrade pip
 
-Установите зависимости необходимые для работы проекта:
-`pip install -r requirements.txt`
+#### 5) Установите зависимости необходимые для работы проекта:
+    pip install -r requirements.txt
 
-Сгенерируйте статические файлы:
-`python manage.py collectstatic`
+#### 6) Сгенерируйте статические файлы:
+    python manage.py collectstatic
 
-Создайте миграции:
-`python manage.py makemigrations`
+#### 7) Создайте миграции:
+    python manage.py makemigrations
 
-Выполните миграцию:
-`python manage.py migrate`
+#### 8) Выполните миграцию:
+    python manage.py migrate
 
-Создайте супер пользователя:
-`python manage.py createsuperuser`
+#### 9) Создайте супер пользователя:
+    python manage.py createsuperuser
 
-Для запуска проекта, в первой консоли, выполните команду:
-`python manage.py runserver`
+#### 10) Для запуска проекта, в первой консоли, выполните команду:
+    python manage.py runserver
 
-Для запуска CELERY необходимого для полноценной работы проекта, во второй консоли, выполните команду:
-`python manage.py runcelery`
+#### 11) Для запуска CELERY необходимого для полноценной работы проекта, во второй консоли, выполните команду:
+    python manage.py runcelery
 
-Откройте в браузере проект по адресу:
-`http://127.0.0.1:8000/`
+#### 12) Откройте в браузере проект по адресу:
+    http://127.0.0.1:8000/
 
-Для остановки программы нажмите сочетание клавиш CTRL+C в обеих консолях.
+#### Для остановки программы нажмите сочетание клавиш CTRL+C в обеих консолях.
 
-### Запуск проекта локально с докером
+## Запуск проекта локально с докером
 
-Загрузите репозиторий с помощью команды:
-`git clone https://github.com/Friskes/Frishub.git`
+#### 1) Загрузите репозиторий с помощью команды:
+    git clone https://github.com/Friskes/Frishub.git
 
-Необходимо создать файл `.env` в корне проекта с содержимым:
+#### 2) Необходимо создать файл `.env` в корне проекта с содержимым:
 
 ```
 # IF DEPLOY OR DEV WITH DOCKER MUST BE TRUE ELSE FALSE
@@ -69,21 +69,22 @@ SERVER_HOST=0
 SERVER_IP=0
 ```
 
-Запустите Docker Desktop на пк.
+#### 3) Запустите Docker Desktop на пк.
 
-Создайте образ и запустите контейнер:
-`docker compose up --build`
+#### 4) Создайте образ и запустите контейнер:
+    docker compose up --build
 
-Создайте супер пользователя (для этого остановите контейнер):
-`docker compose run wsgiserver python manage.py createsuperuser`
+#### 5) Создайте супер пользователя (для этого остановите контейнер):
+    docker compose run wsgiserver python manage.py createsuperuser
 
-Снова запустите контейнер:
-`docker compose up`
+#### 6) Снова запустите контейнер:
+    docker compose up
 
-Откройте в браузере проект по адресу:
-`http://127.0.0.1:8000/`
+#### 7) Откройте в браузере проект по адресу:
+    http://127.0.0.1:8000/
 
-Для остановки программы нажмите сочетание клавиш CTRL+C
+#### Для остановки программы нажмите сочетание клавиш CTRL+C
+<br>
 
 > # Развёртывание проекта на удаленном сервере:
 
