@@ -1,4 +1,3 @@
-# from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer, AsyncJsonWebsocketConsumer
@@ -32,15 +31,11 @@ class GameChatConsumer(WebsocketConsumer):
 
     channel_layer: InMemoryChannelLayer
 
-    def __init__(self):
-        super().__init__()
+    def connect(self):
 
         self.server_name = None
         self.player_nickname = False
         self.only_twitch = False
-
-
-    def connect(self):
 
         self.room_group_name = "game_chat"
 
@@ -58,39 +53,18 @@ class GameChatConsumer(WebsocketConsumer):
             self.channel_name,
         )
 
-        # if close_code == 1001:
-        #     print('>>> CLOSE_CODE:', close_code, 'Пользователь обновил страницу/долгое время был неактивен.')
-        # if close_code == 1006:
-        #     print('>>> CLOSE_CODE:', close_code, 'Пользователь вышел со страницы.')
-
 
     def receive(self, text_data=None, bytes_data=None):
-        """Получаем данные для работы сортировки которые передаёт пользователь,
-        и помещаем их в переменные."""
+        """Получаем данные для работы сортировки которые передаёт пользователь."""
 
         data: dict = json.loads(text_data)
 
         if data.get('server_name'):
             self.server_name = data['server_name']
 
-        if data.get('player_nickname'):
-            self.player_nickname = data['player_nickname']
-        else:
-            self.player_nickname = False
+        self.player_nickname = data.get('player_nickname', False)
 
-        if data.get('only_twitch'):
-            self.only_twitch = data['only_twitch']
-        else:
-            self.only_twitch = False
-
-        # async_to_sync(self.channel_layer.group_send)(
-        #     self.room_group_name, {
-        #         "type": 'send_message_to_frontend',
-        #         "какой-то ключ": "какое-то значение"
-        #     },
-        # )
-
-        # self.send(text_data=json.dumps({'message': _('Чат сервера: ') + self.server_name}))
+        self.only_twitch = data.get('only_twitch', False)
 
 
     def send_message_to_frontend(self, event):
@@ -103,10 +77,12 @@ class GameChatConsumer(WebsocketConsumer):
         # (то есть для каждого уникального пользователя отдельно)
         # print(self)
         if self.server_name:
-            message = sorting_chat_message(event['data'],
-                                           self.server_name,
-                                           self.player_nickname,
-                                           self.only_twitch)
+            message = sorting_chat_message(
+                event['data'],
+                self.server_name,
+                self.player_nickname,
+                self.only_twitch
+            )
 
         if message:
             self.send(text_data=json.dumps({'message': message}))

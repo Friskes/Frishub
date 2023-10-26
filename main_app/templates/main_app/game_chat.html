@@ -253,11 +253,6 @@
         </button>
 
         <script>
-          $('.chat-buttons-box button').on('click', function(event) {
-            var button = event.currentTarget;
-            chat_send_handler(button, event);
-          });
-
           // https://learn.javascript.ru/websockets
           const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
           {% if debug_mode %}
@@ -266,147 +261,145 @@
             const chatSocket = new WebSocket(ws_scheme + window.location.host + ":8001/ws/game-chat/"); // PROD
           {% endif %}
 
-          var first_line = true;
+
+          const chat_log_area = $('#chat-log');
+          const chat_btns_box_btn = $('.chat-buttons-box button');
+          const player_nickname_input = $('.player-nickname');
+          const nickname_del_btn = $('.nickname-delete-btn');
+          const go_to_bottom = $('#go-to-bottom');
+          const only_twitch = document.querySelector('#only-twitch');
+          const wotlk_x1 = document.getElementById('wotlk-x1');
+
+          const storage_server_name = window.localStorage.getItem('server_name');
+          const storage_only_twitch_checked = JSON.parse(window.localStorage.getItem('only_twitch_checked'));
+          const storage_player_nickname = window.localStorage.getItem('player_nickname');
+
+          let first_line = true;
+          let nick_del_btn_lock = false;
+
+          let chat_bottom = true;
+          let animation_state = false;
+          let scroll_position = 0;
+
+
+          chat_btns_box_btn.on('click', function(event) {
+            chat_send_handler(event.currentTarget, event);
+          });
 
           function chat_send_handler(button, event) {
-            if (chatSocket.readyState) {
+            if (!chatSocket.readyState) return;
 
-              chat_buttons_handler(button);
+            chat_buttons_handler(button);
 
-              // очистить чат и напечатать текущий выбранный сервер
-              first_line = true;
-              document.querySelector('#chat-log').value = "{% trans 'Чат сервера: ' %}" + button.value + '\n';
+            // очистить чат и напечатать текущий выбранный сервер
+            first_line = true;
+            chat_log_area[0].value = "{% trans 'Чат сервера: ' %}" + button.value + '\n';
 
-              if (event) {
-                window.localStorage.setItem('server_name', button.value);
-              };
+            if (event) window.localStorage.setItem('server_name', button.value);
 
-              chatSocket.send(JSON.stringify({
-                  'server_name': button.value
-              }));
-            };
+            chatSocket.send(JSON.stringify({
+                'server_name': button.value,
+                'player_nickname': window.localStorage.getItem('player_nickname'),
+                'only_twitch': JSON.parse(window.localStorage.getItem('only_twitch_checked'))
+            }));
           };
         </script>
 
         <script>
-          var only_twitch = document.querySelector('#only-twitch');
-          only_twitch.addEventListener('input', function() {
-            if (chatSocket.readyState) {
+          only_twitch.addEventListener('input', function(event) {
+            if (!chatSocket.readyState) return;
 
-              window.localStorage.setItem('only_twitch_checked', only_twitch.checked);
+            window.localStorage.setItem('only_twitch_checked', only_twitch.checked);
 
-              chatSocket.send(JSON.stringify({
-                'only_twitch': only_twitch.checked
-              }));
-            };
+            chatSocket.send(JSON.stringify({
+              'player_nickname': window.localStorage.getItem('player_nickname'),
+              'only_twitch': only_twitch.checked
+            }));
           });
         </script>
 
         <script>
-          var changeTimer = false;
-          var nick_del_btn_lock = false;
-          $('.player-nickname').on('change input', function() {
+          function set_player_nickname() {
+            if (!chatSocket.readyState) return;
 
-            if (changeTimer !== false) {
-              clearTimeout(changeTimer);
+            if (player_nickname_input[0].value.match(/[^\а-яёА-ЯЁa-zA-Z]/g)) return;
+
+            let clean_player_nickname = player_nickname_input[0].value.replace(/[^\а-яёА-ЯЁa-zA-Z]/g, '');
+
+            if (clean_player_nickname) {
+              const first_char = clean_player_nickname[0].toUpperCase();
+              const other_chars = clean_player_nickname.slice(1, clean_player_nickname.length).toLowerCase();
+              clean_player_nickname = first_char + other_chars;
+
+              player_nickname_input.css("border-color", "#28e219");
+              player_nickname_input.css("box-shadow", "inset 0 0 5px #28e219");
+              nickname_del_btn.css("visibility", "visible");
+            } else {
+              player_nickname_input.css("border-color", "rgba(255, 255, 255, 0.4)");
+              player_nickname_input.css("box-shadow", "inset 0 0 5px rgba(255, 255, 255, 0.4)");
+              nickname_del_btn.css("visibility", "hidden");
+
+              nick_del_btn_lock = false;
             };
-            changeTimer = setTimeout(function() {
 
-              if (chatSocket.readyState) {
+            window.localStorage.setItem('player_nickname', clean_player_nickname);
 
-                if ($('.player-nickname')[0].value.match(/[^\а-яёА-ЯЁa-zA-Z]/g)) { return; };
+            chatSocket.send(JSON.stringify({
+              'player_nickname': clean_player_nickname,
+              'only_twitch': JSON.parse(window.localStorage.getItem('only_twitch_checked'))
+            }));
+          };
+          const debounce_set_player_nickname = debounce(set_player_nickname, 400);
 
-                clean_player_nickname = $('.player-nickname')[0].value.replace(/[^\а-яёА-ЯЁa-zA-Z]/g,'');
-
-                if (clean_player_nickname) {
-                  clean_player_nickname = clean_player_nickname.toLowerCase();
-                  clean_player_nickname = clean_player_nickname[0].toUpperCase() + clean_player_nickname.slice(1);
-
-                  $('.player-nickname').css("border-color", "#28e219");
-                  $('.player-nickname').css("box-shadow", "inset 0 0 5px #28e219");
-                  $('.nickname-delete-btn').css("visibility", "visible");
-                } else {
-                  $('.player-nickname').css("border-color", "rgba(255, 255, 255, 0.4)");
-                  $('.player-nickname').css("box-shadow", "inset 0 0 5px rgba(255, 255, 255, 0.4)");
-                  $('.nickname-delete-btn').css("visibility", "hidden");
-                  nick_del_btn_lock = false;
-                };
-
-                window.localStorage.setItem('player_nickname', clean_player_nickname);
-
-                chatSocket.send(JSON.stringify({
-                  'player_nickname': clean_player_nickname
-                }));
-              };
-              changeTimer = false;
-            }, 500);
+          player_nickname_input.on('change input', function(event) {
+            debounce_set_player_nickname();
           });
-          $('.nickname-delete-btn').click(function() {
-            if (!nick_del_btn_lock) {
-              nick_del_btn_lock = true;
-              $('.player-nickname')[0].value = '';
-              // вручную генерируем ивент для того чтобы сработал обработчик никнейма
-              let event = new Event('change');
-              $('.player-nickname')[0].dispatchEvent(event);
-            };
+
+          nickname_del_btn.click(function(event) {
+            if (nick_del_btn_lock) return;
+
+            nick_del_btn_lock = true;
+            player_nickname_input[0].value = '';
+
+            // вручную генерируем ивент для того чтобы сработал обработчик никнейма
+            player_nickname_input[0].dispatchEvent(new Event('change'));
           });
         </script>
 
         <script>
-          var server_name = window.localStorage.getItem('server_name');
-          var only_twitch_checked = JSON.parse(window.localStorage.getItem('only_twitch_checked'));
-          var player_nickname = window.localStorage.getItem('player_nickname');
+          chatSocket.onopen = function(event) {
 
-          chatSocket.onopen = function() {
+            chat_send_handler(storage_server_name ? document.getElementById(storage_server_name) : wotlk_x1);
 
-            var server_name_from_cookie;
-            if (server_name) {
-              server_name_from_cookie = document.getElementById(server_name);
+            if (storage_only_twitch_checked) only_twitch.checked = true;
+
+            if (storage_player_nickname) {
+              player_nickname_input[0].value = storage_player_nickname;
+              player_nickname_input.css("border-color", "#28e219");
+              player_nickname_input.css("box-shadow", "inset 0 0 5px #28e219");
+              nickname_del_btn.css("visibility", "visible");
             } else {
-              server_name_from_cookie = document.getElementById('wotlk-x1');
+              player_nickname_input.css("border-color", "rgba(255, 255, 255, 0.4)");
+              player_nickname_input.css("box-shadow", "inset 0 0 5px rgba(255, 255, 255, 0.4)");
             };
-            chat_send_handler(server_name_from_cookie);
 
-            var only_twitch_checked_from_cookie;
-            if (only_twitch_checked) {
-              only_twitch.checked = true;
-              only_twitch_checked_from_cookie = true;
-            } else {
-              only_twitch_checked_from_cookie = false;
-            };
             chatSocket.send(JSON.stringify({
-              'only_twitch': only_twitch_checked_from_cookie
+              'player_nickname': storage_player_nickname ? storage_player_nickname : '',
+              'only_twitch': storage_only_twitch_checked ? true : false
             }));
-
-            var player_nickname_from_cookie;
-            if (player_nickname) {
-              $('.player-nickname')[0].value = player_nickname;
-              player_nickname_from_cookie = player_nickname;
-              $('.player-nickname').css("border-color", "#28e219");
-              $('.player-nickname').css("box-shadow", "inset 0 0 5px #28e219");
-              $('.nickname-delete-btn').css("visibility", "visible");
-            } else {
-              player_nickname_from_cookie = '';
-              $('.player-nickname').css("border-color", "rgba(255, 255, 255, 0.4)");
-              $('.player-nickname').css("box-shadow", "inset 0 0 5px rgba(255, 255, 255, 0.4)");
-            };
-            chatSocket.send(JSON.stringify({
-              'player_nickname': player_nickname_from_cookie
-            }));
-
           };
         </script>
 
         <script>
           chatSocket.onmessage = function(event) {
 
-            let data = JSON.parse(event.data);
+            const data = JSON.parse(event.data);
 
             if (first_line) {
               first_line = false;
-              document.querySelector('#chat-log').value += (data.message);
+              chat_log_area[0].value += data.message;
             } else {
-              document.querySelector('#chat-log').value += ('\n' + data.message);
+              chat_log_area[0].value += ('\n' + data.message);
             };
 
             scroll_chat_text();
@@ -415,29 +408,32 @@
 
         <script>
           function chat_buttons_handler(button) {
-            $('.chat-buttons-box button').each(function(index, element) {
-              if (element != button) {
-                $(element).css("border-color", "rgb(60, 60, 60)");
-                $(element).css("box-shadow", "none");
-                $(element).css("pointer-events", "all");
-                $(element).hover(
-                  function() { // mouseenter
-                    $(element).css("border-color", "rgba(0, 200, 255, 1)");
-                    $(element).css("box-shadow", "inset 0 0 5px rgba(0, 200, 255, 1)");
+
+            chat_btns_box_btn.each(function(index, element) {
+              element = $(element);
+
+              if (element[0] != button) {
+                element.css("border-color", "rgb(60, 60, 60)");
+                element.css("box-shadow", "none");
+                element.css("pointer-events", "all");
+                element.hover(
+                  function(event) { // mouseenter
+                    element.css("border-color", "rgba(0, 200, 255, 1)");
+                    element.css("box-shadow", "inset 0 0 5px rgba(0, 200, 255, 1)");
                   },
-                  function() { // mouseleave
-                    $(element).css("border-color", "rgb(60, 60, 60)");
-                    $(element).css("box-shadow", "none");
+                  function(event) { // mouseleave
+                    element.css("border-color", "rgb(60, 60, 60)");
+                    element.css("box-shadow", "none");
                   },
                 );
               } else {
-                $(element).css("border-color", "rgba(0, 200, 255, 1)");
-                $(element).css("box-shadow", "inset 0 0 5px rgba(0, 200, 255, 1)");
-                $(element).css("pointer-events", "none");
-                $(element).hover(
-                  function() { // mouseenter
-                    $(element).css("border-color", "rgba(0, 200, 255, 1)");
-                    $(element).css("box-shadow", "inset 0 0 5px rgba(0, 200, 255, 1)");
+                element.css("border-color", "rgba(0, 200, 255, 1)");
+                element.css("box-shadow", "inset 0 0 5px rgba(0, 200, 255, 1)");
+                element.css("pointer-events", "none");
+                element.hover(
+                  function(event) { // mouseenter
+                    element.css("border-color", "rgba(0, 200, 255, 1)");
+                    element.css("box-shadow", "inset 0 0 5px rgba(0, 200, 255, 1)");
                   },
                 );
               };
@@ -446,48 +442,46 @@
         </script>
 
         <script>
-          var chat_bottom = true;
-          var animation_state = false;
-          var scroll_position = 0;
           jQuery(function($) {
-            $('#chat-log').on('scroll', function() {
+            chat_log_area.on('scroll', function(event) {
 
               // для отключения автоматической прокрутки лучше использовать ивент scroll а не wheel
               // т.к. scroll работает как с мышью так и с тачскрином, wheel только с мышью.
-              var scroll_top = $(this).scrollTop();
-              if (scroll_top < scroll_position) {
-                if (animation_state) {
-                  $(this).stop();
-                  animation_state = false;
-                };
+              const scroll_top = $(this).scrollTop();
+              if (animation_state && scroll_top < scroll_position) {
+                $(this).stop();
+                animation_state = false;
               };
               scroll_position = scroll_top;
 
-              var check_location = $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight;
+              const check_location = $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight;
               if (check_location) {
                 chat_bottom = true;
-                $('#go-to-bottom').css("visibility", "hidden");
+                go_to_bottom.css("visibility", "hidden");
+
               } else if (!check_location && !animation_state) {
                 chat_bottom = false;
-                $('#go-to-bottom').css("visibility", "visible");
+                go_to_bottom.css("visibility", "visible");
               };
             });
           });
+
           function scroll_chat_text() {
-            if (chat_bottom) {
-              // https://basicweb.ru/jquery/jquery_effect_animate.php
-              $('#chat-log').animate(
-                { scrollTop: $('#chat-log').get(0).scrollHeight },
-                { duration: 600, queue: false,
-                  start: function() { animation_state = true; },
-                  complete: function() { animation_state = false; },
-                },
-              );
-            };
+            if (!chat_bottom) return;
+
+            // https://basicweb.ru/jquery/jquery_effect_animate.php
+            chat_log_area.animate(
+              { scrollTop: chat_log_area.get(0).scrollHeight },
+              { duration: 600, queue: false,
+                start: function(event) { animation_state = true; },
+                complete: function(event) { animation_state = false; },
+              },
+            );
           };
-          $('#go-to-bottom').click(function() {
-            $('#chat-log').animate(
-              { scrollTop: $('#chat-log').get(0).scrollHeight, },
+
+          go_to_bottom.click(function(event) {
+            chat_log_area.animate(
+              { scrollTop: chat_log_area.get(0).scrollHeight, },
               { duration: 600, queue: false, },
             );
           });

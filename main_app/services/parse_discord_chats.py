@@ -231,11 +231,6 @@ class DiscordChatParser:
             }
             self.send_json_request(HEARTBEAT_JSON)
 
-
-# единоразово создаём экземпляр класса DiscordChatParser при загрузке сервера
-if settings.DISCORD_LOGIN and settings.DISCORD_PASSWORD:
-    discord_chat_parser = DiscordChatParser()
-
 #############################################################################
 
 GUILD_ID = '338966203919892480'
@@ -246,20 +241,17 @@ CHANNEL_IDS = {
     'wotlk_x5_horde': '869986269525053521',
     'wotlk_x100_alliance': '862240930052571136',
     'wotlk_x100_horde': '869996139976491059',
-    'wotlk-fun': '875065270744518747',
+    'wotlk-fun': '875065270744518747'
 }
 
 
-def sorting_chat_message(event_data: dict,
-                         server_name: str,
-                         player_nickname: bool,
-                         only_twitch: bool) -> Union[str, None]:
+def sorting_chat_message(event_data: dict, server_name: str,
+                         player_nickname: bool, only_twitch: bool) -> Union[str, None]:
     """#### Функция сортировки сообщений индивидуально для каждого пользователя."""
 
-    # print(event_data['d'])
     channel_id = event_data['d']['channel_id'] # айди канала на сервере
     # timestamp = event_data['d']['timestamp']   # дата и время отправки сообщения
-    content: str = event_data['d']['content']       # сообщение
+    content: str = event_data['d']['content']  # сообщение
 
     if channel_id == CHANNEL_IDS[server_name]:
 
@@ -320,16 +312,15 @@ class AsyncActionGetGameChatData(threading.Thread):
 
     def run(self):
         while True:
-
             data = discord_chat_parser.recieve_json_response()
-            if data and data.get('t') == 'MESSAGE_CREATE':
-
-                if data.get('d').get('guild_id') == GUILD_ID: # айди сервера
-                    _event_trigger(data)
+            if data and data.get('t') == 'MESSAGE_CREATE' and data.get('d').get('guild_id') == GUILD_ID:
+                _event_trigger(data)
 
 
-# единоразово создаём экземпляр класса AsyncActionGetGameChatData при загрузке сервера
+# единоразово создаём экземпляры классов DiscordChatParser и AsyncActionGetGameChatData при загрузке сервера
 if settings.DISCORD_LOGIN and settings.DISCORD_PASSWORD:
+    discord_chat_parser = DiscordChatParser()
+
     async_action_get_game_chat_data = AsyncActionGetGameChatData()
     async_action_get_game_chat_data.start()
 
