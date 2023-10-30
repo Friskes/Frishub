@@ -57,7 +57,7 @@ from typing import Any, Union, Dict, List, Tuple
 from uuid import uuid4
 import datetime as dt
 import requests
-from os.path import exists, isfile
+from os.path import exists
 from pathlib import Path
 
 import logging
@@ -187,17 +187,27 @@ class ZamimgProxyView(View):
         https://developer.mozilla.org/ru/docs/Web/HTTP/CORS
         И кэширует файлы локально для уменьшения трассы запроса и ускорения работы."""
 
-        STATIC_ROOT = settings.BASE_DIR / 'static'
-        full_path = f'{STATIC_ROOT}/main_app/json/modelviewer/{kwargs.get("modelviewer_path")}'
+        modelviewer_path: str = kwargs.get("modelviewer_path")
 
-        # if not isfile(full_path):
+        # Костыль для частичной работы "Нагрудников" на wrath патче
+        if modelviewer_path.startswith('wrath/meta/armor/5/'):
+            file_name = modelviewer_path.rsplit('/', 1)[-1]
+            modelviewer_path = f'live/meta/armor/5/{file_name}'
+
+        # Костыль для работы "Шадоуморна" на лайв патче..
+        elif modelviewer_path == 'live/meta/item/65153.json':
+            modelviewer_path = 'wrath/meta/item/65153.json'
+
+        STATIC_ROOT = settings.BASE_DIR / 'static'
+        full_path = f'{STATIC_ROOT}/main_app/json/modelviewer/{modelviewer_path}'
+
         if not exists(full_path):
 
             headers_get = {
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36'
             }
-            zamimg_url = f'https://wow.zamimg.com/modelviewer/{kwargs.get("modelviewer_path")}'
+            zamimg_url = f'https://wow.zamimg.com/modelviewer/{modelviewer_path}'
 
             response = requests.get(zamimg_url, headers=headers_get, timeout=5)
 
