@@ -185,7 +185,7 @@ class ZamimgProxyView(View):
         т.к. zamimg сервер не установил Cross-Origin Resource Sharing заголовки,
         для возможности отправки запроса со стороны клиента используя JavaScript.
         https://developer.mozilla.org/ru/docs/Web/HTTP/CORS
-        И кэширует файлы локально для уменьшения трассы запроса и ускорения работы."""
+        И кэширует файлы локально для уменьшения количества запросов к zamimg API."""
 
         modelviewer_path: str = kwargs.get("modelviewer_path")
 
