@@ -137,33 +137,6 @@ def server_error(request):
 
 #############################################################################
 
-# [Оставил класс для примера]
-# class TestView(TemplateView):
-
-#     # метод dispatch срабатывает перед отправкой ответа клиенту
-#     def dispatch(self, request, *args, **kwargs):
-#         response = super().dispatch(request, *args, **kwargs)
-#         response.set_cookie(key='my_key', value='my_value') # добавление cookies в ответ
-#         # response.delete_cookie(key='my_key') # удаление cookies из ответа
-#         return response
-
-
-#     # метод render_to_response срабатывает перед отправкой ответа клиенту
-#     def render_to_response(self, context, **response_kwargs):
-#         response = super(StreamsView, self).render_to_response(context, **response_kwargs)
-#         response.set_cookie(key='my_key', value='my_value') # добавление cookies в ответ
-#         # response.delete_cookie(key='my_key') # удаление cookies из ответа
-#         return response
-
-
-#     def post(self, request, *args, **kwargs):
-#         response = super().post(request, *args, **kwargs)
-#         response.set_cookie(key='my_key', value='my_value') # добавление cookies в ответ
-#         # response.delete_cookie(key='my_key') # удаление cookies из ответа
-#         return response
-
-#############################################################################
-
 class HomeView(DataMixin, TemplateView):
     """#### Представление обрабатывающее домашнюю страницу."""
 
@@ -1168,37 +1141,6 @@ class AccountSettingsView(DataMixin, LoginRequiredMixin, FormView):
         self.errors_handler(form.errors)
 
         return self.render_to_response(self.get_context_data(form=form))
-
-
-    # [Оставил метод для примера] Ручное формирование даты/времени и передача в виде контекста
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-
-    #     # https://pythobyte.com/how-to-format-dates-in-python-96950/
-    #     # python_dt_format = "%d(%A).%m(%B).%Y | %H:%M:%S"
-    #     # date_joined = self.request.user.date_joined.strftime(python_dt_format)
-
-    #     # https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#std:templatefilter-date
-    #     # django_dt_format = "d(l).m(E).Y | H:i:s"
-    #     django_dt_format = "d.m(E).Y"
-    #     date_joined = dateformat.format(self.request.user.date_joined, django_dt_format).title()
-
-    #     context.update({'date_joined': date_joined})
-
-    #     return context
-
-
-    # [Оставил метод для примера], его заменяет метод delete()
-    # def delete_avatar_file(self):
-        # если был загружен новый файл аватара, или пришла команда на удаление текущего аватара
-        # удаляем текущий файл аватара, для того чтобы не засорять память на сервере
-        # if self.request.FILES or self.request.POST.get('DELETE_AVATAR'):
-        #     fss = FileSystemStorage()
-        #     old_file_path = self.request.user.avatar.name
-        #     # exists возвращает True если путь равен пустой строке ''
-        #     # поэтому надо исключить подобный сценарий
-        #     if old_file_path != '' and fss.exists(old_file_path):
-        #         fss.delete(old_file_path)
 
 
     def form_valid(self, form):

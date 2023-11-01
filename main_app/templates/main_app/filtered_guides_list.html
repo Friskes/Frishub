@@ -1,24 +1,7 @@
+{% load static %}
 {% load i18n %}
 
-<style>
-  .ranking-filter-class[_ngcontent-xpp-c94] {
-    cursor: pointer;
-    width: 42px;
-    transition: all .3s ease;
-    border: 1px solid rgb(255, 255, 255, 0);
-  }
-  .ranking-filter-class-active[_ngcontent-xpp-c94] {
-    cursor: pointer;
-    width: 42px;
-    transition: all .3s ease;
-    border: 1px solid rgb(255, 255, 255, 1);
-    filter: brightness(1.3);
-  }
-  .ranking-filter-class[_ngcontent-xpp-c94]:hover {
-    border-color: rgb(255, 255, 255, 1);
-    filter: brightness(1.3);
-  }
-</style>
+<link rel="stylesheet" href="{% static 'main_app/css/main_apps/filtered_guides_list.css' %}">
 
 <div _ngcontent-xpp-c94="" class="filter-card text-center no-border">
   <h2 _ngcontent-xpp-c94="" style="font-size: 16px; color: #c3c3c3;">{% trans 'Категории' %}</h2>

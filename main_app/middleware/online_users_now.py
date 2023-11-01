@@ -1,51 +1,9 @@
 from django.core.handlers.asgi import ASGIRequest
 from django.core.cache import cache
 from django.utils.deprecation import MiddlewareMixin
-# from django.core.exceptions import MiddlewareNotUsed
 
 
 # https://webdevblog.ru/nachalo-raboty-s-middleware-v-django/
-
-# middleware в функциональном стиле
-# def my_custom_middleware(get_response):
-
-#     # здесь происходит единовременная инициализация при запуске сервера
-
-#     def middleware(request):
-
-#         # код написанный ДО вызова get_response(request) будет выполнятся ДО вызова представления views.py
-#         return get_response(request)
-#         # код написанный ПОСЛЕ вызова get_response(request) будет выполнятся ПОСЛЕ вызова представления views.py
-
-#     def process_exception(request, exception):
-#         pass # Обрабатываем возкникшие исключения
-#     middleware.process_exception = process_exception
-
-#     return middleware
-
-
-
-# middleware в ООП стиле
-# class MyCustomMiddleware:
-
-#     # Метод __init__() вызывается только один раз при запуске веб-сервера.
-#     def __init__(self, get_response):
-#         # с помощью кастомного исключения можно по какому либо условию пропустить данный плагин.
-#         # raise MiddlewareNotUsed('плагин: MyCustomMiddleware - Пропущен.')
-#         self.get_response = get_response
-
-
-#     # Метод __call__() вызывается для каждого запроса.
-#     def __call__(self, request):
-
-#         # код написанный ДО вызова self.get_response(request) будет выполнятся ДО вызова представления views.py
-#         response = self.get_response(request)
-#         # код написанный ПОСЛЕ вызова self.get_response(request) будет выполнятся ПОСЛЕ вызова представления views.py
-
-#         return response
-
-
-
 # https://docs.djangoproject.com/en/4.2/topics/cache/
 # https://djangosnippets.org/snippets/10617/
 # https://gist.github.com/dfalk/1472104

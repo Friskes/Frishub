@@ -4,55 +4,9 @@
 {% load i18n %}
 
 {% block head %}
-<style>
-  .card-body[_ngcontent-xcm-c57] {
-    max-width: 350px;
-  }
-  .account-page {
-    max-width: 600px;
-  }
-  .btn-custom[_ngcontent-xcm-c57],
-  .btn-remove[_ngcontent-xcm-c57] {
-    height: 45px;
-    padding: 0 10px;
-    font-size: 12px;
-    line-height: 43px
-  }
-  .material-icons[_ngcontent-xcm-c57] {
-    font-size: 26px;
-    vertical-align: middle;
-    margin-right: 8px
-  }
-  #da-btn-bar2[_ngcontent-gox-c60] {
-    position: absolute;
-    display: none;
-    min-width: 310px;
-    height: auto;
-    right: 144px;
-    bottom: 117px;
-    border: 2px solid #1fb8ff;
-    border-radius: 4px 4px 4px 4px;
-    background-color: rgba(0, 0, 0, 1);
-    z-index: 20000;
-    font-size: 12px;
-    line-height: 19px;
-    text-align: center;
-    box-shadow: 0 0 30px 10px #ffffff12
-  }
-  /* Если мы на мобильном */
-  @media screen and (max-width: 800px) {
-    #da-btn-bar2[_ngcontent-gox-c60] {
-      right: 4px;
-    }
-  }
-  .btn-accept-cookie3[_ngcontent-gox-c60] {
-    cursor: Pointer;
-    height: 24px;
-    width: auto;
-    margin-left: 30px;
-    margin-right: 14px;
-  }
-</style>
+
+<link rel="stylesheet" href="{% static 'main_app/css/accounts/account.css' %}">
+
 {% endblock %}
 
 {% block body %}

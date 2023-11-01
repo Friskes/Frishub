@@ -4,80 +4,9 @@
 {% load i18n %}
 
 {% block head %}
-<style>
-  input[type=password][_ngcontent-xpp-c83],
-  input[type=password][_ngcontent-xpp-c83]:focus,
-  input[type=text][_ngcontent-xpp-c83],
-  input[type=text][_ngcontent-xpp-c83]:focus,
-  input[type=email][_ngcontent-xpp-c83],
-  input[type=email][_ngcontent-xpp-c83]:focus,
-  textarea[_ngcontent-xpp-c83],
-  textarea[_ngcontent-xpp-c83]:focus {
-    background-color: #181618;
-    border: 1px solid #454545;
-    font-family: Poppins;
-    color: #dadada;
-    box-shadow: none;
-    text-align: center;
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    outline: none
-  }
-  input[_ngcontent-xpp-c83]::-moz-placeholder {
-    color: #4b4b4b
-  }
-  input[_ngcontent-xpp-c83]::placeholder {
-    color: #4b4b4b
-  }
-  textarea[_ngcontent-xpp-c83] {
-    resize: none
-  }
-  .container[_ngcontent-xpp-c83] {
-    max-width: 600px;
-    margin: auto
-  }
-  fieldset[_ngcontent-xpp-c83] {
-    border: none !important;
-    margin: 0 0 10px;
-    padding: 0;
-  }
-  fieldset.text-danger[_ngcontent-xpp-c83] {
-    margin-top: 20px;
-    padding-bottom: 30px
-  }
-  .checkbox[_ngcontent-xpp-c83] {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px
-  }
-  .cgu-container[_ngcontent-xpp-c83] {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-    margin-top: 15px
-  }
-  .disabled[_ngcontent-xpp-c83] {
-    opacity: .4;
-    cursor: not-allowed
-  }
-  .disabled[_ngcontent-xpp-c83]:hover {
-    background-color: #676af7
-  }
-  /* изменение масштаба бокса капчи для смартфонов */
-  @media only screen and (max-width: 500px) {
-    .g-recaptcha {
-      transform:scale(0.785);
-      transform-origin:0 0;
-    }
-    div#recaptcha {
-      width: 235px;
-      height: 78px;
-    }
-  }
-</style>
+
+<link rel="stylesheet" href="{% static 'main_app/css/auths/register.css' %}">
+
 {% endblock %}
 
 {% block body %}
@@ -137,65 +66,7 @@
             </form>
           </div>
 
-          <script>
-            var btn_state = document.querySelector('.btn-custom');
-
-            $('.card-body input').on('input', function(event) {
-              form_changed_value();
-            });
-
-            var interval_id = null;
-            function form_changed_value() {
-              if ($('#id_username')[0].value !== ''
-              && $('#id_password1')[0].value !== ''
-              && $('#id_password2')[0].value !== ''
-              && $('#id_email')[0].value !== ''
-              && $('#id_accept_terms')[0].checked !== false) {
-                if (!interval_id) {
-                  // не смог зарегистрировать активацию/просрочку капчи,
-                  // поэтому сделал обновление каждую секунду после заполнения формы
-                  interval_id = setInterval(change_btn_state, 1000); // миллисекунды
-                };
-              } else {
-                if (interval_id) {
-                  clearInterval(interval_id);
-                  interval_id = null;
-
-                  btn_state.classList.remove('enabled');
-                  btn_state.classList.add('disabled');
-                  btn_state.disabled = true;
-                };
-              };
-            };
-            function change_btn_state() {
-              if (grecaptcha.getResponse() !== '') {
-                btn_state.classList.remove('disabled');
-                btn_state.classList.add('enabled');
-                btn_state.disabled = false;
-              }
-              else {
-                btn_state.classList.remove('enabled');
-                btn_state.classList.add('disabled');
-                btn_state.disabled = true;
-              }
-            }
-          </script>
-
-          <script type="text/javascript">
-            var reCaptchaOnLoadCallback = function() {
-              updateGoogleCaptchaLanguage("{{ LANGUAGE_CODE }}");
-            };
-
-            function updateGoogleCaptchaLanguage(selectedLanguage) {
-              let iframeGoogleCaptcha = $('#id_captcha').find('iframe');
-              let language = iframeGoogleCaptcha.attr("src").match(/hl=(.*?)&/).pop();
-              if (language !== selectedLanguage) {
-                iframeGoogleCaptcha.attr("src",
-                  iframeGoogleCaptcha.attr("src").replace(/hl=(.*?)&/, 'hl=' + selectedLanguage + '&')
-                );
-              };
-            };
-          </script>
+          <script src="{% static 'main_app/javascript/auths/register.js' %}"></script>
 
         </div>
       </div>

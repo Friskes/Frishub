@@ -4,158 +4,18 @@
 {% load i18n %}
 
 {% block head %}
+
+<link rel="stylesheet" href="{% static 'main_app/css/auths/login.css' %}">
+
 <style>
-  input[_ngcontent-xpp-c82],
-  input[_ngcontent-xpp-c82]:focus,
-  textarea[_ngcontent-xpp-c82],
-  textarea[_ngcontent-xpp-c82]:focus {
-    background-color: #181618;
-    border: 1px solid #454545;
-    font-family: Poppins;
-    color: #dadada;
-    box-shadow: none;
-    text-align: center;
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    outline: none
-  }
-  input[_ngcontent-xpp-c82]::-moz-placeholder {
-    color: #4b4b4b
-  }
-  input[_ngcontent-xpp-c82]::placeholder {
-    color: #4b4b4b
-  }
-  textarea[_ngcontent-xpp-c82] {
-    resize: none
-  }
-  .container[_ngcontent-xpp-c82] {
-    max-width: 600px;
-    margin: auto
-  }
-  fieldset[_ngcontent-xpp-c82] {
-    border: none !important;
-    margin: 0 0 10px;
-    min-width: 100%;
-    padding: 0;
-    width: 100%
-  }
-  fieldset.text-danger[_ngcontent-xpp-c82] {
-    margin-top: 20px;
-    padding-bottom: 30px
-  }
-  a[_ngcontent-xpp-c82] {
-    text-align: right;
-    font-size: 12px;
-    max-width: 300px;
-    padding: 3px;
-    margin: auto;
-    color: #a0a0a0
-  }
-  a[_ngcontent-xpp-c82]:hover {
-    color: #fff
-  }
-  .stay-connected[_ngcontent-xpp-c82] {
-    position: absolute;
-    font-size: 12px;
-    margin-top: -23px;
-    margin-left: 0px;
-    color: #a0a0a0
-  }
-  /* Если мы на десктопе */
-  @media screen and (min-width: 801px) {
-    .stay-connected2[_ngcontent-xpp-c82] {
-      position: absolute;
-      font-size: 12px;
-      margin-left: 50px;
-      color: #a0a0a0
-    }
-  }
-  /* Если мы на мобильном */
-  @media screen and (max-width: 800px) {
-    .stay-connected2[_ngcontent-xpp-c82] {
-      position: absolute;
-      font-size: 12px;
-      margin-left: 20px;
-      color: #a0a0a0
-    }
-  }
-  .maxWidth300[_ngcontent-xpp-c82] {
-    max-width: 300px;
-    margin: auto
-  }
-  .maxWidth123[_ngcontent-xpp-c82] {
-    max-width: 123px;
-    margin: auto
-  }
-  .checkBox[_ngcontent-xpp-c82] {
-    left: 14px;
-    width: 62px;
-    height: 20px;
-    background: #676af7;
-    position: relative;
-    display: inline-block;
-    border-radius: 50px
-  }
-  .checkBox[_ngcontent-xpp-c82]:after { 
+  .checkBox[_ngcontent-xpp-c82]:after {
     content: "{% trans 'НЕТ' %}";
-    color: #000;
-    top: -2px;
-    right: 5.5px
-  }
-  .checkBox[_ngcontent-xpp-c82]:after,
-  .checkBox[_ngcontent-xpp-c82]:before {
-    position: absolute;
-    z-index: 0;
-    font: 12px/26px Arial, sans-serif;
-    font-weight: 700
   }
   .checkBox[_ngcontent-xpp-c82]:before {
     content: "{% trans 'ДА' %}";
-    color: #fff;
-    top: -3px;
-    left: 8px
-  }
-  .checkBox[_ngcontent-xpp-c82] label[_ngcontent-xpp-c82] {
-    display: block;
-    width: 26px;
-    height: 15.5px;
-    cursor: pointer;
-    position: absolute;
-    top: 2.4px;
-    left: 3.5px;
-    z-index: 1;
-    background: #fcfff4;
-    border-radius: 50px;
-    transition: all .3s ease;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3)
-  }
-  .checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82] {
-    visibility: hidden
-  }
-  .checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82]:checked+label[_ngcontent-xpp-c82] {
-    left: 32.5px
-  }
-  .text-connect[_ngcontent-xpp-c81] {
-    font-size: 13px;
-    color: grey;
-    max-width: 600px;
-    width: 100%;
-    margin: auto;
-    padding: 20px;
-    border-radius: 4px;
-    border-bottom: 3px solid #1fb8ff;
-    background-color: #000c;
-    box-shadow: 0 0 30px 10px #ffffff12;
-  }
-  .text-connect[_ngcontent-xpp-c81] li[_ngcontent-xpp-c81] {
-    margin-bottom: 20px;
-  }
-  .text-connect[_ngcontent-xpp-c81] h6[_ngcontent-xpp-c81] {
-    margin-top: 20px;
-    margin-bottom: 15px;
   }
 </style>
+
 {% endblock %}
 
 {% block body %}
