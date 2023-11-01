@@ -1,0 +1,1415 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:ital,wght@0,300;0,700;1,300&display=swap");
+
+body[data-kiosk-mode],
+body[data-kiosk-mode] .main-contents,
+body[data-kiosk-mode] .dressing-room,
+body[data-kiosk-mode] .dressing-room-character {
+    background: #202020
+}
+
+body[data-kiosk-mode] .dressing-room-character {
+    margin-bottom: -10px
+}
+
+body[data-kiosk-mode][data-kiosk-mode-fill-screen="true"],
+body[data-kiosk-mode][data-kiosk-mode-fill-screen="true"] .main-contents,
+body[data-kiosk-mode][data-kiosk-mode-fill-screen="true"] .dressing-room,
+body[data-kiosk-mode][data-kiosk-mode-fill-screen="true"] .dressing-room-character {
+    bottom: 0;
+    left: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: absolute;
+    right: 0;
+    top: 0
+}
+
+body[data-kiosk-mode][data-kiosk-mode-fill-screen="true"] .paperdoll {
+    max-height: calc(100% - 90px)
+}
+
+body[data-kiosk-mode][data-kiosk-mode-fill-screen="true"][data-kiosk-mode="model"] .paperdoll {
+    max-height: 100%
+}
+
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-save,
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-import,
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-reset,
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-toggle-ui,
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-links,
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-screenshot,
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-general #dr-pause {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-category-option[data-character-customization-type="animation"],
+body[data-kiosk-mode][data-kiosk-mode="teknisk"] .dressing-room-character-controls-category-option[data-character-customization-type="npc-options"] {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-save,
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-import,
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-reset,
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-transmog-set,
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-randomize,
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-undo,
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-general #dr-redo {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-category-switchers a:not([data-category="gear"]):not([data-category="character"]) {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-category-option[data-character-customization-type="race"],
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-category-option[data-character-customization-type="class"],
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-category-option[data-character-customization-type="gender"],
+body[data-kiosk-mode][data-kiosk-mode="gear"] .dressing-room-character-controls-category-option[data-character-customization-type="npc-options"] {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="gear"] .paperdoll-mount {
+    display: none !important
+}
+
+body[data-kiosk-mode][data-kiosk-mode="model"] .dressing-room-character-controls-general {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="model"] .dressing-room-character-controls-category-switchers {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="model"] .dressing-room-character-controls-category {
+    display: none
+}
+
+body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-left,
+body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-right,
+body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-bottom,
+body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-left,
+body[data-kiosk-mode][data-kiosk-mode="model"] .paperdoll-controls-right {
+    display: none !important
+}
+
+@media screen and (min-width: 799px) {
+    body[data-kiosk-mode] .paperdoll:after {
+        background: url(https://wow.zamimg.com/images/logos/wh-logo-db.png) center no-repeat;
+        background-size: contain;
+        bottom: 3px;
+        content: '';
+        display: block;
+        height: 81px;
+        pointer-events: none;
+        position: absolute;
+        right: 15px;
+        width: 130px;
+        z-index: 1
+    }
+}
+
+.dressing-room.show-characters {
+    position: relative
+}
+
+.dressing-room-character {
+    background: url(https://wow.zamimg.com/images/icons/ajax.gif) center no-repeat;
+    /* margin: -10px -10px 0; */
+    margin: 0 0 0;
+    min-height: 400px;
+    min-width: 300px;
+    /* overflow: hidden; */
+    position: relative
+}
+
+.dressing-room[data-loaded="true"] .dressing-room-character {
+    background: none
+}
+
+.dressing-room-character[data-dragonriding] .paperdoll-mount,
+.dressing-room-character[data-dragonriding] .paperdoll-left,
+.dressing-room-character[data-dragonriding] .paperdoll-right,
+.dressing-room-character[data-dragonriding] .paperdoll-bottom {
+    display: none !important
+}
+
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-general #dr-save,
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-general #dr-import,
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-general #dr-transmog-set {
+    opacity: .5;
+    pointer-events: none
+}
+
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-category-option[data-character-customization-type="class"],
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-category-option[data-character-customization-type="gender"],
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-category-option[data-character-customization-type="sheathed"],
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-category-option[data-character-customization-type="pepe"] {
+    display: none
+}
+
+.dressing-room .paperdoll {
+    /* бэкграунд под моделью */
+    /* background: #181818; */
+    border-radius: 0;
+    max-height: 850px
+}
+
+.dressing-room .paperdoll .paperdoll-left,
+.dressing-room .paperdoll .paperdoll-right,
+.dressing-room .paperdoll .paperdoll-bottom {
+    display: none
+}
+
+.dressing-room .paperdoll .paperdoll-left,
+.dressing-room .paperdoll .paperdoll-right {
+    bottom: auto;
+    top: 83px
+}
+
+.dressing-room .paperdoll .paperdoll-left {
+    left: auto;
+    right: calc(50% + 223px)
+}
+
+.dressing-room .paperdoll .paperdoll-right {
+    left: calc(50% + 223px);
+    right: auto
+}
+
+.dressing-room .paperdoll .paperdoll-model {
+    bottom: 0;
+    left: 0;
+    right: 0
+}
+
+.dressing-room .paperdoll .paperdoll-responsive-shell {
+    margin: 0 auto;
+    max-width: 547px;
+    padding: 64px 47px 68px;
+    width: calc(100% - 94px)
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left,
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right {
+    width: 56px
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom {
+    bottom: 74px
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-responsive-shell {
+    padding-left: 59px;
+    padding-right: 59px;
+    width: calc(100% - 118px)
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-controls-left {
+    right: calc(50% - -56px)
+}
+
+@media screen and (max-width: 596px) {
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left {
+        left: 10px;
+        right: auto;
+        width: auto
+    }
+
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right {
+        left: auto;
+        right: 10px;
+        width: auto
+    }
+
+    /* .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom {
+        bottom: 66px
+    } */
+}
+
+/* @media screen and (max-width: 539px) {
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom {
+        bottom: 54px
+    }
+} */
+
+@media screen and (max-width: 449px) {
+
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left,
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right {
+        top: 63px
+    }
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge {
+    transition: 333ms
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge * {
+    background-size: auto 100%
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge ins {
+    left: 5px;
+    top: 5px;
+    height: 45px;
+    width: 45px
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge,
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge del {
+    height: 56px;
+    width: 56px
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge a {
+    height: 50px;
+    width: 50px
+}
+
+/* @media screen and (max-width: 539px) {
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge ins {
+        left: 4px;
+        top: 4px;
+        height: 36px;
+        width: 36px
+    }
+
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge,
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge del {
+        height: 44px;
+        width: 44px
+    }
+
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge a {
+        height: 38px;
+        width: 38px
+    }
+} */
+
+@media screen and (max-width: 379px) {
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge ins {
+        left: 4px;
+        top: 4px;
+        height: 27px;
+        width: 27px
+    }
+
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge,
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge del {
+        height: 35px;
+        width: 35px
+    }
+
+    .dressing-room .paperdoll[data-icon-size="large"] .iconlarge a {
+        height: 29px;
+        width: 29px
+    }
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge input[type="checkbox"] {
+    left: -7px;
+    position: absolute;
+    top: -7px !important;
+    transition: 333ms;
+    z-index: 20
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge input[type="checkbox"]:after {
+    background: #181818 !important
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .iconlarge input[type="checkbox"]::-ms-check {
+    background: #181818 !important
+}
+
+.dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="2"] {
+    margin: 0 0 -56px !important;
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: top
+}
+
+@media screen and (max-width: 539px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="2"] {
+        margin: 0 0 -44px !important
+    }
+}
+
+@media screen and (max-width: 379px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="2"] {
+        margin: 0 0 -35px !important
+    }
+}
+
+.dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="3"] input[type="checkbox"] {
+    top: 59px !important
+}
+
+@media screen and (max-width: 539px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="3"] input[type="checkbox"] {
+        top: 47px !important
+    }
+}
+
+@media screen and (max-width: 449px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="3"] input[type="checkbox"] {
+        top: 42px !important
+    }
+}
+
+@media screen and (max-width: 409px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="3"] input[type="checkbox"] {
+        top: 37px !important
+    }
+}
+
+@media screen and (max-width: 379px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="3"] input[type="checkbox"] {
+        top: 33px !important
+    }
+}
+
+@media screen and (max-width: 349px) {
+    .dressing-room .paperdoll[data-icon-size="large"][data-separate-shoulders="true"] .iconlarge[data-character-slot="3"] input[type="checkbox"] {
+        top: 28px !important
+    }
+}
+
+.iconlarge {
+    margin: 10px 0
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div>div:first-child,
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div>div:first-child {
+    margin-top: 0
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-left>div>div:last-child,
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-right>div>div:last-child {
+    margin-bottom: 0
+}
+
+@media screen and (max-width: 449px) {
+
+    .iconlarge {
+        margin: 5px 0
+    }
+}
+
+@media screen and (max-width: 409px) {
+
+    .iconlarge {
+        margin: 0
+    }
+}
+
+@media screen and (max-width: 379px) {
+
+    .iconlarge {
+        margin: 5px 0
+    }
+}
+
+@media screen and (max-width: 349px) {
+
+    .iconlarge {
+        margin: 0
+    }
+}
+
+.dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
+    margin: 0 5px
+}
+
+@media screen and (max-width: 449px) {
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
+        margin: 0 2.5px
+    }
+
+    .paperdoll {
+        height: 565px
+    }
+}
+
+@media screen and (max-width: 409px) {
+    .dressing-room .paperdoll[data-icon-size="large"] .paperdoll-bottom>div>div {
+        margin: 0
+    }
+
+    .paperdoll {
+        height: 530px
+    }
+}
+
+@media screen and (max-width: 379px) {
+    .paperdoll {
+        height: 395px
+    }
+
+    .paperdoll-bottom {
+        bottom: 52px !important
+    }
+}
+
+@media screen and (max-width: 349px) {
+    .paperdoll {
+        height: 358px
+    }
+
+    .paperdoll-bottom {
+        bottom: 50px !important
+    }
+}
+
+@media screen and (max-height: 1200px) {
+    .dressing-room .paperdoll {
+        max-height: 850px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 547px
+    }
+}
+
+@media screen and (max-height: 1190px) {
+    .dressing-room .paperdoll {
+        max-height: 840px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 539px
+    }
+}
+
+@media screen and (max-height: 1180px) {
+    .dressing-room .paperdoll {
+        max-height: 830px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 532px
+    }
+}
+
+@media screen and (max-height: 1170px) {
+    .dressing-room .paperdoll {
+        max-height: 820px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 524px
+    }
+}
+
+@media screen and (max-height: 1160px) {
+    .dressing-room .paperdoll {
+        max-height: 810px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 516px
+    }
+}
+
+@media screen and (max-height: 1150px) {
+    .dressing-room .paperdoll {
+        max-height: 800px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 509px
+    }
+}
+
+@media screen and (max-height: 1140px) {
+    .dressing-room .paperdoll {
+        max-height: 790px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 501px
+    }
+}
+
+@media screen and (max-height: 1130px) {
+    .dressing-room .paperdoll {
+        max-height: 780px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 494px
+    }
+}
+
+@media screen and (max-height: 1120px) {
+    .dressing-room .paperdoll {
+        max-height: 770px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 486px
+    }
+}
+
+@media screen and (max-height: 1110px) {
+    .dressing-room .paperdoll {
+        max-height: 760px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 478px
+    }
+}
+
+@media screen and (max-height: 1100px) {
+    .dressing-room .paperdoll {
+        max-height: 750px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 471px
+    }
+}
+
+@media screen and (max-height: 1090px) {
+    .dressing-room .paperdoll {
+        max-height: 740px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 463px
+    }
+}
+
+@media screen and (max-height: 1080px) {
+    .dressing-room .paperdoll {
+        max-height: 730px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 456px
+    }
+}
+
+@media screen and (max-height: 1070px) {
+    .dressing-room .paperdoll {
+        max-height: 720px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 448px
+    }
+}
+
+@media screen and (max-height: 1060px) {
+    .dressing-room .paperdoll {
+        max-height: 710px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 440px
+    }
+}
+
+@media screen and (max-height: 1050px) {
+    .dressing-room .paperdoll {
+        max-height: 700px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 433px
+    }
+}
+
+@media screen and (max-height: 1040px) {
+    .dressing-room .paperdoll {
+        max-height: 690px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 425px
+    }
+}
+
+@media screen and (max-height: 1030px) {
+    .dressing-room .paperdoll {
+        max-height: 680px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 418px
+    }
+}
+
+@media screen and (max-height: 1020px) {
+    .dressing-room .paperdoll {
+        max-height: 670px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 410px
+    }
+}
+
+@media screen and (max-height: 1010px) {
+    .dressing-room .paperdoll {
+        max-height: 660px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 402px
+    }
+}
+
+@media screen and (max-height: 1000px) {
+    .dressing-room .paperdoll {
+        max-height: 650px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 395px
+    }
+}
+
+@media screen and (max-height: 990px) {
+    .dressing-room .paperdoll {
+        max-height: 640px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 387px
+    }
+}
+
+@media screen and (max-height: 980px) {
+    .dressing-room .paperdoll {
+        max-height: 630px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 379px
+    }
+}
+
+@media screen and (max-height: 970px) {
+    .dressing-room .paperdoll {
+        max-height: 620px
+    }
+
+    .dressing-room .paperdoll .paperdoll-responsive-shell {
+        max-width: 372px
+    }
+}
+
+.dressing-room-character[data-category="gear"] .paperdoll .paperdoll-left,
+.dressing-room-character[data-category="gear"] .paperdoll .paperdoll-right,
+.dressing-room-character[data-category="gear"] .paperdoll .paperdoll-bottom {
+    display: block
+}
+
+.dressing-room-picker .listview-band-top {
+    background-color: #202020;
+    border-radius: 2px 2px 0 0;
+    padding-bottom: 5px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 10px !important
+}
+
+.dressing-room-picker .listview-note {
+    line-height: 30px
+}
+
+.dressing-room-picker .listview-note input,
+.dressing-room-picker .listview-note select {
+    max-width: 140px
+}
+
+.dressing-room-picker .listview-note>div:last-of-type,
+.dressing-room-picker .listview-note>div:last-of-type>*:last-child {
+    margin-right: 0
+}
+
+.dressing-room-picker .listview-note .fa-spin {
+    margin-left: 5px;
+    margin-right: -10px
+}
+
+.dressing-room-picker .listview[id*="tab-"] {
+    border-top-color: #444
+}
+
+.dressing-room-picker .filter-sep {
+    padding: 0 8px
+}
+
+.dressing-room-picker .dressing-room-picker-filter {
+    display: inline-block;
+    margin-right: 5px
+}
+
+.dressing-room-picker .dressing-room-picker-filter input,
+.dressing-room-picker .dressing-room-picker-filter select {
+    box-sizing: border-box;
+    height: 24px;
+    margin-left: 2px;
+    padding: 2px 6px
+}
+
+.dressing-room-picker-warningmsg {
+    float: left;
+    line-height: 34px;
+    margin-left: 20px
+}
+
+.dressing-room-picker-tabs {
+    float: left
+}
+
+@media screen and (max-width: 767px) {
+    .dressing-room-picker.lightbox-frame {
+        padding: 0
+    }
+
+    .dressing-room-picker .listview {
+        margin: 0
+    }
+
+    .dressing-room-picker .listview.lightbox-content {
+        height: calc(100% - 34px)
+    }
+
+    .dressing-room-picker .listview-band-top {
+        padding-left: 10px;
+        padding-right: 10px;
+        position: static
+    }
+
+    .dressing-room-picker .listview-note {
+        margin: 0
+    }
+
+    .dressing-room-picker-tabs {
+        margin: -35px 0 0
+    }
+
+    .dressing-room-picker-filter {
+        margin-bottom: 2px
+    }
+}
+
+.dressing-room-character-controls-general {
+    /* бэкграунд под красными кнопками */
+    /* background: #202020; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 0 10px
+}
+
+.dressing-room-character-controls-general>div {
+    display: flex;
+    flex-wrap: nowrap
+}
+
+.dressing-room-character-controls-general .dress-btn {
+    display: block;
+    font-family: "Open Sans Condensed", "Arial Narrow", "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-weight: normal;
+    height: 0;
+    margin: 10px 5px 1.4em;
+    min-width: 50px;
+    padding: 50px 0 0;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: 50px
+}
+
+body[data-locale="dede"] .dressing-room-character-controls-general .dress-btn,
+body[data-locale="ruru"] .dressing-room-character-controls-general .dress-btn {
+    font-size: 12px;
+    height: auto;
+    margin-bottom: 0;
+    overflow: hidden;
+    padding-bottom: 5px;
+    text-overflow: ellipsis
+}
+
+body[data-locale="kokr"] .dressing-room-character-controls-general .dress-btn {
+    font-size: 12px
+}
+
+.dressing-room-character-controls-general .dress-btn:before {
+    font-size: 28px;
+    height: 100%;
+    left: 0;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    width: 100%
+}
+
+.dressing-room-character-controls-general .dress-btn#dr-import[data-importing="true"]:before {
+    animation: fa-spin 2s infinite linear
+}
+
+.dressing-room-character-controls-general .dress-btn#dr-import[data-importing="true"]:before {
+    content: ""
+}
+
+.dressing-room-character-controls-general .dress-btn#dr-pause[data-paused="true"]:before {
+    content: ""
+}
+
+.dressing-room-character-controls-category-switchers {
+    display: flex;
+    justify-content: center;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    z-index: 2
+}
+
+.dressing-room-character-controls-category-switchers a {
+    background: #202020 left top;
+    background-size: 200% auto;
+    border-radius: 100% !important;
+    display: block;
+    margin: 0 10px;
+    pointer-events: auto;
+    position: relative;
+    width: 44px
+}
+
+body.no-webp .dressing-room-character-controls-category-switchers a {
+    background-image: url(https://wow.zamimg.com/images/tools/dressing-room/category-switcher-icons.png)
+}
+
+body.webp .dressing-room-character-controls-category-switchers a {
+    background-image: url(https://wow.zamimg.com/images/tools/dressing-room/category-switcher-icons.webp)
+}
+
+.dressing-room-character-controls-category-switchers a[style*="background-image:"] {
+    background-size: cover
+}
+
+.dressing-room-character-controls-category-switchers a:before {
+    content: ' ';
+    display: block;
+    padding: 100% 0 0
+}
+
+.dressing-room-character-controls-category-switchers a:after {
+    background: left;
+    background-size: auto 100%;
+    content: ' ';
+    display: block;
+    height: 177.272727273%;
+    left: -38.6363636364%;
+    pointer-events: none;
+    position: absolute;
+    top: -38.6363636364%;
+    width: 177.272727273%
+}
+
+body.no-webp .dressing-room-character-controls-category-switchers a:after {
+    background-image: url(https://wow.zamimg.com/images/tools/dressing-room/category-switcher-borders.png)
+}
+
+body.webp .dressing-room-character-controls-category-switchers a:after {
+    background-image: url(https://wow.zamimg.com/images/tools/dressing-room/category-switcher-borders.webp)
+}
+
+.dressing-room-character-controls-category-switchers a:hover:after,
+.dressing-room-character-controls-category-switchers a.focus-visible {
+    filter: brightness(1.35)
+}
+
+.dressing-room-character-controls-category-switchers a:active {
+    top: 1.5px
+}
+
+.dressing-room-character-controls-category-switchers a[data-active="true"] {
+    background-position: right top
+}
+
+.dressing-room-character-controls-category-switchers a[data-active="true"]:after {
+    background-position: right
+}
+
+.dressing-room-character[data-dragonriding] .dressing-room-character-controls-category-switchers a[data-category="gear"] {
+    display: none
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="body"],
+.dressing-room-character-controls-category-switchers a[data-category="character"]:not([style*="background-image:"]) {
+    background-position: bottom left
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="body"][data-active="true"],
+.dressing-room-character-controls-category-switchers a[data-category="character"]:not([style*="background-image:"])[data-active="true"] {
+    background-position: bottom right
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="face"] {
+    background-position: left
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="face"][data-active="true"] {
+    background-position: right
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="aquatic-form"] {
+    background-image: url(https://wow.zamimg.com/images/wow/icons/large/ability_druid_aquaticform.jpg) !important;
+    background-size: cover !important
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="bear-form"] {
+    background-image: url(https://wow.zamimg.com/images/wow/icons/large/ability_racial_bearform.jpg) !important;
+    background-size: cover !important
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="cat-form"] {
+    background-image: url(https://wow.zamimg.com/images/wow/icons/large/ability_druid_catform.jpg) !important;
+    background-size: cover !important
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="flight-form"] {
+    background-image: url(https://wow.zamimg.com/images/wow/icons/large/ability_druid_flightform.jpg) !important;
+    background-size: cover !important
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="moonkin-form"] {
+    background-image: url(https://wow.zamimg.com/images/wow/icons/large/spell_nature_forceofnature.jpg) !important;
+    background-size: cover !important
+}
+
+.dressing-room-character-controls-category-switchers a[data-category="travel-form"] {
+    background-image: url(https://wow.zamimg.com/images/wow/icons/large/ability_druid_travelform.jpg) !important;
+    background-size: cover !important
+}
+
+@media screen and (max-width: 450px) {
+    .dressing-room-character-controls-category-switchers {
+        flex-wrap: wrap;
+        left: calc(50% - 125px);
+        right: auto;
+        width: 250px
+    }
+
+    .dressing-room-character-controls-category-switchers a {
+        width: 30px
+    }
+}
+
+.dressing-room-character-controls-category {
+    display: none;
+    pointer-events: none;
+    position: absolute;
+    left: calc(50% + 223px);
+    top: 20%;
+    max-width: 350px;
+    right: 20px;
+    z-index: 11
+}
+
+@media screen and (max-width: 1500px) {
+    .dressing-room-character-controls-category {
+        left: 65%
+    }
+}
+
+@media screen and (max-width: 799px) {
+    .dressing-room-character-controls-category {
+        bottom: 109.6px;
+        left: auto;
+        top: auto;
+        width: calc(100% - 40px)
+    }
+
+    .dressing-room-character-controls-category .heading-size-2,
+    .dressing-room-character-controls-category-option>div[data-role="label"] {
+        text-shadow: 0 2px 5px #181818, 0 0 5px #181818
+    }
+}
+
+@media screen and (max-width: 659px) {
+    .dressing-room-character-controls-category {
+        bottom: 169.2px
+    }
+}
+
+@media screen and (max-width: 475px) {
+    .dressing-room-character-controls-category {
+        bottom: 199.2px
+    }
+}
+
+@media screen and (max-width: 399px) {
+    .dressing-room-character-controls-category {
+        margin: 10px;
+        pointer-events: auto;
+        position: static;
+        width: auto
+    }
+}
+
+.dressing-room-character-controls-category:after {
+    clear: both;
+    content: ' ';
+    display: block
+}
+
+.dressing-room-character-controls-category[data-active="true"] {
+    display: block
+}
+
+.dressing-room-character-controls-category .heading-size-2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    text-align: left;
+    color: white;
+}
+
+.dressing-room-character-controls-category [data-character-customization-type] {
+    box-sizing: border-box;
+    margin: 10px 0;
+    padding: 0 1px 1px 0;
+    white-space: nowrap
+}
+
+.dressing-room-character-controls-category [data-character-customization-type] input[type="checkbox"] {
+    margin: 0 3px 0 0;
+    position: relative;
+    top: 2px
+}
+
+.dressing-room-character-controls-category .q5 label {
+    color: #ff8000 !important
+}
+
+.dressing-room-character-controls-category-option {
+    display: flex;
+    white-space: nowrap
+}
+
+.dressing-room-character-controls-category-option>div {
+    height: 26px;
+    line-height: 26px
+}
+
+.dressing-room-character-controls-category-option>div[data-role="label"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 40%;
+    text-align: left;
+    color: #cccccc;
+}
+
+.dressing-room-character-controls-category-option>div[data-role="label"] label {
+    pointer-events: auto
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    text-align: center;
+    width: 60%
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"]:focus,
+.dressing-room-character-controls-category-option>div[data-role="control"].focus-visible {
+    box-shadow: none
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"]:focus:after,
+.dressing-room-character-controls-category-option>div[data-role="control"].focus-visible:after {
+    background: #181818;
+    /* border: 2px solid #444; */
+    border-radius: 6px;
+    bottom: -4px;
+    content: "";
+    display: block;
+    left: -4px;
+    position: absolute;
+    right: -4px;
+    top: -4px
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"]:focus .dress-btn,
+.dressing-room-character-controls-category-option>div[data-role="control"]:focus .imitation-select,
+.dressing-room-character-controls-category-option>div[data-role="control"].focus-visible .dress-btn,
+.dressing-room-character-controls-category-option>div[data-role="control"].focus-visible .imitation-select {
+    box-shadow: none !important
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"][data-disabled="true"] {
+    opacity: .5
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"][data-disabled="true"],
+.dressing-room-character-controls-category-option>div[data-role="control"][data-disabled="true"]>* {
+    pointer-events: none !important
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"]>* {
+    pointer-events: auto;
+    position: relative;
+    z-index: 1
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select:first-child:last-child,
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn+.imitation-select {
+    padding: 0 5px;
+    width: 100%
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select:first-child:last-child:after,
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn+.imitation-select:after {
+    display: none
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn,
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select {
+    background: #303030 !important;
+    border: 0;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    height: 26px;
+    line-height: 26px;
+    text-decoration: none;
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn:hover,
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select:hover {
+    background: #444 !important;
+    color: #fff
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn:active,
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select:active {
+    padding-top: 1px !important
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn.focus-visible,
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select.focus-visible {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    z-index: 1
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn {
+    border-radius: 4px 0 0 4px;
+    box-sizing: border-box;
+    display: none;
+    font-size: 18px;
+    height: 26px;
+    padding: 0;
+    vertical-align: top;
+    width: 26px
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn+.imitation-select+.dress-btn {
+    border-radius: 0 4px 4px 0
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn:before {
+    color: inherit !important;
+    padding: 0 !important
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn:last-child {
+    left: auto;
+    right: 0
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn:last-child:active {
+    left: auto;
+    right: -1px
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .dress-btn:active {
+    left: 1px;
+    top: 1px
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select {
+    display: inline-block;
+    padding: 0 calc(1.4em + 5px) 0 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 4px;
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select:after {
+    right: 5px;
+    top: 0
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select:focus,
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select.focus-visible,
+.dressing-room-character-controls-category-option>div[data-role="control"] .imitation-select.open {
+    /* box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5) */
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] input[type="checkbox"],
+.dressing-room-character-controls-category-option>div[data-role="control"] input[type="radio"] {
+    font-size: 18px;
+    top: -10px !important
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] input[type="checkbox"]:after,
+.dressing-room-character-controls-category-option>div[data-role="control"] input[type="radio"]:after {
+    border-color: #454545
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] input[type="checkbox"]:hover:after,
+.dressing-room-character-controls-category-option>div[data-role="control"] input[type="radio"]:hover:after {
+    border-color: dimgray
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] label input[type="radio"] {
+    top: auto !important;
+    vertical-align: top
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] label:first-child input[type="radio"]:first-child {
+    margin-left: 0
+}
+
+.dressing-room-character-controls-category-option>div[data-role="control"] label+label {
+    margin-left: 3px
+}
+
+.dressing-room-character-controls-category-option:not([data-character-customization-type="race"]):not([data-character-customization-type="class"])>div[data-role="control"] .dress-btn {
+    display: inline-block
+}
+
+.dressing-room-character-controls-category-option:not([data-character-customization-type="race"]):not([data-character-customization-type="class"])>div[data-role="control"] .imitation-select {
+    border-radius: 0;
+    margin: 0 2px;
+    width: calc(100% - 56px)
+}
+
+.dressing-room-character-controls-category-option:not([data-character-customization-type="race"]):not([data-character-customization-type="class"])>div[data-role="control"] .imitation-select:focus,
+.dressing-room-character-controls-category-option:not([data-character-customization-type="race"]):not([data-character-customization-type="class"])>div[data-role="control"] .imitation-select.focus-visible,
+.dressing-room-character-controls-category-option:not([data-character-customization-type="race"]):not([data-character-customization-type="class"])>div[data-role="control"] .imitation-select.open {
+    border-radius: 2px
+}
+
+.dressing-room-character-controls-color-swatches {
+    display: inline-block !important;
+    height: 13.33332px;
+    position: relative;
+    top: -2px;
+    vertical-align: bottom
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-outer,
+.dressing-room-character-controls-color-swatches-menu.menu .menu-inner,
+.dressing-room-character-controls-color-swatches-menu.menu a,
+.dressing-room-character-controls-color-swatches-menu.menu a>span {
+    background: #000 !important
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-item>a {
+    color: #ffd100 !important
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-item>a.checked.fonticon .fa:before {
+    color: #ddd !important
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-item>a:hover {
+    background: #262626 !important;
+    color: #fff !important
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-item>a:hover>span {
+    background: #262626 !important
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-item>a.q0 {
+    color: #9d9d9d !important
+}
+
+.dressing-room-character-controls-color-swatches-menu.menu .menu-item>a.q0:hover {
+    color: #fff !important
+}
+
+.dressing-room-character-controls-color-swatches-swatch {
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+    display: block !important;
+    float: left;
+    height: 13.33332px;
+    margin-left: 5px;
+    width: 57.333276px;
+    vertical-align: bottom;
+    -webkit-mask-image: url(https://wow.zamimg.com/images/tools/dressing-room/color-swatch.png);
+    mask-image: url(https://wow.zamimg.com/images/tools/dressing-room/color-swatch.png);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    mask-type: alpha
+}
+
+.dressing-room-character-controls-color-swatches.swatch-count-2 .dressing-room-character-controls-color-swatches-swatch:first-child {
+    width: 39.99996px;
+    -webkit-mask-image: url(https://wow.zamimg.com/images/tools/dressing-room/left-color-swatch.png);
+    mask-image: url(https://wow.zamimg.com/images/tools/dressing-room/left-color-swatch.png)
+}
+
+.dressing-room-character-controls-color-swatches.swatch-count-2 .dressing-room-character-controls-color-swatches-swatch:last-child {
+    margin-left: -16.66665px;
+    margin-right: -11.4666552px;
+    position: relative;
+    top: 1.333332px;
+    transform: scale(.8);
+    transform-origin: left bottom
+}
+
+.dressing-room-character[data-npc-race="true"] [data-character-customization-type="npc-options"] {
+    display: none
+}
+
+.dressing-room-character:not([data-gender-restriction="no-restriction"]) [data-character-customization-type="gender"] {
+    display: none
+}
+
+.dressing-room-character[data-hide-ui="true"] .paperdoll .paperdoll-left,
+.dressing-room-character[data-hide-ui="true"] .paperdoll .paperdoll-right,
+.dressing-room-character[data-hide-ui="true"] .paperdoll .paperdoll-bottom,
+.dressing-room-character[data-hide-ui="true"] .paperdoll .paperdoll-controls-left,
+.dressing-room-character[data-hide-ui="true"] .paperdoll .paperdoll-controls-right {
+    pointer-events: none !important;
+    visibility: hidden !important
+}
+
+.dressing-room-character[data-hide-ui="true"] .dressing-room-character-controls-category-switchers,
+.dressing-room-character[data-hide-ui="true"] .dressing-room-character-controls-category {
+    pointer-events: none !important;
+    visibility: hidden !important
+}
+
+.dressing-room .paperdoll-left,
+.dressing-room .paperdoll-left *,
+.dressing-room .paperdoll-right,
+.dressing-room .paperdoll-right *,
+.dressing-room .paperdoll-bottom,
+.dressing-room .paperdoll-bottom * {
+    transition: bottom 150ms, left 150ms, right 150ms, top 150ms, height 150ms, width 150ms, margin 150ms, padding 150ms
+}
+
+.dressing-room-character-controls-category,
+.dressing-room-character-controls-category *,
+.dressing-room-character-controls-category-switchers,
+.dressing-room-character-controls-category-switchers * {
+    transition: bottom 150ms, left 150ms, right 150ms, top 150ms, height 150ms, width 150ms, margin 150ms, padding 150ms
+}

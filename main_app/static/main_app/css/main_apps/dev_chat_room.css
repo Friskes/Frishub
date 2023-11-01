@@ -1,0 +1,341 @@
+#background-video,
+#bg-video-btn {
+    display: none;
+}
+
+.toolbar-container[_ngcontent-gox-c6] {
+    display: none !important;
+}
+
+body {
+    background-color: #303130;
+}
+
+
+.btn-custom2[_ngcontent-gox-c64] {
+    height: 46px;
+    padding: 0 10px;
+    font-size: 14px;
+    line-height: 43px;
+    cursor: Pointer;
+    width: auto;
+    color: #dadada;
+    background-color: #181618;
+    border: 1px solid #454545;
+    border-radius: 0px;
+    transition: all 0.3s ease;
+}
+
+.btn-custom2[_ngcontent-gox-c64]:hover {
+    border: 1px solid #fff;
+}
+
+#login-popup[_ngcontent-gox-c60] {
+    display: none;
+    position: relative;
+    max-width: 400px;
+    top: 35px;
+    margin-top: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    border: 2px solid #1fb8ff;
+    border-radius: 4px 4px 4px 4px;
+    background-color: rgba(0, 0, 0, 1);
+    z-index: 20000;
+    font-size: 12px;
+    line-height: 19px;
+    text-align: center;
+    box-shadow: 0 0 30px 10px #ffffff12
+}
+
+input[_ngcontent-xcm-c64]:focus,
+input[_ngcontent-xcm-c64] {
+    background-color: #181618;
+    border: 1px solid #454545;
+    font-family: Poppins;
+    color: #dadada;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    outline: none
+}
+
+input[_ngcontent-xcm-c64]::-moz-placeholder {
+    color: #4b4b4b
+}
+
+input[_ngcontent-xcm-c64]::placeholder {
+    color: #4b4b4b
+}
+
+fieldset[_ngcontent-xcm-c64] {
+    border: medium none !important;
+    margin: 0 0 10px;
+    min-width: 100%;
+    padding: 0;
+    width: 100%
+}
+
+.disabled[_ngcontent-gox-c64] {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.disabled[_ngcontent-gox-c64]:hover {
+    background-color: #676af7;
+}
+
+
+option {
+    font-weight: 600;
+}
+
+.programming-languages,
+.select-pixels {
+    font-weight: 600;
+    color: rgb(185, 185, 185);
+    background-color: #181618;
+    border-color: #454545;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    outline: none;
+    height: 46px;
+}
+
+.programming-languages {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+#close_room_btn,
+#close_room_info {
+    display: none;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.close-room-no[_ngcontent-gox-c64] {
+    background-color: #2f0000;
+}
+
+.close-room-no[_ngcontent-gox-c64]:hover {
+    border: 1px solid #ff0000;
+}
+
+.close-room-yes[_ngcontent-gox-c64] {
+    background-color: #092d00;
+}
+
+.close-room-yes[_ngcontent-gox-c64]:hover {
+    border: 1px solid #33ff00;
+}
+
+.programming-languages:hover,
+.select-pixels:hover {
+    border-color: white;
+    box-shadow: 0 0 30px 1px #ffffff12;
+}
+
+
+#dev-chat-container {
+    display: none;
+}
+
+#dev-chat-settings {
+    display: inline-flex;
+    position: relative;
+    left: 44px;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    #dev-chat-settings {
+        display: inline-block;
+        left: 0px;
+    }
+
+    .programming-languages {
+        margin-bottom: 4px;
+    }
+
+    #chat-path-input {
+        margin-bottom: 4px;
+    }
+
+    /* отступ слева до цифр строк */
+    .ace_gutter-cell {
+        padding-left: 4px !important;
+    }
+}
+
+
+#code_editor {
+    /* position: absolute; */
+    position: relative;
+    width: 100%;
+    height: 495px;
+    border: 1px solid rgb(31, 184, 255, 0.35);
+}
+
+/* выделение строки под курсором */
+/* .ace_line {
+    pointer-events: auto;
+  }
+  .ace_line:hover {
+    background-color: rgba(100, 100, 100, 0.2);
+  } */
+
+/* микроменю на мобилках */
+.ace_mobile-menu {
+    display: none;
+}
+
+.margin-top-l[_ngcontent-gox-c6] {
+    margin-top: 25px;
+}
+
+.margin-bottom-l[_ngcontent-gox-c6] {
+    margin-top: 25px;
+}
+
+
+.player-container {
+    display: none;
+    /* display: flex; */
+    align-items: center;
+    margin-left: 43px;
+    margin-right: 43px;
+    margin-top: 8px;
+}
+
+.player__actions {
+    display: flex;
+}
+
+.player__button_type_play,
+.player__button_type_speed,
+.player__button_type_skip {
+    height: 35px;
+    border: 1px solid #454545;
+    background-color: #181618;
+    transition: all 0.3s ease;
+    color: #dadada;
+}
+
+.player__button_type_play:hover,
+.player__button_type_speed:hover,
+.player__button_type_skip:hover {
+    border: 1px solid #fff;
+}
+
+.player__button_type_play {
+    width: 42px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.player__button_type_speed {
+    width: 54px;
+}
+
+.player__button_type_skip {
+    width: 42px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.disabled_skip {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.disabled_skip:hover {
+    border: 1px solid #454545;
+}
+
+.player__timeline {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    margin-left: 15px;
+    font-size: 15px;
+    line-height: 32px;
+    border: 1px solid #454545;
+    background-color: #181618;
+    border-radius: 4px
+}
+
+.player__progress {
+    position: relative;
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+}
+
+.player__pointer {
+    position: absolute;
+    box-sizing: border-box;
+    height: 100%;
+    background-color: red;
+    pointer-events: none;
+}
+
+.player__frame-container {
+    position: relative;
+}
+
+.player__frame {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.player__time {
+    width: 100px;
+    text-align: center;
+    padding-bottom: 1px;
+    color: #dadada;
+}
+
+.player__time_start {
+    border-right: 1px solid #454545;
+}
+
+.player__time_end,
+.player__time_start {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+.player__time_end {
+    border-left: 1px solid #454545;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    .player-container {
+        display: none;
+        /* display: block; */
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .player__actions {
+        display: flex;
+        justify-content: center;
+    }
+
+    .player__timeline {
+        display: flex;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 8px;
+    }
+}

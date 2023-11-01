@@ -1,0 +1,141 @@
+.calculator-table[_ngcontent-gox-c51] {
+    margin: auto;
+    width: 100%;
+    max-width: 400px
+}
+
+input[_ngcontent-gox-c51] {
+    background: #5f5f5f40;
+    color: #7f7f7f;
+    outline: 0;
+    padding: 8px 10px;
+    border: none;
+    width: 100%
+}
+
+input[_ngcontent-gox-c51],
+td[_ngcontent-gox-c51],
+th[_ngcontent-gox-c51] {
+    text-align: center
+}
+
+td[_ngcontent-gox-c51],
+th[_ngcontent-gox-c51] {
+    font-size: 16px;
+    border: 2px solid #050504 !important;
+    max-width: 140px;
+    font-weight: 500;
+    font-family: Poppins, Open Sans, Questrial, Russo One, cursive;
+    border-top: none;
+    height: 40px
+}
+
+th[_ngcontent-gox-c51] {
+    padding: 5px 8px;
+    background-color: #316077
+}
+
+td[_ngcontent-gox-c51] {
+    background-color: #222;
+    color: #a0a0a0
+}
+
+.calculate-rating-for-points-container[_ngcontent-gox-c51] {
+    width: 100%;
+    max-width: 600px;
+    margin: auto
+}
+
+.calculate-rating-for-points-container[_ngcontent-gox-c51] input[_ngcontent-gox-c51] {
+    width: 100%;
+    max-width: 200px;
+    margin: auto;
+    background: #313131;
+    color: #7f7f7f
+}
+
+.calculate-rating-for-points-container[_ngcontent-gox-c51] img[_ngcontent-gox-c51] {
+    width: 20px
+}
+
+.require-container[_ngcontent-gox-c51] {
+    color: #88c9fb;
+    margin-top: 48px;
+    text-align: center;
+}
+
+
+.checkBox[_ngcontent-xpp-c82] {
+    left: 1.5px;
+    top: 3px;
+    width: 62px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 200, 255, 1);
+    box-shadow: inset 0 0 5px rgba(0, 200, 255, 1);
+    position: relative;
+    display: inline-block;
+    border-radius: 5px
+}
+
+.checkBox[_ngcontent-xpp-c82]:after,
+.checkBox[_ngcontent-xpp-c82]:before {
+    position: absolute;
+    z-index: 0;
+    font: 12px/26px Arial, sans-serif;
+    font-weight: 700
+}
+
+.checkBox[_ngcontent-xpp-c82] label[_ngcontent-xpp-c82] {
+    display: block;
+    width: 26px;
+    height: 13px;
+    cursor: pointer;
+    position: absolute;
+    top: 2.4px;
+    left: 3.5px;
+    z-index: 1;
+    border-radius: 4px;
+    transition: all .3s ease;
+    background: rgb(0, 110, 140);
+    border: 1px solid rgba(0, 200, 255, 1);
+    box-shadow: inset 0 0 5px rgba(0, 200, 255, 1);
+}
+
+.checkBox[_ngcontent-xpp-c82] label[_ngcontent-xpp-c82]:hover {
+    background: rgb(0, 160, 204);
+}
+
+.checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82] {
+    visibility: hidden
+}
+
+.checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82]:checked+label[_ngcontent-xpp-c82] {
+    left: 30.5px
+}
+
+.choosing-server-type-text-classic[_ngcontent-xpp-c82],
+.choosing-server-type-text-private[_ngcontent-xpp-c82] {
+    position: absolute;
+    max-width: 99px;
+    margin-top: -8.5px;
+    text-align: center;
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+.choosing-server-type-text-classic[_ngcontent-xpp-c82] {
+    margin-left: -100px;
+}
+
+.choosing-server-type-text-private[_ngcontent-xpp-c82] {
+    margin-left: -8px;
+}
+
+
+.choosing-server-type-text-and-input {
+    margin-left: auto;
+    margin-right: auto;
+    width: 4.5em;
+    height: 3.5em;
+}

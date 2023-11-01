@@ -1,0 +1,415 @@
+.loader {
+    /* display: none; */
+    background: #000;
+    background: radial-gradient(#222, #000);
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    position: fixed;
+    right: 0;
+    top: 0;
+    /* Лоадер под меню */
+    /* z-index: 1; */
+    /* Лоадер над меню */
+    z-index: 2;
+}
+
+.loader-inner {
+    bottom: 0;
+    height: 60px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100px;
+}
+
+.loader-line-wrap {
+    animation: spin 1000ms cubic-bezier(.175, .885, .32, 1.275) infinite;
+    box-sizing: border-box;
+    height: 50px;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    transform-origin: 50% 100%;
+    width: 100px;
+}
+
+.loader-line {
+    border: 4px solid transparent;
+    border-radius: 100%;
+    box-sizing: border-box;
+    height: 100px;
+    left: 0;
+    margin: 0 auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100px;
+}
+
+.loader-line-wrap:nth-child(1) {
+    animation-delay: -50ms;
+}
+
+.loader-line-wrap:nth-child(2) {
+    animation-delay: -100ms;
+}
+
+.loader-line-wrap:nth-child(3) {
+    animation-delay: -150ms;
+}
+
+.loader-line-wrap:nth-child(4) {
+    animation-delay: -200ms;
+}
+
+.loader-line-wrap:nth-child(5) {
+    animation-delay: -250ms;
+}
+
+.loader-line-wrap:nth-child(1) .loader-line {
+    border-color: hsl(0, 80%, 60%);
+    height: 90px;
+    width: 90px;
+    top: 7px;
+}
+
+.loader-line-wrap:nth-child(2) .loader-line {
+    border-color: hsl(60, 80%, 60%);
+    height: 76px;
+    width: 76px;
+    top: 14px;
+}
+
+.loader-line-wrap:nth-child(3) .loader-line {
+    border-color: hsl(120, 80%, 60%);
+    height: 62px;
+    width: 62px;
+    top: 21px;
+}
+
+.loader-line-wrap:nth-child(4) .loader-line {
+    border-color: hsl(180, 80%, 60%);
+    height: 48px;
+    width: 48px;
+    top: 28px;
+}
+
+.loader-line-wrap:nth-child(5) .loader-line {
+    border-color: hsl(240, 80%, 60%);
+    height: 34px;
+    width: 34px;
+    top: 35px;
+}
+
+@keyframes spin {
+
+    0%,
+    15% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.pdng-l-r {
+    padding-right: 2rem !important;
+    padding-left: 2rem !important;
+}
+
+.guide-title-div {
+    word-wrap: break-word;
+}
+
+.guide-title-h2 {
+    text-align: left;
+    vertical-align: top;
+    display: inline-block;
+    width: 70%;
+    margin-right: 100%;
+}
+
+.guide-title-time-div {
+    text-align: right;
+    display: inline-block;
+    width: 30%;
+    margin-left: -100%;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    .pdng-l-r {
+        padding-right: 0rem !important;
+        padding-left: 0rem !important;
+    }
+
+    .guide-title-h2 {
+        width: 100%;
+        margin-right: 0%;
+    }
+
+    .guide-title-time-div {
+        width: 100%;
+        margin-left: 0%;
+        margin-top: 10px;
+    }
+}
+
+
+#go-to-top-btn,
+#go-to-comments-btn {
+    /* display: none; */
+    position: fixed;
+    bottom: 75px;
+    right: 30px;
+    border: none;
+    outline: none;
+    background-color: #939393;
+    color: white;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    z-index: 1;
+}
+
+#go-to-comments-btn {
+    /* display: block; */
+    bottom: 25px;
+}
+
+@media screen and (max-width: 800px) {
+
+    #go-to-top-btn,
+    #go-to-comments-btn {
+        bottom: 60px;
+        right: 17px;
+    }
+
+    #go-to-comments-btn {
+        bottom: 15px;
+    }
+}
+
+#go-to-top-btn:hover,
+#go-to-comments-btn:hover {
+    background-color: #555;
+}
+
+.go-to-top-icon {
+    position: relative;
+    top: 1px;
+    right: 3.5px;
+}
+
+.go-to-comments-icon {
+    position: relative;
+    top: 3.5px;
+    right: 2.5px;
+}
+
+
+@media screen and (min-width: 600px) {
+    .children form {
+        margin-left: -48px;
+    }
+
+    .children .children form {
+        margin-left: -96px;
+    }
+}
+
+hr {
+    background-color: grey;
+    height: 0px;
+    clear: both;
+    margin: -2px 0 6.5px 0;
+}
+
+textarea {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(210, 210, 210);
+    border-color: rgba(0, 0, 0, 0);
+    outline: none;
+    -moz-appearance: none;
+    resize: none;
+    word-break: break-all;
+
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.img-delete-btn1,
+.img-delete-btn2 {
+    margin: auto;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    right: 0px;
+    bottom: -7.5px;
+    user-select: none;
+    /* отключение выделения при дабл клике по элементу */
+}
+
+.img-delete-btn1 label,
+.img-delete-btn2 label {
+    position: relative;
+    left: 6.5px;
+    bottom: 6.5px;
+}
+
+.comm-reply-btn {
+    border: none;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: rgb(170, 170, 170);
+}
+
+.comm-reply-btn:hover {
+    color: white;
+}
+
+.comm-node-author {
+    user-select: none;
+    transition: all 0.3s ease;
+}
+
+.comm-node-author:hover {
+    color: #88c9fb;
+}
+
+.avatar-light-border[_ngcontent-xpp-c84] {
+    border-color: grey;
+}
+
+.avatar-light-border[_ngcontent-xpp-c84]:hover {
+    border-color: #88c9fbb7;
+}
+
+
+a[_ngcontent-xpp-c94] {
+    /* отключение нижнего подчёркивания при наведении на ссылку */
+    text-decoration: none;
+}
+
+
+.btn-custom[_ngcontent-xcm-c57],
+.btn-remove[_ngcontent-xcm-c57] {
+    height: 45px;
+    padding: 0 10px;
+    font-size: 12px;
+    line-height: 43px
+}
+
+.account-settings-box-0[_ngcontent-gox-c60],
+.account-settings-box-1[_ngcontent-gox-c60] {
+    position: absolute;
+    display: none;
+    min-width: 310px;
+    height: auto;
+    left: -5px;
+    border: 2px solid grey;
+    border-radius: 4px 4px 4px 4px;
+    background-color: rgba(0, 0, 0, 1);
+    z-index: 20000;
+    font-size: 12px;
+    line-height: 19px;
+    text-align: center;
+    box-shadow: 0 0 30px 10px #ffffff12
+}
+
+.all-profile-icons {
+    margin-left: 7px;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    .account-settings-box-0[_ngcontent-gox-c60] {
+        left: -66px;
+    }
+
+    .account-settings-box-1[_ngcontent-gox-c60] {
+        left: -56px;
+    }
+
+    .all-profile-icons {
+        position: relative;
+        bottom: 10px;
+        max-width: 70px;
+        margin-left: auto;
+        text-align: center;
+    }
+}
+
+@media screen and (min-width: 801px) {
+    .comments-tree-div {
+        position: relative;
+        left: 10%;
+        width: 90%;
+    }
+}
+
+.notifying-border {
+    box-shadow: 0 0 10px 10px rgba(31, 184, 255, 0);
+    border-radius: 12px;
+    padding-top: 13px;
+    margin-top: 14px;
+    margin-bottom: 27px;
+}
+
+.btn-accept-cookie3[_ngcontent-gox-c60] {
+    cursor: Pointer;
+    height: 24px;
+    width: auto;
+}
+
+.account-settings-table,
+.node-content-div {
+    word-wrap: break-word;
+}
+
+.evaluation-icons {
+    font-size: 28px;
+    position: relative;
+    bottom: 3px;
+}
+
+.unpublication-btn {
+    color: #ca2626;
+    border: none;
+    background-color: transparent;
+    font-size: 22px;
+    transition: all 0.3s ease;
+}
+
+@media screen and (min-width: 801px) {
+    .unpublication-btn-crutch {
+        position: relative;
+        left: 48px;
+    }
+}
+
+.unpublication-btn:hover {
+    color: red;
+}
+
+
+.guide-content {
+    word-break: break-all;
+}
+
+.guide-content details summary {
+    color: green;
+}
+
+.guide-content details img {
+    width: 100%;
+}

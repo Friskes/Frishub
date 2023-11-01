@@ -1,0 +1,224 @@
+textarea {
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -khtml-border-radius: 7px;
+    border-radius: 7px;
+    width: 100%;
+    color: rgb(210, 210, 210);
+    background-color: #181618;
+    border: 2px solid rgb(90, 90, 90);
+    /* отключение обводки при фокусе окна */
+    outline: none;
+    -moz-appearance: none;
+    /* запретить регулировать размер окна */
+    resize: none;
+    /* скролл полоса отображается даже до переполнения окна контентом */
+    /* overflow-y: scroll; */
+}
+
+#go-to-bottom {
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid rgb(60, 60, 60);
+    background-color: rgba(0, 0, 0, 0.6);
+    position: relative;
+    bottom: 80px;
+    left: 35%;
+    visibility: hidden;
+}
+
+#go-to-bottom:hover {
+    background-color: rgba(50, 50, 50, 0.9);
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    #go-to-bottom {
+        max-width: 88%;
+        left: 3.5%;
+    }
+}
+
+#wotlk-x1,
+#wotlk_x5_alliance,
+#wotlk_x5_horde,
+#wotlk_x100_alliance,
+#wotlk_x100_horde,
+#wotlk-fun {
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid rgb(60, 60, 60);
+    background-color: rgba(0, 0, 0, 0.6);
+    transition: all .3s ease;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+#wotlk-x1:hover,
+#wotlk_x5_alliance:hover,
+#wotlk_x5_horde:hover,
+#wotlk_x100_alliance:hover,
+#wotlk_x100_horde:hover,
+#wotlk-fun:hover {
+    border-color: rgba(0, 200, 255, 1);
+    box-shadow: inset 0 0 5px rgba(0, 200, 255, 1);
+}
+
+.servers-text[_ngcontent-xcm-c63] {
+    position: absolute;
+    font-size: 12px;
+    margin-top: -18px;
+    margin-left: 1px;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+
+.checkBox[_ngcontent-xpp-c82] {
+    left: 1.5px;
+    top: 3px;
+    width: 62px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 200, 255, 1);
+    box-shadow: inset 0 0 5px rgba(0, 200, 255, 1);
+    position: relative;
+    display: inline-block;
+    border-radius: 5px
+}
+
+.checkBox[_ngcontent-xpp-c82]:after {
+    color: red;
+    top: -3px;
+    right: 4.5px
+}
+
+.checkBox[_ngcontent-xpp-c82]:after,
+.checkBox[_ngcontent-xpp-c82]:before {
+    position: absolute;
+    z-index: 0;
+    font: 12px/26px Arial, sans-serif;
+    font-weight: 700
+}
+
+.checkBox[_ngcontent-xpp-c82]:before {
+    color: #28e219;
+    top: -4px;
+    left: 7.5px
+}
+
+.checkBox[_ngcontent-xpp-c82] label[_ngcontent-xpp-c82] {
+    display: block;
+    width: 26px;
+    height: 13px;
+    cursor: pointer;
+    position: absolute;
+    top: 2.4px;
+    left: 3.5px;
+    z-index: 1;
+    border-radius: 4px;
+    transition: all .3s ease;
+    background: rgb(0, 110, 140);
+    border: 1px solid rgba(0, 200, 255, 1);
+    box-shadow: inset 0 0 5px rgba(0, 200, 255, 1);
+}
+
+.checkBox[_ngcontent-xpp-c82] label[_ngcontent-xpp-c82]:hover {
+    background: rgb(0, 160, 204);
+}
+
+.checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82] {
+    visibility: hidden
+}
+
+.checkBox[_ngcontent-xpp-c82] input[type=checkbox][_ngcontent-xpp-c82]:checked+label[_ngcontent-xpp-c82] {
+    left: 30.5px
+}
+
+.only-twitch-text[_ngcontent-xpp-c82] {
+    position: absolute;
+    font-size: 12px;
+    margin-top: -33px;
+    margin-left: -11.5px;
+    max-width: 86px;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+
+input[_ngcontent-xcm-c63] {
+    color: #dadada;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 16px;
+    outline: none;
+}
+
+input[_ngcontent-xcm-c63]::-moz-placeholder {
+    color: #878787
+}
+
+input[_ngcontent-xcm-c63]::placeholder {
+    color: #878787
+}
+
+.player-nickname {
+    width: 160px;
+    height: 27px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.4);
+    transition: all .3s ease;
+}
+
+.player-nickname-text[_ngcontent-xcm-c63] {
+    position: absolute;
+    font-size: 12px;
+    margin-top: -36px;
+    margin-left: 17px;
+    max-width: 123px;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+
+.nickname-delete-btn {
+    font-size: 19px;
+    margin: auto;
+    position: relative;
+    right: 25px;
+    bottom: 10px;
+    opacity: 0.5;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.nickname-delete-btn:hover {
+    color: red;
+    opacity: 1;
+}
+
+
+.player-nickname-text-and-input,
+.only-twitch-text-and-input,
+.servers-text-and-button {
+    display: inline-block;
+    width: auto;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+
+    .player-nickname-text-and-input,
+    .only-twitch-text-and-input {
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+
+    .nickname-delete-btn {
+        bottom: 11px;
+    }
+}

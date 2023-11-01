@@ -35,6 +35,6 @@ redis
 
 **/json/modelviewer/
 
-**/static/**
+**/static/
 !*static/.gitkeep
 !**/main_app/static

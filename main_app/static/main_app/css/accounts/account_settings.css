@@ -1,0 +1,259 @@
+.card-body[_ngcontent-xcm-c57] {
+    max-width: 400px
+}
+
+.material-icons[_ngcontent-xcm-c57] {
+    font-size: 26px;
+    vertical-align: middle;
+    margin-right: 8px
+}
+
+textarea[_ngcontent-xcm-c71] {
+    resize: none
+}
+
+.container[_ngcontent-xcm-c71] {
+    max-width: 600px;
+    margin: auto
+}
+
+fieldset[_ngcontent-xcm-c71] {
+    border: medium none !important;
+    margin: 0 0 10px;
+    min-width: 100%;
+    padding: 0;
+    width: 100%
+}
+
+input[_ngcontent-gox-c51] {
+    background: #5f5f5f40;
+    color: #7f7f7f;
+    outline: 0;
+    padding: 8px 10px;
+    border: none;
+    width: 100%
+}
+
+input[_ngcontent-gox-c51],
+td[_ngcontent-gox-c51],
+th[_ngcontent-gox-c51] {
+    text-align: center
+}
+
+td[_ngcontent-gox-c51],
+th[_ngcontent-gox-c51] {
+    width: 49%;
+    font-size: 16px;
+    border: 2px solid #050504 !important;
+    font-weight: 500;
+    font-family: Poppins, Open Sans, Questrial, Russo One, cursive;
+    border-top: none;
+    height: 40px
+}
+
+th[_ngcontent-gox-c51] {
+    padding: 5px 8px;
+    background-color: #316077
+}
+
+td[_ngcontent-gox-c51] {
+    background-color: #222;
+    color: #a0a0a0
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    .account-settings-table[_ngcontent-gox-c51] {
+        margin-left: -41px;
+        width: 134.4%;
+    }
+}
+
+.image-upload>input,
+button[_ngcontent-hfk-c11] {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+label[_ngcontent-hfk-c11] {
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    left: 34px;
+}
+
+.file-input-image {
+    padding-bottom: 0px;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 25%;
+    cursor: cell;
+    transition: all 0.3s ease;
+}
+
+label[_ngcontent-hfk-c11]:hover img[_ngcontent-xcm-c57] {
+    border-color: #28e219;
+    opacity: 0.6;
+}
+
+.img-delete-btn {
+    margin: auto;
+    position: relative;
+    right: 16.5px;
+    bottom: 16.5px;
+    color: white;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.img-delete-btn:hover {
+    color: red;
+    opacity: 1;
+}
+
+.img-upload-icon {
+    margin: auto;
+    position: relative;
+    right: 8.5px;
+    bottom: -20px;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* тильда символ ~ позволяет взаимодействовать со следующим элементом (не внутри label а после него) */
+label[_ngcontent-hfk-c11]:hover~.img-upload-icon {
+    color: #28e219;
+    opacity: 1;
+}
+
+option {
+    font-weight: 600;
+}
+
+.select-birth-date,
+.select-gender,
+.chosen-select {
+    font-weight: 600;
+    color: rgb(185, 185, 185);
+    background-color: rgb(45, 45, 45);
+    border-color: #676af7;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    outline: none;
+}
+
+.select-birth-date {
+    margin: 4px;
+}
+
+.select-birth-date:hover,
+.select-gender:hover,
+.chosen-select:hover {
+    border-color: white;
+    box-shadow: 0 0 30px 1px #ffffff12;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    .select-birth-date {
+        inline-size: 62%;
+    }
+
+    .chosen-select {
+        inline-size: 75%;
+    }
+}
+
+.button-disabled[_ngcontent-xcm-c71] {
+    cursor: not-allowed;
+    opacity: .5
+}
+
+.button-disabled[_ngcontent-xcm-c71]::-moz-selection {
+    background-color: transparent
+}
+
+.button-disabled[_ngcontent-xcm-c71]::selection {
+    background-color: transparent
+}
+
+.button-disabled[_ngcontent-xcm-c71]:hover {
+    background-color: #676af7;
+    border-color: #676af7;
+}
+
+input.chosen-search-input {
+    width: 100% !important;
+}
+
+/* поле для ввода текста/открытия списка */
+ul.chosen-choices {
+    background: rgb(45, 45, 45) !important;
+    border-color: #676af7 !important;
+    transition: all 0.3s ease !important;
+}
+
+ul.chosen-choices:hover {
+    border-color: rgb(255, 255, 255) !important;
+    /* box-shadow: 0 0 30px 1px #ffffff12; */
+}
+
+/* кнопка выбранного элемента */
+li.search-choice {
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-align: left;
+    width: 100%;
+    background-size: 19.5px !important;
+
+    /* border-color: #676af7 !important; */
+    border-color: rgba(0, 0, 0, 1) !important;
+}
+
+li.search-choice:hover {
+    color: rgb(255, 255, 255) !important;
+    border-color: rgb(255, 255, 255) !important;
+}
+
+/* бордер вокруг выпадающего меню */
+div.chosen-drop {
+    background-color: rgb(45, 45, 45) !important;
+    /* border-color: #676af7 !important; */
+    border-color: #656571 !important;
+}
+
+/* поле результат не найден */
+li.no-results {
+    color: rgb(185, 185, 185) !important;
+    background-color: rgb(45, 45, 45) !important;
+}
+
+/* выпадающий список элементов */
+ul.chosen-results {
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-align: left;
+    box-shadow: 0 0 30px 1px #ffffff12;
+    color: rgb(185, 185, 185) !important;
+    background-color: rgb(45, 45, 45);
+}
+
+
+#cropper-image-box {
+    margin: 0% 5% 1px 5%;
+}
+
+/* Если мы на мобильном */
+@media screen and (max-width: 800px) {
+    #cropper-image-box {
+        margin: 0% 0% 1px 0%;
+    }
+}

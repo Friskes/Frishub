@@ -1,0 +1,77 @@
+input[type=password][_ngcontent-xpp-c83],
+input[type=password][_ngcontent-xpp-c83]:focus,
+input[type=text][_ngcontent-xpp-c83],
+input[type=text][_ngcontent-xpp-c83]:focus,
+input[type=email][_ngcontent-xpp-c83],
+input[type=email][_ngcontent-xpp-c83]:focus,
+textarea[_ngcontent-xpp-c83],
+textarea[_ngcontent-xpp-c83]:focus {
+    background-color: #181618;
+    border: 1px solid #454545;
+    font-family: Poppins;
+    color: #dadada;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    outline: none
+}
+
+input[_ngcontent-xpp-c83]::-moz-placeholder {
+    color: #4b4b4b
+}
+
+input[_ngcontent-xpp-c83]::placeholder {
+    color: #4b4b4b
+}
+
+textarea[_ngcontent-xpp-c83]::-moz-placeholder {
+    color: #4b4b4b
+}
+
+textarea[_ngcontent-xpp-c83]::placeholder {
+    color: #4b4b4b
+}
+
+textarea[_ngcontent-xpp-c83] {
+    resize: none
+}
+
+.container[_ngcontent-xpp-c83] {
+    max-width: 600px;
+    margin: auto
+}
+
+fieldset[_ngcontent-xpp-c83] {
+    border: none !important;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+fieldset.text-danger[_ngcontent-xpp-c83] {
+    margin-top: 20px;
+    padding-bottom: 30px
+}
+
+.disabled[_ngcontent-xpp-c83] {
+    opacity: .4;
+    cursor: not-allowed
+}
+
+.disabled[_ngcontent-xpp-c83]:hover {
+    background-color: #676af7
+}
+
+/* изменение масштаба бокса капчи для смартфонов */
+@media only screen and (max-width: 500px) {
+    .g-recaptcha {
+        transform: scale(0.785);
+        transform-origin: 0 0;
+    }
+
+    div#recaptcha {
+        width: 235px;
+        height: 78px;
+    }
+}
