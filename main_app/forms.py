@@ -23,6 +23,8 @@ from captcha.widgets import ReCaptchaV2Checkbox
 
 from mptt.forms import TreeNodeChoiceField
 
+from pytils.translit import translify # pip install pytils
+
 from main_app.models import CustomUser, ContactMe, Comments
 from main_app.services.services import humanize_size, validate_twitch_link
 from FriskesSite.celery import app as celery_app
@@ -287,6 +289,7 @@ class AccountSettingsForm(ModelForm):
         avatar: InMemoryUploadedFile = self.cleaned_data.get('avatar', False)
 
         if avatar:
+            avatar.name = translify(avatar.name)
 
             limit = (1024 * 1024) * 6 # 6 МБ
 

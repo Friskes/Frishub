@@ -19,6 +19,8 @@ from tinymce.widgets import TinyMCE
 
 from notifications.admin import NotificationAdmin
 
+from pytils.translit import translify
+
 from main_app.models import (
     CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
     HomeNews, Guides, Comments, Category, DressingRoom, Notification
@@ -582,6 +584,10 @@ class GuidesAdmin(TranslationAdmin):
     def save_model(self, request: ASGIRequest, obj: Guides, form: ModelForm, change: bool):
         # если пользователь не является суперпользователем
         # тогда всегда снимаем с публикации его гайд после любого изменения
+
+        if obj.main_image.name:
+            obj.main_image.name = translify(obj.main_image.name)
+
         if not request.user.is_superuser:
             obj.is_published = False
 
@@ -661,6 +667,10 @@ class CategoryAdmin(TranslationAdmin):
         return form
 
     def save_model(self, request: ASGIRequest, obj: Category, form: ModelForm, change: bool):
+
+        if obj.image_name.name:
+            obj.image_name.name = translify(obj.image_name.name)
+
         if not request.user.is_superuser:
             obj.is_published = False
 
