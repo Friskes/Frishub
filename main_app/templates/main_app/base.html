@@ -79,7 +79,8 @@
     <script>
       const twitch_stream_count_task_id = "{{ twitch_stream_count_task_id }}";
       const trans_text_copied = "{% trans 'Текст скопирован!' %}";
-      const debug_mode = JSON.parse("{{ debug_mode }}".toLowerCase());
+      let debug_mode = "{{ debug_mode }}".toLowerCase();
+      debug_mode = JSON.parse(debug_mode ? debug_mode : false);
       const csrf_token = '{% csrf_token %}';
       const PARENT_DOMAIN = "{{ PARENT_DOMAIN }}";
     </script>

@@ -1,4 +1,6 @@
-from typing import Union, Generator
+from __future__ import annotations
+
+from typing import Generator
 from math import floor
 from json import loads
 
@@ -6,7 +8,7 @@ from json import loads
 __all__ = ("get_arena_points",)
 
 
-def _calculate_arena_points(bracket: str, rating: Union[str, int], server_type: bool) -> int:
+def _calculate_arena_points(bracket: str, rating: str | int, server_type: bool) -> int:
     """Рассчитываем по формуле количество очков арены которое игрок
     получит за рейтинг в указанном брекете на выбранном сервере."""
 
@@ -35,8 +37,8 @@ def _calculate_arena_points(bracket: str, rating: Union[str, int], server_type: 
     return round(points)
 
 
-def get_arena_points(bracket_ratings: Generator, server_type: str) -> dict:
-    server_type: bool = loads(server_type)
+def get_arena_points(bracket_ratings: Generator, server_type: str) -> dict[str, int]:
+    server_type = loads(server_type)
 
     bracket_points = {}
     for bracket, rating in bracket_ratings:

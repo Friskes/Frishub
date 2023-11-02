@@ -1,11 +1,4 @@
-from django.utils import timezone
-
-from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer, AsyncJsonWebsocketConsumer
-from channels.layers import InMemoryChannelLayer
-
-from asgiref.sync import async_to_sync
-
-from main_app.services.parse_discord_chats import sorting_chat_message
+from __future__ import annotations
 
 import datetime
 import urllib.parse
@@ -15,16 +8,22 @@ from typing import Any
 from uuid import uuid4
 import json
 # import codecs
-# from random import randint
 
 import logging
 log = logging.getLogger(__name__)
+
+from django.utils import timezone
+
+from channels.generic.websocket import WebsocketConsumer, AsyncJsonWebsocketConsumer
+from channels.layers import InMemoryChannelLayer
+from asgiref.sync import async_to_sync
+
+from main_app.services.parse_discord_chats import sorting_chat_message
 
 
 # https://channels.readthedocs.io/en/latest/topics/channel_layers.html
 # https://github.com/django/asgiref/blob/main/specs/www.rst#http-connection-scope
 
-#############################################################################
 
 class GameChatConsumer(WebsocketConsumer):
     """#### Потребитель для игрового чата."""
@@ -45,16 +44,14 @@ class GameChatConsumer(WebsocketConsumer):
         )
         self.accept()
 
-
-    def disconnect(self, code):
+    def disconnect(self, code: int):
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name,
         )
 
-
-    def receive(self, text_data=None, bytes_data=None):
+    def receive(self, text_data: str = None, bytes_data: bytes = None):
         """Получаем данные для работы сортировки которые передаёт пользователь."""
 
         data: dict = json.loads(text_data)
@@ -66,8 +63,7 @@ class GameChatConsumer(WebsocketConsumer):
 
         self.only_twitch = data.get('only_twitch', False)
 
-
-    def send_message_to_frontend(self, event):
+    def send_message_to_frontend(self, event: dict[str, str | int | dict[str, Any]]):
         """Регистрируем ивент и передаём данные из него в функцию сортировки
         для каждого уникального пользователя отдельно."""
 
@@ -87,7 +83,6 @@ class GameChatConsumer(WebsocketConsumer):
         if message:
             self.send(text_data=json.dumps({'message': message}))
 
-#############################################################################
 
 class DevChatConsumer(AsyncJsonWebsocketConsumer):
 
@@ -120,7 +115,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
             self.saved_username = saved_room['username']
             self.saved_user_color = saved_room['user_color']
 
-
     async def rooms_data_handler(self):
         """#### Создание даты комнаты/истории."""
 
@@ -134,7 +128,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
                 'active_consumers': {}
             }
             self.chat_history[self.room_id] = []
-
 
     async def connect_user_data_handler(self):
         """#### Создание/Обновление даты пользователя."""
@@ -150,7 +143,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         else:
             self.rooms_data[self.room_id]['active_consumers'][self.userid]['page_count'] += 1
 
-
     async def disconnect_user_data_handler(self):
         """Удаление/Обновление даты пользователя."""
 
@@ -161,7 +153,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         else:
             # если пользователь закрыл не единственную вкладку - уменьшаем количество открытых вкладок на 1
             self.rooms_data[self.room_id]['active_consumers'][self.userid]['page_count'] -= 1
-
 
     async def time_checking(self):
         """Обновляет время для текущей комнаты и
@@ -183,7 +174,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
                 del self.rooms_data[room_id] # удаляем комнату
                 del self.chat_history[room_id] # так же удаляем комнату в истории
 
-
     async def connect(self):
         """Обрабатывает подключение пользователя, создаёт/удаляет комнату,
         отслеживает количество открытых вкладок у пользователя,
@@ -203,8 +193,8 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         await self.get_cookie_data()
 
         # print('SAVED_USERID:', self.saved_userid)
-        # при первом входе используем сгенерированный userid и записываем его в saved_room cookies на фронте
-        # при повторных входах всегда используем userid из saved_room cookies
+        # при первом входе используем сгенерированный userid и записываем его в saved_room cookies
+        # на фронте при повторных входах всегда используем userid из saved_room cookies
         if self.saved_userid:
             self.userid = self.saved_userid
         else:
@@ -238,7 +228,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # print('ROOMS_DATA:', json.dumps(self.rooms_data, indent=4, ensure_ascii=False))
         # print()
 
-
     async def disconnect(self, code: int):
         """Обрабатывает отключение пользователя,
         удаляет пользователя из rooms_data при выходе со всех вкладок,
@@ -256,8 +245,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # print('ROOMS_DATA:', json.dumps(self.rooms_data, indent=4, ensure_ascii=False))
         # print()
 
-
-    async def receive_json(self, content: dict, **kwargs):
+    async def receive_json(self, content: dict[str, str | dict[str, dict[str, int]]], **kwargs):
         """Принимает сообщения переданные с фронта, обрабатывает их,
         и отправляет все необходимые данные обратно на фронт."""
 
@@ -326,7 +314,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
             # print('CHAT_HISTORY:', json.dumps(self.chat_history[self.room_id], indent=4, ensure_ascii=False))
             # print()
 
-
     # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender
     # вместо channel_name можно использовать userid для отправки вне потребителя
     async def group_send(self, key: str, val: Any):
@@ -342,9 +329,10 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
             }
         )
 
-
-    async def send_message(self, event: dict):
-        """Принимает ивент и отправляет его всем/[всем кроме отправителя] подключенным потребителям на фронт."""
+    async def send_message(self,
+        event: dict[str, str | dict[str, dict[str, str | int | None | dict[str, int]]]]):
+        """Принимает ивент и отправляет его всем/[всем кроме отправителя]
+        подключенным потребителям на фронт."""
 
         message = event.get("message")
         if message is not None:
@@ -378,7 +366,6 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         if chat_history:
             await self.send_json({"chat_history": chat_history})
 
-
     async def save_history(self):
         """Сохраняет историю сообщений/передвижений курсора в chat_history
         при этом генерируя сообщения пустышки перед первым сообщением каждого пользователя."""
@@ -397,8 +384,8 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         deep_copied_rooms_data['sender'] = {self.userid: deep_copied_rooms_data['active_consumers'][self.userid]}
         del deep_copied_rooms_data['active_consumers']
 
-        # единоразово для каждого уникального пользователя создаю сообщение пустышку для того чтобы была возможность
-        # определять стартовую точку активности пользователя для удаления его курсора
+        # единоразово для каждого уникального пользователя создаю сообщение пустышку для того чтобы
+        # была возможность определять стартовую точку активности пользователя для удаления его курсора
         exists_user_ids = {list(item['sender'])[0] for item in self.chat_history[self.room_id]}
 
         if self.userid not in exists_user_ids:
@@ -422,5 +409,3 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
 
         # print('CHAT_HISTORY:', json.dumps(self.chat_history[self.room_id], indent=4, ensure_ascii=False))
         # print()
-
-#############################################################################

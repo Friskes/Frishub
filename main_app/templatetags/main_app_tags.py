@@ -1,23 +1,26 @@
+from __future__ import annotations
+
+from re import findall
+from datetime import datetime
+
+import humanize
+
 from django import template
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils.html import format_html
 
-from main_app.models import Category, CustomUser, DressingRoom, Guides
-
-import humanize
-
-from re import findall
+from main_app.models import Category, CustomUser, DressingRoom, Guides, Comments
 
 
 register = template.Library()
 
-#############################################################################
 
 # тег inclusion_tag для возврата содержимого целого html файла
 # в параметре name можно указать имя тега отличное от названия функции для использования в шаблоне
 @register.inclusion_tag(filename='main_app/filtered_guides_list.html', name='filtering_guides')
-def filtered_guides_list(sorter=None, category_selected=0):
+def filtered_guides_list(sorter: str = None, category_selected: int = 0
+                         ) -> dict[str, int | QuerySet]:
     """Фильтрует список гайдов если передан параметр sorter, иначе возвращает сразу все."""
 
     if sorter:
@@ -27,20 +30,18 @@ def filtered_guides_list(sorter=None, category_selected=0):
 
     return {'categorys': categorys, 'category_selected': category_selected}
 
-#############################################################################
 
 @register.filter
-def user_in(objects: QuerySet, user: CustomUser):
+def user_in(objects: QuerySet, user: CustomUser) -> bool:
     """Возвращает True если пользователь авторизован и уже оставил оценку, иначе False."""
 
     if user.is_authenticated:
         return objects.filter(user=user).exists()
     return False
 
-#############################################################################
 
 @register.filter
-def translate_datetime(dt, language_code='ru'):
+def translate_datetime(dt: datetime, language_code: str = 'ru') -> str | datetime:
     """Возвращает сокращённый текст времени на основе переданного datetime,
     так же учитывает локализацию используя параметр language_code."""
 
@@ -61,10 +62,9 @@ def translate_datetime(dt, language_code='ru'):
 
     return first_word + medium_word + '. ' + time_words[2]
 
-#############################################################################
 
 @register.filter
-def child_count(node):
+def child_count(node: Comments) -> int:
     """Возвращает количество дочерних комментариев у комментария."""
 
     count = 0
@@ -73,20 +73,18 @@ def child_count(node):
             count += 1
     return count
 
-#############################################################################
 
 @register.filter
-def get_all_published_comments(guide: Guides):
+def get_all_published_comments(guide: Guides) -> int:
     """Возвращает количество опубликованных комментариев у гайда."""
 
     return guide.comments.filter(is_published=True).count()
 
-#############################################################################
 
 @register.filter
 def get_race_img_by_dress_room_url(url: str) -> str:
-    """Принимает url dressing room комнаты и пытается получить из БД расу привязаную к этой комнате
-    если получается то возвращает url иконки расы, иначе возвращает дефолтную иконку."""
+    """Принимает url dressing room комнаты и пытается получить из БД расу привязаную к этой
+    комнате если получается то возвращает url иконки расы, иначе возвращает дефолтную иконку."""
 
     room_id = findall(r"/dressing-room/([A-Za-z0-9\-]+)", url)
     if not room_id:
@@ -101,15 +99,13 @@ def get_race_img_by_dress_room_url(url: str) -> str:
 
     return f'{dressing_room.model.DEFAULT_ICON_URL}race_{race}_{gender}.jpg'
 
-#############################################################################
 
 @register.simple_tag
-def get_verbose_name(instance: object, field_name: str) -> str:
+def get_verbose_name(instance: Guides, field_name: str) -> str:
     """Возвращает verbose_name полученный по объекту класса и названию его поля."""
 
     return type(instance)._meta.get_field(field_name).verbose_name
 
-#############################################################################
 
 # Переопределение дефолтного тега для добавления api_name == 'all_list'
 # Requires vanilla-js framework - http://vanilla-js.com/
@@ -161,5 +157,3 @@ def register_custom_notify_callbacks(badge_class='live_notify_badge',  # pylint:
         script += "register_notifier(" + callback + ");"
     script += "</script>"
     return format_html(script)
-
-#############################################################################

@@ -1,4 +1,6 @@
-# from django.contrib.auth.models import User
+from datetime import datetime
+from typing import Callable
+
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
@@ -16,24 +18,19 @@ from django.forms import (
     SelectDateWidget, Textarea, ValidationError, SelectMultiple, TextInput
 )
 
-from main_app.services.services import humanize_size, validate_twitch_link
-
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
-from main_app.models import CustomUser, ContactMe, Comments
-
 from mptt.forms import TreeNodeChoiceField
 
-from datetime import datetime
-
+from main_app.models import CustomUser, ContactMe, Comments
+from main_app.services.services import humanize_size, validate_twitch_link
 from FriskesSite.celery import app as celery_app
 
 
 # Поля джанго
 # https://metanit.com/python/django/4.2.php
 
-#############################################################################
 
 class RegisterForm(UserCreationForm):
     """#### Форма для страницы регистрации."""
@@ -51,7 +48,9 @@ class RegisterForm(UserCreationForm):
         )
     )
 
-    accept_terms = BooleanField(widget=CheckboxInput(attrs={'_ngcontent-xpp-c83': "", 'class': "checkbox"}))
+    accept_terms = BooleanField(widget=CheckboxInput(
+        attrs={'_ngcontent-xpp-c83': "", 'class': "checkbox"})
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,14 +72,12 @@ class RegisterForm(UserCreationForm):
         self.fields['email'].widget.attrs['placeholder'] = _('Адрес электронной почты')
         self.fields['email'].widget.attrs["style"] = "font-family: sans-serif; font-size: 16px;"
 
-
     class Meta:
         # требуется связь с моделью пользователя
         model = CustomUser
         fields = ('username', 'password1', 'password2', 'email', 'accept_terms', 'captcha')
 
-
-    def clean_email(self):
+    def clean_email(self) -> str:
         new_email = self.cleaned_data.get('email', False)
 
         if new_email:
@@ -88,15 +85,13 @@ class RegisterForm(UserCreationForm):
                 raise ValidationError(_('Такой почтовый адрес уже существует.'))
             return new_email
 
-#############################################################################
 
 class LoginForm(AuthenticationForm):
     """#### Форма для страницы авторизации."""
 
-    remember_me = BooleanField(required=False,
-                               widget=CheckboxInput(attrs={'_ngcontent-xpp-c82': "",
-                                                           'id': "stay-connected",
-                                                           }))
+    remember_me = BooleanField(required=False, widget=CheckboxInput(
+        attrs={'_ngcontent-xpp-c82': "", 'id': "stay-connected"}
+    ))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -112,9 +107,8 @@ class LoginForm(AuthenticationForm):
     class Meta:
         fields = ('username', 'password', 'remember_me')
 
-#############################################################################
 
-def password_reset_send_mail_override(func):
+def password_reset_send_mail_override(func: Callable) -> Callable:
     def wrap(*args, **kwargs):
         args = list(args)
         args[0] = 'PasswordResetCustomForm'
@@ -134,10 +128,8 @@ class PasswordResetCustomForm(PasswordResetForm):
         self.fields['email'].widget.attrs['placeholder'] = _('Адрес электронной почты')
         self.fields['email'].widget.attrs['style'] = "font-family: sans-serif; font-size: 16px;"
 
-
     class Meta:
         fields = ('email',)
-
 
     @password_reset_send_mail_override
     @celery_app.task
@@ -160,8 +152,7 @@ class PasswordResetCustomForm(PasswordResetForm):
 
         email_message.send()
 
-
-    def clean_email(self):
+    def clean_email(self) -> str:
         new_email = self.cleaned_data.get('email', False)
 
         if new_email:
@@ -169,7 +160,6 @@ class PasswordResetCustomForm(PasswordResetForm):
                 raise ValidationError(_('Такого почтового адреса не существует.'))
             return new_email
 
-#############################################################################
 
 class PasswordResetConfirmForm(SetPasswordForm):
     """#### Форма для страницы ввода нового пароля."""
@@ -187,7 +177,6 @@ class PasswordResetConfirmForm(SetPasswordForm):
     class Meta:
         fields = ('new_password1', 'new_password2')
 
-#############################################################################
 
 # https://docs.djangoproject.com/en/4.0/ref/forms/fields/
 class ContactMeForm(ModelForm):
@@ -218,13 +207,13 @@ class ContactMeForm(ModelForm):
 
         fields = ('email', 'message', 'captcha')
 
-        widgets = {'message': Textarea(attrs={'_ngcontent-xpp-c83': '',
-                                              'placeholder': _('Напишите ваше обращение к администрации сайта'),
-                                              'style': 'font-family: sans-serif; font-size: 16px;',
-                                            #   'cols': '40', 'rows': '10',
-                                              })}
+        widgets = {'message': Textarea(attrs={
+            '_ngcontent-xpp-c83': '',
+            'placeholder': _('Напишите ваше обращение к администрации сайта'),
+            'style': 'font-family: sans-serif; font-size: 16px;',
+            # 'cols': '40', 'rows': '10'
+        })}
 
-#############################################################################
 
 class AccountSettingsForm(ModelForm):
     """#### Форма для страницы с настройками аккаунта."""
@@ -232,14 +221,8 @@ class AccountSettingsForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # user = kwargs.get('instance')
-        # if user:
-            # print('user:', user, user.email)
-
         self.fields['avatar'].required = False
 
-        # self.fields['first_name'].widget.attrs['value'] = 'значение'
-        # self.fields['first_name'].initial = 'значение' # тоже самое что и ['value']
         self.fields['first_name'].widget.attrs['_ngcontent-gox-c51'] = ""
         self.fields['first_name'].widget.attrs['style'] = "font-family: sans-serif; font-size: 17px;"
 
@@ -267,7 +250,6 @@ class AccountSettingsForm(ModelForm):
 
         self.fields['subscribe_notify'].widget.attrs['style'] = "width: 18px; height: 18px;"
 
-
     class Meta:
         # требуется связь с моделью пользователя
         model = CustomUser
@@ -278,18 +260,19 @@ class AccountSettingsForm(ModelForm):
         widgets = {
             # https://django.fun/ru/articles/tutorials/kak-podklyuchit-vidzhet-vybora-daty-v-django/
             # https://django.fun/ru/docs/django/4.1/ref/forms/widgets/#selectdatewidget
-            'birth_date': SelectDateWidget(years=range(1930, datetime.now().year),
-                                           attrs={'class': 'select-birth-date',
-                                                  'style': "font-family: sans-serif; font-size: 16px;"},
-                                           # пустые поля появятся только если включен blank=True в модели
-                                           empty_label=('', '', '')), # подмена дефолтных тире на пустые строки
-
+            'birth_date': SelectDateWidget(
+                years=range(1930, datetime.now().year),
+                attrs={
+                    'class': 'select-birth-date',
+                    'style': "font-family: sans-serif; font-size: 16px;"
+                },
+                # пустые поля появятся только если включен blank=True в модели
+                empty_label=('', '', '')), # подмена дефолтных тире на пустые строки
             'game_class': SelectMultiple(attrs={'class': 'chosen-select'}),
         }
 
-
     # метод clean_<название-поля> возвращает объект который будет сохранён в БД при отсутствии ошибок
-    def clean_twitch_link(self):
+    def clean_twitch_link(self) -> str:
         twitch_link = self.cleaned_data.get('twitch_link', False)
 
         if twitch_link:
@@ -297,8 +280,7 @@ class AccountSettingsForm(ModelForm):
             if full_url:
                 return full_url
 
-
-    def clean_avatar(self):
+    def clean_avatar(self) -> InMemoryUploadedFile:
         """>>> Проверяет загружаемый пользователем аватар на максимально допустимое
         разрешение 1920х1920 и объём 6МБ, если предел превышен возбуждает исключение."""
 
@@ -313,11 +295,14 @@ class AccountSettingsForm(ModelForm):
             resolution = str(width) + 'x' + str(height)
             size = humanize_size(avatar.size)
 
-            resolution_error = _('Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, \
-                ваш файл имеет разрешение ') + resolution + _(' пикселей') + '.'
-            size_error = _('Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём ') + size + '.'
+            resolution_error = _(
+                'Загружаемый файл должен иметь разрешение не более 1920x1920 пикселей, '
+                'ваш файл имеет разрешение ') + resolution + _(' пикселей') + '.'
+            size_error = _(
+                'Загружаемый файл должен иметь объём не более 6МБ, ваш файл имеет объём '
+            ) + size + '.'
 
-            if ( width > 1920 or height > 1920 ) and ( avatar.size > limit ):
+            if (width > 1920 or height > 1920) and (avatar.size > limit):
                 # в ValidationError можно передавать несколько ошибок в формате списка
                 raise ValidationError([resolution_error, size_error])
 
@@ -329,7 +314,6 @@ class AccountSettingsForm(ModelForm):
 
             return avatar
 
-#############################################################################
 
 class PasswordChangeCustomForm(PasswordChangeForm):
     """#### Форма для страницы смены пароля внутри аккаунта."""
@@ -351,25 +335,23 @@ class PasswordChangeCustomForm(PasswordChangeForm):
     class Meta:
         fields = ('old_password', 'new_password1', 'new_password2')
 
-#############################################################################
 
 class AccountEmailForm(ModelForm):
     """#### Форма для страницы смены почты внутри аккаунта."""
 
-    new_email = EmailField(max_length=254,
-                           widget=EmailInput(attrs={'_ngcontent-xcm-c63': '',
-                                                    'placeholder': _('Новый почтовый адрес'),
-                                                    'style': 'font-family: sans-serif; font-size: 16px;',
-                                                    "autocomplete": "off",
-                                                    }))
+    new_email = EmailField(max_length=254, widget=EmailInput(attrs={
+        '_ngcontent-xcm-c63': '',
+        'placeholder': _('Новый почтовый адрес'),
+        'style': 'font-family: sans-serif; font-size: 16px;',
+        "autocomplete": "off"
+    }))
 
     class Meta:
         # требуется связь с моделью пользователя
         model = CustomUser
         fields = ('new_email',)
 
-
-    def clean_new_email(self):
+    def clean_new_email(self) -> str:
         """Проверяет наличие введённого пользователем адреса электронной почты в БД,
         если такая почта уже существует, возбуждает исключение."""
 
@@ -380,7 +362,6 @@ class AccountEmailForm(ModelForm):
                 raise ValidationError(_('Такой почтовый адрес уже существует.'))
             return new_email
 
-#############################################################################
 
 class CommentsForm(ModelForm):
     """#### Форма для отправки комментариев."""
@@ -394,7 +375,6 @@ class CommentsForm(ModelForm):
         self.fields['parent'].label = ''
         self.fields['parent'].required = False
 
-
     class Meta:
         model = Comments
         fields = ('parent', 'content')
@@ -402,16 +382,15 @@ class CommentsForm(ModelForm):
         widgets = {
             'name': TextInput(attrs={'class': 'col-sm-12'}),
             'email': TextInput(attrs={'class': 'col-sm-12'}),
-            'content': Textarea(attrs={'class': 'first-textarea',
-                                       'cols': "40", 'rows': "1",
-                                       "placeholder": _('Введите текст комментария'),
-                                       })}
-
+            'content': Textarea(attrs={
+                'class': 'first-textarea',
+                'cols': "40", 'rows': "1",
+                "placeholder": _('Введите текст комментария')
+            })
+        }
 
     def save(self, *args, **kwargs):
         """Перед сохранением формы необходимо произвести перестройку дерева методом rebuild."""
 
         Comments.objects.rebuild()
         return super(CommentsForm, self).save(*args, **kwargs)
-
-#############################################################################

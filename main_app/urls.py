@@ -1,25 +1,27 @@
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 from django.contrib.auth.decorators import login_required
+# тоже самое что и "{% static 'путь_к_файлу' %}" в шаблонах
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 from main_app import views
 from main_app.models import LikeDislike, Comments, Guides
-
-# тоже самое что и "{% static 'путь_к_файлу' %}" в шаблонах
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 from FriskesSite.env import CELERY_FLOWER_URL_PREFIX
 
 
 urlpatterns = [
-    re_path(f"{CELERY_FLOWER_URL_PREFIX}/(?P<path>.*)", views.flower_proxy_view, name=CELERY_FLOWER_URL_PREFIX),
+    re_path(f"{CELERY_FLOWER_URL_PREFIX}/(?P<path>.*)", views.flower_proxy_view,
+            name=CELERY_FLOWER_URL_PREFIX),
 
-    path('favicon.ico/', RedirectView.as_view(url=staticfiles_storage.url('main_app/images/favicon.ico'),
-                                              permanent=True), name='favicon'),
+    path('favicon.ico/', RedirectView.as_view(
+        url=staticfiles_storage.url('main_app/images/favicon.ico'),
+        permanent=True), name='favicon'),
 
     path('', views.HomeView.as_view(), name='home'),
 
-    path('api/modelviewer/<path:modelviewer_path>/', views.ZamimgProxyView.as_view(), name='zamimg_proxy'),
+    path('api/modelviewer/<path:modelviewer_path>/', views.ZamimgProxyView.as_view(),
+         name='zamimg_proxy'),
 
     path('guides/', views.GuidesListView.as_view(), name='guides'),
 
@@ -28,14 +30,20 @@ urlpatterns = [
     path('guides/<slug:guide_slug>/', views.GuideView.as_view(), name='guide'),
 
     re_path(r'^api/comment/(?P<pk>\d+)/like/$',
-        login_required(views.VotesView.as_view(model=Comments, vote_type=LikeDislike.LIKE)), name='comment_like'),
+        login_required(views.VotesView.as_view(model=Comments, vote_type=LikeDislike.LIKE)),
+        name='comment_like'),
+
     re_path(r'^api/comment/(?P<pk>\d+)/dislike/$',
-        login_required(views.VotesView.as_view(model=Comments, vote_type=LikeDislike.DISLIKE)), name='comment_dislike'),
+        login_required(views.VotesView.as_view(model=Comments, vote_type=LikeDislike.DISLIKE)),
+        name='comment_dislike'),
 
     re_path(r'^api/guide/(?P<pk>\d+)/like/$',
-        login_required(views.VotesView.as_view(model=Guides, vote_type=LikeDislike.LIKE)), name='guide_like'),
+        login_required(views.VotesView.as_view(model=Guides, vote_type=LikeDislike.LIKE)),
+        name='guide_like'),
+
     re_path(r'^api/guide/(?P<pk>\d+)/dislike/$',
-        login_required(views.VotesView.as_view(model=Guides, vote_type=LikeDislike.DISLIKE)), name='guide_dislike'),
+        login_required(views.VotesView.as_view(model=Guides, vote_type=LikeDislike.DISLIKE)),
+        name='guide_dislike'),
 
     # /(?P<guide_slug>[^\.]+)/
     re_path(r'^api/mark-as-read/(?P<notify_pk>\d+)/(?P<actor_object_id>\d+)/(?P<recipient_id>\d+)/(?P<guide_slug>[-\w]+)/(?P<comment_pk>\d+)/$',
@@ -53,9 +61,11 @@ urlpatterns = [
 
     path('dressing-room/', views.DressingRoomView.as_view(), name='dressing_room'),
 
-    path('dressing-room/<uuid:room_id>/', views.UniqueDressingRoomView.as_view(), name='unique_dressing_room'),
+    path('dressing-room/<uuid:room_id>/', views.UniqueDressingRoomView.as_view(),
+         name='unique_dressing_room'),
 
-    path('arena-point-calculator/', views.ArenaPointCalculatorView.as_view(), name='ap_calculator'),
+    path('arena-point-calculator/', views.ArenaPointCalculatorView.as_view(),
+         name='ap_calculator'),
 
     ##################### Авторизация #####################
 
@@ -71,11 +81,14 @@ urlpatterns = [
 
     path('password-reset/2/', views.PasswordResetCustomView2.as_view(), name='password_reset2'),
 
-    path('password-reset/done/', views.PasswordResetDoneCustomView.as_view(), name='password_reset_done'),
+    path('password-reset/done/', views.PasswordResetDoneCustomView.as_view(),
+         name='password_reset_done'),
 
-    path('password-reset/<uidb64>/<token>/', views.PasswordResetConfirmCustomView.as_view(), name='password_reset_confirm'),
+    path('password-reset/<uidb64>/<token>/', views.PasswordResetConfirmCustomView.as_view(),
+         name='password_reset_confirm'),
 
-    path('password-reset/complete/', views.PasswordResetCompleteCustomView.as_view(), name='password_reset_complete'),
+    path('password-reset/complete/', views.PasswordResetCompleteCustomView.as_view(),
+         name='password_reset_complete'),
 
     path('contact-me/', views.ContactMeView.as_view(), name='contact_me'),
 

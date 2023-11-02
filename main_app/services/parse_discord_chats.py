@@ -7,6 +7,15 @@
 
 # https://instructobit.com/tutorial/101/Reconnect-a-Python-socket-after-it-has-lost-its-connection
 
+from __future__ import annotations
+
+from typing import Any
+import json
+import threading
+import time
+import logging
+log = logging.getLogger(__name__)
+
 # для этих библиотек важен порядок установки т.к. они импортируются одним именем,
 # устанавливать в таком порядке, иначе будет ошибка:
 # "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
@@ -14,30 +23,18 @@
 # pip install websocket-client
 import websocket
 
-import json
-import threading
-import time
-
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from channels.layers import InMemoryChannelLayer
-
-from main_app.models import ServiceInfo
-from FriskesSite import settings
-
-from typing import Union, Dict
-
 import requests
 
+from main_app.models import ServiceInfo
 from main_app.services.hcaptcha_bypass import bypass
-
-import logging
-log = logging.getLogger(__name__)
+from FriskesSite import settings
 
 
 __all__ = ("sorting_chat_message",)
 
-#############################################################################
 
 REQUEST_URL = 'https://discord.com/api/v9/auth/login'
 HEADERS_POST = {'content-type': 'application/json'}
@@ -49,27 +46,29 @@ PAYLOAD = {
 DISCORD_ENDPOINT_URL = 'https://discord.com/api/users/@me'
 
 
-def _check_token(token: str) -> Union[str, None]:
+def _check_token(token: str) -> str | None:
     """#### Проверяем работоспособность токена.
     >>> Если токен рабочий возвращаем None
     >>> Если токен нерабочий получаем новый и возвращаем его."""
 
     # передаём заголовок с user-agent для того что бы сервер думал что данные отправляются с браузера
     headers_get = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
-            AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                      '(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         'authorization': token
     }
 
-    json_response: dict = requests.get(url=DISCORD_ENDPOINT_URL, headers=headers_get, timeout=5).json()
+    json_response: dict = requests.get(url=DISCORD_ENDPOINT_URL,
+                                       headers=headers_get, timeout=5).json()
 
     if json_response.get('code') == 0:
-        new_token = requests.post(url=REQUEST_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json().get('token')
+        new_token = requests.post(url=REQUEST_URL, json=PAYLOAD,
+                                  headers=HEADERS_POST, timeout=5).json().get('token')
         return new_token
     return None
 
 
-def _token_verification() -> Union[str, None]:
+def _token_verification() -> str | None:
     """Если токен есть в БД проверяем его,
     - Если он рабочий возвращаем его,
     - Если нерабочий нам вернётся новый токен из метода проверки,
@@ -115,7 +114,6 @@ def _token_verification() -> Union[str, None]:
         service_info.create(discord_token=token)
     return token
 
-#############################################################################
 
 class DiscordChatParser:
     """#### Класс для парсинга чата с помощью Discord API."""
@@ -162,8 +160,7 @@ class DiscordChatParser:
 
         self.send_json_request(fake_user_payload)
 
-
-    def send_json_request(self, request: dict):
+    def send_json_request(self, request: dict[str, str | int | dict[str, str]]):
         """#### Отправляем пинг на сервер discord.
         При возникновении исключений обрабатываем их."""
 
@@ -173,8 +170,7 @@ class DiscordChatParser:
         except Exception as exc:
             log.info(f'[class DiscordChatParser -> def send_json_request] Exception:\n{exc}')
 
-
-    def recieve_json_response(self) -> Dict[dict, list]:
+    def recieve_json_response(self) -> dict[str, str | int | dict[str, Any]]:
         """#### Запрашиваем у discord сервера актуальные данные и возвращаем их.
         При возникновении исключений обрабатываем их."""
 
@@ -186,25 +182,24 @@ class DiscordChatParser:
 
                 # Expecting value: line 1 column 1 (char 0)
                 except json.decoder.JSONDecodeError as exc:
-                    log.info(f'[class DiscordChatParser -> def recieve_json_response] \
-                        JSONDecodeError:\n{exc}\n{repr(responce)}')
+                    log.info(f'[class DiscordChatParser -> def recieve_json_response] '
+                             f'JSONDecodeError:\n{exc}\n{repr(responce)}')
 
         # ("Connection to remote host was lost.")
         # ("socket is already closed.")
         except websocket.WebSocketConnectionClosedException as exc:
-            log.info(f'[class DiscordChatParser -> def recieve_json_response] \
-                WebSocketConnectionClosedException:\n{exc}')
+            log.info(f'[class DiscordChatParser -> def recieve_json_response] '
+                     f'WebSocketConnectionClosedException:\n{exc}')
             self.re_connect()
 
         # WebSocketProtocolException("rsv is not implemented, yet")
         except websocket.WebSocketProtocolException as exc:
-            log.info(f'[class DiscordChatParser -> def recieve_json_response] \
-                WebSocketProtocolException:\n{exc}')
+            log.info(f'[class DiscordChatParser -> def recieve_json_response] '
+                     f'WebSocketProtocolException:\n{exc}')
             self.re_connect()
 
         except Exception as exc:
             log.info(f'[class DiscordChatParser -> def recieve_json_response] Exception:\n{exc}')
-
 
     def re_connect(self):
         """Если вебсокет соединение разорвано пробуем подключится заново с интервалом раз в 3 секунды."""
@@ -215,7 +210,6 @@ class DiscordChatParser:
             except Exception as exc:
                 log.info(f'[class DiscordChatParser -> def re_connect] Exception:\n{exc}')
                 time.sleep(3)
-
 
     def heartbeat(self):
         """С интервалом указанным в переменной heartbeat_interval
@@ -231,7 +225,6 @@ class DiscordChatParser:
             }
             self.send_json_request(HEARTBEAT_JSON)
 
-#############################################################################
 
 GUILD_ID = '338966203919892480'
 
@@ -245,8 +238,8 @@ CHANNEL_IDS = {
 }
 
 
-def sorting_chat_message(event_data: dict, server_name: str,
-                         player_nickname: bool, only_twitch: bool) -> Union[str, None]:
+def sorting_chat_message(event_data: dict[str, str | int | dict[str, Any]], server_name: str | None,
+                         player_nickname: str | bool, only_twitch: bool) -> str | None:
     """#### Функция сортировки сообщений индивидуально для каждого пользователя."""
 
     channel_id = event_data['d']['channel_id'] # айди канала на сервере
@@ -255,7 +248,8 @@ def sorting_chat_message(event_data: dict, server_name: str,
 
     if channel_id == CHANNEL_IDS[server_name]:
 
-        # бывает что в content приходит сразу несколько склеенных сообщений, поэтому их необходимо разделить.
+        # бывает что в content приходит сразу несколько склеенных сообщений,
+        # поэтому их необходимо разделить.
         for message in content.split('\n'):
 
             if player_nickname:
@@ -266,7 +260,8 @@ def sorting_chat_message(event_data: dict, server_name: str,
                 if 'twitch.tv/' not in message:
                     continue
 
-            # фильтры для (wotlk-x1, wotlk_x5_alliance, wotlk_x5_horde, wotlk_x100_alliance, wotlk_x100_horde)
+            # фильтры для (wotlk-x1, wotlk_x5_alliance,
+            # wotlk_x5_horde, wotlk_x100_alliance, wotlk_x100_horde)
             if '[SYSTEM]:' in message:
                 continue
             if '<:alliance:' in message:
@@ -284,14 +279,13 @@ def sorting_chat_message(event_data: dict, server_name: str,
 
             return message
 
-#############################################################################
 
-def _event_trigger(data: dict):
+def _event_trigger(data: dict[str, str | int | dict[str, Any]]):
     """Отправляем актуальные данные с discord сервера
     в метод send_message_to_frontend класса GameChatConsumer."""
 
-    # всё тоже самое как в методе receive внутри класса GameChatConsumer, за исключением того что
-    # название группы (self.room_group_name) указываем просто строкой
+    # всё тоже самое как в методе receive внутри класса GameChatConsumer, за исключением
+    # того что название группы (self.room_group_name) указываем просто строкой
     # а слой канала (self.channel_layer) получаем с помощью функции get_channel_layer
     channel_layer: InMemoryChannelLayer = get_channel_layer()
 
@@ -304,24 +298,23 @@ def _event_trigger(data: dict):
         },
     )
 
-#############################################################################
 
 class AsyncActionGetGameChatData(threading.Thread):
-    """#### Потоковый класс для вызова метода recieve_json_response у парсера в бесконечном цикле
-    #### для того чтобы не копилась очередь сообщений у вебсокета."""
+    """#### Потоковый класс для вызова метода recieve_json_response у парсера в\
+    бесконечном цикле для того чтобы не копилась очередь сообщений у вебсокета."""
 
     def run(self):
         while True:
             data = discord_chat_parser.recieve_json_response()
-            if data and data.get('t') == 'MESSAGE_CREATE' and data.get('d').get('guild_id') == GUILD_ID:
+            if (data and data.get('t') == 'MESSAGE_CREATE'
+            and data.get('d').get('guild_id') == GUILD_ID):
                 _event_trigger(data)
 
 
-# единоразово создаём экземпляры классов DiscordChatParser и AsyncActionGetGameChatData при загрузке сервера
+# единоразово создаём экземпляры классов DiscordChatParser
+# и AsyncActionGetGameChatData при загрузке сервера
 if settings.DISCORD_LOGIN and settings.DISCORD_PASSWORD:
     discord_chat_parser = DiscordChatParser()
 
     async_action_get_game_chat_data = AsyncActionGetGameChatData()
     async_action_get_game_chat_data.start()
-
-#############################################################################

@@ -15,15 +15,12 @@ import main_app.tasks as tasks
 from FriskesSite import settings
 
 
-#############################################################################
-
 class DataMixin:
     """#### """
 
     def __init__(self):
         # дефолтное время для всех сообщений которые идут в обход метода errors_handler
         self.toast_message_time = 4
-
 
     def get_context_data(self, *, object_list=None, **kwargs):
         """Добавляем в контекст шаблонов динамическое время отображения сообщений.
@@ -40,7 +37,8 @@ class DataMixin:
 
         context.update({'toast_message_time': self.toast_message_time})
 
-        # сравниваю текущее имя представления с именем представления который указан в urls.py для StreamsView
+        # сравниваю текущее имя представления с именем представления
+        # который указан в urls.py для StreamsView
         # resolve(self.request.path_info).view_name
         if self.request.resolver_match.view_name != 'streams':
 
@@ -57,7 +55,6 @@ class DataMixin:
             })
 
         return context
-
 
     def errors_handler(self, form_errors: ErrorDict):
         """Обработчик ошибок формы, разбивает ошибки для читаемого вида в одну строку,
@@ -89,7 +86,6 @@ class DataMixin:
         error = all_errors.replace('\n', '<br><br>').replace('*', '⚠️')
         messages.warning(self.request, error)
 
-#############################################################################
 
 class RedirectAuthUser:
     """#### Класс перенаправления авторизованных пользователей на страницу указанную в свойстве:
@@ -107,5 +103,3 @@ class RedirectAuthUser:
             return HttpResponseRedirect(reverse(self.redirect_auth_user_url))
 
         return super().dispatch(request, *args, **kwargs)
-
-#############################################################################

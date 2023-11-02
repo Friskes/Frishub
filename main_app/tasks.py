@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.core.cache import cache
+
+from notifications.signals import notify
 
 from FriskesSite import settings
 from FriskesSite.celery import app
@@ -9,15 +13,10 @@ from main_app.models import CustomUser
 from main_app.services.parse_twitch_streams import twitch_stream_parser
 from main_app.models import Notification
 
-from notifications.signals import notify
-
-from typing import List
-
-
-#############################################################################
 
 @app.task
-def contact_me_send_mail_task(preheader_msg: str, body_msg: str, sender_email: str, recipients_emails: List[str]):
+def contact_me_send_mail_task(preheader_msg: str, body_msg: str,
+                              sender_email: str, recipients_emails: list[str]):
     """Отправляет с серверной почты на серверную почту (самому себе) имейл
     с сообщением от пользователя с формы обратной связи."""
 
@@ -67,7 +66,7 @@ def send_news_by_notify_to_all_users_task(*args, **kwargs):
 
 
 @app.task
-def twitch_stream_count_task():
+def twitch_stream_count_task() -> list | list[dict[str, str | int | dict[str, dict[str, str]]]]:
     """Делает запрос к twitch API получает всех онлайн стримеров
     записывает их в кэш и возвращает."""
 
@@ -101,7 +100,6 @@ def send_email_if_notify_unread(*args, **kwargs):
             })
         )
 
-#############################################################################
 
 # Команда поднятия сервера [worker]
 # celery -A FriskesSite worker -l info -P eventlet

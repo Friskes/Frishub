@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import requests
 import time
 
@@ -17,7 +19,7 @@ HEADERS = {"Content-Type": "application/json", "apikey": nocaptchaai_apikey}
 TOKEN_API_URL = "https://token.nocaptchaai.com/token"
 
 
-def bypass(captcha_sitekey):
+def bypass(captcha_sitekey: str) -> str | None:
 
     PAYLOAD = {
         "type": "hcaptcha",
@@ -25,7 +27,8 @@ def bypass(captcha_sitekey):
         # "url": "https://discord.com/api/v9/auth/login",
         "url": "accounts.hcaptcha.com",
         "sitekey": captcha_sitekey,
-        "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+        "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                     "(KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
     }
 
     response = requests.post(TOKEN_API_URL, json=PAYLOAD, headers=HEADERS).json()

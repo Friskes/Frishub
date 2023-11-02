@@ -1,15 +1,15 @@
+from __future__ import annotations
+
+from typing import Callable
+
 from django.contrib import admin
 # from django.contrib.auth.models import User
 # from django.contrib.auth.admin import UserAdmin
-from django.utils.safestring import mark_safe
+from django.utils.safestring import mark_safe, SafeText
 from django.db.models import TextField
 from django.core.handlers.asgi import ASGIRequest
 from django.forms import ModelForm
-
-from main_app.models import (
-    CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
-    HomeNews, Guides, Comments, Category, DressingRoom, Notification
-)
+from django.db.models.query import QuerySet
 
 from modeltranslation.admin import TranslationAdmin
 
@@ -19,30 +19,30 @@ from tinymce.widgets import TinyMCE
 
 from notifications.admin import NotificationAdmin
 
+from main_app.models import (
+    CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
+    HomeNews, Guides, Comments, Category, DressingRoom, Notification
+)
+
 
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/
 # https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets
 
-# Register your models here.
-
-#############################################################################
 
 admin.site.site_title = 'FRISHUB' # название во вкладке браузера
 admin.site.site_header = 'Администрирование FRISHUB' # название шапки админки
-
-#############################################################################
 
 # Отменяю регистрацию класса NotificationAdmin
 # которая была сделана в файле notifications.admin
 # для регистрация переопределенного класса CustomNotificationAdmin
 admin.site.unregister(Notification)
 
+
 @admin.register(Notification)
 class CustomNotificationAdmin(NotificationAdmin):
 
     list_display = ('recipient', 'actor', 'timestamp', 'unread', 'deleted', 'emailed')
 
-#############################################################################
 
 # при переводе полей модели необходимо наследоватся от TranslationAdmin
 # для исключения отображения дефолтного поля в админке
@@ -51,7 +51,6 @@ class HomeNewsAdmin(TranslationAdmin):
 
     list_display = ('news', 'date')
 
-#############################################################################
 
 @admin.register(ContactMe)
 class ContactMeAdmin(admin.ModelAdmin):
@@ -62,7 +61,6 @@ class ContactMeAdmin(admin.ModelAdmin):
 
     readonly_fields = ('email', 'message', 'date_time')
 
-#############################################################################
 
 @admin.register(DressingRoom)
 class DressingRoomAdmin(admin.ModelAdmin):
@@ -80,52 +78,56 @@ class DressingRoomAdmin(admin.ModelAdmin):
 
     readonly_fields = ('race_img65x65', 'game_patch_img65x65')
 
-    fields = ('room_id', 'room_creator_id', 'creator', 'allow_edit', ('game_patch', 'game_patch_img65x65'),
-              ('race', 'race_img65x65'), 'gender', 'last_update_time', 'items', 'face', 'mount')
+    fields = ('room_id', 'room_creator_id', 'creator', 'allow_edit',
+              ('game_patch', 'game_patch_img65x65'), ('race', 'race_img65x65'),
+              'gender', 'last_update_time', 'items', 'face', 'mount')
 
-    def get_short_room_id(self, object):
+    def get_short_room_id(self, obj: DressingRoom) -> str:
         # print(getattr(self, 'GENDERS')) # self.__class__.__getattribute__(self, 'GENDERS')
-        # print(vars(object)) # object.__dict__
-        # print(vars(object._meta))
-        # print(object.__doc__)
-        # self.__class__.get_short_room_id.__setattr__('short_description', object._meta.get_field('room_id').verbose_name)
-        # setattr(self.__class__.get_short_room_id, 'short_description', object._meta.get_field('room_id').verbose_name)
+        # print(vars(obj)) # obj.__dict__
+        # print(vars(obj._meta))
+        # print(obj.__doc__)
+        # self.__class__.get_short_room_id.__setattr__('short_description', obj._meta.get_field('room_id').verbose_name)
+        # setattr(self.__class__.get_short_room_id, 'short_description', obj._meta.get_field('room_id').verbose_name)
 
-        setattr(type(self).get_short_room_id, 'short_description', object._meta.get_field('room_id').verbose_name)
-        length = len(object.room_id)
-        return f'...{object.room_id[length-7:length]}'
+        setattr(type(self).get_short_room_id, 'short_description',
+                obj._meta.get_field('room_id').verbose_name)
+        length = len(obj.room_id)
+        return f'...{obj.room_id[length-7:length]}'
 
-    def get_short_room_creator_id(self, object):
-        setattr(type(self).get_short_room_creator_id, 'short_description', object._meta.get_field('room_creator_id').verbose_name)
-        length = len(object.room_creator_id)
-        return f'...{object.room_creator_id[length-7:length]}'
+    def get_short_room_creator_id(self, obj: DressingRoom) -> str:
+        setattr(type(self).get_short_room_creator_id, 'short_description',
+                obj._meta.get_field('room_creator_id').verbose_name)
+        length = len(obj.room_creator_id)
+        return f'...{obj.room_creator_id[length-7:length]}'
 
-    def get_race_name(self, object):
-        setattr(type(self).get_race_name, 'short_description', object._meta.get_field('race').verbose_name)
-        return self.model.RACES.get(object.race, 'Раса неизвестна')
+    def get_race_name(self, obj: DressingRoom) -> str:
+        setattr(type(self).get_race_name, 'short_description',
+                obj._meta.get_field('race').verbose_name)
+        return self.model.RACES.get(obj.race, 'Раса неизвестна')
 
-    def get_gender_name(self, object):
-        setattr(type(self).get_gender_name, 'short_description', object._meta.get_field('gender').verbose_name)
-        return self.model.GENDERS.get(object.gender, 'Пол неизвестен')
+    def get_gender_name(self, obj: DressingRoom) -> str:
+        setattr(type(self).get_gender_name, 'short_description',
+                obj._meta.get_field('gender').verbose_name)
+        return self.model.GENDERS.get(obj.gender, 'Пол неизвестен')
 
-    def race_img65x65(self, object):
+    def race_img65x65(self, obj: DressingRoom) -> SafeText:
         setattr(type(self).race_img65x65, 'short_description', '')
 
-        if object.race in self.model.RACES_WITHOUT_ICON:
+        if obj.race in self.model.RACES_WITHOUT_ICON:
             src = '/static/main_app/images/close.png'
         else:
-            race = self.model.RACES.get(object.race).lower()
-            gender = self.model.GENDERS.get(object.gender).lower()
+            race = self.model.RACES.get(obj.race).lower()
+            gender = self.model.GENDERS.get(obj.gender).lower()
 
             src = f'{self.model.DEFAULT_ICON_URL}race_{race}_{gender}.jpg'
 
         return mark_safe(f'<img src="{src}" width="65">')
 
-    def game_patch_img65x65(self, object):
+    def game_patch_img65x65(self, obj: DressingRoom) -> SafeText:
         setattr(type(self).game_patch_img65x65, 'short_description', '')
-        return mark_safe(f'<img src="/static/main_app/images/{object.game_patch}.png" width="65">')
+        return mark_safe(f'<img src="/static/main_app/images/{obj.game_patch}.png" width="65">')
 
-#############################################################################
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -245,30 +247,28 @@ class CustomUserAdmin(admin.ModelAdmin):
         )}),
     )
 
-    def get_html_avatar30x30(self, object: CustomUser):
+    def get_html_avatar30x30(self, obj: CustomUser) -> SafeText:
         """Подставляет html код с изображением вместо дефолтного пути к изображению."""
 
-        if object.avatar:
+        if obj.avatar:
             # функция mark_safe позволяет не экранировать html тэги а передать строку какая она есть
-            return mark_safe(f'<img src="{object.avatar.url}" width="30">')#<br>{str(object.avatar)[19:]}')
+            return mark_safe(f'<img src="{obj.avatar.url}" width="30">')#<br>{str(obj.avatar)[19:]}')
 
-        return mark_safe(f'<img src="{object.get_avatar()}" width="30">')#<br>{str(object.get_avatar())[24:]}')
+        return mark_safe(f'<img src="{obj.get_avatar()}" width="30">')#<br>{str(obj.get_avatar())[24:]}')
 
     # указываем название для колонки с изображениями
     get_html_avatar30x30.short_description = 'Аватар'
 
-
-    def get_html_avatar65x65(self, object: CustomUser):
+    def get_html_avatar65x65(self, obj: CustomUser) -> SafeText:
         """Подставляет html код с изображением вместо дефолтного пути к изображению."""
 
-        if object.avatar:
-            return mark_safe(f'<img src="{object.avatar.url}" width="65">')
+        if obj.avatar:
+            return mark_safe(f'<img src="{obj.avatar.url}" width="65">')
 
-        return mark_safe(f'<img src="{object.get_avatar()}" width="65">')
+        return mark_safe(f'<img src="{obj.get_avatar()}" width="65">')
 
     get_html_avatar65x65.short_description = ''
 
-#############################################################################
 
 @admin.register(ServiceInfo)
 class ServiceInfoAdmin(admin.ModelAdmin):
@@ -351,7 +351,6 @@ class ServiceInfoAdmin(admin.ModelAdmin):
         )}),
     )
 
-#############################################################################
 
 @admin.register(TwitchStreamerInfo)
 class TwitchStreamerInfoAdmin(admin.ModelAdmin):
@@ -401,7 +400,6 @@ class TwitchStreamerInfoAdmin(admin.ModelAdmin):
         )}),
     )
 
-#############################################################################
 
 @admin.register(Comments)
 class CommentsAdmin(DraggableMPTTAdmin):
@@ -416,7 +414,6 @@ class CommentsAdmin(DraggableMPTTAdmin):
     # необходимо обращатся к полям пользователя через 2 нижних подчёркивания
     search_fields = ('author__username', 'author__email', 'guide__title')
 
-#############################################################################
 
 # class CommentsInline(admin.TabularInline): # выстраивает поля по горизонтали
 class CommentsInline(admin.StackedInline):
@@ -427,7 +424,6 @@ class CommentsInline(admin.StackedInline):
     fields = ('is_published', 'author', 'parent', 'time_create', 'content')
     readonly_fields = ('author', 'parent', 'time_create')
 
-#############################################################################
 
 @admin.register(Guides)
 class GuidesAdmin(TranslationAdmin):
@@ -444,7 +440,6 @@ class GuidesAdmin(TranslationAdmin):
     #         ))
     #     return super().formfield_for_dbfield(db_field, request, **kwargs)
 
-
     # определить виджет для всех TextField полей модели
     formfield_overrides = {
         TextField: {
@@ -456,13 +451,14 @@ class GuidesAdmin(TranslationAdmin):
         },
     }
 
-
     inlines = [CommentsInline]
 
     save_on_top: bool = True
 
-    # Вместо кнопки "Сохранить и добавить новый объект" появляется кнопка "Сохранить как новый объект"
-    # при нажатии на данную кнопку, все поля заполненные на текущей странице будут скопированы для создания нового объекта.
+    # Вместо кнопки "Сохранить и добавить новый объект"
+    # появляется кнопка "Сохранить как новый объект"
+    # при нажатии на данную кнопку, все поля заполненные на текущей странице будут
+    # скопированы для создания нового объекта.
     # save_as = True
 
     list_display = ('id', 'title', 'category', 'slug', 'get_html_avatar30x30',
@@ -530,12 +526,12 @@ class GuidesAdmin(TranslationAdmin):
         )}),
     )
 
-
     # https://docs.djangoproject.com/en/4.2/ref/contrib/admin/
     # Если пользователь суперпользователь тогда ему разрешено редактировать любые объекты.
     # Если пользователь ниже рангом чем суперпользователь тогда ему разрешено редактировать
     # только свой объект.
-    def has_change_permission(self, request: ASGIRequest, obj=None):
+    def has_change_permission(self, request: ASGIRequest, obj: Guides | None = None) -> bool:
+
         if ( not obj and not request.user.is_superuser
         or obj and obj.guide_creator != request.user and not request.user.is_superuser ):
             return False
@@ -548,7 +544,7 @@ class GuidesAdmin(TranslationAdmin):
         # return False
 
     # аналогично с has_change
-    def has_delete_permission(self, request: ASGIRequest, obj=None):
+    def has_delete_permission(self, request: ASGIRequest, obj: Guides | None = None) -> bool:
         if ( not obj and not request.user.is_superuser
         or obj and obj.guide_creator != request.user and not request.user.is_superuser ):
             return False
@@ -560,15 +556,14 @@ class GuidesAdmin(TranslationAdmin):
     # def has_view_permission(self, request: ASGIRequest, obj=None):
     #     return False
 
-
     # Добавляет новое действие в список действий
-    def set_guides_to_published(self, request: ASGIRequest, queryset):
+    def set_guides_to_published(self, request: ASGIRequest, queryset: QuerySet):
         count = queryset.update(is_published=True)
         self.message_user(request, f'{count} гайдов были успешно опубликованы.')
     set_guides_to_published.short_description = 'Публикация выбранных гайдов'
 
     # Удаляет из списка действий указанные действия
-    def get_actions(self, request: ASGIRequest):
+    def get_actions(self, request: ASGIRequest) -> dict[str, tuple[str, Callable]]:
         actions = super(GuidesAdmin, self).get_actions(request)
         if not request.user.is_superuser:
             if 'delete_selected' in actions: del actions['delete_selected']
@@ -576,8 +571,8 @@ class GuidesAdmin(TranslationAdmin):
         return actions
 
     # Запретить редактировать определенные элементы пользователю с недостаточными правами
-    def get_form(self, request: ASGIRequest, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
+    def get_form(self, request: ASGIRequest, obj: Guides | None = None, **kwargs) -> ModelForm:
+        form: ModelForm = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
             form.base_fields['is_published'].disabled = True
             form.base_fields['guide_creator'].disabled = True
@@ -602,36 +597,35 @@ class GuidesAdmin(TranslationAdmin):
         super().save_model(request, obj, form, change)
 
     # Автоматически заполняет форму поля guide_creator текущим пользователем
-    def get_changeform_initial_data(self, request):
+    def get_changeform_initial_data(self, request: ASGIRequest) -> dict[str, int]:
         get_data = super(GuidesAdmin, self).get_changeform_initial_data(request)
         get_data['guide_creator'] = request.user.pk
         return get_data
 
-    def get_html_avatar30x30(self, object: Guides):
-        if object.main_image:
-            return mark_safe(f'<img src="{object.main_image.url}" width="30">')
+    def get_html_avatar30x30(self, obj: Guides) -> str | SafeText:
+        if obj.main_image:
+            return mark_safe(f'<img src="{obj.main_image.url}" width="30">')
         return ''
     get_html_avatar30x30.short_description = 'Изображение'
 
-    def get_html_avatar65x65(self, object: Guides):
-        if object.main_image:
-            return mark_safe(f'<img src="{object.main_image.url}" width="65">')
+    def get_html_avatar65x65(self, obj: Guides) -> str | SafeText:
+        if obj.main_image:
+            return mark_safe(f'<img src="{obj.main_image.url}" width="65">')
         return ''
     get_html_avatar65x65.short_description = ''
 
-    def get_likes_count(self, object: Guides):
-        return object.votes.likes().count()
+    def get_likes_count(self, obj: Guides) -> int:
+        return obj.votes.likes().count()
     get_likes_count.short_description = 'Лайков'
 
-    def get_dislikes_count(self, object: Guides):
-        return object.votes.dislikes().count()
+    def get_dislikes_count(self, obj: Guides) -> int:
+        return obj.votes.dislikes().count()
     get_dislikes_count.short_description = 'Дизлайков'
 
-    def get_comments_count(self, object):
-        return object.comments.filter(is_published=True).count()
+    def get_comments_count(self, obj: Guides) -> int:
+        return obj.comments.filter(is_published=True).count()
     get_comments_count.short_description = 'Комментариев'
 
-#############################################################################
 
 @admin.register(Category)
 class CategoryAdmin(TranslationAdmin):
@@ -647,20 +641,20 @@ class CategoryAdmin(TranslationAdmin):
 
     raw_id_fields = ('cat_creator',)
 
-    def has_change_permission(self, request: ASGIRequest, obj=None):
+    def has_change_permission(self, request: ASGIRequest, obj: Category | None = None) -> bool:
         if ( not obj and not request.user.is_superuser
         or obj and obj.cat_creator != request.user and not request.user.is_superuser ):
             return False
         return True
 
-    def has_delete_permission(self, request: ASGIRequest, obj=None):
+    def has_delete_permission(self, request: ASGIRequest, obj: Category | None = None) -> bool:
         if ( not obj and not request.user.is_superuser
         or obj and obj.cat_creator != request.user and not request.user.is_superuser ):
             return False
         return True
 
-    def get_form(self, request: ASGIRequest, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
+    def get_form(self, request: ASGIRequest, obj: Category | None = None, **kwargs) -> ModelForm:
+        form: ModelForm = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
             form.base_fields['is_published'].disabled = True
             form.base_fields['cat_creator'].disabled = True
@@ -679,21 +673,19 @@ class CategoryAdmin(TranslationAdmin):
 
         super().save_model(request, obj, form, change)
 
-    def get_changeform_initial_data(self, request):
+    def get_changeform_initial_data(self, request: ASGIRequest) -> dict[str, int]:
         get_data = super(CategoryAdmin, self).get_changeform_initial_data(request)
         get_data['cat_creator'] = request.user.pk
         return get_data
 
-    def get_html_avatar30x30(self, object: Category):
-        if object.image_name:
-            return mark_safe(f'<img src="{object.image_name.url}" width="30">')
+    def get_html_avatar30x30(self, obj: Category) -> str | SafeText:
+        if obj.image_name:
+            return mark_safe(f'<img src="{obj.image_name.url}" width="30">')
         return ''
     get_html_avatar30x30.short_description = 'Изображение категории'
 
-    def get_html_avatar65x65(self, object: Category):
-        if object.image_name:
-            return mark_safe(f'<img src="{object.image_name.url}" width="65">')
+    def get_html_avatar65x65(self, obj: Category) -> str | SafeText:
+        if obj.image_name:
+            return mark_safe(f'<img src="{obj.image_name.url}" width="65">')
         return ''
     get_html_avatar65x65.short_description = ''
-
-#############################################################################
