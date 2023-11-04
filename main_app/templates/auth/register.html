@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/auths/register.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/auths/register.css' | cachebuster }}">
 
 {% endblock %}
 
@@ -66,7 +67,7 @@
             </form>
           </div>
 
-          <script src="{% static 'main_app/javascript/auths/register.js' %}"></script>
+          <script src="{{ 'main_app/javascript/auths/register.js' | cachebuster }}"></script>
 
         </div>
       </div>

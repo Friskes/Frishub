@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/main_apps/dev_chat_room.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/main_apps/dev_chat_room.css' | cachebuster }}">
 
 <!-- https://fonts.google.com/icons -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
@@ -157,6 +158,6 @@
   const trans_resume_chat = "{% trans 'Возобновить чат' %}";
   const trans_closed_chat = "{% trans 'Чат закрыт' %}";
 </script>
-<script src="{% static 'main_app/javascript/main_apps/dev_chat_room.js' %}"></script>
+<script src="{{ 'main_app/javascript/main_apps/dev_chat_room.js' | cachebuster }}"></script>
 
 {% endblock %}

@@ -16,14 +16,15 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include, re_path
-
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
-
 from django.conf.urls.static import static
-from FriskesSite import settings
 
 import notifications.urls
+
+from FriskesSite import settings
+import main_app.urls
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,13 +33,19 @@ urlpatterns = [
 
     # доступные запросы к API можно посмотреть в файле: venv\Lib\site-packages\notifications\urls.py
     re_path('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
+
+    # префикс локализации не должен иметь влияния на API, поэтому все API должны быть размещены вне i18n_patterns.
+    # С размещением внутри i18n_patterns вызывало ошибку в браузере:
+    # GET "url" net::ERR_TOO_MANY_REDIRECTS или Failed to load resource: net::ERR_TOO_MANY_REDIRECTS
+    # изза middleware которая перенаправляет на URL с префиксом равным локализации из Cookies клиента.
+    *main_app.urls.api_urlpatterns,
+
+    path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 ]
 
 
 urlpatterns += i18n_patterns(
     path('i18n/', include('django.conf.urls.i18n')),
-
-    path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 
     path('', include('main_app.urls')),
 
@@ -46,15 +53,14 @@ urlpatterns += i18n_patterns(
     prefix_default_language=False,
 )
 
-
-handler400 = 'main_app.views.bad_request'
-handler403 = 'main_app.views.permission_denied'
-handler404 = 'main_app.views.page_not_found'
-handler500 = 'main_app.views.server_error'
-
-
 if settings.ENABLE_DEBUGTB:
     urlpatterns = [path('__debug__/', include('debug_toolbar.urls'))] + urlpatterns
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+handler400 = 'main_app.views.bad_request'
+handler403 = 'main_app.views.permission_denied'
+handler404 = 'main_app.views.page_not_found'
+handler500 = 'main_app.views.server_error'

@@ -10,24 +10,9 @@ from main_app.models import LikeDislike, Comments, Guides
 from FriskesSite.env import CELERY_FLOWER_URL_PREFIX
 
 
-urlpatterns = [
-    re_path(f"{CELERY_FLOWER_URL_PREFIX}/(?P<path>.*)", views.flower_proxy_view,
-            name=CELERY_FLOWER_URL_PREFIX),
-
-    path('favicon.ico/', RedirectView.as_view(
-        url=staticfiles_storage.url('main_app/images/favicon.ico'),
-        permanent=True), name='favicon'),
-
-    path('', views.HomeView.as_view(), name='home'),
-
+api_urlpatterns = [
     path('api/modelviewer/<path:modelviewer_path>/', views.ZamimgProxyView.as_view(),
-         name='zamimg_proxy'),
-
-    path('guides/', views.GuidesListView.as_view(), name='guides'),
-
-    path('category/<slug:category_slug>/', views.FilteringGuidesView.as_view(), name='category'),
-
-    path('guides/<slug:guide_slug>/', views.GuideView.as_view(), name='guide'),
+        name='zamimg_proxy'),
 
     re_path(r'^api/comment/(?P<pk>\d+)/like/$',
         login_required(views.VotesView.as_view(model=Comments, vote_type=LikeDislike.LIKE)),
@@ -45,9 +30,26 @@ urlpatterns = [
         login_required(views.VotesView.as_view(model=Guides, vote_type=LikeDislike.DISLIKE)),
         name='guide_dislike'),
 
-    # /(?P<guide_slug>[^\.]+)/
     re_path(r'^api/mark-as-read/(?P<notify_pk>\d+)/(?P<actor_object_id>\d+)/(?P<recipient_id>\d+)/(?P<guide_slug>[-\w]+)/(?P<comment_pk>\d+)/$',
         views.NotifyMarkAsReadView.as_view(), name='api_mark_as_read'),
+]
+
+
+urlpatterns = [
+    re_path(f"{CELERY_FLOWER_URL_PREFIX}/(?P<path>.*)", views.flower_proxy_view,
+            name=CELERY_FLOWER_URL_PREFIX),
+
+    path('favicon.ico/', RedirectView.as_view(
+        url=staticfiles_storage.url('main_app/images/favicon.ico'),
+        permanent=True), name='favicon'),
+
+    path('', views.HomeView.as_view(), name='home'),
+
+    path('guides/', views.GuidesListView.as_view(), name='guides'),
+
+    path('category/<slug:category_slug>/', views.FilteringGuidesView.as_view(), name='category'),
+
+    path('guides/<slug:guide_slug>/', views.GuideView.as_view(), name='guide'),
 
     path('game-chat/', views.GameChatView.as_view(), name='game_chat'),
 

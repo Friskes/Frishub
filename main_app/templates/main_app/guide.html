@@ -19,7 +19,7 @@
   }
 </style>
 
-<link rel="stylesheet" href="{% static 'main_app/css/main_apps/guide.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/main_apps/guide.css' | cachebuster }}">
 
 {% if user.is_authenticated %}
   <style>
@@ -615,6 +615,6 @@
   const trans_cancel = "{% trans 'Отмена' %}";
   const trans_send = "{% trans 'Отправить' %}";
 </script>
-<script src="{% static 'main_app/javascript/main_apps/guide.js' %}"></script>
+<script src="{{ 'main_app/javascript/main_apps/guide.js' | cachebuster }}"></script>
 
 {% endblock %}

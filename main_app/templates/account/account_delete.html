@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/accounts/account_delete.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/accounts/account_delete.css' | cachebuster }}">
 
 {% endblock %}
 
@@ -30,7 +31,7 @@
               <br _ngcontent-xcm-c72="">
             </p>
 
-            <script src="{% static 'main_app/javascript/accounts/account_delete.js' %}"></script>
+            <script src="{{ 'main_app/javascript/accounts/account_delete.js' | cachebuster }}"></script>
 
             <form method="POST">
               {% csrf_token %}

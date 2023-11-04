@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/auths/login.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/auths/login.css' | cachebuster }}">
 
 <style>
   .checkBox[_ngcontent-xpp-c82]:after {

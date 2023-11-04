@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from main_app.models import Category, CustomUser, DressingRoom, Guides, Comments
+from main_app.services.utils import build_cachebuster
 
 
 register = template.Library()
@@ -105,6 +106,23 @@ def get_verbose_name(instance: Guides, field_name: str) -> str:
     """Возвращает verbose_name полученный по объекту класса и названию его поля."""
 
     return type(instance)._meta.get_field(field_name).verbose_name
+
+
+# единоразово получаем контрольную сумму (при запуске сервера) для всех статических файлов
+path_and_checksum: dict = build_cachebuster('main_app/static', ('ace-editor',))
+
+@register.filter
+def cachebuster(path_to_file):
+    """
+    Возвращает путь к файлу с его контрольной суммой.\n
+    Используется для загрузки новой версии статики
+    при её изменении для production сервера.\n
+    Пример (директорию /static/ указывать не нужно):
+    >>> <script src="{{ 'путь/к/файлу/имяфайла.js' | cachebuster }}"></script>
+    """
+
+    checksum = path_and_checksum.get(path_to_file)
+    return f'/static/{path_to_file}{"?" + checksum if checksum else ""}'
 
 
 # Переопределение дефолтного тега для добавления api_name == 'all_list'

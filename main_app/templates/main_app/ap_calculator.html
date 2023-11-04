@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/main_apps/ap_calculator.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/main_apps/ap_calculator.css' | cachebuster }}">
 
 {% if LANGUAGE_CODE == 'en' %}
   <style>
@@ -126,7 +127,7 @@
         <script>
           const url_ap_calculator = "{% url 'ap_calculator' %}";
         </script>
-        <script src="{% static 'main_app/javascript/main_apps/ap_calculator.js' %}"></script>
+        <script src="{{ 'main_app/javascript/main_apps/ap_calculator.js' | cachebuster }}"></script>
 
         <div _ngcontent-gox-c51="" class="calculate-rating-for-points-container require-container">
           {% trans 'Чтобы претендовать на очки арены у вас должно быть сыграно не менее 10 игр к концу недели.' %}

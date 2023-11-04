@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/main_apps/game_chat.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/main_apps/game_chat.css' | cachebuster }}">
 
 <style>
 .checkBox[_ngcontent-xpp-c82]:after {
@@ -67,7 +68,7 @@
         <script>
           const trans_server_chat = "{% trans 'Чат сервера: ' %}";
         </script>
-        <script src="{% static 'main_app/javascript/main_apps/game_chat.js' %}"></script>
+        <script src="{{ 'main_app/javascript/main_apps/game_chat.js' | cachebuster }}"></script>
 
       </div>
     </div>

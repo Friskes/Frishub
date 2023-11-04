@@ -87,7 +87,7 @@ function animateIcon(element, vote_type) {
     );
 };
 
-const lang_prefix = LANGUAGE_CODE === "ru" ? "" : "/en";
+
 var csrftoken = Cookies.get('csrftoken');
 function like() {
     var like = $(this);
@@ -98,7 +98,7 @@ function like() {
     animateIcon(like, true)
 
     $.ajax({
-        url: lang_prefix + "/api/" + type + "/" + pk + "/" + action + "/",
+        url: "/api/" + type + "/" + pk + "/" + action + "/",
         type: 'POST',
         data: { 'obj': pk },
         headers: { 'X-CSRFToken': csrftoken },
@@ -121,7 +121,7 @@ function dislike() {
     animateIcon(dislike, false)
 
     $.ajax({
-        url: lang_prefix + "/api/" + type + "/" + pk + "/" + action + "/",
+        url: "/api/" + type + "/" + pk + "/" + action + "/",
         type: 'POST',
         data: { 'obj': pk },
         headers: { 'X-CSRFToken': csrftoken },

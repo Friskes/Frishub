@@ -2,10 +2,11 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'main_app/css/accounts/account_email.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/accounts/account_email.css' | cachebuster }}">
 
 {% endblock %}
 

@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load i18n %}
+{% load main_app_tags %}
 
 {% block head %}
 <script id="viewer"></script>
@@ -12,11 +13,11 @@
   const url_unique_dressing_room = "{% url 'unique_dressing_room' room_id %}";
   const trans_ajax_error_msg = "{% trans 'Создатель этой комнаты запретил изменение персонажа другими пользователями во время вашей сессии, любые изменения настроек не будут сохранены.' %}";
 </script>
-<script src="{% static 'main_app/javascript/main_apps/dressing_room_top.js' %}"></script>
+<script src="{{ 'main_app/javascript/main_apps/dressing_room_top.js' | cachebuster }}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'main_app/css/main_apps/dressing_room_top.css' %}">
+<link rel="stylesheet" type="text/css" href="{{ 'main_app/css/main_apps/dressing_room_top.css' | cachebuster }}">
 
-<link rel="stylesheet" href="{% static 'main_app/css/main_apps/dressing_room_bottom.css' %}">
+<link rel="stylesheet" href="{{ 'main_app/css/main_apps/dressing_room_bottom.css' | cachebuster }}">
 
 {% endblock %}
 
@@ -913,17 +914,17 @@
           const trans_weapon_enchantment_not_available = "{% trans 'В режиме «Только итем» зачарование оружия недоступно.' %}";
           const trans_take_weapon_in_your_hand = "{% trans 'Сначала возьмите в руку оружие.' %}";
         </script>
-        <script src="{% static 'main_app/javascript/main_apps/dressing_room_mid.js' %}"></script>
+        <script src="{{ 'main_app/javascript/main_apps/dressing_room_mid.js' | cachebuster }}"></script>
 
         <script id="viewer-utils"></script>
 
         <script>
-          const model_viewer_utils = "{% static 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' %}";
+          const model_viewer_utils = "{{ 'main_app/javascript/wow-model-viewer/model_viewer_utils.js' | cachebuster }}";
           const trans_you_can_view_items_without_char = "{% trans 'Теперь вы можете просматривать итемы без персонажа.' %}";
           const trans_you_can_view_items_with_char = "{% trans 'Теперь вы можете просматривать итемы на персонаже.' %}";
-          const path_to_gameData = "{% static 'main_app/json/gameData.json' %}";
+          const path_to_gameData = "{{ 'main_app/json/gameData.json' | cachebuster }}";
         </script>
-        <script src="{% static 'main_app/javascript/main_apps/dressing_room_bottom.js' %}"></script>
+        <script src="{{ 'main_app/javascript/main_apps/dressing_room_bottom.js' | cachebuster }}"></script>
 
       </div>
     </div>

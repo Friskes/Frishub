@@ -1,10 +1,11 @@
 // https://learn.javascript.ru/websockets
+// при запуске сервера локально порт уже присутствует в URL.
+// при запуске сервера с доменным именем в качестве URL необходимо добавить порт.
+const port = debug_mode ? "" : ":8001";
 const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
-if (debug_mode) {
-    var chatSocket = new WebSocket(ws_scheme + window.location.host + "/ws/game-chat/"); // DEV
-} else {
-    var chatSocket = new WebSocket(ws_scheme + window.location.host + ":8001/ws/game-chat/"); // PROD
-};
+const chatSocket = new WebSocket(
+    ws_scheme + window.location.host + port + "/ws/game-chat/"
+);
 
 
 const chat_log_area = $('#chat-log');

@@ -627,13 +627,14 @@ function get_random_hex_color(min = 0, max = 255, alpha = '') {
 };
 
 // https://learn.javascript.ru/websockets
+// при запуске сервера локально порт уже присутствует в URL.
+// при запуске сервера с доменным именем в качестве URL необходимо добавить порт.
+const port = debug_mode ? "" : ":8001";
 const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
 const websocket_pathname = "/ws/dev-chat/" + context_room_id + "/";
-if (debug_mode) {
-    var chatSocket = new WebSocket(ws_scheme + window.location.host + websocket_pathname); // DEV
-} else {
-    var chatSocket = new WebSocket(ws_scheme + window.location.host + ":8001" + websocket_pathname); // PROD
-};
+const chatSocket = new WebSocket(
+    ws_scheme + window.location.host + port + websocket_pathname
+);
 
 $('#chat-path-input')[0].value = window.location.href;
 
