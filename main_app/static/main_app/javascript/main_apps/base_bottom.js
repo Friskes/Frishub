@@ -60,7 +60,7 @@ function notification_callback(data) {
                     <div><label class="notify-sender">${msg.actor}</label></div>
                     <div class="notify-time">${relative_time}</div>
                     <span class="fa fa-eye-slash hide-notify-icon" onclick="delete_notify(this);"></span>
-                    <div class="notify-content">${msg.verb}</div>
+                    <div class="notify-content">${msg.data.verbose[LANGUAGE_CODE]}</div>
                   </div>
                 </a>
               </div>

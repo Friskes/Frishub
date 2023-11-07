@@ -299,18 +299,25 @@ class GuideView(DataMixin, FormView, DetailView):
 
         recipient_user = CustomUser.objects.get(username=data['parent'])
 
-        word_ending = 'а' if self.request.user.gender == 'female' else ''
+        word_ending = ''
+        if self.request.LANGUAGE_CODE == 'ru' and self.request.user.gender == 'female':
+            word_ending = 'а'
 
         content_ending = '...' if len(data['content']) > 45 else ''
 
-        verbose = (f"Ответил{word_ending} на ваш комментарий к гайду: «{guide.title}»<br>"
-                   f"Ответ: «{data['content'][:45]}{content_ending}»")
+        verb_ru = "Ответил%s на ваш комментарий к гайду: «%s»<br>Ответ: «%s»" % (
+            word_ending, guide.title, data['content'][:45] + content_ending
+        )
+        verb_en = "Answered to your comment on the guide: «%s»<br>Answer: «%s»" % (
+            guide.title, data['content'][:45] + content_ending
+        )
 
         notify_obj = notify.send(
             self.request.user,
             recipient=recipient_user,
-            verb=verbose,
-            notify_href=f"{reverse('guide', args=(guide.slug,))}#{comment_pk}"
+            verb='',
+            notify_href=f"{reverse('guide', args=(guide.slug,))}#{comment_pk}",
+            verbose={'ru': verb_ru, 'en': verb_en}
         )
         notify_obj: Notification = notify_obj[0][1][0]
 
@@ -410,14 +417,18 @@ class VotesView(View):
 
         if not isinstance(comment, Comments): return
 
-        estimation = LikeDislike.VOTES[max(0, self.vote_type)][1]
-        verbose = f"{estimation} ваш комментарий к гайду: «{comment.guide.title}»"
+        votes = {0: {'en': "Dont like", 'ru': "Не нравится"}, 1: {'en': "Like", 'ru': "Нравится"}}
+        estimation = votes[max(0, self.vote_type)]
+
+        verb_ru = "%s ваш комментарий к гайду: «%s»" % (estimation['ru'], comment.guide.title)
+        verb_en = "%s your comment on the guide: «%s»" % (estimation['en'], comment.guide.title)
 
         notify_obj = notify.send(
             self.request.user,
             recipient=comment.author,
-            verb=verbose,
-            notify_href=f"{reverse('guide', args=(comment.guide.slug,))}#{comment.pk}"
+            verb='',
+            notify_href=f"{reverse('guide', args=(comment.guide.slug,))}#{comment.pk}",
+            verbose={'ru': verb_ru, 'en': verb_en}
         )
         notify_obj: Notification = notify_obj[0][1][0]
 

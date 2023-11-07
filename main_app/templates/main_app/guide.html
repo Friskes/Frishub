@@ -60,10 +60,10 @@
   </div>
 </div>
 
-<button onclick="go_to_top();" id="go-to-top-btn" title="Go to top">
+<button onclick="go_to_top();" id="go-to-top-btn" title="{% trans 'Перейти к содержанию' %}">
   <span class="material-symbols-outlined go-to-top-icon">pan_tool_alt</span>
 </button>
-<button onclick="go_to_comments();" id="go-to-comments-btn" title="Go to comments">
+<button onclick="go_to_comments();" id="go-to-comments-btn" title="{% trans 'Перейти к комментариям' %}">
   <span class="material-symbols-outlined go-to-comments-icon">chat</span>
 </button>
 
@@ -610,7 +610,8 @@
 
 <script>
   const user_avatar = "{{ user.get_avatar }}";
-  const user_is_authenticated = "{{ user.is_authenticated }}";
+  let user_is_authenticated = "{{ user.is_authenticated }}".toLowerCase();
+  user_is_authenticated = JSON.parse(user_is_authenticated ? user_is_authenticated : false);
   const trans_enter_answer = "{% trans 'Введите ответ' %}";
   const trans_cancel = "{% trans 'Отмена' %}";
   const trans_send = "{% trans 'Отправить' %}";
