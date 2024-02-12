@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 echo "WAITING FOR POSTGRES... host=${POSTGRES_HOST} port=${POSTGRES_PORT}";
 bash -c '

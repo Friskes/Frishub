@@ -84,6 +84,9 @@ services:
         entrypoint: ./docker/backend/celery-worker-entrypoint.sh
         volumes:
             - /var/log/celery:/var/run/celery
+            # автоматическая перезагрузка celery-worker при изменении файлов
+            # (необходимо для работы runcelery/watchfiles)
+            # - .:/app
         environment:
             CELERY_APP: ${CELERY_APP}
             REDIS_HOST: ${REDIS_HOST}
