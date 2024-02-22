@@ -66,6 +66,9 @@ from FriskesSite import settings
 from FriskesSite.env import (
     CELERY_FLOWER_ADDRESS, CELERY_FLOWER_PORT, CELERY_FLOWER_URL_PREFIX
 )
+from django.views.decorators.cache import cache_control
+from django.utils.cache import patch_response_headers
+
 
 # https://stackoverflow.com/a/75329234/19276507
 @csrf_exempt
@@ -155,6 +158,7 @@ class ZamimgProxyView(View):
     https://developer.mozilla.org/ru/docs/Web/HTTP/CORS
     И кэширует файлы локально для уменьшения количества запросов к zamimg API."""
 
+    @cache_control(public=True, max_age=2678400)
     def get(self, request, *args, **kwargs):
 
         modelviewer_path: str = kwargs.get("modelviewer_path")
@@ -187,10 +191,14 @@ class ZamimgProxyView(View):
 
             with open(f'{path_to_file}/{file_name}', 'wb+') as file:
                 file.write(response.content)
-            return HttpResponse(response.content)
+            response = HttpResponse(response.content)
+            # patch_response_headers(response, cache_timeout=2678400)
+            return response
 
         with open(full_path, 'rb') as file:
-            return HttpResponse(file.read())
+            response = HttpResponse(file.read())
+            # patch_response_headers(response, cache_timeout=2678400)
+            return response
 
 
 # https://django.fun/docs/django/ru/4.0/topics/class-based-views/
