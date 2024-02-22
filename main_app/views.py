@@ -66,7 +66,9 @@ from FriskesSite import settings
 from FriskesSite.env import (
     CELERY_FLOWER_ADDRESS, CELERY_FLOWER_PORT, CELERY_FLOWER_URL_PREFIX
 )
-from django.views.decorators.cache import cache_control
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.utils.cache import patch_response_headers
 
 
@@ -158,7 +160,8 @@ class ZamimgProxyView(View):
     https://developer.mozilla.org/ru/docs/Web/HTTP/CORS
     И кэширует файлы локально для уменьшения количества запросов к zamimg API."""
 
-    @cache_control(public=True, max_age=2678400)
+    @method_decorator(cache_page(60*60*24*365))
+    @method_decorator(vary_on_cookie)
     def get(self, request, *args, **kwargs):
 
         modelviewer_path: str = kwargs.get("modelviewer_path")
