@@ -5,7 +5,7 @@ import json
 from uuid import uuid4
 from datetime import datetime, timedelta
 import requests
-from os.path import exists
+from os.path import exists, isfile
 from pathlib import Path
 
 import logging
@@ -203,6 +203,9 @@ class ZamimgProxyView(View):
             response = HttpResponse(response.content)
             # patch_response_headers(response, cache_timeout=_cache_timeout)
             return response
+
+        if not isfile(full_path):
+            raise Http404
 
         with open(full_path, 'rb') as file:
             response = HttpResponse(file.read())

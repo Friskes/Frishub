@@ -11,7 +11,7 @@ from FriskesSite.env import CELERY_FLOWER_URL_PREFIX
 
 
 api_urlpatterns = [
-    path('api/modelviewer/<path:modelviewer_path>/', views.ZamimgProxyView.as_view(),
+    path('api/modelviewer/<path:modelviewer_path>', views.ZamimgProxyView.as_view(),
         name='zamimg_proxy'),
 
     re_path(r'^api/comment/(?P<pk>\d+)/like/$',
