@@ -132,7 +132,7 @@ const generateFaceOptions = function () {
 
         const opt_name = option.Name.replace(' ', '_').toLowerCase();
 
-        const choice_name = option.Choices[window.dressUI.face.current[i]].Name;
+        const choice_name = option.Choices[window.dressUI.face.current[i]]?.Name || '';
 
         const max_len = option.Choices.length - 1;
 
@@ -158,7 +158,7 @@ const generateFaceOptions = function () {
             setAlphaForExtremeButtonPosition(event.target, window.dressUI.face.current[i], max_len);
 
             event.target.parentElement.children[1].textContent = choice_name
-                ? race_gender_opts[i].Choices[window.dressUI.face.current[i]].Name
+                ? (race_gender_opts[i].Choices[window.dressUI.face.current[i]]?.Name || '')
                 : window.dressUI.face.current[i] + 1;
 
             window.dressUI.model_opts[opt_name] = window.dressUI.face.current[i];
@@ -408,7 +408,7 @@ function updateFaceFields(random_vals = true) {
 
         const imit_sel = $(`.dressing-room-character-controls-category-option[data-character-customization-type="${field_name}"]`).find('a')[1];
         imit_sel.textContent = face_data.have_text_opt[i]
-            ? window.dressUI.face.race_gender_opts[i].Choices[int_param].Name
+            ? (window.dressUI.face.race_gender_opts[i].Choices[int_param]?.Name || '')
             : int_param + 1;
 
         setAlphaForExtremeButtonPosition(imit_sel, int_param, max_len);
