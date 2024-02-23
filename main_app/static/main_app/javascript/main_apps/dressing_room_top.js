@@ -283,8 +283,10 @@ function updateSheathInfo() {
 };
 
 
-const LOCAL_VIEWER = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.js`;
-const LOCAL_VIEWER_MIN = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.min.js`;
+// const LOCAL_VIEWER = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.js`;  // old
+const LOCAL_VIEWER = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}_23_02_2024_.js`;  // new 23.02.2024
+// const LOCAL_VIEWER_MIN = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}.min.js`;  // old
+const LOCAL_VIEWER_MIN = `/static/main_app/javascript/wow-model-viewer/viewer_${window.dressUI.game_patch}_23_02_2024_.min.js`;  // new 23.02.2024
 const UNLOCAL_VIEWER_MIN = `https://wow.zamimg.com/modelviewer/${window.dressUI.game_patch}/viewer/viewer.min.js`;
 document.querySelector('#viewer').src = LOCAL_VIEWER_MIN;
 

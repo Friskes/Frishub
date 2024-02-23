@@ -179,10 +179,11 @@ async function findItemsInEquipments(equipments) {
  */
 async function findRaceGenderOptions(race, gender) {
     const options = await fetch(
-        `${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`
+        // `${CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`  // old
+        `${CONTENT_PATH}meta/charactercustomization/${race * 2 - 1 + gender}.json`  // new 23.02.2024
     ).then((response) => response.json());
 
-    if (options.data) return options.data;
+    if ("data" in options) return options.data;
     return options;
 };
 
@@ -228,9 +229,9 @@ async function optionsFromModel(model) {
 
     const options = getOptions(model, fullOptions);
 
-    const retGender = (gender === 1) ? `female` : `male`;
-
-    const raceToModelId = _RACES[race] + retGender;
+    // const retGender = (gender === 1) ? `female` : `male`;
+    // const raceToModelId = _RACES[race] + retGender; // old
+    const raceToModelId = race * 2 - 1 + gender;  // new 23.02.2024
 
     const {sheathMain, sheathOff} = model;
 
@@ -532,26 +533,29 @@ class WowModelViewer extends ZamModelViewer {
         });
     };
 
-
-    async setModelLoadedCallback(func) {
-        const _this = this;
-        if (this.renderer) {
-            this.renderer.models[0].ModelLoadedCallbackFunc = func;
-            this.renderer.models[0].e = this.setModelLoadedCallback;
-            return false;
-        };
-        await this.ModelLoadedCallbackFunc();
-        setTimeout(function() { _this.modelIsLoaded = true; }, 150);
-    };
-
-    // setModelLoadedCallback(func) {
-    //     this.renderer.models[0].ModelLoadedCallbackFunc = func;
-    //     this.renderer.models[0].e = this._setModelLoadedCallback;
-    // };
-    // _setModelLoadedCallback() {
+    // async setCustomModelLoadedCallback(func) {
     //     const _this = this;
-    //     this.ModelLoadedCallbackFunc();
+    //     if (this.renderer) {
+    //         this.renderer.models[0].ModelLoadedCallbackFunc = func;
+    //         this.renderer.models[0].e = this.setCustomModelLoadedCallback;
+    //         return false;
+    //     };
+    //     await this.ModelLoadedCallbackFunc();
     //     setTimeout(function() { _this.modelIsLoaded = true; }, 150);
     // };
+
+    setCustomModelLoadedCallback(func) {
+        // console.log("setCustomModelLoadedCallback");
+        this.renderer.ModelLoadedCallbackFunc = func;
+        this.renderer.e = this._setCustomModelLoadedCallback;
+    };
+
+    async _setCustomModelLoadedCallback() {
+        // console.log("_setCustomModelLoadedCallback");
+        const _this = this;
+        this.e = null;
+        await this.ModelLoadedCallbackFunc();
+        setTimeout(function() { _this.models[0].modelIsLoaded = true; }, 150);
+    };
 };
 window.WowModelViewer = WowModelViewer;

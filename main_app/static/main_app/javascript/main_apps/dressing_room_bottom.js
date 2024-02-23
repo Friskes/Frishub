@@ -109,8 +109,8 @@ window.generateFaceOptionHtml = function (i, optionName) {
 
 
 const generateFaceOptions = function () {
-    const NOT_ALLOWED_CHAR_OPTS = [
-        'Eyesight', 'Bear Form', 'Cat Form', 'Moonkin Form', 'Aquatic Form', 'Flight Form', 'Travel Form'
+    const NOT_ALLOWED_CHAR_OPTS = [  // вызывает ошибки
+        // 'Eyesight', 'Bear Form', 'Cat Form', 'Moonkin Form', 'Aquatic Form', 'Flight Form', 'Travel Form'
     ];
     const race_gender_opts = window.dressUI.face.race_gender_opts;
 
@@ -203,7 +203,7 @@ const _generateCharModel = async function () {
     // console.log(window.model.renderer.viewer) // class dl
     // console.log(window.model.renderer.models[0]) // class ul
 
-    window.model.setModelLoadedCallback(async function () {
+    window.model.setCustomModelLoadedCallback(async function () {
         $('.paperdoll-model').css('background', 'none');
 
         // Установить оружие и визуальный эффект на оружие после загрузки модели
@@ -312,7 +312,7 @@ window.generateItemModel = async function (opts) {
         opts
     );
 
-    window.model.setModelLoadedCallback(function () {
+    window.model.setCustomModelLoadedCallback(function () {
         $('.paperdoll-model').css('background', 'none');
 
         window.dressUI.AnimIsPaused = false;

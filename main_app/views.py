@@ -160,7 +160,9 @@ class ZamimgProxyView(View):
     https://developer.mozilla.org/ru/docs/Web/HTTP/CORS
     И кэширует файлы локально для уменьшения количества запросов к zamimg API."""
 
-    @method_decorator(cache_page(60*60*24*365))
+    _cache_timeout = 60*60*24*182
+
+    @method_decorator(cache_page(_cache_timeout))
     @method_decorator(vary_on_cookie)
     def get(self, request, *args, **kwargs):
 
@@ -179,6 +181,7 @@ class ZamimgProxyView(View):
         full_path = f'{STATIC_ROOT}/main_app/json/modelviewer/{modelviewer_path}'
 
         if not exists(full_path):
+            file_extension = modelviewer_path.rsplit('.', 1)[-1]
 
             headers_get = {
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -188,6 +191,9 @@ class ZamimgProxyView(View):
 
             response = requests.get(zamimg_url, headers=headers_get, timeout=5)
 
+            if response.status_code >= 400 or not self._is_valid_json(response.content, file_extension):
+                return HttpResponse(status=response.status_code)
+
             path_to_file, file_name = full_path.rsplit('/', maxsplit=1)
             path_obj = Path(path_to_file)
             path_obj.mkdir(parents=True, exist_ok=True)
@@ -195,13 +201,24 @@ class ZamimgProxyView(View):
             with open(f'{path_to_file}/{file_name}', 'wb+') as file:
                 file.write(response.content)
             response = HttpResponse(response.content)
-            # patch_response_headers(response, cache_timeout=2678400)
+            # patch_response_headers(response, cache_timeout=_cache_timeout)
             return response
 
         with open(full_path, 'rb') as file:
             response = HttpResponse(file.read())
-            # patch_response_headers(response, cache_timeout=2678400)
+            # patch_response_headers(response, cache_timeout=_cache_timeout)
             return response
+
+    def _is_valid_json(self, json_str: bytes, file_ext: str) -> bool:
+        """"""
+        if file_ext != "json":
+            return True
+        try:
+            json.loads(json_str)
+        except json.JSONDecodeError as exc:
+            print(exc)
+            return False
+        return True
 
 
 # https://django.fun/docs/django/ru/4.0/topics/class-based-views/
