@@ -15,17 +15,18 @@ import threading
 import time
 from typing import Any
 
-# для этих библиотек важен порядок установки т.к. они импортируются одним именем,
-# устанавливать в таком порядке, иначе будет ошибка:
-# "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
-# pip install websocket
-# pip install websocket-client
-import redis
 import requests
 import websocket
 from asgiref.sync import async_to_sync
 from channels.layers import InMemoryChannelLayer, get_channel_layer
 from FriskesSite import settings
+
+# для этих библиотек важен порядок установки т.к. они импортируются одним именем,
+# устанавливать в таком порядке, иначе будет ошибка:
+# "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
+# pip install websocket
+# pip install websocket-client
+from redis.exceptions import BusyLoadingError
 
 from main_app.models import ServiceInfo
 from main_app.services.hcaptcha_bypass import bypass
@@ -294,11 +295,8 @@ def _event_trigger(data: dict[str, str | int | dict[str, Any]]):
                 'data': data,
             },
         )
-    except redis.exceptions.BusyLoadingError as exc:
-        log.info(
-            f'[file parse_discord_chats.py -> def _event_trigger]'
-            f' Exception:\n{exc}'
-        )
+    except BusyLoadingError as exc:
+        log.info(f'[file parse_discord_chats.py -> def _event_trigger]' f' Exception:\n{exc}')
 
 
 class AsyncActionGetGameChatData(threading.Thread):
