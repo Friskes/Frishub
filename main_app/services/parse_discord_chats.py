@@ -20,6 +20,7 @@ from typing import Any
 # "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
 # pip install websocket
 # pip install websocket-client
+import redis
 import requests
 import websocket
 from asgiref.sync import async_to_sync
@@ -283,15 +284,21 @@ def _event_trigger(data: dict[str, str | int | dict[str, Any]]):
     # а слой канала (self.channel_layer) получаем с помощью функции get_channel_layer
     channel_layer: InMemoryChannelLayer = get_channel_layer()
 
-    async_to_sync(channel_layer.group_send)(
-        'game_chat',
-        {  # название группы
-            # значением ключа type является название метода в классе GameChatConsumer,
-            # data это аргумент который передаётся в метод send_message_to_frontend
-            'type': 'send_message_to_frontend',
-            'data': data,
-        },
-    )
+    try:
+        async_to_sync(channel_layer.group_send)(
+            'game_chat',  # название группы
+            {
+                # значением ключа type является название метода в классе GameChatConsumer,
+                # data это аргумент который передаётся в метод send_message_to_frontend
+                'type': 'send_message_to_frontend',
+                'data': data,
+            },
+        )
+    except redis.exceptions.BusyLoadingError as exc:
+        log.info(
+            f'[file parse_discord_chats.py -> def _event_trigger]'
+            f' Exception:\n{exc}'
+        )
 
 
 class AsyncActionGetGameChatData(threading.Thread):
