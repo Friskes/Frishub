@@ -1,38 +1,45 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import TYPE_CHECKING
 
 from django.contrib import admin
+from django.db.models import TextField
+
 # from django.contrib.auth.models import User
 # from django.contrib.auth.admin import UserAdmin
-from django.utils.safestring import mark_safe, SafeText
-from django.db.models import TextField
-from django.core.handlers.asgi import ASGIRequest
-from django.forms import ModelForm
-from django.db.models.query import QuerySet
-
+from django.utils.safestring import SafeText, mark_safe
 from modeltranslation.admin import TranslationAdmin
-
-from mptt.admin import DraggableMPTTAdmin#, MPTTModelAdmin
-
+from mptt.admin import DraggableMPTTAdmin  # , MPTTModelAdmin
+from notifications.admin import NotificationAdmin
+from pytils.translit import translify
 from tinymce.widgets import TinyMCE
 
-from notifications.admin import NotificationAdmin
-
-from pytils.translit import translify
-
 from main_app.models import (
-    CustomUser, ContactMe, ServiceInfo, TwitchStreamerInfo,
-    HomeNews, Guides, Comments, Category, DressingRoom, Notification
+    Category,
+    Comments,
+    ContactMe,
+    CustomUser,
+    DressingRoom,
+    Guides,
+    HomeNews,
+    Notification,
+    ServiceInfo,
+    TwitchStreamerInfo,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from django.core.handlers.asgi import ASGIRequest
+    from django.db.models.query import QuerySet
+    from django.forms import ModelForm
 
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/
 # https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets
 
 
-admin.site.site_title = 'FRISHUB' # название во вкладке браузера
-admin.site.site_header = 'Администрирование FRISHUB' # название шапки админки
+admin.site.site_title = 'FRISHUB'  # название во вкладке браузера
+admin.site.site_header = 'Администрирование FRISHUB'  # название шапки админки
 
 # Отменяю регистрацию класса NotificationAdmin
 # которая была сделана в файле notifications.admin
@@ -42,7 +49,6 @@ admin.site.unregister(Notification)
 
 @admin.register(Notification)
 class CustomNotificationAdmin(NotificationAdmin):
-
     list_display = ('recipient', 'actor', 'timestamp', 'unread', 'deleted', 'emailed')
 
 
@@ -50,13 +56,11 @@ class CustomNotificationAdmin(NotificationAdmin):
 # для исключения отображения дефолтного поля в админке
 @admin.register(HomeNews)
 class HomeNewsAdmin(TranslationAdmin):
-
     list_display = ('news', 'date')
 
 
 @admin.register(ContactMe)
 class ContactMeAdmin(admin.ModelAdmin):
-
     list_display = ('email', 'date_time')
 
     fields = ('email', 'message', 'date_time')
@@ -66,13 +70,19 @@ class ContactMeAdmin(admin.ModelAdmin):
 
 @admin.register(DressingRoom)
 class DressingRoomAdmin(admin.ModelAdmin):
-
     model: DressingRoom = DressingRoom
 
     raw_id_fields = ('creator',)
 
-    list_display = ('get_short_room_id', 'get_short_room_creator_id', 'allow_edit',
-                    'game_patch', 'get_race_name', 'get_gender_name', 'last_update_time')
+    list_display = (
+        'get_short_room_id',
+        'get_short_room_creator_id',
+        'allow_edit',
+        'game_patch',
+        'get_race_name',
+        'get_gender_name',
+        'last_update_time',
+    )
 
     list_editable = ('allow_edit',)
 
@@ -80,41 +90,53 @@ class DressingRoomAdmin(admin.ModelAdmin):
 
     readonly_fields = ('race_img65x65', 'game_patch_img65x65')
 
-    fields = ('room_id', 'room_creator_id', 'creator', 'allow_edit',
-              ('game_patch', 'game_patch_img65x65'), ('race', 'race_img65x65'),
-              'gender', 'last_update_time', 'items', 'face', 'mount')
+    fields = (
+        'room_id',
+        'room_creator_id',
+        'creator',
+        'allow_edit',
+        ('game_patch', 'game_patch_img65x65'),
+        ('race', 'race_img65x65'),
+        'gender',
+        'last_update_time',
+        'items',
+        'face',
+        'mount',
+    )
 
     def get_short_room_id(self, obj: DressingRoom) -> str:
         # print(getattr(self, 'GENDERS')) # self.__class__.__getattribute__(self, 'GENDERS')
         # print(vars(obj)) # obj.__dict__
         # print(vars(obj._meta))
         # print(obj.__doc__)
-        # self.__class__.get_short_room_id.__setattr__('short_description', obj._meta.get_field('room_id').verbose_name)
-        # setattr(self.__class__.get_short_room_id, 'short_description', obj._meta.get_field('room_id').verbose_name)
+        # self.__class__.get_short_room_id.__setattr__(
+        #     'short_description', obj._meta.get_field('room_id').verbose_name
+        # )
+        # self.__class__.get_short_room_id.short_description = obj._meta.get_field(
+        #     'room_id'
+        # ).verbose_name
 
-        setattr(type(self).get_short_room_id, 'short_description',
-                obj._meta.get_field('room_id').verbose_name)
+        type(self).get_short_room_id.short_description = obj._meta.get_field('room_id').verbose_name
         length = len(obj.room_id)
         return f'...{obj.room_id[length-7:length]}'
 
     def get_short_room_creator_id(self, obj: DressingRoom) -> str:
-        setattr(type(self).get_short_room_creator_id, 'short_description',
-                obj._meta.get_field('room_creator_id').verbose_name)
+        type(self).get_short_room_creator_id.short_description = obj._meta.get_field(
+            'room_creator_id'
+        ).verbose_name
         length = len(obj.room_creator_id)
         return f'...{obj.room_creator_id[length-7:length]}'
 
     def get_race_name(self, obj: DressingRoom) -> str:
-        setattr(type(self).get_race_name, 'short_description',
-                obj._meta.get_field('race').verbose_name)
+        type(self).get_race_name.short_description = obj._meta.get_field('race').verbose_name
         return self.model.RACES.get(obj.race, 'Раса неизвестна')
 
     def get_gender_name(self, obj: DressingRoom) -> str:
-        setattr(type(self).get_gender_name, 'short_description',
-                obj._meta.get_field('gender').verbose_name)
+        type(self).get_gender_name.short_description = obj._meta.get_field('gender').verbose_name
         return self.model.GENDERS.get(obj.gender, 'Пол неизвестен')
 
     def race_img65x65(self, obj: DressingRoom) -> SafeText:
-        setattr(type(self).race_img65x65, 'short_description', '')
+        type(self).race_img65x65.short_description = ''
 
         if obj.race in self.model.RACES_WITHOUT_ICON:
             src = '/static/main_app/images/close.png'
@@ -127,7 +149,7 @@ class DressingRoomAdmin(admin.ModelAdmin):
         return mark_safe(f'<img src="{src}" width="65">')
 
     def game_patch_img65x65(self, obj: DressingRoom) -> SafeText:
-        setattr(type(self).game_patch_img65x65, 'short_description', '')
+        type(self).game_patch_img65x65.short_description = ''
         return mark_safe(f'<img src="/static/main_app/images/{obj.game_patch}.png" width="65">')
 
 
@@ -136,8 +158,16 @@ class CustomUserAdmin(admin.ModelAdmin):
     model = CustomUser
 
     # указываем поля которые будут отображатся в меню
-    list_display = ('id', 'username', 'email', 'is_staff', 'is_active',
-                    'last_login', 'date_joined', 'get_html_avatar30x30')
+    list_display = (
+        'id',
+        'username',
+        'email',
+        'is_staff',
+        'is_active',
+        'last_login',
+        'date_joined',
+        'get_html_avatar30x30',
+    )
 
     # указываем поля в меню на которые можно кликнуть и перейти в профиль пользователя
     # (по умолчанию кликабельным полем считается самое первое)
@@ -173,80 +203,110 @@ class CustomUserAdmin(admin.ModelAdmin):
     # создание полей
     add_fieldsets = (
         # *UserAdmin.add_fieldsets,
-        ('Персональная Информация',
-            {'fields': (
-                'username',
-                'password',
-                'email',
-                'first_name',
-                'last_name',
-                'gender',
-                ('avatar', 'get_html_avatar65x65'),
-        )}),
-        ('Второстепенная персональная информация',
-            {'fields': (
-                'discord_username',
-                'battlenet_username',
-                'twitch_link',
-                'dress_room_link',
-                'game_class',
-        )}),
-        ('Важные Даты',
-            {"classes": ("collapse",),
-             'fields': (
-                'birth_date',
-                'last_login',
-                'date_joined',
-        )}),
-        ('Права Доступа',
-            {"classes": ("collapse",),
-             'fields': (
-                'is_superuser',
-                'is_staff',
-                'is_active',
-
-                "groups",
-                "user_permissions",
-        )}),
+        (
+            'Персональная Информация',
+            {
+                'fields': (
+                    'username',
+                    'password',
+                    'email',
+                    'first_name',
+                    'last_name',
+                    'gender',
+                    ('avatar', 'get_html_avatar65x65'),
+                )
+            },
+        ),
+        (
+            'Второстепенная персональная информация',
+            {
+                'fields': (
+                    'discord_username',
+                    'battlenet_username',
+                    'twitch_link',
+                    'dress_room_link',
+                    'game_class',
+                )
+            },
+        ),
+        (
+            'Важные Даты',
+            {
+                'classes': ('collapse',),
+                'fields': (
+                    'birth_date',
+                    'last_login',
+                    'date_joined',
+                ),
+            },
+        ),
+        (
+            'Права Доступа',
+            {
+                'classes': ('collapse',),
+                'fields': (
+                    'is_superuser',
+                    'is_staff',
+                    'is_active',
+                    'groups',
+                    'user_permissions',
+                ),
+            },
+        ),
     )
     # редактирование полей
     fieldsets = (
         # *UserAdmin.fieldsets,
-        ('Персональная Информация',
-            {'fields': (
-                'username',
-                'password',
-                'email',
-                'first_name',
-                'last_name',
-                'gender',
-                ('avatar', 'get_html_avatar65x65'),
-        )}),
-        ('Второстепенная персональная информация',
-            {'fields': (
-                'discord_username',
-                'battlenet_username',
-                'twitch_link',
-                'dress_room_link',
-                'game_class',
-        )}),
-        ('Важные Даты',
-            {"classes": ("collapse",),
-             'fields': (
-                'birth_date',
-                'last_login',
-                'date_joined',
-        )}),
-        ('Права Доступа',
-            {"classes": ("collapse",),
-             'fields': (
-                'is_superuser',
-                'is_staff',
-                'is_active',
-
-                "groups",
-                "user_permissions",
-        )}),
+        (
+            'Персональная Информация',
+            {
+                'fields': (
+                    'username',
+                    'password',
+                    'email',
+                    'first_name',
+                    'last_name',
+                    'gender',
+                    ('avatar', 'get_html_avatar65x65'),
+                )
+            },
+        ),
+        (
+            'Второстепенная персональная информация',
+            {
+                'fields': (
+                    'discord_username',
+                    'battlenet_username',
+                    'twitch_link',
+                    'dress_room_link',
+                    'game_class',
+                )
+            },
+        ),
+        (
+            'Важные Даты',
+            {
+                'classes': ('collapse',),
+                'fields': (
+                    'birth_date',
+                    'last_login',
+                    'date_joined',
+                ),
+            },
+        ),
+        (
+            'Права Доступа',
+            {
+                'classes': ('collapse',),
+                'fields': (
+                    'is_superuser',
+                    'is_staff',
+                    'is_active',
+                    'groups',
+                    'user_permissions',
+                ),
+            },
+        ),
     )
 
     def get_html_avatar30x30(self, obj: CustomUser) -> SafeText:
@@ -254,9 +314,11 @@ class CustomUserAdmin(admin.ModelAdmin):
 
         if obj.avatar:
             # функция mark_safe позволяет не экранировать html тэги а передать строку какая она есть
-            return mark_safe(f'<img src="{obj.avatar.url}" width="30">')#<br>{str(obj.avatar)[19:]}')
+            return mark_safe(f'<img src="{obj.avatar.url}" width="30">')  # <br>{str(obj.avatar)[19:]}')
 
-        return mark_safe(f'<img src="{obj.get_avatar()}" width="30">')#<br>{str(obj.get_avatar())[24:]}')
+        return mark_safe(
+            f'<img src="{obj.get_avatar()}" width="30">'
+        )  # <br>{str(obj.get_avatar())[24:]}')
 
     # указываем название для колонки с изображениями
     get_html_avatar30x30.short_description = 'Аватар'
@@ -283,74 +345,110 @@ class ServiceInfoAdmin(admin.ModelAdmin):
     # readonly_fields = ('discord_token', 'twitch_token')
 
     add_fieldsets = (
-        ('Серверная почта',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'server_email_login',
-                'server_email_password',
-        )}),
-        ('Данные Discord',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'discord_login',
-                'discord_password',
-                'discord_token',
-        )}),
-        ('Данные Twitch',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'twitch_login',
-                'twitch_password',
-                'twitch_client_id',
-                'twitch_client_secret',
-                'twitch_token',
-        )}),
-        ('Данные капчи',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'recaptcha_public_key',
-                'recaptcha_private_key',
-        )}),
-        ('Данные сервиса решения капчи',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'apikey_for_captcha_solution',
-        )}),
+        (
+            'Серверная почта',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'server_email_login',
+                    'server_email_password',
+                ),
+            },
+        ),
+        (
+            'Данные Discord',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'discord_login',
+                    'discord_password',
+                    'discord_token',
+                ),
+            },
+        ),
+        (
+            'Данные Twitch',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'twitch_login',
+                    'twitch_password',
+                    'twitch_client_id',
+                    'twitch_client_secret',
+                    'twitch_token',
+                ),
+            },
+        ),
+        (
+            'Данные капчи',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'recaptcha_public_key',
+                    'recaptcha_private_key',
+                ),
+            },
+        ),
+        (
+            'Данные сервиса решения капчи',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': ('apikey_for_captcha_solution',),
+            },
+        ),
     )
     fieldsets = (
-        ('Серверная почта',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'server_email_login',
-                'server_email_password',
-        )}),
-        ('Данные Discord',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'discord_login',
-                'discord_password',
-                'discord_token',
-        )}),
-        ('Данные Twitch',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'twitch_login',
-                'twitch_password',
-                'twitch_client_id',
-                'twitch_client_secret',
-                'twitch_token',
-        )}),
-        ('Данные капчи',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'recaptcha_public_key',
-                'recaptcha_private_key',
-        )}),
-        ('Данные сервиса решения капчи',
-            {'description': ('После изменения полей требуется перезагрузка сервера.'),
-             'fields': (
-                'apikey_for_captcha_solution',
-        )}),
+        (
+            'Серверная почта',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'server_email_login',
+                    'server_email_password',
+                ),
+            },
+        ),
+        (
+            'Данные Discord',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'discord_login',
+                    'discord_password',
+                    'discord_token',
+                ),
+            },
+        ),
+        (
+            'Данные Twitch',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'twitch_login',
+                    'twitch_password',
+                    'twitch_client_id',
+                    'twitch_client_secret',
+                    'twitch_token',
+                ),
+            },
+        ),
+        (
+            'Данные капчи',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': (
+                    'recaptcha_public_key',
+                    'recaptcha_private_key',
+                ),
+            },
+        ),
+        (
+            'Данные сервиса решения капчи',
+            {
+                'description': ('После изменения полей требуется перезагрузка сервера.'),
+                'fields': ('apikey_for_captcha_solution',),
+            },
+        ),
     )
 
 
@@ -360,11 +458,20 @@ class TwitchStreamerInfoAdmin(admin.ModelAdmin):
 
     search_fields = ('streamer',)
 
-    list_display = ('streamer',
-    # 'warrior', 'paladin', 'hunter', 'rogue', 'priest',
-    # 'death_knight', 'shaman', 'mage', 'warlock', 'druid',
-    '_warrior', '_paladin', '_hunter', '_rogue', '_priest',
-    '_death_knight', '_shaman', '_mage', '_warlock', '_druid'
+    list_display = (
+        'streamer',
+        # 'warrior', 'paladin', 'hunter', 'rogue', 'priest',
+        # 'death_knight', 'shaman', 'mage', 'warlock', 'druid',
+        '_warrior',
+        '_paladin',
+        '_hunter',
+        '_rogue',
+        '_priest',
+        '_death_knight',
+        '_shaman',
+        '_mage',
+        '_warlock',
+        '_druid',
     )
 
     # надо как то уменьшить ширину инпута, как то форму мб наследовать и там изменить
@@ -372,40 +479,41 @@ class TwitchStreamerInfoAdmin(admin.ModelAdmin):
     #                  'death_knight', 'shaman', 'mage', 'warlock', 'druid')
 
     add_fieldsets = (
-        (None,
-            {'fields': (
-                'streamer',
-        )}),
-        ('Игровой Опыт',
-            {'description': ('Максимальный рейтинг в любом из брекетов.'),
-             'fields': (
-                ('warrior', 'paladin'),
-                ('hunter', 'rogue'),
-                ('priest', 'death_knight'),
-                ('shaman', 'mage'),
-                ('warlock', 'druid'),
-        )}),
+        (None, {'fields': ('streamer',)}),
+        (
+            'Игровой Опыт',
+            {
+                'description': ('Максимальный рейтинг в любом из брекетов.'),
+                'fields': (
+                    ('warrior', 'paladin'),
+                    ('hunter', 'rogue'),
+                    ('priest', 'death_knight'),
+                    ('shaman', 'mage'),
+                    ('warlock', 'druid'),
+                ),
+            },
+        ),
     )
     fieldsets = (
-        (None,
-            {'fields': (
-                'streamer',
-        )}),
-        ('Игровой Опыт',
-            {'description': ('Максимальный рейтинг в любом из брекетов.'),
-             'fields': (
-                ('warrior', 'paladin'),
-                ('hunter', 'rogue'),
-                ('priest', 'death_knight'),
-                ('shaman', 'mage'),
-                ('warlock', 'druid'),
-        )}),
+        (None, {'fields': ('streamer',)}),
+        (
+            'Игровой Опыт',
+            {
+                'description': ('Максимальный рейтинг в любом из брекетов.'),
+                'fields': (
+                    ('warrior', 'paladin'),
+                    ('hunter', 'rogue'),
+                    ('priest', 'death_knight'),
+                    ('shaman', 'mage'),
+                    ('warlock', 'druid'),
+                ),
+            },
+        ),
     )
 
 
 @admin.register(Comments)
 class CommentsAdmin(DraggableMPTTAdmin):
-
     list_display = ('tree_actions', 'indented_title', 'is_published', 'time_create')
     list_display_links = ('indented_title',)
     list_editable = ('is_published',)
@@ -448,7 +556,7 @@ class GuidesAdmin(TranslationAdmin):
             'widget': TinyMCE(
                 attrs={'cols': 80, 'rows': 30},
                 # https://www.tiny.cloud/docs/general-configuration-guide/
-                mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False}
+                mce_attrs={'skin': 'oxide-dark', 'content_css': 'dark', 'readonly': False},
             )
         },
     }
@@ -463,16 +571,31 @@ class GuidesAdmin(TranslationAdmin):
     # скопированы для создания нового объекта.
     # save_as = True
 
-    list_display = ('id', 'title', 'category', 'slug', 'get_html_avatar30x30',
-                    'is_published', 'get_likes_count', 'get_dislikes_count', 'get_comments_count')
+    list_display = (
+        'id',
+        'title',
+        'category',
+        'slug',
+        'get_html_avatar30x30',
+        'is_published',
+        'get_likes_count',
+        'get_dislikes_count',
+        'get_comments_count',
+    )
     list_display_links = ('title',)
 
     list_editable = ('is_published',)
 
     prepopulated_fields = {'slug': ('title',)}
 
-    readonly_fields = ('get_html_avatar65x65', 'time_create', 'time_update',
-                       'get_likes_count', 'get_dislikes_count', 'get_comments_count')
+    readonly_fields = (
+        'get_html_avatar65x65',
+        'time_create',
+        'time_update',
+        'get_likes_count',
+        'get_dislikes_count',
+        'get_comments_count',
+    )
 
     raw_id_fields = ('guide_creator',)
 
@@ -482,50 +605,74 @@ class GuidesAdmin(TranslationAdmin):
     actions = ('set_guides_to_published',)
 
     add_fieldsets = (
-        ('Основная информация',
-            {'fields': (
-                'is_published',
-                'guide_creator',
-                'category',
-                'title',
-                'slug',
-                ('main_image', 'get_html_avatar65x65'),
-                'content',
-        )}),
-        ('Время',
-            {'fields': (
-                'time_create',
-                'time_update',
-        )}),
-        ('Статистика',
-            {'fields': (
-                'get_likes_count',
-                'get_dislikes_count',
-                'get_comments_count',
-        )}),
+        (
+            'Основная информация',
+            {
+                'fields': (
+                    'is_published',
+                    'guide_creator',
+                    'category',
+                    'title',
+                    'slug',
+                    ('main_image', 'get_html_avatar65x65'),
+                    'content',
+                )
+            },
+        ),
+        (
+            'Время',
+            {
+                'fields': (
+                    'time_create',
+                    'time_update',
+                )
+            },
+        ),
+        (
+            'Статистика',
+            {
+                'fields': (
+                    'get_likes_count',
+                    'get_dislikes_count',
+                    'get_comments_count',
+                )
+            },
+        ),
     )
     fieldsets = (
-        ('Основная информация',
-            {'fields': (
-                'is_published',
-                'guide_creator',
-                'category',
-                'title',
-                'slug',
-                ('main_image', 'get_html_avatar65x65'),
-                'content',
-        )}),
-        ('Время',
-            {'fields': (
-                'time_create',
-                'time_update',
-        )}),
-        ('Статистика',
-            {'fields': (
-                'get_likes_count',
-                'get_dislikes_count',
-                'get_comments_count',
-        )}),
+        (
+            'Основная информация',
+            {
+                'fields': (
+                    'is_published',
+                    'guide_creator',
+                    'category',
+                    'title',
+                    'slug',
+                    ('main_image', 'get_html_avatar65x65'),
+                    'content',
+                )
+            },
+        ),
+        (
+            'Время',
+            {
+                'fields': (
+                    'time_create',
+                    'time_update',
+                )
+            },
+        ),
+        (
+            'Статистика',
+            {
+                'fields': (
+                    'get_likes_count',
+                    'get_dislikes_count',
+                    'get_comments_count',
+                )
+            },
+        ),
     )
 
     # https://docs.djangoproject.com/en/4.2/ref/contrib/admin/
@@ -533,9 +680,13 @@ class GuidesAdmin(TranslationAdmin):
     # Если пользователь ниже рангом чем суперпользователь тогда ему разрешено редактировать
     # только свой объект.
     def has_change_permission(self, request: ASGIRequest, obj: Guides | None = None) -> bool:
-
-        if ( not obj and not request.user.is_superuser
-        or obj and obj.guide_creator != request.user and not request.user.is_superuser ):
+        if (
+            not obj
+            and not request.user.is_superuser
+            or obj
+            and obj.guide_creator != request.user
+            and not request.user.is_superuser
+        ):
             return False
         return True
 
@@ -547,8 +698,13 @@ class GuidesAdmin(TranslationAdmin):
 
     # аналогично с has_change
     def has_delete_permission(self, request: ASGIRequest, obj: Guides | None = None) -> bool:
-        if ( not obj and not request.user.is_superuser
-        or obj and obj.guide_creator != request.user and not request.user.is_superuser ):
+        if (
+            not obj
+            and not request.user.is_superuser
+            or obj
+            and obj.guide_creator != request.user
+            and not request.user.is_superuser
+        ):
             return False
         return True
 
@@ -562,14 +718,17 @@ class GuidesAdmin(TranslationAdmin):
     def set_guides_to_published(self, request: ASGIRequest, queryset: QuerySet):
         count = queryset.update(is_published=True)
         self.message_user(request, f'{count} гайдов были успешно опубликованы.')
+
     set_guides_to_published.short_description = 'Публикация выбранных гайдов'
 
     # Удаляет из списка действий указанные действия
     def get_actions(self, request: ASGIRequest) -> dict[str, tuple[str, Callable]]:
-        actions = super(GuidesAdmin, self).get_actions(request)
+        actions = super().get_actions(request)
         if not request.user.is_superuser:
-            if 'delete_selected' in actions: del actions['delete_selected']
-            if 'set_guides_to_published' in actions: del actions['set_guides_to_published']
+            if 'delete_selected' in actions:
+                del actions['delete_selected']
+            if 'set_guides_to_published' in actions:
+                del actions['set_guides_to_published']
         return actions
 
     # Запретить редактировать определенные элементы пользователю с недостаточными правами
@@ -596,15 +755,17 @@ class GuidesAdmin(TranslationAdmin):
             obj.guide_creator = request.user
 
         # если поле guide_creator было изменено намеренно тогда принимаем эти изменения
-        elif ( form.cleaned_data.get('guide_creator')
-        and form.cleaned_data.get('guide_creator') != obj.guide_creator ):
+        elif (
+            form.cleaned_data.get('guide_creator')
+            and form.cleaned_data.get('guide_creator') != obj.guide_creator
+        ):
             obj.guide_creator = form.cleaned_data['guide_creator']
 
         super().save_model(request, obj, form, change)
 
     # Автоматически заполняет форму поля guide_creator текущим пользователем
     def get_changeform_initial_data(self, request: ASGIRequest) -> dict[str, int]:
-        get_data = super(GuidesAdmin, self).get_changeform_initial_data(request)
+        get_data = super().get_changeform_initial_data(request)
         get_data['guide_creator'] = request.user.pk
         return get_data
 
@@ -612,24 +773,29 @@ class GuidesAdmin(TranslationAdmin):
         if obj.main_image:
             return mark_safe(f'<img src="{obj.main_image.url}" width="30">')
         return ''
+
     get_html_avatar30x30.short_description = 'Изображение'
 
     def get_html_avatar65x65(self, obj: Guides) -> str | SafeText:
         if obj.main_image:
             return mark_safe(f'<img src="{obj.main_image.url}" width="65">')
         return ''
+
     get_html_avatar65x65.short_description = ''
 
     def get_likes_count(self, obj: Guides) -> int:
         return obj.votes.likes().count()
+
     get_likes_count.short_description = 'Лайков'
 
     def get_dislikes_count(self, obj: Guides) -> int:
         return obj.votes.dislikes().count()
+
     get_dislikes_count.short_description = 'Дизлайков'
 
     def get_comments_count(self, obj: Guides) -> int:
         return obj.comments.filter(is_published=True).count()
+
     get_comments_count.short_description = 'Комментариев'
 
 
@@ -648,14 +814,24 @@ class CategoryAdmin(TranslationAdmin):
     raw_id_fields = ('cat_creator',)
 
     def has_change_permission(self, request: ASGIRequest, obj: Category | None = None) -> bool:
-        if ( not obj and not request.user.is_superuser
-        or obj and obj.cat_creator != request.user and not request.user.is_superuser ):
+        if (
+            not obj
+            and not request.user.is_superuser
+            or obj
+            and obj.cat_creator != request.user
+            and not request.user.is_superuser
+        ):
             return False
         return True
 
     def has_delete_permission(self, request: ASGIRequest, obj: Category | None = None) -> bool:
-        if ( not obj and not request.user.is_superuser
-        or obj and obj.cat_creator != request.user and not request.user.is_superuser ):
+        if (
+            not obj
+            and not request.user.is_superuser
+            or obj
+            and obj.cat_creator != request.user
+            and not request.user.is_superuser
+        ):
             return False
         return True
 
@@ -667,7 +843,6 @@ class CategoryAdmin(TranslationAdmin):
         return form
 
     def save_model(self, request: ASGIRequest, obj: Category, form: ModelForm, change: bool):
-
         if obj.image_name.name:
             obj.image_name.name = translify(obj.image_name.name)
 
@@ -677,14 +852,16 @@ class CategoryAdmin(TranslationAdmin):
         if not obj.cat_creator:
             obj.cat_creator = request.user
 
-        elif ( form.cleaned_data.get('cat_creator')
-        and form.cleaned_data.get('cat_creator') != obj.cat_creator ):
+        elif (
+            form.cleaned_data.get('cat_creator')
+            and form.cleaned_data.get('cat_creator') != obj.cat_creator
+        ):
             obj.cat_creator = form.cleaned_data['cat_creator']
 
         super().save_model(request, obj, form, change)
 
     def get_changeform_initial_data(self, request: ASGIRequest) -> dict[str, int]:
-        get_data = super(CategoryAdmin, self).get_changeform_initial_data(request)
+        get_data = super().get_changeform_initial_data(request)
         get_data['cat_creator'] = request.user.pk
         return get_data
 
@@ -692,10 +869,12 @@ class CategoryAdmin(TranslationAdmin):
         if obj.image_name:
             return mark_safe(f'<img src="{obj.image_name.url}" width="30">')
         return ''
+
     get_html_avatar30x30.short_description = 'Изображение категории'
 
     def get_html_avatar65x65(self, obj: Category) -> str | SafeText:
         if obj.image_name:
             return mark_safe(f'<img src="{obj.image_name.url}" width="65">')
         return ''
+
     get_html_avatar65x65.short_description = ''

@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-from typing import Generator
-from math import floor
 from json import loads
+from math import floor
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
-__all__ = ("get_arena_points",)
+__all__ = ('get_arena_points',)
 
 
 def _calculate_arena_points(bracket: str, rating: str | int, server_type: bool) -> int:
     """Рассчитываем по формуле количество очков арены которое игрок
     получит за рейтинг в указанном брекете на выбранном сервере."""
 
-    if rating == '0': return 0
+    if rating == '0':
+        return 0
     rating = int(rating)
 
     if server_type:
@@ -45,11 +48,7 @@ def get_arena_points(bracket_ratings: Generator, server_type: str) -> dict[str, 
         if bracket == 'server_type':
             continue
 
-        points = _calculate_arena_points(
-            bracket=bracket,
-            rating=rating,
-            server_type=server_type
-        )
+        points = _calculate_arena_points(bracket=bracket, rating=rating, server_type=server_type)
         bracket_points.update({bracket: points})
 
     return bracket_points

@@ -2,7 +2,6 @@ from django.urls import re_path
 
 from main_app import consumers
 
-
 websocket_urlpatterns = [
     # адрес можно указывать такой же как и в urls.py
     # за исключением префикса ws
@@ -11,6 +10,5 @@ websocket_urlpatterns = [
     # http/https от ws/wss протокола
     # так же в javascript необходимо указывать порт сервера daphne после хоста
     re_path('ws/game-chat/', consumers.GameChatConsumer.as_asgi()),
-
     re_path(r'^ws/dev-chat/(?P<room_id>[^/]+)/$', consumers.DevChatConsumer.as_asgi()),
 ]

@@ -1,22 +1,21 @@
 from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
+from django.core.cache import cache
+from django.core.handlers.asgi import ASGIRequest
+from django.forms.utils import ErrorDict
+from django.http import HttpResponseRedirect
+from django.urls import reverse  # , resolve
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from django.http import HttpResponseRedirect
-from django.urls import reverse#, resolve
-from django.core.handlers.asgi import ASGIRequest
-from django.forms.utils import ErrorDict
-from django.core.cache import cache
+from FriskesSite import settings
 
 import main_app.tasks as tasks
 
-from FriskesSite import settings
-
 
 class DataMixin:
-    """#### """
+    """####"""
 
     def __init__(self):
         # дефолтное время для всех сообщений которые идут в обход метода errors_handler
@@ -41,18 +40,16 @@ class DataMixin:
         # который указан в urls.py для StreamsView
         # resolve(self.request.path_info).view_name
         if self.request.resolver_match.view_name != 'streams':
-
             twitch_streams = cache.get('twitch_streams')
             if twitch_streams is None:
                 twitch_stream_count = 0
                 task_id = tasks.twitch_stream_count_task.delay().id
             else:
                 twitch_stream_count = len(twitch_streams)
-                task_id = ""
-            context.update({
-                'twitch_stream_count': twitch_stream_count,
-                'twitch_stream_count_task_id': task_id
-            })
+                task_id = ''
+            context.update(
+                {'twitch_stream_count': twitch_stream_count, 'twitch_stream_count_task_id': task_id}
+            )
 
         return context
 
@@ -66,9 +63,8 @@ class DataMixin:
         #         messages.warning(request, error)
 
         all_errors = ''
-        count = 0
 
-        for field in form_errors:
+        for count, field in enumerate(form_errors):
             error = form_errors[field].as_text()
 
             if field == 'captcha':
@@ -78,8 +74,6 @@ class DataMixin:
                 all_errors += error
             else:
                 all_errors += '\n' + error
-            count += 1
-
 
         self.toast_message_time = round(len(all_errors) / 10)
 
@@ -97,9 +91,7 @@ class RedirectAuthUser:
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)
     def dispatch(self, request: ASGIRequest, *args, **kwargs):
-
         if self.redirect_auth_user_url and request.user.is_authenticated:
-
             return HttpResponseRedirect(reverse(self.redirect_auth_user_url))
 
         return super().dispatch(request, *args, **kwargs)

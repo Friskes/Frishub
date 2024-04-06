@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+
+import django
+
 # import os
 
 try:
@@ -27,56 +30,42 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 INSTALLED_APPS = [
     'django.contrib.humanize',
-
     # pip install daphne
     'daphne',
-
     # https://channels.readthedocs.io/en/stable/installation.html
     # pip install channels==3.0.5
     'channels',
-
     # https://github.com/django/channels_redis/issues/332#issue-1406374416
     # pip install channels-redis==3.4.1
     'channels_redis',
-
     # pip install django-modeltranslation
     'modeltranslation',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # https://github.com/torchbox/django-recaptcha
     'captcha',
-
     # https://stackoverflow.com/a/74593816/19276507
     'django.contrib.sites',
     # https://djangodoc.ru/3.2/ref/contrib/flatpages/
     'django.contrib.flatpages',
-
     # https://github.com/jazzband/django-tinymce
     # https://django-tinymce.readthedocs.io/en/latest/
-    'tinymce', # pip install django-tinymce
-
+    'tinymce',  # pip install django-tinymce
     # https://github.com/django-ckeditor/django-ckeditor
-
     'main_app',
-
     # pip install django-mptt
     'mptt',
-
     # https://docs.celeryq.dev/en/latest/userguide/periodic-tasks.html#using-custom-scheduler-classes
     # pip install django-celery-beat
     'django_celery_beat',
-
     # https://github.com/celery/django-celery-results
     # https://docs.celeryq.dev/en/latest/django/first-steps-with-django.html#django-celery-results-using-the-django-orm-cache-as-a-result-backend
     # pip install django-celery-results
     'django_celery_results',
-
     # https://github.com/django-notifications/django-notifications
     # pip install django-notifications-hq
     'notifications',
@@ -87,22 +76,17 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
     # плагин необходимый для локализации
     'django.middleware.locale.LocaleMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     # плагин для установки локализации указанной в cookie файле
     'main_app.middleware.language_cookie.LanguageCookieMiddleware',
-
     # плагин для подсчёта количества пользователей онлайн
     'main_app.middleware.online_users_now.OnlineUsersNowMiddleware',
-
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
@@ -123,7 +107,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        # django будет искать шаблоны в приложении main_app в каталоге templates (помогает подменить дефолтные шаблоны)
+        # django будет искать шаблоны в приложении main_app в каталоге templates
+        # (помогает подменить дефолтные шаблоны)
         # 'DIRS': [BASE_DIR / 'main_app/templates'],
         # django будет искать шаблоны в коревом каталоге проекта в каталоге templates
         # 'DIRS': [BASE_DIR / 'templates'],
@@ -134,7 +119,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
                 # процессор необходимый для локализации,
                 # теперь запросы будут содержать LANGUAGES и LANGUAGE_CODE переменные
                 'django.template.context_processors.i18n',
@@ -146,7 +130,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'FriskesSite.wsgi.application'
 
 # Конфигурация Channels
-ASGI_APPLICATION = "FriskesSite.asgi.application"
+ASGI_APPLICATION = 'FriskesSite.asgi.application'
 
 
 # Password validation
@@ -171,7 +155,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 # LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'ru' # язык сайта по умолчанию
+LANGUAGE_CODE = 'ru'  # язык сайта по умолчанию
 
 # https://docs.djangoproject.com/en/4.1/topics/i18n/translation/
 # https://youtu.be/F0O0LLz12BU
@@ -181,9 +165,7 @@ LANGUAGES = (
 )
 USE_I18N = True
 # USE_L10N = True # определение локализации пользователя, по заголовку Accept-Language.
-LOCALE_PATHS = (
-    'main_app/locale',
-)
+LOCALE_PATHS = ('main_app/locale',)
 
 # указываем язык по умолчанию для перевода моделей
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
@@ -194,7 +176,7 @@ MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'en'
 # https://docs.djangoproject.com/en/4.2/topics/i18n/timezones/
 # https://www.timeanddate.com/time/map/
 # TIME_ZONE = 'UTC'
-TIME_ZONE = 'Europe/Moscow' # UTC+3
+TIME_ZONE = 'Europe/Moscow'  # UTC+3
 
 USE_TZ = True
 
@@ -224,17 +206,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 TINYMCE_DEFAULT_CONFIG = {
     'branding': False,
-    "height": "650px",
-    "width": "100%",
-    "menubar": "file edit view insert format tools table help",
-    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
-    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
-    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
-    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
-    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
-    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
-    "a11ycheck ltr rtl | showcomments addcomment code",
-    "custom_undo_redo_levels": 10,
+    'height': '650px',
+    'width': '100%',
+    'menubar': 'file edit view insert format tools table help',
+    'plugins': 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code '
+    'fullscreen insertdatetime media table paste code help wordcount spellchecker',
+    'toolbar': 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft '
+    'aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor '
+    'backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | '
+    'fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | '
+    'a11ycheck ltr rtl | showcomments addcomment code',
+    'custom_undo_redo_levels': 10,
 }
 
 
@@ -246,17 +228,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # https://support.google.com/mail/answer/7126229?visit_id=638015537565678308-2329622254&p=BadCredentials&rd=2#cantsignin&zippy=%2C%D0%BD%D0%B5-%D1%83%D0%B4%D0%B0%D0%B5%D1%82%D1%81%D1%8F-%D0%B2%D0%BE%D0%B9%D1%82%D0%B8-%D0%B2-%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B9-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%2C%D1%88%D0%B0%D0%B3-%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D0%B5-imap-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%2C%D1%88%D0%B0%D0%B3-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D0%B5-smtp-%D0%B8-%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%B5-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B-%D0%B2-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D0%B5
 # https://support.google.com/accounts/answer/185833
-EMAIL_HOST = 'smtp.gmail.com' # Домен сервера исходящей почты (SMTP)
+EMAIL_HOST = 'smtp.gmail.com'  # Домен сервера исходящей почты (SMTP)
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True # Используется ли шифрование
+EMAIL_USE_TLS = True  # Используется ли шифрование
 
 
 # после установки данных в админке, потребуется перезагрузить сервер что бы обновить константы
-import django
 django.setup()
-from main_app.models import ServiceInfo
-EMAIL_HOST_USER = '' # Серверная почта
-EMAIL_HOST_PASSWORD = '' # Необходимо создать "Пароль приложения" в данном случае почты
+from main_app.models import ServiceInfo  # noqa: E402
+
+EMAIL_HOST_USER = ''  # Серверная почта
+EMAIL_HOST_PASSWORD = ''  # Необходимо создать "Пароль приложения" в данном случае почты
 DISCORD_LOGIN = ''
 DISCORD_PASSWORD = ''
 TWITCH_CLIENT_ID = ''
@@ -270,10 +252,8 @@ try:
     EMAIL_HOST_USER = service_info[0].server_email_login
 
     SERVER_EMAIL = EMAIL_HOST_USER
-    ADMINS = (
-        ('Friskes', EMAIL_HOST_USER),
-    )
-    EMAIL_SUBJECT_PREFIX = ""
+    ADMINS = (('Friskes', EMAIL_HOST_USER),)
+    EMAIL_SUBJECT_PREFIX = ''
 
     EMAIL_HOST_PASSWORD = service_info[0].server_email_password
     DISCORD_LOGIN = service_info[0].discord_login
@@ -283,58 +263,59 @@ try:
     RECAPTCHA_PUBLIC_KEY = service_info[0].recaptcha_public_key
     RECAPTCHA_PRIVATE_KEY = service_info[0].recaptcha_private_key
     APIKEY_FOR_CAPTCHA_SOLUTION = service_info[0].apikey_for_captcha_solution
-except Exception: pass
+except Exception:
+    pass
 
 
 # https://docs.djangoproject.com/en/4.2/topics/logging/
 # https://docs.djangoproject.com/en/4.2/ref/logging/#logging-ref
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": { # словарь с шаблонами форматирования строки
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {  # словарь с шаблонами форматирования строки
         # "verbose": { # расширенный
         #     "format": "{levelname} {asctime} {module}.py {process:d} {thread:d} {message}",
         #     "style": "{",
         # },
-        "medium": { # средний
-            "format": "{levelname} {asctime} {module}.py {message}", # {server_time}
-            "style": "{",
+        'medium': {  # средний
+            'format': '{levelname} {asctime} {module}.py {message}',  # {server_time}
+            'style': '{',
         },
-        "simple": { # простой
-            "format": "\n{levelname} {message}\n",
-            "style": "{",
+        'simple': {  # простой
+            'format': '\n{levelname} {message}\n',
+            'style': '{',
         },
-        "simple_db": { # простой с пробелами
-            "format": "\n{message}\n",
-            "style": "{",
-        },
-    },
-    "filters": { # словарь с фильтрами
-        "require_debug_true": { # писать лог сообщение только при DEBUG = True
-            "()": "django.utils.log.RequireDebugTrue",
-        },
-        "require_debug_false": { # писать лог сообщение только при DEBUG = False
-            "()": "django.utils.log.RequireDebugFalse",
+        'simple_db': {  # простой с пробелами
+            'format': '\n{message}\n',
+            'style': '{',
         },
     },
-    "handlers": { # словарь с обработчиками логов
-        "console_local_db": {
-            "level": "DEBUG", # все уровни >= указанного уровня будут обработаны этим обработчиком
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-            "formatter": "simple_db",
+    'filters': {  # словарь с фильтрами
+        'require_debug_true': {  # писать лог сообщение только при DEBUG = True
+            '()': 'django.utils.log.RequireDebugTrue',
         },
-        "console_local": {
-            "level": "DEBUG", # все уровни >= указанного уровня будут обработаны этим обработчиком
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
+        'require_debug_false': {  # писать лог сообщение только при DEBUG = False
+            '()': 'django.utils.log.RequireDebugFalse',
         },
-        "console_prod": {
-            "level": "INFO", # все уровни >= указанного уровня будут обработаны этим обработчиком
-            "filters": ["require_debug_false"],
-            "class": "logging.StreamHandler",
-            "formatter": "medium",
+    },
+    'handlers': {  # словарь с обработчиками логов
+        'console_local_db': {
+            'level': 'DEBUG',  # все уровни >= указанного уровня будут обработаны этим обработчиком
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple_db',
+        },
+        'console_local': {
+            'level': 'DEBUG',  # все уровни >= указанного уровня будут обработаны этим обработчиком
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'console_prod': {
+            'level': 'INFO',  # все уровни >= указанного уровня будут обработаны этим обработчиком
+            'filters': ['require_debug_false'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'medium',
         },
         # "file": {
         #     "level": "ERROR", # все уровни >= указанного уровня будут обработаны этим обработчиком
@@ -344,10 +325,10 @@ LOGGING = {
         #     "filename": BASE_DIR / "logs/log.log", # директория "logs/" должна быть создана вручную.
         # },
     },
-    "loggers": {
-        "main_app": { # название приложения
-            "handlers": ["console_local", "console_prod"],
-            "level": "INFO", # все уровни >= указанного уровня будут переданы в указанные обработчики
+    'loggers': {
+        'main_app': {  # название приложения
+            'handlers': ['console_local', 'console_prod'],
+            'level': 'INFO',  # все уровни >= указанного уровня будут переданы в указанные обработчики
         },
         # выводить все SQL запросы в консоль
         # "django.db.backends": {
@@ -358,7 +339,7 @@ LOGGING = {
 }
 
 # фикс ошибки в терминале браузера: "The Cross Origin Opener Policy header has been ignored"
-SECURE_CROSS_ORIGIN_OPENER_POLICY = None # 'same-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None  # 'same-origin'
 
 
 CELERY_RESULT_BACKEND = 'django-db'

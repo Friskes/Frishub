@@ -1,0 +1,45 @@
+# https://githooks.com/
+# https://verdantfox.com/blog/how-to-use-git-pre-commit-hooks-the-hard-way-and-the-easy-way
+# https://docs.astral.sh/ruff/integrations/
+# https://pre-commit.com/
+# Commands:
+#   pre-commit run  # Запустить pre-commit проверку для теста
+#   pre-commit install  # Создать файл в директории .git/hooks/pre-commit
+# После создания файла, при любом git commit будет запускаться pre-commit проверка.
+# Если возникли проблемы с pre-commit и нужно срочно сделать commit то можно
+# временно удалить проверку до выяснения проблемы с помощью:
+#   pre-commit uninstall
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 'v0.3.1'
+    hooks:
+      - id: ruff
+        name: Проверка кода ruff линтером.
+        args: [
+          --fix,
+          --quiet,
+          # --silent,
+        ]
+
+      - id: ruff-format
+        name: Проверка кода ruff форматтером.
+
+  - repo: local
+    hooks:
+      - id: migrations-check
+        name: Проверка наличия несозданных миграций / миграций с одинаковым номером.
+        language: system
+        pass_filenames: false  # Не трогать!
+        entry: python ./manage.py makemigrations --check #-n 'missing_migration_file'
+        # hook запуститься только в том случае,
+        # если были изменены файлы которые были найдены с помощью регулярки
+        # а именно .py файлы в директории /models/ либо файлы models.py
+        files: '^.*\/models\/.*(\.py)?$|models.py'
+        # files: '(?:.*\/)?models\/(?:[^\/]+\/)*[^\/]+\.py$|models.py'
+        stages: [commit]
+        types: [python]  # Активировать hook только если был изменён .py файл

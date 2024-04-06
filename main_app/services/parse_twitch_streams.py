@@ -5,15 +5,15 @@
 from __future__ import annotations
 
 import logging
-log = logging.getLogger(__name__)
 
 import requests
-
-from main_app.models import ServiceInfo, TwitchStreamerInfo, CLASS_COLORS
 from FriskesSite import settings
 
+from main_app.models import CLASS_COLORS, ServiceInfo, TwitchStreamerInfo
 
-__all__ = ("twitch_stream_parser",)
+log = logging.getLogger(__name__)
+
+__all__ = ('twitch_stream_parser',)
 
 
 OAUTH2_URL = 'https://id.twitch.tv/oauth2/token'
@@ -21,7 +21,7 @@ HEADERS_POST = {'Content-Type': 'application/x-www-form-urlencoded'}
 PAYLOAD = {
     'client_id': settings.TWITCH_CLIENT_ID,
     'client_secret': settings.TWITCH_CLIENT_SECRET,
-    'grant_type': 'client_credentials'
+    'grant_type': 'client_credentials',
 }
 
 
@@ -35,8 +35,11 @@ def _token_verification() -> str | None:
     if service_info and service_info[0].twitch_token:
         return service_info[0].twitch_token
 
-    token = requests.post(url=OAUTH2_URL, data=PAYLOAD,
-                          headers=HEADERS_POST, timeout=5).json().get('access_token')
+    token = (
+        requests.post(url=OAUTH2_URL, data=PAYLOAD, headers=HEADERS_POST, timeout=5)
+        .json()
+        .get('access_token')
+    )
 
     if token and service_info:
         service_info.update(twitch_token=token)
@@ -45,9 +48,9 @@ def _token_verification() -> str | None:
     return token
 
 
-def _transform_data(stream_data: dict[str, str | int | bool | list[str]],
-                    streamers: dict[str, dict[str, str]]
-    ) -> dict[str, str | dict[str, dict[str, str]]]:
+def _transform_data(
+    stream_data: dict[str, str | int | bool | list[str]], streamers: dict[str, dict[str, str]]
+) -> dict[str, str | dict[str, dict[str, str]]]:
     """Перерабатываем данные которые пришли от twitch API."""
 
     language = '/static/main_app/images/svg/' + stream_data['language'].upper() + '.svg'
@@ -55,13 +58,14 @@ def _transform_data(stream_data: dict[str, str | int | bool | list[str]],
     thumbnail_url = stream_data['thumbnail_url'].format(width=384, height=216)
     game_classes = streamers[stream_data['user_login']]
 
-    clean_stream_data = {
-        'user_login': stream_data['user_login'], 'title': stream_data['title'],
-        'viewer_count': stream_data['viewer_count'], 'language': language,
-        'thumbnail_url': thumbnail_url, 'game_classes': game_classes,
+    return {
+        'user_login': stream_data['user_login'],
+        'title': stream_data['title'],
+        'viewer_count': stream_data['viewer_count'],
+        'language': language,
+        'thumbnail_url': thumbnail_url,
+        'game_classes': game_classes,
     }
-
-    return clean_stream_data
 
 
 class TwitchStreamParser:
@@ -69,8 +73,9 @@ class TwitchStreamParser:
 
     forbidding_flag = True
 
-    def get_twitch_stream_data(self, new_twitch_token: str | None = None
-        ) -> list | list[dict[str, str | int | dict[str, dict[str, str]]]]:
+    def get_twitch_stream_data(
+        self, new_twitch_token: str | None = None
+    ) -> list | list[dict[str, str | int | dict[str, dict[str, str]]]]:
         """- Получаем из БД заранее записанных стримеров, формируем на их основе базовый словарь,
         делаем запрос к twitch API для получения информации о онлайн стримерах из нашего словаря.
         - Если запрос удачный, передаём данные из API и базовый словарь в функцию очистки данных,
@@ -79,9 +84,11 @@ class TwitchStreamParser:
         и заново вызываем метод get_twitch_stream_data с новым токеном."""
 
         twitch_streamer_info = TwitchStreamerInfo.objects.all()
-        if (not twitch_streamer_info
-        or not settings.TWITCH_CLIENT_ID
-        or not settings.TWITCH_CLIENT_SECRET):
+        if (
+            not twitch_streamer_info
+            or not settings.TWITCH_CLIENT_ID
+            or not settings.TWITCH_CLIENT_SECRET
+        ):
             return []
 
         if self.forbidding_flag:
@@ -99,17 +106,26 @@ class TwitchStreamParser:
         #     for field in fields:
         #         field_value = getattr(item, field.name)
         #         if field_value:
-        #             print('field_value:', field_value, '| field.name:', field.name, '| field.verbose_name:', field.verbose_name)
+        #             print(
+        #                 'field_value:',
+        #                 field_value,
+        #                 '| field.name:',
+        #                 field.name,
+        #                 '| field.verbose_name:',
+        #                 field.verbose_name,
+        #             )
 
         streamers = {}
         for streamer in twitch_streamer_info:
             streamers[streamer.streamer] = {}
 
             for game_class, experience in streamer.__dict__.items():
-
-                if ( game_class != '_state' and game_class != 'id'
-                and game_class != 'streamer' and experience != '' ):
-
+                if (
+                    game_class != '_state'
+                    and game_class != 'id'
+                    and game_class != 'streamer'
+                    and experience != ''
+                ):
                     verbose_name = streamer._meta.get_field(game_class).verbose_name
                     class_color = CLASS_COLORS[game_class]
 
@@ -124,7 +140,7 @@ class TwitchStreamParser:
 
         headers_get = {
             'Authorization': f'Bearer {self.twitch_token}',
-            'Client-Id': settings.TWITCH_CLIENT_ID
+            'Client-Id': settings.TWITCH_CLIENT_ID,
         }
 
         url_params = ''
@@ -136,18 +152,22 @@ class TwitchStreamParser:
         get_streams_url = 'https://api.twitch.tv/helix/streams?'
 
         try:
-            json_response = requests.get(url=get_streams_url + url_params,
-                                         headers=headers_get, timeout=5).json()
+            json_response = requests.get(
+                url=get_streams_url + url_params, headers=headers_get, timeout=5
+            ).json()
         except requests.exceptions.RequestException as exc:
             log.error(f'[class TwitchStreamParser -> def get_twitch_stream_data]: {exc}')
             return []
 
         if json_response.get('status') == 401:
-            post_json_response = requests.post(url=OAUTH2_URL, data=PAYLOAD,
-                                               headers=HEADERS_POST, timeout=5).json()
+            post_json_response = requests.post(
+                url=OAUTH2_URL, data=PAYLOAD, headers=HEADERS_POST, timeout=5
+            ).json()
 
             if post_json_response.get('status') == 400:
-                log.error(f'[class TwitchStreamParser -> def get_twitch_stream_data]: {post_json_response}')
+                log.error(
+                    f'[class TwitchStreamParser -> def get_twitch_stream_data]: {post_json_response}'
+                )
                 return []
 
             new_token = post_json_response.get('access_token')

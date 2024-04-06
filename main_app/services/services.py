@@ -3,8 +3,7 @@ from math import floor, log, pow
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-
-__all__ = ("humanize_size", "validate_twitch_link")
+__all__ = ('humanize_size', 'validate_twitch_link')
 
 
 def humanize_size(bytes_size: int, decimals: int = 1) -> str:
@@ -12,7 +11,8 @@ def humanize_size(bytes_size: int, decimals: int = 1) -> str:
     и оставляет 1 знак после запятой (по умолчанию),
     так же добавляет суффикс в конце строки."""
 
-    if bytes_size == 0: return '0'
+    if bytes_size == 0:
+        return '0'
     suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     power = floor(log(bytes_size, 1024))
     size = bytes_size / pow(1024, power)
@@ -27,9 +27,8 @@ def validate_twitch_link(url: str) -> str:
 
     if url[:22] == 'https://www.twitch.tv/':
         return url
-    elif url[:14] == 'www.twitch.tv/':
+    if url[:14] == 'www.twitch.tv/':
         return 'https://' + url
-    elif url[:10] == 'twitch.tv/':
+    if url[:10] == 'twitch.tv/':
         return 'https://www.' + url
-    else:
-        raise ValidationError(_('Неправильная ссылка.'))
+    raise ValidationError(_('Неправильная ссылка.'))

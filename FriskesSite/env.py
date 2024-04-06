@@ -1,7 +1,9 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 # pip install python-dotenv
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
+
 load_dotenv(find_dotenv())
 
 
@@ -10,7 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 WINDOWS_REDIS_INSTALLED = bool(int(os.environ.get('WINDOWS_REDIS_INSTALLED', '1')))
 RUN_DEV_SERVER_WITH_DOCKER = bool(int(os.environ.get('RUN_DEV_SERVER_WITH_DOCKER', '0')))
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-sgr#a$4v)m2xi#e$(!(%y*4=95*92uu1^$6v@no2y!cfr-b%73')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY', 'django-insecure-sgr#a$4v)m2xi#e$(!(%y*4=95*92uu1^$6v@no2y!cfr-b%73'
+)
 
 MY_LOCAL_IPV4_ADDRESS = os.environ.get('MY_LOCAL_IPV4_ADDRESS')
 
@@ -32,7 +36,9 @@ RABBITMQ_PORT = os.environ.get('RABBITMQ_PORT')
 RABBITMQ_URL = f'amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}'
 
 CELERY_FLOWER_URL_PREFIX = os.environ.get('CELERY_FLOWER_URL_PREFIX', 'flower')
-CELERY_FLOWER_ADDRESS = os.environ.get('CELERY_FLOWER_ADDRESS') if RUN_DEV_SERVER_WITH_DOCKER else '127.0.0.1'
+CELERY_FLOWER_ADDRESS = (
+    os.environ.get('CELERY_FLOWER_ADDRESS') if RUN_DEV_SERVER_WITH_DOCKER else '127.0.0.1'
+)
 CELERY_FLOWER_PORT = os.environ.get('CELERY_FLOWER_PORT', '5555')
 
 SERVER_HOST = os.environ.get('SERVER_HOST')

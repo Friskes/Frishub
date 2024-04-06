@@ -1,9 +1,9 @@
 from django.conf import settings
+from django.core.handlers.asgi import ASGIRequest
+from django.http import HttpResponsePermanentRedirect
+from django.urls import translate_url
 from django.utils import translation
 from django.utils.deprecation import MiddlewareMixin
-from django.urls import translate_url
-from django.http import HttpResponsePermanentRedirect
-from django.core.handlers.asgi import ASGIRequest
 
 
 class LanguageCookieMiddleware(MiddlewareMixin):
@@ -12,7 +12,6 @@ class LanguageCookieMiddleware(MiddlewareMixin):
     response_redirect_class = HttpResponsePermanentRedirect
 
     def process_response(self, request: ASGIRequest, response):
-
         language_from_cookie = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
 
         if language_from_cookie is not None:

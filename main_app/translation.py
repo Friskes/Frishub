@@ -1,6 +1,6 @@
-from modeltranslation.translator import register, TranslationOptions
+from modeltranslation.translator import TranslationOptions, register
 
-from main_app.models import HomeNews, Category, Guides
+from main_app.models import Category, Guides, HomeNews
 
 
 @register(HomeNews)

@@ -1,5 +1,5 @@
-from django.core.handlers.asgi import ASGIRequest
 from django.core.cache import cache
+from django.core.handlers.asgi import ASGIRequest
 from django.utils.deprecation import MiddlewareMixin
 
 
@@ -10,7 +10,7 @@ from django.utils.deprecation import MiddlewareMixin
 class OnlineUsersNowMiddleware(MiddlewareMixin):
     """#### Middleware подсчитывающая количество авторизованных + анонимных пользователей."""
 
-    seconds_alive = 60*5 # 5мин.
+    seconds_alive = 60 * 5  # 5мин.
 
     def process_request(self, request: ASGIRequest):
         """Вызывается до работы View"""
@@ -22,7 +22,7 @@ class OnlineUsersNowMiddleware(MiddlewareMixin):
             current_user_ip = request.META.get('REMOTE_ADDR')
 
         if not current_user_ip:
-            return # принудительно завершаем выполнение middleware
+            return  # принудительно завершаем выполнение middleware
 
         # список ip всех пользователей
         cached_user_ips = cache.get('online-now-user-ips', [])

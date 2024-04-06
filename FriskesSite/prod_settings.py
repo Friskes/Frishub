@@ -1,6 +1,6 @@
 from pathlib import Path
-from FriskesSite.env import *
 
+from FriskesSite.env import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,9 +13,9 @@ PARENT_DOMAIN = SERVER_HOST
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer', # pip install redis
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',  # pip install redis
         'CONFIG': {
-            "hosts": [(REDIS_HOST, REDIS_PORT)],
+            'hosts': [(REDIS_HOST, REDIS_PORT)],
             # "capacity": 1500, # default 100
             # "expiry": 10, # default 60
         },
@@ -25,10 +25,10 @@ CHANNEL_LAYERS = {
 
 # https://docs.djangoproject.com/en/4.2/topics/cache/#redis
 CACHES = {
-    "default": {
+    'default': {
         # https://github.com/jazzband/django-redis
-        "BACKEND": "django_redis.cache.RedisCache", # pip install django-redis
-        "LOCATION": REDIS_URL_DB_1,
+        'BACKEND': 'django_redis.cache.RedisCache',  # pip install django-redis
+        'LOCATION': REDIS_URL_DB_1,
     }
 }
 
@@ -44,7 +44,6 @@ DATABASES = {
         'PASSWORD': POSTGRES_PASSWORD,
         'HOST': POSTGRES_HOST,
         'PORT': POSTGRES_PORT,
-
         # данные необходимые для подключения MySQL
         # 'ENGINE': 'django.db.backends.mysql',
         # 'NAME': MYSQL_DB,

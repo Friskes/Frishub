@@ -1,33 +1,38 @@
 from __future__ import annotations
 
 from datetime import date
+from typing import TYPE_CHECKING
 
-from django.db.models.query import QuerySet
-from django.utils.translation import gettext_lazy as _
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-# from django.db.models.fields.files import ImageFieldFile, FileField
-from django.utils.html import format_html
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.db import models
 from django.urls import reverse
 
+# from django.db.models.fields.files import ImageFieldFile, FileField
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
-
 from multiselectfield import MultiSelectField
-
 from notifications.base.models import AbstractNotification
 
+if TYPE_CHECKING:
+    from django.db.models.query import QuerySet
 
 # https://django.fun/ru/docs/django/4.1/topics/db/models/
 # https://habr.com/ru/post/313764/
 
 CLASS_COLORS_ID = {
-    '0': '198, 155, 109', '1': '244, 140, 186',
-    '2': '170, 211, 114', '3': '255, 244, 104',
-    '4': '255, 255, 255', '5': '196, 30, 58',
-    '6': '0, 112, 221', '7': '63, 199, 235',
-    '8': '135, 136, 238', '9': '255, 124, 10',
+    '0': '198, 155, 109',
+    '1': '244, 140, 186',
+    '2': '170, 211, 114',
+    '3': '255, 244, 104',
+    '4': '255, 255, 255',
+    '5': '196, 30, 58',
+    '6': '0, 112, 221',
+    '7': '63, 199, 235',
+    '8': '135, 136, 238',
+    '9': '255, 124, 10',
 }
 
 
@@ -35,8 +40,7 @@ def get_user_avatar_dir_path(instance: AbstractUser, filename: str) -> str:
     """Генерируем путь к изображению вместе с
     названием изображения на основе имени пользователя."""
 
-    file_path = f'user_avatars/{instance.username}/{filename}'
-    return file_path
+    return f'user_avatars/{instance.username}/{filename}'
 
 
 # https://stackoverflow.com/questions/6195478/max-image-size-on-file-upload
@@ -59,47 +63,65 @@ class CustomUser(AbstractUser):
     # 'python -m pip install Pillow'
     # значение параметра upload_to будет использоваться только
     # если сохранять форму с изображением через метод form.save()
-    avatar = models.ImageField(verbose_name=_('Аватар'), max_length=100,
-                               upload_to=get_user_avatar_dir_path, blank=True,
-                               help_text='Макс. разрешение 1920х1920, Макс объём 6МБ.')
-                               # default='/static/main_app/images/default_avatar.png')
+    avatar = models.ImageField(
+        verbose_name=_('Аватар'),
+        max_length=100,
+        upload_to=get_user_avatar_dir_path,
+        blank=True,
+        help_text='Макс. разрешение 1920х1920, Макс объём 6МБ.',
+    )
+    # default='/static/main_app/images/default_avatar.png')
 
     # null=True потому что поле не может быть пустой строкой без даты
     birth_date = models.DateField(verbose_name=_('Дата рождения'), null=True, blank=True)
 
-    discord_username = models.CharField(verbose_name=_('Имя пользователя Discord'),
-                                        max_length=40, blank=True)
+    discord_username = models.CharField(
+        verbose_name=_('Имя пользователя Discord'), max_length=40, blank=True
+    )
 
-    battlenet_username = models.CharField(verbose_name=_('Имя пользователя Battle.net'),
-                                          max_length=40, blank=True)
+    battlenet_username = models.CharField(
+        verbose_name=_('Имя пользователя Battle.net'), max_length=40, blank=True
+    )
 
     # twitch_link = models.URLField(verbose_name=_('Ссылка на ваш Twitch'),
     #                               max_length=200, null=True, blank=True)
     # CharField для большей гибкости при вводе укороченных адресов
-    twitch_link = models.CharField(verbose_name=_('Ссылка на ваш Twitch'),
-                                   max_length=200, null=True, blank=True)
+    twitch_link = models.CharField(
+        verbose_name=_('Ссылка на ваш Twitch'), max_length=200, null=True, blank=True
+    )
 
-    dress_room_link = models.CharField(verbose_name=_('Ссылка на модель персонажа'),
-                                       max_length=200, null=True, blank=True)
+    dress_room_link = models.CharField(
+        verbose_name=_('Ссылка на модель персонажа'), max_length=200, null=True, blank=True
+    )
 
-    subscribe_newsletter = models.BooleanField(default=True,
-        verbose_name=_('Разрешить отправлять новостную рассылку по почте'))
+    subscribe_newsletter = models.BooleanField(
+        default=True, verbose_name=_('Разрешить отправлять новостную рассылку по почте')
+    )
 
-    subscribe_notify = models.BooleanField(default=True,
-        verbose_name=_('Разрешить отправлять уведомления по почте'))
+    subscribe_notify = models.BooleanField(
+        default=True, verbose_name=_('Разрешить отправлять уведомления по почте')
+    )
 
     GAME_CLASSES = (
-        (0, _('Воин')), (1, _('Паладин')), (2, _('Охотник')),
-        (3, _('Разбойник')), (4, _('Жрец')), (5, _('Рыцарь Смерти')),
-        (6, _('Шаман')), (7, _('Маг')), (8, _('Чернокнижник')), (9, _('Друид')),
+        (0, _('Воин')),
+        (1, _('Паладин')),
+        (2, _('Охотник')),
+        (3, _('Разбойник')),
+        (4, _('Жрец')),
+        (5, _('Рыцарь Смерти')),
+        (6, _('Шаман')),
+        (7, _('Маг')),
+        (8, _('Чернокнижник')),
+        (9, _('Друид')),
     )
     # https://github.com/goinnn/django-multiselectfield
     # pip install django-multiselectfield
     # max_choices поднимает исключение если пользователь попытается выбрать более 3 элементов
     # max_length ограничение на максимальное количество символов в поле в БД
     # (каждое значение разделяется запятой и они тоже учитываются в длинне)
-    game_class = MultiSelectField(verbose_name=_('Игровой класс'), choices=GAME_CLASSES,
-                                  max_choices=3, max_length=5, blank=True)
+    game_class = MultiSelectField(
+        verbose_name=_('Игровой класс'), choices=GAME_CLASSES, max_choices=3, max_length=5, blank=True
+    )
 
     def get_user_game_classes_data(self) -> dict[str, dict[str, str]]:
         """Создаёт и возвращает словарь наполненный verbose_name
@@ -108,13 +130,17 @@ class CustomUser(AbstractUser):
         game_classes_data = {}
         for class_id in self.game_class:
             for class_id_and_verbose_name in self.GAME_CLASSES:
-                if int(class_id) == class_id_and_verbose_name[0]:
-                    if class_id_and_verbose_name[1] not in game_classes_data:
-                        game_classes_data[class_id] = {}
-                        game_classes_data[class_id].update({
+                if (
+                    int(class_id) == class_id_and_verbose_name[0]
+                    and class_id_and_verbose_name[1] not in game_classes_data
+                ):
+                    game_classes_data[class_id] = {}
+                    game_classes_data[class_id].update(
+                        {
                             'verbose_name': class_id_and_verbose_name[1],
-                            'class_colors': CLASS_COLORS_ID[class_id]
-                        })
+                            'class_colors': CLASS_COLORS_ID[class_id],
+                        }
+                    )
         return game_classes_data
 
     def get_avatar(self) -> str:
@@ -144,9 +170,6 @@ class ContactMe(models.Model):
     # https://django.fun/ru/docs/django/4.1/ref/models/fields/#datetimefield
     date_time = models.DateTimeField(verbose_name='Время отправки сообщения', auto_now_add=True)
 
-    def __str__(self):
-        return 'Сообщение обратной связи от пользоваля: ' + self.email
-
     class Meta:
         verbose_name = 'Сообщение пользователя'
         verbose_name_plural = 'Обратная связь'
@@ -155,6 +178,9 @@ class ContactMe(models.Model):
         # по умолчанию используется шаблон <название-приложения_название-модели>
         # db_table = 'contact_me'
 
+    def __str__(self):
+        return 'Сообщение обратной связи от пользоваля: ' + self.email
+
 
 class ServiceInfo(models.Model):
     """#### Модель создающая поля для технической информации в панели администрирования.
@@ -162,52 +188,94 @@ class ServiceInfo(models.Model):
     discord_login, discord_password, discord_token,\n
     twitch_login, twitch_password, twitch_client_id, twitch_client_secret, twitch_token."""
 
-    server_email_login = models.CharField(verbose_name='Серверный адрес электронной почты',
-    max_length=100, blank=True)
-    server_email_password = models.CharField(verbose_name='Серверный пароль приложения почты',
-    max_length=100, blank=True)
+    server_email_login = models.CharField(
+        verbose_name='Серверный адрес электронной почты', max_length=100, blank=True
+    )
+    server_email_password = models.CharField(
+        verbose_name='Серверный пароль приложения почты', max_length=100, blank=True
+    )
 
     discord_login = models.CharField(verbose_name='Discord - Логин', max_length=100, blank=True)
     discord_password = models.CharField(verbose_name='Discord - Пароль', max_length=100, blank=True)
-    discord_token = models.CharField(verbose_name='Discord - Токен',
-    help_text='Токен заполняется автоматически.', max_length=100, blank=True)
+    discord_token = models.CharField(
+        verbose_name='Discord - Токен',
+        help_text='Токен заполняется автоматически.',
+        max_length=100,
+        blank=True,
+    )
 
-    twitch_login = models.CharField(verbose_name='Twitch - Логин', max_length=100, blank=True,
-    help_text='Данное поле необязательно для заполнения и носит исключительно информационный характер.')
-    twitch_password = models.CharField(verbose_name='Twitch - Пароль', max_length=100, blank=True,
-    help_text='Данное поле необязательно для заполнения и носит исключительно информационный характер.')
-    twitch_client_id = models.CharField(verbose_name='Twitch - Идентификатор клиента',
-    max_length=100, blank=True, help_text='Добывается по адресу: dev.twitch.tv/console')
-    twitch_client_secret = models.CharField(verbose_name='Twitch - Секретный код клиента',
-    max_length=100, blank=True, help_text='Добывается по адресу: dev.twitch.tv/console')
-    twitch_token = models.CharField(verbose_name='Twitch - Токен',
-    help_text='Токен заполняется автоматически.', max_length=100, blank=True)
+    twitch_login = models.CharField(
+        verbose_name='Twitch - Логин',
+        max_length=100,
+        blank=True,
+        help_text="""
+        Данное поле необязательно для заполнения и носит исключительно информационный характер.""",
+    )
+    twitch_password = models.CharField(
+        verbose_name='Twitch - Пароль',
+        max_length=100,
+        blank=True,
+        help_text="""
+        Данное поле необязательно для заполнения и носит исключительно информационный характер.""",
+    )
+    twitch_client_id = models.CharField(
+        verbose_name='Twitch - Идентификатор клиента',
+        max_length=100,
+        blank=True,
+        help_text='Добывается по адресу: dev.twitch.tv/console',
+    )
+    twitch_client_secret = models.CharField(
+        verbose_name='Twitch - Секретный код клиента',
+        max_length=100,
+        blank=True,
+        help_text='Добывается по адресу: dev.twitch.tv/console',
+    )
+    twitch_token = models.CharField(
+        verbose_name='Twitch - Токен',
+        help_text='Токен заполняется автоматически.',
+        max_length=100,
+        blank=True,
+    )
 
-    recaptcha_public_key = models.CharField(verbose_name='reCAPTCHA - Ключ Сайта',
-    help_text='Добывается по адресу: https://www.google.com/recaptcha/about/',
-    max_length=100, blank=True)
-    recaptcha_private_key = models.CharField(verbose_name='reCAPTCHA - Секретный Ключ',
-    help_text='Добывается по адресу: https://www.google.com/recaptcha/about/',
-    max_length=100, blank=True)
+    recaptcha_public_key = models.CharField(
+        verbose_name='reCAPTCHA - Ключ Сайта',
+        help_text='Добывается по адресу: https://www.google.com/recaptcha/about/',
+        max_length=100,
+        blank=True,
+    )
+    recaptcha_private_key = models.CharField(
+        verbose_name='reCAPTCHA - Секретный Ключ',
+        help_text='Добывается по адресу: https://www.google.com/recaptcha/about/',
+        max_length=100,
+        blank=True,
+    )
 
-    apikey_for_captcha_solution = models.CharField(verbose_name='Ключ от сервиса решения капчи',
-    help_text='Добывается по адресу: https://dash.nocaptchaai.com/home',
-    max_length=100, blank=True)
-
-    def __str__(self):
-        return 'Сервисная информация'
+    apikey_for_captcha_solution = models.CharField(
+        verbose_name='Ключ от сервиса решения капчи',
+        help_text='Добывается по адресу: https://dash.nocaptchaai.com/home',
+        max_length=100,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Сервисную информацию'
         verbose_name_plural = 'Сервисная информация'
 
+    def __str__(self):
+        return 'Сервисная информация'
+
 
 CLASS_COLORS = {
-    'warrior': '198, 155, 109', 'paladin': '244, 140, 186',
-    'hunter': '170, 211, 114', 'rogue': '255, 244, 104',
-    'priest': '255, 255, 255', 'death_knight': '196, 30, 58',
-    'shaman': '0, 112, 221', 'mage': '63, 199, 235',
-    'warlock': '135, 136, 238', 'druid': '255, 124, 10',
+    'warrior': '198, 155, 109',
+    'paladin': '244, 140, 186',
+    'hunter': '170, 211, 114',
+    'rogue': '255, 244, 104',
+    'priest': '255, 255, 255',
+    'death_knight': '196, 30, 58',
+    'shaman': '0, 112, 221',
+    'mage': '63, 199, 235',
+    'warlock': '135, 136, 238',
+    'druid': '255, 124, 10',
 }
 
 
@@ -231,58 +299,81 @@ class TwitchStreamerInfo(models.Model):
     warlock = models.CharField(verbose_name=_('Чернокнижник'), max_length=4, blank=True)
     druid = models.CharField(verbose_name=_('Друид'), max_length=4, blank=True)
 
+    class Meta:
+        verbose_name = 'Стримеров'
+        verbose_name_plural = 'Стримеры'
+        ordering = ['id']
+
+    def __str__(self):
+        return 'Название канала'
+
     def _warrior(self):
         # for field in self._meta.get_fields():
         # for field in self._meta.fields:
         #     rating = getattr(self, field.name)
         #     # print(field, field.name, field.verbose_name, rating)
         return format_html(
-            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['warrior'], self.warrior)
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['warrior'], self.warrior
+        )
+
     _warrior.short_description = warrior.verbose_name
 
-    def _paladin(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['paladin'], self.paladin)
+    def _paladin(self):
+        return format_html(
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['paladin'], self.paladin
+        )
+
     _paladin.short_description = paladin.verbose_name
 
-    def _hunter(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['hunter'], self.hunter)
+    def _hunter(self):
+        return format_html(
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['hunter'], self.hunter
+        )
+
     _hunter.short_description = hunter.verbose_name
 
-    def _rogue(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['rogue'], self.rogue)
+    def _rogue(self):
+        return format_html('<span style="color: rgb({});">{}</span>', CLASS_COLORS['rogue'], self.rogue)
+
     _rogue.short_description = rogue.verbose_name
 
-    def _priest(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['priest'], self.priest)
+    def _priest(self):
+        return format_html(
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['priest'], self.priest
+        )
+
     _priest.short_description = priest.verbose_name
 
-    def _death_knight(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['death_knight'], self.death_knight)
+    def _death_knight(self):
+        return format_html(
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['death_knight'], self.death_knight
+        )
+
     _death_knight.short_description = death_knight.verbose_name
 
-    def _shaman(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['shaman'], self.shaman)
+    def _shaman(self):
+        return format_html(
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['shaman'], self.shaman
+        )
+
     _shaman.short_description = shaman.verbose_name
 
-    def _mage(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['mage'], self.mage)
+    def _mage(self):
+        return format_html('<span style="color: rgb({});">{}</span>', CLASS_COLORS['mage'], self.mage)
+
     _mage.short_description = mage.verbose_name
 
-    def _warlock(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['warlock'], self.warlock)
+    def _warlock(self):
+        return format_html(
+            '<span style="color: rgb({});">{}</span>', CLASS_COLORS['warlock'], self.warlock
+        )
+
     _warlock.short_description = warlock.verbose_name
 
-    def _druid(self): return format_html(
-        '<span style="color: rgb({});">{}</span>', CLASS_COLORS['druid'], self.druid)
+    def _druid(self):
+        return format_html('<span style="color: rgb({});">{}</span>', CLASS_COLORS['druid'], self.druid)
+
     _druid.short_description = druid.verbose_name
-
-    def __str__(self):
-        return 'Название канала'
-
-    class Meta:
-        verbose_name = 'Стримеров'
-        verbose_name_plural = 'Стримеры'
-        ordering = ['id']
 
 
 # https://fixmypc.ru/post/ispolzovanie-polei-v-python-django-auto-now-i-auto-now-add-na-primerakh-pri-rabote-s-metkami-vremeni/
@@ -290,66 +381,63 @@ class DressingRoom(models.Model):
     """#### Модель создающая поля для хранения настроек персонажа на странице Примерочная."""
 
     RACES = {
-        1: "Human",
-        2: "Orc",
-        3: "Dwarf",
-        4: "Nightelf",
-        5: "Scourge",
-        6: "Tauren",
-        7: "Gnome",
-        8: "Troll",
-        9: "Goblin",
-        10: "Bloodelf",
-        11: "Draenei",
-        12: "Felorc",
-        13: "Naga_",
-        14: "Broken",
-        15: "Skeleton",
-        16: "Vrykul",
-        17: "Tuskarr",
-        18: "Foresttroll",
-        19: "Taunka",
-        20: "Northrendskeleton",
-        21: "Icetroll",
-        22: "Worgen",
+        1: 'Human',
+        2: 'Orc',
+        3: 'Dwarf',
+        4: 'Nightelf',
+        5: 'Scourge',
+        6: 'Tauren',
+        7: 'Gnome',
+        8: 'Troll',
+        9: 'Goblin',
+        10: 'Bloodelf',
+        11: 'Draenei',
+        12: 'Felorc',
+        13: 'Naga_',
+        14: 'Broken',
+        15: 'Skeleton',
+        16: 'Vrykul',
+        17: 'Tuskarr',
+        18: 'Foresttroll',
+        19: 'Taunka',
+        20: 'Northrendskeleton',
+        21: 'Icetroll',
+        22: 'Worgen',
         # 23: "Gilnean",
-        24: "Pandaren",
+        24: 'Pandaren',
         # 25: "Pandarena",
         # 26: "Pandarenh",
-        27: "Nightborne",
-        28: "Highmountaintauren",
-        29: "Voidelf",
-        30: "Lightforgeddraenei",
-        31: "Zandalaritroll",
-        32: "Kultiran",
-        33: "Thinhuman",
-        34: "Darkirondwarf",
-        35: "Vulpera",
-        36: "Magharorc",
-        37: "Mechagnome"
+        27: 'Nightborne',
+        28: 'Highmountaintauren',
+        29: 'Voidelf',
+        30: 'Lightforgeddraenei',
+        31: 'Zandalaritroll',
+        32: 'Kultiran',
+        33: 'Thinhuman',
+        34: 'Darkirondwarf',
+        35: 'Vulpera',
+        36: 'Magharorc',
+        37: 'Mechagnome',
     }
 
     RACES_WITHOUT_ICON = (
-        12, # "Felorc"
-        13, # "Naga_"
-        14, # "Broken"
-        15, # "Skeleton"
-        16, # "Vrykul"
-        17, # "Tuskarr"
-        18, # "Foresttroll"
-        19, # "Taunka"
-        20, # "Northrendskeleton"
-        21, # "Icetroll"
+        12,  # "Felorc"
+        13,  # "Naga_"
+        14,  # "Broken"
+        15,  # "Skeleton"
+        16,  # "Vrykul"
+        17,  # "Tuskarr"
+        18,  # "Foresttroll"
+        19,  # "Taunka"
+        20,  # "Northrendskeleton"
+        21,  # "Icetroll"
         # 23, # "Gilnean"
         # 25, # "Pandarena"
         # 26, # "Pandarenh"
-        33  # "Thinhuman"
+        33,  # "Thinhuman"
     )
 
-    GENDERS = {
-        0: 'Male',
-        1: 'Female'
-    }
+    GENDERS = {0: 'Male', 1: 'Female'}
 
     DEFAULT_ICON_URL = 'https://wow.zamimg.com/images/wow/icons/large/'
 
@@ -357,8 +445,9 @@ class DressingRoom(models.Model):
 
     room_creator_id = models.CharField(max_length=40, verbose_name='Id создателя комнаты')
 
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True,
-                                verbose_name='Создатель комнаты')
+    creator = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, null=True, verbose_name='Создатель комнаты'
+    )
 
     allow_edit = models.BooleanField(verbose_name='Разрешить редактирование')
 
@@ -376,15 +465,15 @@ class DressingRoom(models.Model):
 
     mount = models.CharField(max_length=20, verbose_name='Маунт')
 
+    class Meta:
+        verbose_name = 'Комнату'
+        verbose_name_plural = 'Примерочные комнаты'
+
     def __str__(self):
         return 'Комната: ' + self.room_id
 
     def get_absolute_url(self):
         return reverse('unique_dressing_room', kwargs={'room_id': self.room_id})
-
-    class Meta:
-        verbose_name = 'Комнату'
-        verbose_name_plural = 'Примерочные комнаты'
 
 
 class HomeNews(models.Model):
@@ -395,12 +484,12 @@ class HomeNews(models.Model):
 
     date = models.DateField(verbose_name='Дата новости', default=date.today)
 
-    def __str__(self):
-        return 'Новость: ' + self.news
-
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
+
+    def __str__(self):
+        return 'Новость: ' + self.news
 
 
 # https://django.fun/docs/django/ru/4.0/ref/models/fields/#booleanfield
@@ -413,15 +502,19 @@ class Guides(models.Model):
 
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
 
-    content = models.TextField(verbose_name='Текст гайда', max_length=150000,
-    help_text="""
-    <br>Текст гайда не экранируется, поэтому прямо в текстовом поле можно записывать любые HTML теги.<br><br>
-    WowHead тултипы будут выводится автоматически при использовании тега &lt;a&gt;<br><br>
-    Внутри тега &lt;a&gt; обязательно необходимо поместить хотя бы один символ текста, для отображения ссылки.<br><br>
-    &lt;a target="_BLANK" href="https://www.wowhead.com/wotlk/ru/spell=52985"&gt;Исповедь&lt;/a&gt;
-    """)
+    content = models.TextField(
+        verbose_name='Текст гайда',
+        max_length=150000,
+        help_text="""
+    <br>Текст гайда не экранируется, поэтому прямо в текстовом поле можно записывать любые HTML теги.
+    <br><br>WowHead тултипы будут выводится автоматически при использовании тега &lt;a&gt;<br><br>
+    Внутри тега &lt;a&gt; обязательно необходимо поместить хотя бы один символ текста,
+    для отображения ссылки.
+    <br><br>&lt;a target="_BLANK" href="https://www.wowhead.com/wotlk/ru/spell=52985"&gt;Исповедь&lt;/a&gt;
+    """,
+    )
 
-    main_image = models.ImageField(upload_to="guides", verbose_name='Изображение', blank=True)
+    main_image = models.ImageField(upload_to='guides', verbose_name='Изображение', blank=True)
 
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
 
@@ -431,18 +524,29 @@ class Guides(models.Model):
 
     # Если класс Category идёт после класса Guides то можно записать название как строку
     # если наоборот то как обычно без кавычек
-    category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True,
-                                 verbose_name='Категория')
+    category = models.ForeignKey(
+        'Category', on_delete=models.PROTECT, null=True, verbose_name='Категория'
+    )
     # Если мы добавляем новое поле которое ссылается на
     # другую пустую либо пока что несуществующую таблицу
     # выдаст предупреждение: 'Please select a fix: 1) ... 2) ...'
     # жмём 2) и добавляем в поле category третим аргументом дефолтное значение null=True
     # то есть разрешаем заполнить пустые поля нулами (NULL)
 
-    guide_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-    verbose_name='Создатель гайда', blank=True, null=True)
+    guide_creator = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, verbose_name='Создатель гайда', blank=True, null=True
+    )
 
     votes = GenericRelation('LikeDislike')
+
+    class Meta:
+        verbose_name = 'Гайд'
+        verbose_name_plural = 'Гайды'
+        # указываем порядок сортировки на сайте и для админ панели
+        ordering = ['time_create', 'title']  # '-time_create' # обратная сортировка со знаком минус
+        # поиск по индексу будет использован только
+        # когда будет осуществлён поиск с указанием этих двух полей
+        # indexes = [models.Index(fields=['category', 'guide_creator'])]
 
     def __str__(self):
         return str(self.title)
@@ -450,14 +554,6 @@ class Guides(models.Model):
     # так же при добавлении данного метода в админку добавляется кнопка 'СМОТРЕТЬ НА САЙТЕ >'
     def get_absolute_url(self):
         return reverse('guide', kwargs={'guide_slug': self.slug})
-
-    class Meta:
-        verbose_name = 'Гайд'
-        verbose_name_plural = 'Гайды'
-        # указываем порядок сортировки на сайте и для админ панели
-        ordering = ['time_create', 'title'] # '-time_create' # обратная сортировка со знаком минус
-        # поиск по индексу будет использован только когда будет осуществлён поиск с указанием этих двух полей
-        # indexes = [models.Index(fields=['category', 'guide_creator'])]
 
 
 class Category(models.Model):
@@ -469,23 +565,24 @@ class Category(models.Model):
 
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
 
-    image_name = models.ImageField(upload_to="categorys", verbose_name='Изображение категории')
+    image_name = models.ImageField(upload_to='categorys', verbose_name='Изображение категории')
 
     is_published = models.BooleanField(default=False, verbose_name='Публикация')
 
-    cat_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-    verbose_name='Создатель категории', blank=True, null=True)
+    cat_creator = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, verbose_name='Создатель категории', blank=True, null=True
+    )
+
+    class Meta:
+        verbose_name = 'Категорию'
+        verbose_name_plural = 'Категории'
+        ordering = ['id']
 
     def __str__(self):
         return str(self.name)
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'category_slug': self.slug})
-
-    class Meta:
-        verbose_name = 'Категорию'
-        verbose_name_plural = 'Категории'
-        ordering = ['id']
 
 
 # https://django-mptt.readthedocs.io/en/latest/index.html
@@ -496,23 +593,27 @@ class Comments(MPTTModel):
     # привязываем комментарии (класс Comments) к гайдам (классу Guides)
     # on_delete=models.CASCADE при удалении гайда автоматически удаляться
     # все комментарии принадлежащие к данному гайду из БД.
-    guide = models.ForeignKey(Guides, on_delete=models.CASCADE,
-                              related_name='comments', verbose_name='Гайд')
+    guide = models.ForeignKey(
+        Guides, on_delete=models.CASCADE, related_name='comments', verbose_name='Гайд'
+    )
 
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-                               verbose_name='Имя пользователя')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Имя пользователя')
 
     # ссылка на комментарий, на который дается ответ, если таковой существует
-    parent = TreeForeignKey('self', null=True, blank=True,
-    on_delete=models.CASCADE, verbose_name='Родительский комментарий')
+    parent = TreeForeignKey(
+        'self', null=True, blank=True, on_delete=models.CASCADE, verbose_name='Родительский комментарий'
+    )
 
     content = models.TextField(verbose_name='Сообщение')
 
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
 
-    is_published = models.BooleanField(default=True, verbose_name='Публикация',
-    help_text='При изменении статуса родительского объекта, '
-    'так же необходимо вручную установить такой же статус для всех дочерних элементов.')
+    is_published = models.BooleanField(
+        default=True,
+        verbose_name='Публикация',
+        help_text='При изменении статуса родительского объекта, '
+        'так же необходимо вручную установить такой же статус для всех дочерних элементов.',
+    )
 
     votes = GenericRelation('LikeDislike')
 
@@ -557,31 +658,29 @@ class LikeDislike(models.Model):
     LIKE = 1
     DISLIKE = -1
 
-    VOTES = (
-        (DISLIKE, 'Не нравится'),
-        (LIKE, 'Нравится')
-    )
+    VOTES = ((DISLIKE, 'Не нравится'), (LIKE, 'Нравится'))
 
     vote = models.SmallIntegerField(choices=VOTES)
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) # ForeignKey == many-to-one
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # ForeignKey == many-to-one
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey() # GenericForeignKey == many-to-one
+    content_object = GenericForeignKey()  # GenericForeignKey == many-to-one
     objects = LikeDislikeManager()
+
+    def __str__(self) -> str:
+        return str(self.vote)
 
 
 class Notification(AbstractNotification):
-
     def save(self, *args, **kwargs):
-
         # Записываю в словарь data ссылку на изображение аватара
         # пользователя отправившего уведомление
         self.data['actor_avatar'] = self.actor.get_avatar()
 
         # Вызываю оригинальный метод save
-        super(Notification, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta(AbstractNotification.Meta):
         abstract = False

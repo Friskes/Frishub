@@ -1,25 +1,26 @@
 from __future__ import annotations
 
 import datetime
-import urllib.parse
-import time
-from copy import deepcopy
-from typing import Any
-from uuid import uuid4
 import json
+
 # import codecs
-
 import logging
-log = logging.getLogger(__name__)
+import time
+import urllib.parse
+from copy import deepcopy
+from typing import TYPE_CHECKING, Any
+from uuid import uuid4
 
-from django.utils import timezone
-
-from channels.generic.websocket import WebsocketConsumer, AsyncJsonWebsocketConsumer
-from channels.layers import InMemoryChannelLayer
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import AsyncJsonWebsocketConsumer, WebsocketConsumer
+from django.utils import timezone
 
 from main_app.services.parse_discord_chats import sorting_chat_message
 
+if TYPE_CHECKING:
+    from channels.layers import InMemoryChannelLayer
+
+log = logging.getLogger(__name__)
 
 # https://channels.readthedocs.io/en/latest/topics/channel_layers.html
 # https://github.com/django/asgiref/blob/main/specs/www.rst#http-connection-scope
@@ -31,12 +32,11 @@ class GameChatConsumer(WebsocketConsumer):
     channel_layer: InMemoryChannelLayer
 
     def connect(self):
-
         self.server_name = None
         self.player_nickname = False
         self.only_twitch = False
 
-        self.room_group_name = "game_chat"
+        self.room_group_name = 'game_chat'
 
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -45,13 +45,12 @@ class GameChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, code: int):
-
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name,
         )
 
-    def receive(self, text_data: str = None, bytes_data: bytes = None):
+    def receive(self, text_data: str | None = None, bytes_data: bytes | None = None):
         """Получаем данные для работы сортировки которые передаёт пользователь."""
 
         data: dict = json.loads(text_data)
@@ -74,10 +73,7 @@ class GameChatConsumer(WebsocketConsumer):
         # print(self)
         if self.server_name:
             message = sorting_chat_message(
-                event['data'],
-                self.server_name,
-                self.player_nickname,
-                self.only_twitch
+                event['data'], self.server_name, self.player_nickname, self.only_twitch
             )
 
         if message:
@@ -85,7 +81,6 @@ class GameChatConsumer(WebsocketConsumer):
 
 
 class DevChatConsumer(AsyncJsonWebsocketConsumer):
-
     channel_layer: InMemoryChannelLayer
 
     rooms_data = {}
@@ -119,13 +114,12 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         """#### Создание даты комнаты/истории."""
 
         if self.room_id not in self.rooms_data:
-
             self.rooms_data[self.room_id] = {
                 'time_stamp': '',
                 'room_creator': self.userid,
                 'chat_text': '',
                 'lock_room': False,
-                'active_consumers': {}
+                'active_consumers': {},
             }
             self.chat_history[self.room_id] = []
 
@@ -133,12 +127,11 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         """#### Создание/Обновление даты пользователя."""
 
         if self.userid not in self.rooms_data[self.room_id]['active_consumers']:
-
             self.rooms_data[self.room_id]['active_consumers'][self.userid] = {
                 'page_count': 1,
                 'username': self.saved_username,
                 'user_color': self.saved_user_color,
-                'cur_pos': None
+                'cur_pos': None,
             }
         else:
             self.rooms_data[self.room_id]['active_consumers'][self.userid]['page_count'] += 1
@@ -148,10 +141,10 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
 
         # если пользователь закрыл единственную вкладку - удаляем пользователя
         if self.rooms_data[self.room_id]['active_consumers'][self.userid]['page_count'] == 1:
-
             del self.rooms_data[self.room_id]['active_consumers'][self.userid]
         else:
-            # если пользователь закрыл не единственную вкладку - уменьшаем количество открытых вкладок на 1
+            # если пользователь закрыл не единственную вкладку
+            # уменьшаем количество открытых вкладок на 1
             self.rooms_data[self.room_id]['active_consumers'][self.userid]['page_count'] -= 1
 
     async def time_checking(self):
@@ -163,16 +156,19 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         self.rooms_data[self.room_id]['time_stamp'] = str(current_datetime)
 
         for room_id, room_data in self.rooms_data.copy().items():
-            if ( not self.rooms_data[room_id]['active_consumers'] # если активных клиентов нету
-            # и пройдена временная отметка
-            # 14:00 - 1:00 = 13:00 >= 13:00
-            and current_datetime - self.time_delta
-            >= datetime.datetime.strptime(room_data['time_stamp'], '%Y-%m-%d %H:%M:%S.%f%z') ):
-            # 14:00 - 13:00 = 1:00 >= 1:00
-            # and current_datetime - datetime.datetime.strptime(room_data['time_stamp'], '%Y-%m-%d %H:%M:%S.%f%z')
-            # >= self.time_delta ):
-                del self.rooms_data[room_id] # удаляем комнату
-                del self.chat_history[room_id] # так же удаляем комнату в истории
+            if (
+                not self.rooms_data[room_id]['active_consumers']  # если активных клиентов нету
+                # и пройдена временная отметка
+                # 14:00 - 1:00 = 13:00 >= 13:00
+                and current_datetime - self.time_delta
+                >= datetime.datetime.strptime(room_data['time_stamp'], '%Y-%m-%d %H:%M:%S.%f%z')
+            ):
+                # 14:00 - 13:00 = 1:00 >= 1:00
+                # and current_datetime - datetime.datetime.strptime(
+                #     room_data['time_stamp'], '%Y-%m-%d %H:%M:%S.%f%z'
+                # ) >= self.time_delta ):
+                del self.rooms_data[room_id]  # удаляем комнату
+                del self.chat_history[room_id]  # так же удаляем комнату в истории
 
     async def connect(self):
         """Обрабатывает подключение пользователя, создаёт/удаляет комнату,
@@ -181,8 +177,8 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
 
         # print('\n>>> DEF CONNECT <<<')
 
-        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-        self.room_group_name = f"dev_chat_{self.room_id}"
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+        self.room_group_name = f'dev_chat_{self.room_id}'
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -209,19 +205,19 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         # https://stackoverflow.com/a/61221741/19276507
         # cookie = {'Set-Cookie': 'key=value'}
         # await self.accept(subprotocol=(None, cookie)) # добавление cookies в ответ
-        await self.accept() # сигнализируем каналам Django о том, что соединение с WebSocket установлено
+        await self.accept()  # сигнализируем каналам Django о том, что соединение с WebSocket установлено
         # await self.close() # отклоняем соединение
 
         await self.group_send('room_creator', self.rooms_data[self.room_id]['room_creator'])
 
         # при подключении отправляем данные, только пользователю который сейчас подключился (отправителю)
-        await self.send_json({"userid": self.userid})
-        await self.send_json({"message": self.rooms_data[self.room_id]['chat_text']})
+        await self.send_json({'userid': self.userid})
+        await self.send_json({'message': self.rooms_data[self.room_id]['chat_text']})
 
         # если комната закрыта создателем комнаты,
         # тогда отправляем историю чата только пользователю который сейчас подключился (отправителю)
         if self.rooms_data[self.room_id]['lock_room']:
-            await self.send_json({"chat_history": self.chat_history[self.room_id]})
+            await self.send_json({'chat_history': self.chat_history[self.room_id]})
 
         await self.group_send('active_consumers', self.rooms_data[self.room_id]['active_consumers'])
 
@@ -251,7 +247,7 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
 
         # print('>>> DEF RECEIVE <<<')
 
-        message = content.get("message")
+        message = content.get('message')
         if message is not None:
             # print('MESSAGE:', repr(message))
 
@@ -262,13 +258,15 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
             # print('ROOMS_DATA:', json.dumps(self.rooms_data, indent=4, ensure_ascii=False))
             # print()
 
-        users_curs_pos = content.get("users_curs_pos")
+        users_curs_pos = content.get('users_curs_pos')
         if users_curs_pos:
             # print('USERS_CURS_POS:', users_curs_pos)
             # записываю актуальные координаты курсоров пользователей
             for user_id in users_curs_pos:
                 if user_id in self.rooms_data[self.room_id]['active_consumers']:
-                    self.rooms_data[self.room_id]['active_consumers'][user_id]['cur_pos'] = users_curs_pos[user_id]
+                    self.rooms_data[self.room_id]['active_consumers'][user_id]['cur_pos'] = (
+                        users_curs_pos[user_id]
+                    )
 
             await self.save_history()
 
@@ -277,32 +275,39 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
             # print('ROOMS_DATA:', json.dumps(self.rooms_data, indent=4, ensure_ascii=False))
             # print()
 
-        selection_range = content.get("selection_range")
+        selection_range = content.get('selection_range')
         if selection_range:
             # print('SELECTION_RANGE:', selection_range)
             selection_data = {
                 self.userid: {
                     'selection_range': selection_range,
-                    'username': self.rooms_data[self.room_id]['active_consumers'][self.userid]['username'],
-                    'user_color': self.rooms_data[self.room_id]['active_consumers'][self.userid]['user_color']
+                    'username': self.rooms_data[self.room_id]['active_consumers'][self.userid][
+                        'username'
+                    ],
+                    'user_color': self.rooms_data[self.room_id]['active_consumers'][self.userid][
+                        'user_color'
+                    ],
                 }
             }
             await self.group_send('selection_data', selection_data)
 
-        user_data = content.get("user_data")
+        user_data = content.get('user_data')
         if user_data:
             # print('USER_DATA:', user_data)
-            self.rooms_data[self.room_id]['active_consumers'][self.userid]['username'] = user_data['username']
-            self.rooms_data[self.room_id]['active_consumers'][self.userid]['user_color'] = user_data['user_color']
+            self.rooms_data[self.room_id]['active_consumers'][self.userid]['username'] = user_data[
+                'username'
+            ]
+            self.rooms_data[self.room_id]['active_consumers'][self.userid]['user_color'] = user_data[
+                'user_color'
+            ]
 
             await self.group_send('active_consumers', self.rooms_data[self.room_id]['active_consumers'])
 
             # print('ROOMS_DATA:', json.dumps(self.rooms_data, indent=4, ensure_ascii=False))
             # print()
 
-        room_state = content.get("room_state")
+        room_state = content.get('room_state')
         if room_state and self.chat_history[self.room_id]:
-
             if room_state == 'lock':
                 self.rooms_data[self.room_id]['lock_room'] = True
                 await self.group_send('chat_history', self.chat_history[self.room_id])
@@ -311,7 +316,10 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
                 self.rooms_data[self.room_id]['lock_room'] = False
                 await self.group_send('chat_history', 'unlock')
 
-            # print('CHAT_HISTORY:', json.dumps(self.chat_history[self.room_id], indent=4, ensure_ascii=False))
+            # print(
+            #     'CHAT_HISTORY:',
+            #     json.dumps(self.chat_history[self.room_id], indent=4, ensure_ascii=False)
+            # )
             # print()
 
     # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender
@@ -321,50 +329,50 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
         для пропуска отправителя при групповой отправке."""
 
         await self.channel_layer.group_send(
-            self.room_group_name, {
+            self.room_group_name,
+            {
                 # "type": "send.message",
-                "type": "send_message",
+                'type': 'send_message',
                 key: val,
-                'sender_channel_name': self.channel_name
-            }
+                'sender_channel_name': self.channel_name,
+            },
         )
 
-    async def send_message(self,
-        event: dict[str, str | dict[str, dict[str, str | int | None | dict[str, int]]]]):
+    async def send_message(
+        self, event: dict[str, str | dict[str, dict[str, str | int | None | dict[str, int]]]]
+    ):
         """Принимает ивент и отправляет его всем/[всем кроме отправителя]
         подключенным потребителям на фронт."""
 
-        message = event.get("message")
-        if message is not None:
-            # пропускаем отправителя для отправки
-            # (т.к. для обновления чата у себя между вкладками лучше использовать localStorage на фронте)
-            # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender/57035230#57035230
-            if self.channel_name != event['sender_channel_name']: # отправить всем, кроме отправителя
-                await self.send_json({"message": message})
+        message = event.get('message')
+        # пропускаем отправителя для отправки
+        # (т.к. для обновления чата у себя между вкладками лучше использовать localStorage на фронте)
+        # https://stackoverflow.com/questions/52210782/django-channels-group-send-exclude-the-data-sender/57035230#57035230
+        if message is not None and self.channel_name != event['sender_channel_name']:
+            # отправить всем, кроме отправителя
+            await self.send_json({'message': message})
 
-        cursor_data = event.get("cursor_data")
-        if cursor_data:
+        cursor_data = event.get('cursor_data')
+        if cursor_data and self.channel_name != event['sender_channel_name']:
             # отправляю информацию о перемещении курсора всем пользователям кроме отправителя
-            if self.channel_name != event['sender_channel_name']:
-                await self.send_json({"cursor_data": cursor_data})
+            await self.send_json({'cursor_data': cursor_data})
 
-        selection_data = event.get("selection_data")
-        if selection_data:
+        selection_data = event.get('selection_data')
+        if selection_data and self.channel_name != event['sender_channel_name']:
             # отправляю информацию о перемещении курсора всем пользователям кроме отправителя
-            if self.channel_name != event['sender_channel_name']:
-                await self.send_json({"selection_data": selection_data})
+            await self.send_json({'selection_data': selection_data})
 
-        active_consumers = event.get("active_consumers")
+        active_consumers = event.get('active_consumers')
         if active_consumers:
-            await self.send_json({"active_consumers": active_consumers})
+            await self.send_json({'active_consumers': active_consumers})
 
-        room_creator = event.get("room_creator")
+        room_creator = event.get('room_creator')
         if room_creator:
-            await self.send_json({"room_creator": room_creator})
+            await self.send_json({'room_creator': room_creator})
 
-        chat_history = event.get("chat_history")
+        chat_history = event.get('chat_history')
         if chat_history:
-            await self.send_json({"chat_history": chat_history})
+            await self.send_json({'chat_history': chat_history})
 
     async def save_history(self):
         """Сохраняет историю сообщений/передвижений курсора в chat_history
@@ -381,31 +389,37 @@ class DevChatConsumer(AsyncJsonWebsocketConsumer):
 
         deep_copied_rooms_data['create_time'] = time.time()
 
-        deep_copied_rooms_data['sender'] = {self.userid: deep_copied_rooms_data['active_consumers'][self.userid]}
+        deep_copied_rooms_data['sender'] = {
+            self.userid: deep_copied_rooms_data['active_consumers'][self.userid]
+        }
         del deep_copied_rooms_data['active_consumers']
 
         # единоразово для каждого уникального пользователя создаю сообщение пустышку для того чтобы
         # была возможность определять стартовую точку активности пользователя для удаления его курсора
-        exists_user_ids = {list(item['sender'])[0] for item in self.chat_history[self.room_id]}
+        exists_user_ids = {next(iter(item['sender'])) for item in self.chat_history[self.room_id]}
 
         if self.userid not in exists_user_ids:
-
-            self.chat_history[self.room_id].append({
-                'chat_text': '',
-                'create_time': deep_copied_rooms_data['create_time'],
-                'sender': {
-                    self.userid: {
-                        'username': deep_copied_rooms_data['sender'][self.userid]['username'],
-                        'user_color': '#00000000', # нулевая прозрачность
-                        'cur_pos': None
-                        # 'cur_pos': {'row': 0, 'column': 0} # если не хотим чтобы курсор пропадал
-                    }
+            self.chat_history[self.room_id].append(
+                {
+                    'chat_text': '',
+                    'create_time': deep_copied_rooms_data['create_time'],
+                    'sender': {
+                        self.userid: {
+                            'username': deep_copied_rooms_data['sender'][self.userid]['username'],
+                            'user_color': '#00000000',  # нулевая прозрачность
+                            'cur_pos': None,
+                            # 'cur_pos': {'row': 0, 'column': 0} # если не хотим чтобы курсор пропадал
+                        }
+                    },
                 }
-            })
+            )
 
         # print(deep_copied_rooms_data)
         # сохраняю снимок состояния чата для истории
         self.chat_history[self.room_id].append(deep_copied_rooms_data)
 
-        # print('CHAT_HISTORY:', json.dumps(self.chat_history[self.room_id], indent=4, ensure_ascii=False))
+        # print(
+        #     'CHAT_HISTORY:',
+        #     json.dumps(self.chat_history[self.room_id], indent=4, ensure_ascii=False)
+        # )
         # print()

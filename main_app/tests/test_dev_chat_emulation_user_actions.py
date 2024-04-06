@@ -1,28 +1,30 @@
+from time import sleep
+
 from channels.testing import ChannelsLiveServerTestCase
+
+# скачиваем chromedriver и указываем путь к нему в классе Chrome
+# https://sites.google.com/chromium.org/driver/downloads
+from django.conf import settings
+from selenium.webdriver import Chrome, ChromeOptions
 
 # pip install selenium
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver import ChromeOptions, Chrome
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
 # END       - прыгнуть в конец строки
 # PAGE_UP   - перейти в самое начало текста
 # PAGE_DOWN - перейти в самый конец текста
 # ENTER     - перейти на следующую строку
 # from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.ui import Select
-# скачиваем chromedriver и указываем путь к нему в классе Chrome
-# https://sites.google.com/chromium.org/driver/downloads
-
-from django.conf import settings
-
-from time import sleep
 
 # https://channels.readthedocs.io/en/latest/tutorial/part_4.html
 
 
 #############################################################################
+
 
 class UtilsForTest:
     """#### Хелпер для снижения дублирования кода."""
@@ -33,11 +35,9 @@ class UtilsForTest:
         ActionChains(self.driver).send_keys(*args).perform()
         # ActionChains(self.driver).key_down(*args).perform()
 
-
     def open_new_window(self):
         self.driver.execute_script('window.open("about:blank", "_blank");')
         self.switch_to_window(-1)
-
 
     def close_all_new_windows(self):
         while len(self.driver.window_handles) > 1:
@@ -46,47 +46,41 @@ class UtilsForTest:
         if len(self.driver.window_handles) == 1:
             self.switch_to_window(0)
 
-
     def switch_to_window(self, window_index):
         self.driver.switch_to.window(self.driver.window_handles[window_index])
-
 
     def open_site(self, page_url):
         # заходим на страницу по url
         self.driver.get(self.live_server_url + page_url)
 
-
     def click_on_ele(self, ele_name):
         element = self.get_ele(ele_name)
         ActionChains(self.driver).click(element).perform()
 
-
     def write_text_in_field(self, ele_name, text):
-        self.click_on_ele(ele_name) # берём в фокус
+        self.click_on_ele(ele_name)  # берём в фокус
         # self.driver.execute_script(f'document.getElementById({ele_name}).focus();') # берём в фокус
-        self._send_keys(text) # вводим текст
-
+        self._send_keys(text)  # вводим текст
 
     def set_option_in_select(self, ele_name, arg):
         select = Select(self.get_ele(ele_name))
-        select.select_by_visible_text(arg) # выбрать option в select по тексту
+        select.select_by_visible_text(arg)  # выбрать option в select по тексту
         # select.select_by_value(arg) # выбрать option в select по значению
         # select.select_by_index(14)
-
 
     def get_ele(self, ele_name):
         return self.driver.find_element(By.CSS_SELECTOR, ele_name)
 
-
     def get_ele_val(self, ele_name):
         return self.get_ele(ele_name).get_property('value')
 
+
 #############################################################################
+
 
 # python manage.py test main_app.tests.test_dev_chat_emulation_user_actions.TestDevChat
 class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
-
-    serve_static = True # emulate StaticLiveServerTestCase
+    serve_static = True  # emulate StaticLiveServerTestCase
 
     @classmethod
     def setUpClass(cls):
@@ -97,20 +91,15 @@ class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
             options = ChromeOptions()
             # убрать из лога ошибки связанные с USB
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            cls.driver = Chrome(
-                service=service,
-                options=options
-            )
+            cls.driver = Chrome(service=service, options=options)
         except:
             super().tearDownClass()
             raise
-
 
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
         super().tearDownClass()
-
 
     def test_basic_functionality(self):
         try:
@@ -128,7 +117,9 @@ class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
             sleep(1)
             self.set_option_in_select('#id_select_pixels', '24px')
             sleep(1)
-            self.write_text_in_field('.ace_text-input', 'def my_func(a, b):\n\treturn a**b\nprint(my_func(2, 2))')
+            self.write_text_in_field(
+                '.ace_text-input', 'def my_func(a, b):\n\treturn a**b\nprint(my_func(2, 2))'
+            )
             sleep(1)
             self.switch_to_window(1)
             sleep(1)
@@ -136,11 +127,13 @@ class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
             sleep(1)
             self.set_option_in_select('#id_select_pixels', '14px')
             sleep(1)
-            self.click_on_ele('.ace_text-input') # берём в фокус для send_keys
+            self.click_on_ele('.ace_text-input')  # берём в фокус для send_keys
             sleep(1)
             self._send_keys(Keys.PAGE_DOWN, Keys.ENTER, Keys.ENTER)
             sleep(1)
-            self.write_text_in_field('.ace_text-input', 'function my_func(a, b):\n\treturn a**b;\nconsole.log(my_func(2, 2));')
+            self.write_text_in_field(
+                '.ace_text-input', 'function my_func(a, b):\n\treturn a**b;\nconsole.log(my_func(2, 2));'
+            )
             sleep(1)
             self.switch_to_window(0)
             sleep(1)
@@ -151,15 +144,15 @@ class TestDevChat(ChannelsLiveServerTestCase, UtilsForTest):
         finally:
             self.close_all_new_windows()
 
-
     def entering_chat_room(self, username):
-        self._send_keys(username) # вводим имя пользователя
+        self._send_keys(username)  # вводим имя пользователя
         sleep(1)
-        self.click_on_ele('#login-popup-btn') # кликаем по кнопке подтвердить имя пользователя
+        self.click_on_ele('#login-popup-btn')  # кликаем по кнопке подтвердить имя пользователя
 
         # WebDriverWait(self.driver, 1).until(
         #     lambda _: username == self.get_ele_val('#dev_chat_username'),
         #     'Никнейм не соответствует переданному',
         # )
+
 
 #############################################################################

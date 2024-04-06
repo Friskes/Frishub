@@ -9,39 +9,34 @@
 
 from __future__ import annotations
 
-from typing import Any
 import json
+import logging
 import threading
 import time
-import logging
-log = logging.getLogger(__name__)
+from typing import Any
 
 # для этих библиотек важен порядок установки т.к. они импортируются одним именем,
 # устанавливать в таком порядке, иначе будет ошибка:
 # "TypeError: __init__() missing 3 required positional arguments: 'environ', 'socket', and 'rfile'"
 # pip install websocket
 # pip install websocket-client
-import websocket
-
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-from channels.layers import InMemoryChannelLayer
 import requests
+import websocket
+from asgiref.sync import async_to_sync
+from channels.layers import InMemoryChannelLayer, get_channel_layer
+from FriskesSite import settings
 
 from main_app.models import ServiceInfo
 from main_app.services.hcaptcha_bypass import bypass
-from FriskesSite import settings
 
+log = logging.getLogger(__name__)
 
-__all__ = ("sorting_chat_message",)
+__all__ = ('sorting_chat_message',)
 
 
 REQUEST_URL = 'https://discord.com/api/v9/auth/login'
 HEADERS_POST = {'content-type': 'application/json'}
-PAYLOAD = {
-    'login': settings.DISCORD_LOGIN,
-    'password': settings.DISCORD_PASSWORD
-}
+PAYLOAD = {'login': settings.DISCORD_LOGIN, 'password': settings.DISCORD_PASSWORD}
 
 DISCORD_ENDPOINT_URL = 'https://discord.com/api/users/@me'
 
@@ -54,17 +49,18 @@ def _check_token(token: str) -> str | None:
     # передаём заголовок с user-agent для того что бы сервер думал что данные отправляются с браузера
     headers_get = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                      '(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
-        'authorization': token
+        '(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+        'authorization': token,
     }
 
-    json_response: dict = requests.get(url=DISCORD_ENDPOINT_URL,
-                                       headers=headers_get, timeout=5).json()
+    json_response: dict = requests.get(url=DISCORD_ENDPOINT_URL, headers=headers_get, timeout=5).json()
 
     if json_response.get('code') == 0:
-        new_token = requests.post(url=REQUEST_URL, json=PAYLOAD,
-                                  headers=HEADERS_POST, timeout=5).json().get('token')
-        return new_token
+        return (
+            requests.post(url=REQUEST_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5)
+            .json()
+            .get('token')
+        )
     return None
 
 
@@ -78,19 +74,13 @@ def _token_verification() -> str | None:
     service_info = ServiceInfo.objects.filter(pk=1)
 
     if service_info and service_info[0].discord_token:
-
         token = _check_token(service_info[0].discord_token)
         if token:
             service_info.update(discord_token=token)
             return token
         return service_info[0].discord_token
 
-    response: dict = requests.post(
-        url=REQUEST_URL,
-        json=PAYLOAD,
-        headers=HEADERS_POST,
-        timeout=5
-    ).json()
+    response: dict = requests.post(url=REQUEST_URL, json=PAYLOAD, headers=HEADERS_POST, timeout=5).json()
 
     if not response.get('token') and response.get('captcha_sitekey'):
         try:
@@ -103,7 +93,7 @@ def _token_verification() -> str | None:
             url=REQUEST_URL,
             json={**PAYLOAD, 'captcha_key': captcha_key},
             headers=HEADERS_POST,
-            timeout=5
+            timeout=5,
         ).json()
 
     token = response.get('token')
@@ -126,7 +116,7 @@ class DiscordChatParser:
         единоразово запускаем бесконечный цикл в отдельном потоке для пинга сервера
         и отправляем запрос с токеном для того чтобы сервер думал что мы человек."""
 
-        log.debug(f'[class DiscordChatParser -> def __init__]')
+        log.debug('[class DiscordChatParser -> def __init__]')
 
         self.token = _token_verification()
 
@@ -140,22 +130,18 @@ class DiscordChatParser:
             self.forbidding_flag = False
 
             event_data = self.recieve_json_response()
-            self.heartbeat_interval = event_data['d']['heartbeat_interval'] / 1000 # 41.25
+            self.heartbeat_interval = event_data['d']['heartbeat_interval'] / 1000  # 41.25
 
             threading._start_new_thread(self.heartbeat, ())
 
         # при установлении соединения через вебсокет необходимо отправлять запрос
         # с полезной нагрузкой с токеном что бы сервер принял нас за авторизованного клиента
         fake_user_payload = {
-            "op": 2,
-            "d": {
-                "token": self.token,
-                "properties": {
-                    "$os": "windows",
-                    "$browser": "chrome",
-                    "$device": "pc"
-                }
-            }
+            'op': 2,
+            'd': {
+                'token': self.token,
+                'properties': {'$os': 'windows', '$browser': 'chrome', '$device': 'pc'},
+            },
         }
 
         self.send_json_request(fake_user_payload)
@@ -166,7 +152,14 @@ class DiscordChatParser:
 
         try:
             self.ws.send(json.dumps(request))
-            log.debug(f'[class DiscordChatParser -> def send_json_request] Heartbeat Sent Request:\n{request}')
+            log.debug(
+                f'[class DiscordChatParser -> def send_json_request] Heartbeat Sent Request:\n{request}'
+            )
+
+        except BrokenPipeError as exc:
+            log.info(f'[class DiscordChatParser -> def send_json_request] BrokenPipeError:\n{exc}')
+            self.re_connect()
+
         except Exception as exc:
             log.info(f'[class DiscordChatParser -> def send_json_request] Exception:\n{exc}')
 
@@ -182,20 +175,26 @@ class DiscordChatParser:
 
                 # Expecting value: line 1 column 1 (char 0)
                 except json.decoder.JSONDecodeError as exc:
-                    log.info(f'[class DiscordChatParser -> def recieve_json_response] '
-                             f'JSONDecodeError:\n{exc}\n{repr(responce)}')
+                    log.info(
+                        f'[class DiscordChatParser -> def recieve_json_response] '
+                        f'JSONDecodeError:\n{exc}\n{responce!r}'
+                    )
 
         # ("Connection to remote host was lost.")
         # ("socket is already closed.")
         except websocket.WebSocketConnectionClosedException as exc:
-            log.info(f'[class DiscordChatParser -> def recieve_json_response] '
-                     f'WebSocketConnectionClosedException:\n{exc}')
+            log.info(
+                f'[class DiscordChatParser -> def recieve_json_response] '
+                f'WebSocketConnectionClosedException:\n{exc}'
+            )
             self.re_connect()
 
         # WebSocketProtocolException("rsv is not implemented, yet")
         except websocket.WebSocketProtocolException as exc:
-            log.info(f'[class DiscordChatParser -> def recieve_json_response] '
-                     f'WebSocketProtocolException:\n{exc}')
+            log.info(
+                f'[class DiscordChatParser -> def recieve_json_response] '
+                f'WebSocketProtocolException:\n{exc}'
+            )
             self.re_connect()
 
         except Exception as exc:
@@ -219,11 +218,8 @@ class DiscordChatParser:
         while True:
             time.sleep(self.heartbeat_interval)
 
-            HEARTBEAT_JSON = {
-                "op": 1,
-                "d": "null"
-            }
-            self.send_json_request(HEARTBEAT_JSON)
+            heartbeat_json = {'op': 1, 'd': 'null'}
+            self.send_json_request(heartbeat_json)
 
 
 GUILD_ID = '338966203919892480'
@@ -234,31 +230,31 @@ CHANNEL_IDS = {
     'wotlk_x5_horde': '869986269525053521',
     'wotlk_x100_alliance': '862240930052571136',
     'wotlk_x100_horde': '869996139976491059',
-    'wotlk-fun': '875065270744518747'
+    'wotlk-fun': '875065270744518747',
 }
 
 
-def sorting_chat_message(event_data: dict[str, str | int | dict[str, Any]], server_name: str | None,
-                         player_nickname: str | bool, only_twitch: bool) -> str | None:
+def sorting_chat_message(
+    event_data: dict[str, str | int | dict[str, Any]],
+    server_name: str | None,
+    player_nickname: str | bool,
+    only_twitch: bool,
+) -> str | None:
     """#### Функция сортировки сообщений индивидуально для каждого пользователя."""
 
-    channel_id = event_data['d']['channel_id'] # айди канала на сервере
+    channel_id = event_data['d']['channel_id']  # айди канала на сервере
     # timestamp = event_data['d']['timestamp']   # дата и время отправки сообщения
     content: str = event_data['d']['content']  # сообщение
 
     if channel_id == CHANNEL_IDS[server_name]:
-
         # бывает что в content приходит сразу несколько склеенных сообщений,
         # поэтому их необходимо разделить.
         for message in content.split('\n'):
+            if player_nickname and f'][**{player_nickname}**]:' not in message:
+                continue
 
-            if player_nickname:
-                if f"][**{player_nickname}**]:" not in message:
-                    continue
-
-            if only_twitch:
-                if 'twitch.tv/' not in message:
-                    continue
+            if only_twitch and 'twitch.tv/' not in message:
+                continue
 
             # фильтры для (wotlk-x1, wotlk_x5_alliance,
             # wotlk_x5_horde, wotlk_x100_alliance, wotlk_x100_horde)
@@ -272,12 +268,10 @@ def sorting_chat_message(event_data: dict[str, str | int | dict[str, Any]], serv
             if 'АО[' in message:
                 message = message[2:]
 
-            message = message.replace('**', '')
-
             # добавить дату в начало сообщения
             # message = '[' + timestamp[:10] + ']' + message
 
-            return message
+            return message.replace('**', '')
 
 
 def _event_trigger(data: dict[str, str | int | dict[str, Any]]):
@@ -290,11 +284,12 @@ def _event_trigger(data: dict[str, str | int | dict[str, Any]]):
     channel_layer: InMemoryChannelLayer = get_channel_layer()
 
     async_to_sync(channel_layer.group_send)(
-        'game_chat', { # название группы
+        'game_chat',
+        {  # название группы
             # значением ключа type является название метода в классе GameChatConsumer,
             # data это аргумент который передаётся в метод send_message_to_frontend
             'type': 'send_message_to_frontend',
-            'data': data
+            'data': data,
         },
     )
 
@@ -306,8 +301,7 @@ class AsyncActionGetGameChatData(threading.Thread):
     def run(self):
         while True:
             data = discord_chat_parser.recieve_json_response()
-            if (data and data.get('t') == 'MESSAGE_CREATE'
-            and data.get('d').get('guild_id') == GUILD_ID):
+            if data and data.get('t') == 'MESSAGE_CREATE' and data.get('d').get('guild_id') == GUILD_ID:
                 _event_trigger(data)
 
 

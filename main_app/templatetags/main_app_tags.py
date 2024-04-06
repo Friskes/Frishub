@@ -1,18 +1,20 @@
 from __future__ import annotations
 
 from re import findall
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 import humanize
-
 from django import template
-from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils.html import format_html
 
-from main_app.models import Category, CustomUser, DressingRoom, Guides, Comments
+from main_app.models import Category, Comments, CustomUser, DressingRoom, Guides
 from main_app.services.utils import build_cachebuster
 
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from django.db.models.query import QuerySet
 
 register = template.Library()
 
@@ -20,8 +22,9 @@ register = template.Library()
 # тег inclusion_tag для возврата содержимого целого html файла
 # в параметре name можно указать имя тега отличное от названия функции для использования в шаблоне
 @register.inclusion_tag(filename='main_app/filtered_guides_list.html', name='filtering_guides')
-def filtered_guides_list(sorter: str = None, category_selected: int = 0
-                         ) -> dict[str, int | QuerySet]:
+def filtered_guides_list(
+    sorter: str | None = None, category_selected: int = 0
+) -> dict[str, int | QuerySet]:
     """Фильтрует список гайдов если передан параметр sorter, иначе возвращает сразу все."""
 
     if sorter:
@@ -52,7 +55,8 @@ def translate_datetime(dt: datetime, language_code: str = 'ru') -> str | datetim
 
     time_words = relative_time.split()
 
-    if len(time_words) < 3: return relative_time
+    if len(time_words) < 3:
+        return relative_time
 
     if time_words[1][:3] in {'мин', 'мес', 'min', 'mon'}:
         medium_word = time_words[1][:3]
@@ -87,7 +91,7 @@ def get_race_img_by_dress_room_url(url: str) -> str:
     """Принимает url dressing room комнаты и пытается получить из БД расу привязаную к этой
     комнате если получается то возвращает url иконки расы, иначе возвращает дефолтную иконку."""
 
-    room_id = findall(r"/dressing-room/([A-Za-z0-9\-]+)", url)
+    room_id = findall(r'/dressing-room/([A-Za-z0-9\-]+)', url)
     if not room_id:
         return '/static/main_app/images/close.png'
 
@@ -111,6 +115,7 @@ def get_verbose_name(instance: Guides, field_name: str) -> str:
 # единоразово получаем контрольную сумму (при запуске сервера) для всех статических файлов
 path_and_checksum: dict = build_cachebuster('main_app/static', ('ace-editor',))
 
+
 @register.filter
 def cachebuster(path_to_file):
     """
@@ -128,15 +133,16 @@ def cachebuster(path_to_file):
 # Переопределение дефолтного тега для добавления api_name == 'all_list'
 # Requires vanilla-js framework - http://vanilla-js.com/
 @register.simple_tag
-def register_custom_notify_callbacks(badge_class='live_notify_badge',  # pylint: disable=too-many-arguments,missing-docstring
-                                     menu_class='live_notify_list',
-                                     refresh_period=15,
-                                     callbacks='',
-                                     api_name='list',
-                                     fetch=5,
-                                     nonce=None,
-                                     mark_as_read=False
-                                     ):
+def register_custom_notify_callbacks(
+    badge_class='live_notify_badge',  # pylint: disable=too-many-arguments,missing-docstring
+    menu_class='live_notify_list',
+    refresh_period=15,
+    callbacks='',
+    api_name='list',
+    fetch=5,
+    nonce=None,
+    mark_as_read=False,
+):
     refresh_period = int(refresh_period) * 1000
 
     if api_name == 'all_list':
@@ -146,7 +152,7 @@ def register_custom_notify_callbacks(badge_class='live_notify_badge',  # pylint:
     elif api_name == 'count':
         api_url = reverse('notifications:live_unread_notification_count')
     else:
-        return ""
+        return ''
     definitions = """
         notify_badge_class='{badge_class}';
         notify_menu_class='{menu_class}';
@@ -164,14 +170,14 @@ def register_custom_notify_callbacks(badge_class='live_notify_badge',  # pylint:
         unread_url=reverse('notifications:unread'),
         mark_all_unread_url=reverse('notifications:mark_all_as_read'),
         fetch_count=fetch,
-        mark_as_read=str(mark_as_read).lower()
+        mark_as_read=str(mark_as_read).lower(),
     )
 
     # add a nonce value to the script tag if one is provided
-    nonce_str = ' nonce="{nonce}"'.format(nonce=nonce) if nonce else ""
+    nonce_str = f' nonce="{nonce}"' if nonce else ''
 
-    script = '<script type="text/javascript"{nonce}>'.format(nonce=nonce_str) + definitions
+    script = f'<script type="text/javascript"{nonce_str}>' + definitions
     for callback in callbacks.split(','):
-        script += "register_notifier(" + callback + ");"
-    script += "</script>"
+        script += 'register_notifier(' + callback + ');'
+    script += '</script>'
     return format_html(script)
